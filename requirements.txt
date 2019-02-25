@@ -1,0 +1,11 @@
+scipy
+scikit-image
+tqdm
+Pillow
+numpy
+matplotlib
+torchvision
+torch
+Neodroid
+draugr
+warg
