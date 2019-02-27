@@ -13,7 +13,7 @@ from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObs
 
 from segmentation.architectures.fcn.mhsfcned import MultiHeadedSkipFCNEncoderDecoder
 from segmentation.losses.accum import calculate_loss
-from segmentation.segmentation_utilities import helper
+from segmentation.segmentation_utilities import plot_utilities
 
 __author__ = 'cnheider'
 
@@ -114,11 +114,11 @@ def test_model(model, data_iterator, load_path=None):
   inputs = inputs.cpu().numpy()
 
   input_images_rgb = [reverse_channel_transform(x) for x in inputs]
-  target_masks_rgb = [helper.masks_to_color_img(reverse_channel_transform(x)) for x in l]
-  pred_rgb = [helper.masks_to_color_img(reverse_channel_transform(x)) for x in pred]
+  target_masks_rgb = [plot_utilities.masks_to_color_img(reverse_channel_transform(x)) for x in l]
+  pred_rgb = [plot_utilities.masks_to_color_img(reverse_channel_transform(x)) for x in pred]
   pred_recon = [reverse_channel_transform(x) for x in recon]
 
-  helper.plot_side_by_side([input_images_rgb, target_masks_rgb, pred_rgb, pred_recon])
+  plot_utilities.plot_side_by_side([input_images_rgb, target_masks_rgb, pred_rgb, pred_recon])
   plt.show()
 
 
