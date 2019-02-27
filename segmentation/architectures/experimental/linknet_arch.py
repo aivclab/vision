@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from Vision.segmentation.models.utils import conv2DBatchNormRelu, residualBlock
+from segmentation.architectures.experimental.convolution_utilities import (conv2DBatchNorm, conv2DBatchNormRelu)
 
 
 class linknetUp(nn.Module):
@@ -124,3 +124,29 @@ class LinkNetArch(nn.Module):
     f3 = self.finalconv3(f2)
 
     return f3
+
+
+class residualBlock(nn.Module):
+  expansion = 1
+
+  def __init__(self, in_channels, n_filters, stride=1, downsample=None):
+    super(residualBlock, self).__init__()
+
+    self.convbnrelu1 = conv2DBatchNormRelu(in_channels, n_filters, 3, stride, 1, bias=False)
+    self.convbn2 = conv2DBatchNorm(n_filters, n_filters, 3, 1, 1, bias=False)
+    self.downsample = downsample
+    self.stride = stride
+    self.relu = nn.ReLU(inplace=True)
+
+  def forward(self, x):
+    residual = x
+
+    out = self.convbnrelu1(x)
+    out = self.convbn2(out)
+
+    if self.downsample is not None:
+      residual = self.downsample(x)
+
+    out += residual
+    out = self.relu(out)
+    return out

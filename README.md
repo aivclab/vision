@@ -17,9 +17,6 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
   <a href="https://www.python.org/">
     <img alt="python" src=".github/images/python.svg" height="40" align="left">
   </a>
-  <a href="https://opencv.org/" style="float:center;">
-    <img alt="opencv" src=".github/images/opencv.svg" height="40" align="center">
-  </a>
   <a href="http://pytorch.org/"style="float: right;">
     <img alt="pytorch" src=".github/images/pytorch.svg" height="40" align="right" >
   </a>
@@ -30,9 +27,6 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
   </a>
   <a href="https://github.com/tqdm/tqdm" style="float:center;">
     <img alt="tqdm" src=".github/images/tqdm.gif" height="40" align="center">
-  </a>
-  <a href="https://matplotlib.org/" style="float: right;">
-    <img alt="matplotlib" src=".github/images/matplotlib.svg" height="40" align="right" />
   </a>
 </p>
 
@@ -81,13 +75,13 @@ python3 procedures/test_agent.py
 
 # Results
 
-## Target Point Estimator
+## Semntation
 Using Depth, Segmentation And RGB images to estimate the location of target point in an environment.
 
-### [REINFORCE (PG)](agents/pg_agent.py)
+[Code](segmentation/run.py)
 
-### [DQN](agents/dqn_agent.py)
-
+### Screenshots
+![Segmentation](.github/images/results/ori_mask_seg_recon.png)
 
 # Contributing
 See guidelines for contributing [here](CONTRIBUTING.md).
@@ -97,7 +91,7 @@ See guidelines for contributing [here](CONTRIBUTING.md).
 For citation you may use the following bibtex entry:
 
 ````
-@misc{neodroid-agent,
+@misc{neodroid-vision,
   author = {Heider, Christian},
   title = {Neodroid Vision},
   year = {2019},

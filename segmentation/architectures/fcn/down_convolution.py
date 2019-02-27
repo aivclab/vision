@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from Vision.segmentation.unet import conv3x3
+from segmentation.architectures.fcn.convolutions import conv3x3
 
 
 class DownConvolution(nn.Module):

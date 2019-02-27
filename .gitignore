@@ -14,7 +14,7 @@ venv/
 *.db
 
 *.log
-#.idea
+
 
 # Byte-compiled / optimized / DLL files
 *$py.class
@@ -38,6 +38,8 @@ sdist/
 var/
 wheels/
 *.egg
+.idea
+.pytest_cache
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -111,11 +113,8 @@ ENV/
 *.model
 *.model.py
 
-
-#.idea
 .ropeproject
 .pyre
 logs/*.csv
-
 
 exclude/

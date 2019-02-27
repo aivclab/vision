@@ -1,10 +1,12 @@
 import functools
 
+import numpy
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
-from Vision.segmentation.losses.cross_entropy_2d import cross_entropy2d
-from Vision.segmentation.models.utils import get_upsampling_weight
+from segmentation.losses.cross_entropy_2d import cross_entropy2d
 
 
 class fcn32s(nn.Module):
@@ -14,61 +16,55 @@ class fcn32s(nn.Module):
     self.n_classes = n_classes
     self.loss = functools.partial(cross_entropy2d, size_average=False)
 
-    self.conv_block1 = nn.Sequential(
-        nn.Conv2d(3, 64, 3, padding=100),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(64, 64, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.MaxPool2d(2, stride=2, ceil_mode=True),
-        )
+    self.conv_block1 = nn.Sequential(nn.Conv2d(3, 64, 3, padding=100),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(64, 64, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.MaxPool2d(2, stride=2, ceil_mode=True),
+                                     )
 
-    self.conv_block2 = nn.Sequential(
-        nn.Conv2d(64, 128, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(128, 128, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.MaxPool2d(2, stride=2, ceil_mode=True),
-        )
+    self.conv_block2 = nn.Sequential(nn.Conv2d(64, 128, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(128, 128, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.MaxPool2d(2, stride=2, ceil_mode=True),
+                                     )
 
-    self.conv_block3 = nn.Sequential(
-        nn.Conv2d(128, 256, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(256, 256, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(256, 256, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.MaxPool2d(2, stride=2, ceil_mode=True),
-        )
+    self.conv_block3 = nn.Sequential(nn.Conv2d(128, 256, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(256, 256, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(256, 256, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.MaxPool2d(2, stride=2, ceil_mode=True),
+                                     )
 
-    self.conv_block4 = nn.Sequential(
-        nn.Conv2d(256, 512, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(512, 512, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(512, 512, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.MaxPool2d(2, stride=2, ceil_mode=True),
-        )
+    self.conv_block4 = nn.Sequential(nn.Conv2d(256, 512, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(512, 512, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(512, 512, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.MaxPool2d(2, stride=2, ceil_mode=True),
+                                     )
 
-    self.conv_block5 = nn.Sequential(
-        nn.Conv2d(512, 512, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(512, 512, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.Conv2d(512, 512, 3, padding=1),
-        nn.ReLU(inplace=True),
-        nn.MaxPool2d(2, stride=2, ceil_mode=True),
-        )
+    self.conv_block5 = nn.Sequential(nn.Conv2d(512, 512, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(512, 512, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.Conv2d(512, 512, 3, padding=1),
+                                     nn.ReLU(inplace=True),
+                                     nn.MaxPool2d(2, stride=2, ceil_mode=True),
+                                     )
 
-    self.classifier = nn.Sequential(
-        nn.Conv2d(512, 4096, 7),
-        nn.ReLU(inplace=True),
-        nn.Dropout2d(),
-        nn.Conv2d(4096, 4096, 1),
-        nn.ReLU(inplace=True),
-        nn.Dropout2d(),
-        nn.Conv2d(4096, self.n_classes, 1),
-        )
+    self.classifier = nn.Sequential(nn.Conv2d(512, 4096, 7),
+                                    nn.ReLU(inplace=True),
+                                    nn.Dropout2d(),
+                                    nn.Conv2d(4096, 4096, 1),
+                                    nn.ReLU(inplace=True),
+                                    nn.Dropout2d(),
+                                    nn.Conv2d(4096, self.n_classes, 1),
+                                    )
 
     if self.learned_billinear:
       raise NotImplementedError
@@ -236,8 +232,22 @@ class fcn16s(nn.Module):
       l2.bias.data = l1.bias.data[:n_class]
 
 
-# FCN 8s
+def get_upsampling_weight(in_channels, out_channels, kernel_size):
+  """Make a 2D bilinear kernel suitable for upsampling"""
+  factor = (kernel_size + 1) // 2
+  if kernel_size % 2 == 1:
+    center = factor - 1
+  else:
+    center = factor - 0.5
+  og = numpy.ogrid[:kernel_size, :kernel_size]
+  filt = (1 - abs(og[0] - center) / factor) * (1 - abs(og[1] - center) / factor)
+  weight = numpy.zeros((in_channels, out_channels, kernel_size, kernel_size), dtype=np.float64)
+  weight[range(in_channels), range(out_channels), :, :] = filt
+  return torch.from_numpy(weight).float()
+
+
 class FCN8sArch(nn.Module):
+  # FCN 8s
   def __init__(self, n_classes=21, learned_billinear=True):
     super().__init__()
     self.learned_billinear = learned_billinear

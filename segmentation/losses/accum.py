@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from Vision.segmentation.losses.dice_loss import dice_loss
-from Vision.segmentation.losses.jaccard_loss import jaccard_loss
+
+import torch.nn.functional as F
+from warg import NOD
+
+from segmentation.losses.dice_loss import dice_loss
+from segmentation.losses.jaccard_loss import jaccard_loss
 
 __author__ = 'cnheider'
 
@@ -9,32 +13,23 @@ import torch
 import warg
 
 
-def calculate_accum_loss(pred,
-                         target,
-                         reconstruction,
-                         original):
-  term_weight = 1 / 4
+def calculate_loss(pred,
+                   target,
+                   reconstruction,
+                   original):
 
-  seg_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(pred, target).mean()
-  ae_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(reconstruction, original).mean()
+  seg_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(pred, target)
+  ae_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(reconstruction, original)
 
   pred_soft = torch.sigmoid(pred)
-  dice = dice_loss(pred_soft, target, epsilon=1).mean()
-  jaccard = jaccard_loss(pred_soft, target, epsilon=1).mean()
+  dice = dice_loss(pred_soft, target, epsilon=1)
+  jaccard = jaccard_loss(pred_soft, target, epsilon=1)
 
-  loss = seg_bce_loss * term_weight
+  terms = NOD.dict_of(dice, jaccard, ae_bce_loss, seg_bce_loss)
 
-  for term in [dice, jaccard, ae_bce_loss]:
-    loss += term * term_weight
+  term_weight = 1 / len(terms)
+  weighted_terms = [term.mean() * term_weight for term in terms.as_list()]
 
-  n = target.size(0)
+  loss = sum(weighted_terms)
 
-  bce_l = seg_bce_loss.data.cpu().numpy() * n
-  dice_l = dice.data.cpu().numpy() * n
-  jaccard_l = dice.data.cpu().numpy() * n
-  ae_l = ae_bce_loss.data.cpu().numpy() * n
-  total_l = loss.data.cpu().numpy() * n
-
-  metrics = warg.NOD.dict_of(bce_l, dice_l, jaccard_l, ae_l, total_l)
-
-  return warg.NOD.dict_of(loss, metrics)
+  return NOD.dict_of(loss, terms)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from Vision.NeodroidVisionPackage import NeodroidVisionPackage
+from NeodroidVisionPackage import NeodroidVisionPackage
 
 
 def python_version_check():
@@ -12,7 +12,6 @@ def python_version_check():
 
 
 python_version_check()
-
 
 __author__ = 'cnheider'
 

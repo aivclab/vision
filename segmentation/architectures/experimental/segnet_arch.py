@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from Vision.segmentation.models.utils import conv2DBatchNormRelu
+from segmentation.architectures.experimental.convolution_utilities import conv2DBatchNormRelu
 
 
 class SegNetDown2(nn.Module):

@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Vision.segmentation.segmentation_utilities import helper
+from segmentation.segmentation_utilities import helper
 
 
 def generate_random_data(height, width, count=1):
