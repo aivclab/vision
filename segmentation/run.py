@@ -52,18 +52,15 @@ def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_
           model.eval()
 
         rgb_imgs, (seg_target, depth_target, normals_target) = next(data_iterator)
-        optimizer.zero_grad()
 
+        optimizer.zero_grad()
         with torch.set_grad_enabled(phase == 'train'):
           seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
-          ret = calculate_loss((seg_pred,
-                                seg_target),
-                               (recon_pred,
-                                rgb_imgs),
-                               (depth_pred,
-                                depth_target),
-                               (normals_pred,
-                                normals_target))
+          ret = calculate_loss((seg_pred, seg_target),
+                               (recon_pred, rgb_imgs),
+                               (depth_pred, depth_target),
+                               (normals_pred, normals_target)
+                               )
 
           if phase == 'train':
             ret.loss.backward()
@@ -75,14 +72,15 @@ def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_
         if phase == 'val' and update_loss < best_loss:
           best_loss = update_loss
           best_model_wts = copy.deepcopy(model.state_dict())
-          writer.add_images(f'input_images', rgb_imgs, update_i)
-          writer.add_images(f'segmentation_images', seg_pred, update_i)
-          writer.add_images(f'reconstruction_images', recon_pred, update_i)
-          #writer.add_images(f'depth_target', depth_target, update_i)
-          #writer.add_images(f'depth_pred', depth_pred, update_i)
+          writer.add_images(f'rgb_imgs', rgb_imgs, update_i)
+          writer.add_images(f'recon_pred', recon_pred, update_i)
+          writer.add_images(f'seg_target', seg_target, update_i)
+          writer.add_images(f'seg_pred', seg_pred, update_i)
+          writer.add_images(f'depth_target', depth_target, update_i,dataformats='NCHW')
+          writer.add_images(f'depth_pred', depth_pred, update_i,dataformats='NCHW')
           writer.add_images(f'normals_pred', normals_pred, update_i)
           writer.add_images(f'normals_target', normals_target, update_i)
-          sess.write('New best model')
+          sess.write(f'New best model at update {update_i}')
 
       _ = get_metric_str(ret.terms, writer, update_i)
       sess.set_description_str(f'Update {update_i} - {phase} accum_loss:{update_loss:2f}')
@@ -108,9 +106,9 @@ def test_model(model, data_iterator, load_path=None):
 
   model.eval()
 
-  inputs, (labels,_,_) = next(data_iterator)
+  inputs, (labels, _, _) = next(data_iterator)
 
-  pred, recon,_,_ = model(inputs)
+  pred, recon, _, _ = model(inputs)
   pred = pred.data.cpu().numpy()
   recon = recon.data.cpu().numpy()
   l = labels.cpu().numpy()

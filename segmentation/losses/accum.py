@@ -39,9 +39,14 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
       green_mask[greenish] = 1
       blue_mask[blueish] = 1
 
+      depth_image = np.zeros(depth_arr.shape[:-1])
+
+
+      depth_image[:,:] = (depth_arr[..., 0]+depth_arr[..., 1]+depth_arr[..., 2])/3
+
       predictors.append(channel_transform(rgb_arr))
       mask_responses.append(np.asarray([red_mask, blue_mask, green_mask]))
-      depth_responses.append(np.asarray([np.dot(depth_arr[..., :3], [0.299, 0.587, 0.114])]))
+      depth_responses.append(np.clip(np.asarray([depth_image/255.0]),0, 1))
       normals_responses.append(channel_transform(normal_arr))
     yield torch.FloatTensor(predictors).to(device), (torch.FloatTensor(mask_responses).to(device),
                                                      torch.FloatTensor(depth_responses).to(device),
@@ -49,19 +54,15 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
 
 
 def calculate_loss(seg, recon, depth, normals):
-  ((seg_pred,
-    seg_target),
-   (recon_pred,
-    recon_target),
-   (depth_pred,
-    depth_target),
-   (normals_pred,
-    normals_target)) = (seg, recon, depth, normals)
+  ((seg_pred,    seg_target),
+   (recon_pred,    recon_target),
+   (depth_pred,    depth_target),
+   (normals_pred,    normals_target)) = (seg, recon, depth, normals)
 
   seg_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(seg_pred, seg_target)
   ae_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(recon_pred, recon_target)
-  #depth_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(depth_pred, depth_target)
   normals_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(normals_pred, normals_target)
+  depth_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(depth_pred, depth_target)
 
   pred_soft = torch.sigmoid(seg_pred)
   dice = dice_loss(pred_soft, seg_target, epsilon=1)
@@ -71,7 +72,7 @@ def calculate_loss(seg, recon, depth, normals):
                       jaccard,
                       ae_bce_loss,
                       seg_bce_loss,
-                      #depth_bce_loss,
+                      depth_bce_loss,
                       normals_bce_loss
                       )
 
