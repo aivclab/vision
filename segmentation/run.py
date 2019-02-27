@@ -6,14 +6,12 @@ import os
 import time
 from pathlib import Path
 
-import numpy as np
-from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper,
-                                                                       neodroid_batch_data_iterator,
-                                                                       )
+from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
 
 from segmentation.architectures.fcn.mhsfcned import MultiHeadedSkipFCNEncoderDecoder
-from segmentation.losses.accum import calculate_loss
+from segmentation.losses.accum import calculate_loss, neodroid_batch_data_iterator
 from segmentation.segmentation_utilities import plot_utilities
+from segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 
 __author__ = 'cnheider'
 
@@ -23,13 +21,6 @@ from torch.optim import lr_scheduler
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from tensorboardX import SummaryWriter
-
-
-def reverse_channel_transform(inp):
-  inp = inp.transpose((1, 2, 0))
-  inp = inp * 255.0
-  inp = np.clip(inp, 0, 255).astype(np.uint8)
-  return inp
 
 
 def get_metric_str(metrics, writer, update_i):
@@ -53,18 +44,26 @@ def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_
       for phase in ['train', 'val']:
         if phase == 'train':
           scheduler.step()
-          writer.add_scalar('lr',optimizer.param_groups['lr'],update_i)
+          for param_group in optimizer.param_groups:
+            writer.add_scalar('lr', param_group['lr'], update_i)
 
           model.train()
         else:
           model.eval()
 
-        inputs, labels = next(data_iterator)
+        rgb_imgs, (seg_target, depth_target, normals_target) = next(data_iterator)
         optimizer.zero_grad()
 
         with torch.set_grad_enabled(phase == 'train'):
-          outputs, reconstruction = model(inputs)
-          ret = calculate_loss(outputs, labels, reconstruction, inputs)
+          seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
+          ret = calculate_loss((seg_pred,
+                                seg_target),
+                               (recon_pred,
+                                rgb_imgs),
+                               (depth_pred,
+                                depth_target),
+                               (normals_pred,
+                                normals_target))
 
           if phase == 'train':
             ret.loss.backward()
@@ -76,12 +75,16 @@ def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_
         if phase == 'val' and update_loss < best_loss:
           best_loss = update_loss
           best_model_wts = copy.deepcopy(model.state_dict())
-          writer.add_images(f'input_images', inputs, update_i)
-          writer.add_images(f'segmentation_images', outputs, update_i)
-          writer.add_images(f'reconstruction_images', reconstruction, update_i)
+          writer.add_images(f'input_images', rgb_imgs, update_i)
+          writer.add_images(f'segmentation_images', seg_pred, update_i)
+          writer.add_images(f'reconstruction_images', recon_pred, update_i)
+          #writer.add_images(f'depth_target', depth_target, update_i)
+          #writer.add_images(f'depth_pred', depth_pred, update_i)
+          writer.add_images(f'normals_pred', normals_pred, update_i)
+          writer.add_images(f'normals_target', normals_target, update_i)
           sess.write('New best model')
 
-      _=get_metric_str(ret.terms, writer, update_i)
+      _ = get_metric_str(ret.terms, writer, update_i)
       sess.set_description_str(f'Update {update_i} - {phase} accum_loss:{update_loss:2f}')
 
       if update_loss < 0.1:
@@ -105,9 +108,9 @@ def test_model(model, data_iterator, load_path=None):
 
   model.eval()
 
-  inputs, labels = next(data_iterator)
+  inputs, (labels,_,_) = next(data_iterator)
 
-  pred, recon = model(inputs)
+  pred, recon,_,_ = model(inputs)
   pred = pred.data.cpu().numpy()
   recon = recon.data.cpu().numpy()
   l = labels.cpu().numpy()
@@ -128,16 +131,17 @@ def main():
   options = args.parse_args()
 
   seed = 42
-  batch_size = 12
+  batch_size = 8  # 12
+  depth = 4  # 5
   segmentation_channels = 3
   tqdm.monitor_interval = 0
-  learning_rate=3e-3
+  learning_rate = 3e-3
   lr_sch_step_size = int(1000 // batch_size) + 4
   lr_sch_gamma = 0.1
-  model_start_channels=16
+  model_start_channels = 16
 
   home_path = Path.home() / 'Models' / 'Vision'
-  base_path =  home_path / str(time.time())
+  base_path = home_path / str(time.time())
   best_model_path = 'INTERRUPTED_BEST.pth'
   interrupted_path = str(base_path / best_model_path)
 
@@ -149,7 +153,8 @@ def main():
 
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  aeu_model = MultiHeadedSkipFCNEncoderDecoder(segmentation_channels, start_channels=model_start_channels)
+  aeu_model = MultiHeadedSkipFCNEncoderDecoder(segmentation_channels, depth=depth,
+                                               start_channels=model_start_channels)
   aeu_model = aeu_model.to(device)
 
   optimizer_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
@@ -167,7 +172,7 @@ def main():
                                     interrupted_path)
     test_model(trained_aeu_model, data_iter)
   else:
-    _list_of_files = home_path    .glob('*')
+    _list_of_files = home_path.glob('*')
     lastest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
     print('loading previous model: ' + lastest_model_path)
     test_model(aeu_model, data_iter, load_path=lastest_model_path)

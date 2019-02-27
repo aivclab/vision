@@ -45,3 +45,15 @@ def masks_to_color_img(masks):
         color_image[y, x, mc % color_channels] = masks[y, x, mc]
 
   return color_image.astype(np.uint8)
+
+def channel_transform(inp):
+  inp = inp / 255.0
+  inp = np.clip(inp, 0, 1)
+  inp = inp.transpose((2, 0, 1))
+  return inp
+
+def reverse_channel_transform(inp):
+  inp = inp.transpose((1, 2, 0))
+  inp = inp * 255.0
+  inp = np.clip(inp, 0, 255).astype(np.uint8)
+  return inp

@@ -66,30 +66,47 @@ class MultiHeadedSkipFCNEncoderDecoder(nn.Module):
     '''
     super().__init__()
 
-    self.parse_arguments(up_mode,merge_mode)
+    self.parse_arguments(up_mode, merge_mode)
 
     self.segmentation_channels = segmentation_channels
+    self.depth_output_channels = 1
+    self.normals_output_channels = 3
     self.input_channels = input_channels
     self.start_channels = start_channels
     self.network_depth = depth
 
-    down_convolutions, encoding_channels = fcn_encoder(self.input_channels, self.network_depth, self.start_channels)
+    down_convolutions, encoding_channels = fcn_encoder(self.input_channels, self.network_depth,
+                                                       self.start_channels)
 
-    up_convolutions_ae,ae_prev_layer_channels = fcn_decoder(encoding_channels,
-                                                            self.network_depth,
-                                                            self.up_mode,
-                                                            self.merge_mode)
+    up_convolutions_ae, ae_prev_layer_channels = fcn_decoder(encoding_channels,
+                                                             self.network_depth,
+                                                             self.up_mode,
+                                                             self.merge_mode)
     self.ae_head = conv1x1(ae_prev_layer_channels, self.input_channels)
 
-    up_convolutions_seg,seg_prev_layer_channels = fcn_decoder(encoding_channels,
-                                                              self.network_depth,
-                                                              self.up_mode,
-                                                              self.merge_mode)
+    up_convolutions_seg, seg_prev_layer_channels = fcn_decoder(encoding_channels,
+                                                               self.network_depth,
+                                                               self.up_mode,
+                                                               self.merge_mode)
     self.seg_head = conv1x1(seg_prev_layer_channels, self.segmentation_channels)
+
+    up_convolutions_depth, depth_prev_layer_channels = fcn_decoder(encoding_channels,
+                                                                   self.network_depth,
+                                                                   self.up_mode,
+                                                                   self.merge_mode)
+    self.depth_head = conv1x1(depth_prev_layer_channels, self.depth_output_channels)
+
+    up_convolutions_normals, normals_prev_layer_channels = fcn_decoder(encoding_channels,
+                                                                       self.network_depth,
+                                                                       self.up_mode,
+                                                                       self.merge_mode)
+    self.normals_head = conv1x1(normals_prev_layer_channels, self.normals_output_channels)
 
     self.down_convolutions = nn.ModuleList(down_convolutions)
     self.up_convolutions_ae = nn.ModuleList(up_convolutions_ae)
     self.up_convolutions_seg = nn.ModuleList(up_convolutions_seg)
+    self.up_convolutions_depth = nn.ModuleList(up_convolutions_depth)
+    self.up_convolutions_normals = nn.ModuleList(up_convolutions_normals)
 
     self.reset_params()
 
@@ -120,13 +137,28 @@ class MultiHeadedSkipFCNEncoderDecoder(nn.Module):
       before_pool = encoder_skips[-(i + 2)]
       x_ae = module(before_pool, x_ae)
 
-    return self.seg_head(x_seg), self.ae_head(x_ae)
+    x_depth = x
+    for i, module in enumerate(self.up_convolutions_depth):
+      before_pool = encoder_skips[-(i + 2)]
+      x_depth = module(before_pool, x_depth)
+
+    x_normal = x
+    for i, module in enumerate(self.up_convolutions_normals):
+      before_pool = encoder_skips[-(i + 2)]
+      x_normal = module(before_pool, x_normal)
+
+    (seg, ae, depth, normals) = (self.seg_head(x_seg),
+                                 self.ae_head(x_ae),
+                                 self.depth_head(x_depth),
+                                 self.normals_head(x_normal))
+
+    return seg, ae, depth, normals
 
 
 if __name__ == "__main__":
   model = MultiHeadedSkipFCNEncoderDecoder(3, depth=2, merge_mode='concat')
   x = torch.FloatTensor(np.random.random((1, 3, 320, 320)))
-  out, _ = model(x)
+  out, _,_,_ = model(x)
   loss = torch.sum(out)
   loss.backward()
   import matplotlib.pyplot as plt
