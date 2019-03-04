@@ -76,7 +76,9 @@ class NeodroidVisionPackage:
     return {
       'console_scripts':[
         # "name_of_executable = module.with:function_to_execute"
-        'neodroid-seg = segmentation.segmentation:main',
+        'neodroid-seg = segmentation.run:main',
+        'neodroid-cls = classification.run:main',
+        'neodroid-rec = reconstruction.run:main',
         # 'neodroid-evo = agents.evo_agent:main'
         ]
       }
