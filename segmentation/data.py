@@ -24,7 +24,8 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
       env.update()
       rgb_arr = env.sensor('RGBCameraObserver')
       seg_arr = env.sensor('LayerSegmentationCameraObserver')
-      depth_arr = env.sensor('DepthCameraObserver')
+      depth_arr = env.sensor('CompressedDepthCameraObserver')
+      mul_depth_arr = env.sensor('DepthCameraObserver')
       normal_arr = env.sensor('NormalCameraObserver')
 
       red_mask = np.zeros(seg_arr.shape[:-1])
@@ -41,8 +42,7 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
 
       depth_image = np.zeros(depth_arr.shape[:-1])
 
-
-      depth_image[:,:] = (depth_arr[..., 0]+depth_arr[..., 1]+depth_arr[..., 2])/3
+      depth_image[:,:] = depth_arr[..., 1]
 
       predictors.append(channel_transform(rgb_arr))
       mask_responses.append(np.asarray([red_mask, blue_mask, green_mask]))

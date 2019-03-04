@@ -8,7 +8,7 @@ from segmentation.architectures.fcn.decoder import fcn_decoder
 from segmentation.architectures.fcn.encoder import fcn_encoder
 
 
-class MultiHeadedSkipFCNEncoderDecoder(nn.Module):
+class MultiHeadedSkipFCN(nn.Module):
   """
   `UNet` class is based on https://arxiv.org/abs/1505.04597
   Contextual spatial information (from the decoding, expansive pathway) about an input tensor is merged with
@@ -75,7 +75,8 @@ class MultiHeadedSkipFCNEncoderDecoder(nn.Module):
     self.start_channels = start_channels
     self.network_depth = depth
 
-    down_convolutions, encoding_channels = fcn_encoder(self.input_channels, self.network_depth,
+    down_convolutions, encoding_channels = fcn_encoder(self.input_channels,
+                                                       self.network_depth,
                                                        self.start_channels)
 
     up_convolutions_ae, ae_prev_layer_channels = fcn_decoder(encoding_channels,
@@ -156,7 +157,7 @@ class MultiHeadedSkipFCNEncoderDecoder(nn.Module):
 
 
 if __name__ == "__main__":
-  model = MultiHeadedSkipFCNEncoderDecoder(3, depth=2, merge_mode='concat')
+  model = MultiHeadedSkipFCN(3, depth=2, merge_mode='concat')
   x = torch.FloatTensor(np.random.random((1, 3, 320, 320)))
   out, _,_,_ = model(x)
   loss = torch.sum(out)

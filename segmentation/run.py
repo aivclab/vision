@@ -8,8 +8,8 @@ from pathlib import Path
 
 from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
 
-from segmentation.architectures.fcn.mhsfcned import MultiHeadedSkipFCNEncoderDecoder
-from segmentation.losses.accum import calculate_loss, neodroid_batch_data_iterator
+from segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
+from segmentation.data import calculate_loss, neodroid_batch_data_iterator
 from segmentation.segmentation_utilities import plot_utilities
 from segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 
@@ -151,8 +151,8 @@ def main():
 
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  aeu_model = MultiHeadedSkipFCNEncoderDecoder(segmentation_channels, depth=depth,
-                                               start_channels=model_start_channels)
+  aeu_model = MultiHeadedSkipFCN(segmentation_channels, depth=depth,
+                                 start_channels=model_start_channels)
   aeu_model = aeu_model.to(device)
 
   optimizer_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
