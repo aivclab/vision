@@ -118,7 +118,7 @@ def main():
   options = args.parse_args()
 
   seed = 42
-  batch_size = 8  # 12
+  batch_size = 12
   tqdm.monitor_interval = 0
   learning_rate = 3e-3
   lr_sch_step_size = int(1000 // batch_size) + 4
