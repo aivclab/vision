@@ -8,7 +8,7 @@ from pathlib import Path
 
 import torchvision as torchvision
 
-from classification.data import neodroid_batch_data_iterator
+from classification.data import NeodroidClassificationGenerator
 from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
 from segmentation.segmentation_utilities import plot_utilities
 from segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
@@ -72,8 +72,8 @@ def train_model(model, data_iterator, criterion, optimizer, scheduler, writer, i
           best_model_wts = copy.deepcopy(model.state_dict())
           writer.add_images(f'rgb_imgs', rgb_imgs, update_i)
           sess.write(f'New best model at update {update_i} with loss {best_loss}')
+          torch.save(model.state_dict(), interrupted_path)
 
-      # _ = get_metric_str(ret.terms, writer, update_i)
       sess.set_description_str(f'Update {update_i} - {phase} accum_loss:{update_loss:2f}')
 
       if update_loss < 0.1:
@@ -116,19 +116,20 @@ def test_model(model, data_iterator, load_path=None, num=9):
 
 def main():
   args = argparse.ArgumentParser()
-  args.add_argument('--inference', '-i', action='store_false')
+  args.add_argument('--inference', '-i', action='store_true')
+  args.add_argument('--continue_training', '-c', action='store_true')
   options = args.parse_args()
 
   seed = 42
   batch_size = 64
   tqdm.monitor_interval = 0
-  learning_rate = 3e-3
+  learning_rate = 3e-2
   lr_sch_step_size = 100000
   lr_sch_gamma = 0.1
 
   home_path = Path.home() / 'Models' / 'Vision'
   base_path = home_path / str(time.time())
-  best_model_path = 'INTERRUPTED_BEST.pth'
+  best_model_path = 'best_test_model.pth'
   interrupted_path = str(base_path / best_model_path)
 
   env = CameraObservationWrapper()
@@ -146,13 +147,19 @@ def main():
   criterion = torch.nn.CrossEntropyLoss().to(device)
 
   #optimizer_ft = optim.Adam(model.parameters(), lr=learning_rate)
-  optimizer_ft = optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
-
+  optimizer_ft = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=1e-4)
   exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
 
-  data_iter = iter(neodroid_batch_data_iterator(env, device, batch_size))
+  data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
 
-  if options.inference:
+  if options.continue_training:
+    _list_of_files = home_path.glob('*')
+    latest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
+    print('loading previous model: ' + latest_model_path)
+    if latest_model_path is not None:
+      model.load_state_dict(torch.load(latest_model_path))
+
+  if not options.inference:
     writer = SummaryWriter(str(base_path))
     trained_model = train_model(model,
                                 data_iter,criterion,
@@ -164,9 +171,9 @@ def main():
     writer.close()
   else:
     _list_of_files = home_path.glob('*')
-    lastest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
-    print('loading previous model: ' + lastest_model_path)
-    test_model(model, data_iter, load_path=lastest_model_path)
+    latest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
+    print('loading previous model: ' + latest_model_path)
+    test_model(model, data_iter, load_path=latest_model_path)
 
   torch.cuda.empty_cache()
   env.close()

@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 from multiprocessing import Pipe, Process
 
+
 import torch.nn.functional as F
+from PIL import Image
 from neodroid.neodroid_utilities.encodings import to_one_hot
 from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObservationWrapper
 from torch.utils.data import Dataset
 from warg import NOD
+import numpy as np
 
 from segmentation.segmentation_utilities.plot_utilities import channel_transform
 
@@ -15,20 +19,22 @@ __author__ = 'cnheider'
 import torch
 
 
-def neodroid_batch_data_iterator(env, device, batch_size=12):
+def NeodroidClassificationGenerator(env, device, batch_size=64):
   while True:
     predictors = []
     class_responses = []
     while len(predictors) < batch_size:
-      info = env.update()
-      rgb_arr = env.sensor('RGBCameraObserver')
+      state = env.update()
+      rgb_arr = state.observer('RGB').observation_value
+      rgb_arr = np.asarray(Image.open(rgb_arr).convert('RGB'))
+      a_class = state.observer('Class').observation_value
 
-      a_class = info.observer('InnerRotator1CategoricalObserver').observation_value
 
       predictors.append(channel_transform(rgb_arr))
       #class_responses.append(to_one_hot(4, int(a_class)))
       class_responses.append(int(a_class))
     yield torch.FloatTensor(predictors).to(device), torch.LongTensor(class_responses).to(device)
+
 
 
 
@@ -83,13 +89,14 @@ class NeodroidDataGenerator(Dataset):
       p.start()
 
   def __getitem__(self, index):
-    info = self._env.update()
-    rgb_arr = self._env.sensor('RGBCameraObserver')
-
-    a_class = info.observer('InnerRotatorCategoricalObserver').observation_value
+    state = self._env.update()
+    rgb_arr = state.observer('RGB').observation_value
+    rgb_arr = np.asarray(Image.open(rgb_arr).convert('RGB'))
+    a_class = state.observer('Class').observation_value
 
     predictors = channel_transform(rgb_arr)
-    class_responses = to_one_hot(4, int(a_class))
+    #class_responses = to_one_hot(4, int(a_class))
+    class_responses = int(a_class)
     return predictors, class_responses
 
   def __len__(self):
