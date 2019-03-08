@@ -143,7 +143,7 @@ def main():
   best_model_path = 'INTERRUPTED_BEST.pth'
   interrupted_path = str(base_path / best_model_path)
 
-  writer = SummaryWriter(str(base_path))
+
   env = CameraObservationWrapper()
 
   torch.manual_seed(seed)
@@ -162,6 +162,7 @@ def main():
   data_iter = iter(neodroid_batch_data_iterator(env, device, batch_size))
 
   if options.i:
+    writer = SummaryWriter(str(base_path))
     trained_aeu_model = train_model(aeu_model,
                                     data_iter,
                                     optimizer_ft,
@@ -169,6 +170,7 @@ def main():
                                     writer,
                                     interrupted_path)
     test_model(trained_aeu_model, data_iter)
+    writer.close()
   else:
     _list_of_files = home_path.glob('*')
     lastest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
@@ -177,7 +179,7 @@ def main():
 
   torch.cuda.empty_cache()
   env.close()
-  writer.close()
+
 
 
 if __name__ == '__main__':
