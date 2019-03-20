@@ -8,10 +8,9 @@ from pathlib import Path
 
 import torchvision as torchvision
 
-from classification.data import NeodroidClassificationGenerator
+from classification.data import NeodroidClassificationGenerator, VestasClassificationGenerator, a_retransform
 from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
 from segmentation.segmentation_utilities import plot_utilities
-from segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 
 __author__ = 'cnheider'
 
@@ -34,7 +33,7 @@ def get_metric_str(metrics, writer, update_i):
 
 
 def train_model(model, data_iterator, criterion, optimizer, scheduler, writer, interrupted_path,
-                                            num_updates=25000):
+                num_updates=25000):
   best_model_wts = copy.deepcopy(model.state_dict())
   best_loss = 1e10
   since = time.time()
@@ -93,22 +92,24 @@ def train_model(model, data_iterator, criterion, optimizer, scheduler, writer, i
   return model
 
 
-def test_model(model, data_iterator, load_path=None, num=9):
+def test_model(model, data_iterator, device='cpu', load_path=None):
   if load_path is not None:
     model.load_state_dict(torch.load(load_path))
 
   model.eval()
 
   inputs, labels = next(data_iterator)
+
+  inputs = inputs.to(device)
+  labels = labels.to(device)
   with torch.no_grad():
     pred = model(inputs)
 
-  _, predicted = torch.max(pred, 1)
-  pred = pred.data.cpu().numpy()[:num]
-  l = labels.cpu().numpy()[:num]
-  inputs = inputs.cpu().numpy()[:num]
+  _, predicted = torch.max(pred, 1)[:6]
+  pred = pred.data.cpu().numpy()[:6]
+  l = labels.cpu().numpy()[:6]
 
-  input_images_rgb = [reverse_channel_transform(x) for x in inputs]
+  input_images_rgb = [a_retransform(x) for x in inputs][:6]
 
   plot_utilities.plot_prediction(input_images_rgb, l, predicted, pred)
   plt.show()
@@ -118,39 +119,45 @@ def main():
   args = argparse.ArgumentParser()
   args.add_argument('--inference', '-i', action='store_true')
   args.add_argument('--continue_training', '-c', action='store_true')
+  args.add_argument('--real_data', '-r', action='store_true')
+  args.add_argument('--no_cuda', '-k', action='store_false')
   options = args.parse_args()
 
   seed = 42
   batch_size = 64
   tqdm.monitor_interval = 0
-  learning_rate = 3e-2
-  lr_sch_step_size = 100000
+  learning_rate = 3e-3
+  lr_sch_step_size = 100
   lr_sch_gamma = 0.1
+  classes = 4
 
   home_path = Path.home() / 'Models' / 'Vision'
   base_path = home_path / str(time.time())
   best_model_path = 'best_test_model.pth'
   interrupted_path = str(base_path / best_model_path)
 
-  env = CameraObservationWrapper()
-
   torch.manual_seed(seed)
-  env.seed(seed)
 
-  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+  device = 'cpu'
+  if not options.no_cuda:
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  #model = torchvision.models.resnet50(pretrained=False, num_classes=4)
-  model = torchvision.models.resnet18(pretrained=False, num_classes=4)
+  model = torchvision.models.resnet18(pretrained=False, num_classes=classes)
   model = model.to(device)
-  # writer.add_graph(model)
+
 
   criterion = torch.nn.CrossEntropyLoss().to(device)
 
-  #optimizer_ft = optim.Adam(model.parameters(), lr=learning_rate)
+  # optimizer_ft = optim.Adam(model.parameters(), lr=learning_rate)
   optimizer_ft = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=1e-4)
   exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
 
-  data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
+  if options.real_data:
+    data_iter = iter(VestasClassificationGenerator())
+  else:
+    env = CameraObservationWrapper()
+    env.seed(seed)
+    data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
 
   if options.continue_training:
     _list_of_files = home_path.glob('*')
@@ -161,22 +168,24 @@ def main():
 
   if not options.inference:
     writer = SummaryWriter(str(base_path))
+    #writer.add_graph(model)
     trained_model = train_model(model,
-                                data_iter,criterion,
+                                data_iter, criterion,
                                 optimizer_ft,
                                 exp_lr_scheduler,
                                 writer,
                                 interrupted_path)
-    test_model(trained_model, data_iter)
+    test_model(trained_model, data_iter, device=device)
     writer.close()
   else:
     _list_of_files = home_path.glob('*')
     latest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
     print('loading previous model: ' + latest_model_path)
-    test_model(model, data_iter, load_path=latest_model_path)
+    test_model(model, data_iter, load_path=latest_model_path, device=device)
 
   torch.cuda.empty_cache()
-  env.close()
+  if not options.real_data:
+    env.close()
 
 
 if __name__ == '__main__':
