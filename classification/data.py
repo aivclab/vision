@@ -8,8 +8,6 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 import time
-from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObservationWrapper
-from segmentation.segmentation_utilities.plot_utilities import channel_transform
 
 __author__ = 'cnheider'
 

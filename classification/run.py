@@ -9,7 +9,6 @@ from pathlib import Path
 import torchvision as torchvision
 
 from classification.data import NeodroidClassificationGenerator, VestasClassificationGenerator, a_retransform
-from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
 from segmentation.segmentation_utilities import plot_utilities
 
 __author__ = 'cnheider'
@@ -20,7 +19,7 @@ from torch.optim import lr_scheduler
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from tensorboardX import SummaryWriter
-
+from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObservationWrapper
 
 def get_metric_str(metrics, writer, update_i):
   outputs = []
