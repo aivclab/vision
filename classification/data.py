@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from multiprocessing import Pipe, Process
+import time
 
-import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
-import time
+from warg.pooled_queue_processor import PooledQueueProcessor
 
 __author__ = 'cnheider'
 
@@ -42,11 +41,20 @@ def NeodroidClassificationGenerator(env, device, batch_size=64):
     b = torch.LongTensor(class_responses).to(device)
     yield a, b
 
+def NeodroidClassificationGenerator2(task):
+  processor = PooledQueueProcessor(task,
+                                   fill_at_construction=True,
+                                   max_queue_size=16,
+                                   n_proc=None)
 
-def VestasClassificationGenerator(
-    batch_size=6,
-    workers=1,
-    path='/home/heider/Data/Datasets/Vision/vestas'):
+  for a in zip(processor):
+    yield a
+
+
+
+def FileGenerator(batch_size=6,
+                  workers=1,
+                  path='/home/heider/Data/Datasets/Vision/vestas'):
   train_dataset = datasets.ImageFolder(path, a_transform)
 
   if False:
@@ -65,11 +73,8 @@ def VestasClassificationGenerator(
   return train_loader
 
 
-
-
-
 if __name__ == '__main__':
-  a = VestasClassificationGenerator()
+  a = FileGenerator()
   for i, (g, c) in enumerate(a):
     print(c)
 
