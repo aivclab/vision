@@ -1,8 +1,7 @@
 ![neodroid](.github/images/header.png)
 
 # Vision
-This repository will host implementation computer vision algorithms applying the [Neodroid](https://github
-.com/sintefneodroid/) platform.
+This repository will host implementation computer vision algorithms applying the [Neodroid](https://github.com/sintefneodroid/) platform.
 
 ---
 
