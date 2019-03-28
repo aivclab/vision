@@ -5,8 +5,8 @@ import numpy as np
 import torch.nn.functional as F
 from warg import NOD
 
-from segmentation.losses.dice_loss import dice_loss
-from segmentation.losses.jaccard_loss import jaccard_loss
+from segmentation.loss_functions.dice_loss import dice_loss
+from segmentation.loss_functions.jaccard_loss import jaccard_loss
 from segmentation.segmentation_utilities.plot_utilities import channel_transform
 
 __author__ = 'cnheider'

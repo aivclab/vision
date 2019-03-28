@@ -12,6 +12,8 @@ __pycache__/
 
 venv/
 *.db
+*.pb
+*.onnx
 
 *.log
 
@@ -118,3 +120,18 @@ ENV/
 logs/*.csv
 
 exclude/
+
+
+# Android
+
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.idea/modules.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.ipynb_checkpoints/
