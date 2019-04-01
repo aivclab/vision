@@ -25,7 +25,7 @@ from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObse
 
 device = 'cuda'
 seed = 42
-batch_size = 32
+batch_size = 256
 tqdm.monitor_interval = 0
 learning_rate = 3e-3
 weight_decay = 0
@@ -55,7 +55,7 @@ def main():
   args.add_argument('--export', '-e', action='store_true')
   options = args.parse_args()
 
-  best_model_name = 'best_test_model.pth'
+  best_model_name = 'best_validation_model.pth'
   interrupted_path = str(base_path / best_model_name)
 
   torch.manual_seed(seed)
@@ -82,11 +82,10 @@ def main():
   '''
   exp_lr_scheduler = None
 
-  if options.real_data:
-    data_iter = iter(FileGenerator(path='/home/heider/Data/Datasets/Vision/vestas/real/train'))
-  else:
-    data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
-    # data_iter = iter(NeodroidClassificationGenerator2())
+
+  data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
+  test_data_iter = FileGenerator(path='/home/heider/Data/Datasets/Vision/vestas/real/train')()
+  # data_iter = iter(NeodroidClassificationGenerator2())
 
   _list_of_files = home_path.glob('*')
   latest = str(max(_list_of_files, key=os.path.getctime))
@@ -98,22 +97,24 @@ def main():
       model.load_state_dict(torch.load(latest_model_path))
 
   if not options.inference:
+    test_data_iter = FileGenerator(path='/home/heider/Data/Datasets/Vision/vestas/')()
     writer = SummaryWriter(str(base_path))
     # writer.add_graph(model)
     trained_model = train_model(model,
                                 data_iter,
+                                test_data_iter,
                                 criterion,
                                 optimizer_ft,
                                 exp_lr_scheduler,
                                 writer,
-                                interrupted_path)
-    test_model(trained_model, data_iter, device=device)
+                                interrupted_path,device=device)
+    test_model(trained_model, test_data_iter, device=device)
     writer.close()
   else:
     if latest_model_path is not None:
       print('loading previous model: ' + latest_model_path)
       model.load_state_dict(torch.load(latest_model_path))
-    test_model(model, data_iter, device=device)
+    test_model(model, test_data_iter, device=device)
 
   torch.cuda.empty_cache()
   if not options.real_data:

@@ -99,7 +99,12 @@ def FileGenerator(batch_size=6,
                                              pin_memory=True,
                                              sampler=train_sampler)
 
-  return train_loader
+  def loopy():
+    while True:
+      for x in iter(train_loader):
+        yield x
+
+  return loopy
 
 
 if __name__ == '__main__':
