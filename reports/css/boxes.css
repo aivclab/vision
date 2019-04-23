@@ -1,0 +1,16 @@
+/*@import url('https://fonts.googleapis.com/css?family=Bowlby+One+SC');
+
+text {
+  font-family: 'Bowlby One SC', cursive;
+}
+
+
+svg {
+  width: 100%;
+}
+*/
+
+.boxes {
+  border: 1px dashed #bcbcbc;
+  padding: 6px;
+}

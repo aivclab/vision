@@ -13,5 +13,6 @@ matplotlib
 tensorboard
 tensorboardX
 tensorflow
-
+jinja2
+pyqrcode
 
