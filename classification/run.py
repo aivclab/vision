@@ -7,9 +7,9 @@ from pathlib import Path
 
 from torch import nn
 
-from classification.architectures.squeezenet_retrain import squeezenet_retrain
+from classification.architectures.squeezenet_retrain import squeezenet_retrain,resnet18_retrain
 from classification.procedures.onnx_export import export
-from classification.procedures.procedures import train_model, test_model
+from classification.procedures.procedures import test_model, train_model
 from classification.processing.data import (FileGenerator, NeodroidClassificationGenerator)
 
 # from warg.pooled_queue_processor import PooledQueueTask
@@ -22,8 +22,7 @@ from tqdm import tqdm
 from tensorboardX import SummaryWriter
 from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObservationWrapper
 
-
-device = 'cuda'
+device = 'cpu'
 seed = 42
 batch_size = 256
 tqdm.monitor_interval = 0
@@ -36,13 +35,10 @@ momentum = 0.9
 
 early_stop = 3e-6
 
-home_path = Path.home() / 'Models' / 'Vision'
-base_path = home_path / str(time.time())
+real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'all'
+models_path = Path.home() / 'Models' / 'Vision'
+this_model_path = models_path / str(time.time())
 
-model_export_name = base_path / 'vestas.onnx'
-
-env = CameraObservationWrapper()
-env.seed(seed)
 
 
 def main():
@@ -56,14 +52,15 @@ def main():
   options = args.parse_args()
 
   best_model_name = 'best_validation_model.pth'
-  interrupted_path = str(base_path / best_model_name)
+  interrupted_path = str(this_model_path / best_model_name)
 
   torch.manual_seed(seed)
 
   if not options.no_cuda:
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  model, params_to_update = squeezenet_retrain(num_classes)
+  #model, params_to_update = squeezenet_retrain(num_classes)
+  model, params_to_update = resnet18_retrain(num_classes)
 
   model = model.to(device)
 
@@ -71,34 +68,25 @@ def main():
   # criterion = torch.nn.NLLLoss()
 
   optimizer_ft = optim.Adam(params_to_update, lr=learning_rate, weight_decay=weight_decay)
-  '''
-  optimizer_ft = optim.SGD(params_to_update,
-                           lr=learning_rate,
-                           momentum=momentum
-                           # , weight_decay=weight_decay
-                           )
-  
-  exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
-  '''
   exp_lr_scheduler = None
 
+  test_data_iter = FileGenerator(path=real_data_path,batch_size=100)()
 
-  data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
-  test_data_iter = FileGenerator(path='/home/heider/Data/Datasets/Vision/vestas/real/train')()
-  # data_iter = iter(NeodroidClassificationGenerator2())
-
-  _list_of_files = home_path.glob('*')
+  _list_of_files = models_path.glob('*')
   latest = str(max(_list_of_files, key=os.path.getctime))
   latest_model_path = latest + f'/{best_model_name}'
-  model_export_name = latest + f'/vestas.onnx'
+  model_export_name = latest + f'/classification.onnx'
   if options.continue_training:
     if latest_model_path is not None:
       print('loading previous model: ' + latest_model_path)
       model.load_state_dict(torch.load(latest_model_path))
 
   if not options.inference:
-    test_data_iter = FileGenerator(path='/home/heider/Data/Datasets/Vision/vestas/')()
-    writer = SummaryWriter(str(base_path))
+    env = CameraObservationWrapper()
+    env.seed(seed)
+    data_iter = iter(NeodroidClassificationGenerator(env, device, batch_size))
+    # data_iter = iter(NeodroidClassificationGenerator2())
+    writer = SummaryWriter(str(this_model_path))
     # writer.add_graph(model)
     trained_model = train_model(model,
                                 data_iter,
@@ -107,18 +95,18 @@ def main():
                                 optimizer_ft,
                                 exp_lr_scheduler,
                                 writer,
-                                interrupted_path,device=device)
-    test_model(trained_model, test_data_iter, device=device)
+                                interrupted_path,
+                                device=device)
+    test_model(trained_model, test_data_iter)
     writer.close()
+    env.close()
   else:
     if latest_model_path is not None:
       print('loading previous model: ' + latest_model_path)
       model.load_state_dict(torch.load(latest_model_path))
-    test_model(model, test_data_iter, device=device)
+    test_model(model, test_data_iter,latest_model_path)
 
   torch.cuda.empty_cache()
-  if not options.real_data:
-    env.close()
 
   if options.export:
     export(model, model_export_name, latest)

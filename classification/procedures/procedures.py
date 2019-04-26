@@ -2,16 +2,24 @@ import copy
 import time
 
 import matplotlib.pyplot as plt
-import torch
-from tqdm import tqdm
 import numpy as np
-from sklearn.metrics import accuracy_score
+import torch
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from tqdm import tqdm
+
 from classification.processing.data import a_retransform
-from segmentation.segmentation_utilities import plot_utilities
+from munin.generate_report import ReportEntry, generate_html, generate_pdf
+from munin.html_embeddings import generate_math_html, plot_cf, plt_html
+from warg import NOD
 
 
-def test_model(model, data_iterator,criterion=None, device='cpu'):
-  model.eval()
+def test_model(model,
+               data_iterator,
+latest_model_path,
+               criterion=None,
+               num_columns=2,
+               device='cpu'):
+  model = model.eval().to(device)
 
   inputs, labels = next(data_iterator)
 
@@ -20,41 +28,82 @@ def test_model(model, data_iterator,criterion=None, device='cpu'):
   with torch.no_grad():
     pred = model(inputs)
 
-
   if criterion:
     loss = criterion(pred, labels)
-    print(loss)
+
+  y_pred = pred.data.to(device).numpy()
+  y_pred_max = np.argmax(y_pred, axis=-1)
+  accuracy_w = accuracy_score(labels, y_pred_max)
+  precision_a, recall_a, fscore_a, support_a = precision_recall_fscore_support(labels, y_pred_max)
+  precision_w, recall_w, fscore_w, support_w = precision_recall_fscore_support(labels, y_pred_max,
+                                                                               average='weighted')
+
+  _, predicted = torch.max(pred, 1)
+
+  truth_labels = labels.data.to(device).numpy()
+
+  input_images_rgb = [a_retransform(x) for x in inputs.to(device)]
+
+  cell_width = (800 / num_columns) - 6 - 6 * 2
+
+  plt.plot(np.random.random((3, 3)))
+
+  import string
+  alphabet = string.ascii_lowercase
+  class_names = np.array([*alphabet])
+
+  samples = len(y_pred)
+  entries = [[None for _ in range(num_columns)] for _ in range(samples // num_columns)]
+  for i, a, b, c in zip(range(samples), input_images_rgb, y_pred_max, truth_labels):
+    plt.imshow(a)
+    gd = ReportEntry(name=i,
+                     figure=plt_html(format='jpg', size=[cell_width, cell_width]),
+                     prediction=class_names[b],
+                     truth=class_names[c])
+
+    entries[i // num_columns][i % num_columns] = gd
 
 
-  y_pred = pred.data.numpy()
-  accuracy = accuracy_score(labels, np.argmax(y_pred, axis=1))
-  print(accuracy)
+  plot_cf(y_pred_max, truth_labels, class_names)
 
-  _, predicted = torch.max(pred, 1)[:6]
-  pred = pred.data.cpu().numpy()[:6]
-  l = labels.cpu().numpy()[:6]
+  title = 'Classification Report'
+  model_name = latest_model_path
+  confusion_matrix = plt_html(format='png', size=[800, 800])
 
-  input_images_rgb = [a_retransform(x) for x in inputs.to('cpu')][:6]
+  accuracy = generate_math_html('\dfrac{tp+tn}{N}'), None, accuracy_w
+  precision = generate_math_html('\dfrac{tp}{tp+fp}'), precision_a, precision_w
+  recall = generate_math_html('\dfrac{tp}{tp+fn}'), recall_a, recall_w
+  f1_score = generate_math_html('2*\dfrac{precision*recall}{precision+recall}'), fscore_a, fscore_w
+  support = generate_math_html('N_{class_truth}'), support_a, support_w
+  metrics = NOD.dict_of(accuracy, precision, f1_score, recall, support).as_flat_tuples()
 
-  plot_utilities.plot_prediction(input_images_rgb, l, predicted, pred)
-  plt.show()
+  bundle = NOD.dict_of(title, model_name, confusion_matrix, metrics, entries)
+
+  file_name = title.lower().replace(" ", "_")
+
+  generate_html(file_name, **bundle)
+  generate_pdf(file_name)
+
+  # plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, pred)
+  # plt.show()
 
 
-def confusion_matrix():
+def confusion_matrisx():
   nb_classes = 9
 
-  confusion_matrix = torch.zeros(nb_classes, nb_classes)
+  cf = torch.zeros(nb_classes, nb_classes)
   with torch.no_grad():
-      for i, (inputs, classes) in enumerate(dataloaders['val']):
-          inputs = inputs.to(device)
-          classes = classes.to(device)
-          outputs = model_ft(inputs)
-          _, preds = torch.max(outputs, 1)
-          for t, p in zip(classes.view(-1), preds.view(-1)):
-                  confusion_matrix[t.long(), p.long()] += 1
+    for i, (inputs, classes) in enumerate(dataloaders['val']):
+      inputs = inputs.to(device)
+      classes = classes.to(device)
+      outputs = model_ft(inputs)
+      _, preds = torch.max(outputs, 1)
+      for t, p in zip(classes.view(-1), preds.view(-1)):
+        cf[t.long(), p.long()] += 1
 
-  print(confusion_matrix)
-  print(confusion_matrix.diag() / confusion_matrix.sum(1))
+  print(cf)
+  print(cf.diag() / cf.sum(1))
+
 
 def train_model(model,
                 data_iterator,
@@ -65,7 +114,7 @@ def train_model(model,
                 writer,
                 interrupted_path,
                 num_updates=250000,
-                early_stop=None,device='cpu'):
+                early_stop=None, device='cpu'):
   best_model_wts = copy.deepcopy(model.state_dict())
   best_val_loss = 1e10
   since = time.time()
@@ -112,7 +161,7 @@ def train_model(model,
           if val_loss < best_val_loss:
             best_val_loss = val_loss
             best_model_wts = copy.deepcopy(model.state_dict())
-            #writer.add_images(f'rgb_imgs', test_rgb_imgs, update_i)
+            # writer.add_images(f'rgb_imgs', test_rgb_imgs, update_i)
             sess.write(f'New best model at update {update_i} with test_loss {best_val_loss}')
             torch.save(model.state_dict(), interrupted_path)
 

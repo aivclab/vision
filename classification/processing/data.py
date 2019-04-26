@@ -81,7 +81,7 @@ def NeodroidClassificationGenerator2(env, device, batch_size=64):
     yield a
 
 
-def FileGenerator(batch_size=6,
+def FileGenerator(batch_size=16,
                   workers=1,
                   path='/home/heider/Data/Datasets/Vision/vestas'):
   train_dataset = datasets.ImageFolder(path, a_transform)
