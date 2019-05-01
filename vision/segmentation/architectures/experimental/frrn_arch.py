@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from segmentation.architectures.experimental.convolution_utilities import (conv2DBatchNorm,
-                                                                           conv2DBatchNormRelu,
-                                                                           conv2DGroupNormRelu,
-                                                                           )
+from vision.segmentation import (conv2DBatchNorm,
+                                 conv2DBatchNormRelu,
+                                 conv2DGroupNormRelu,
+                                 )
 
 frrn_specs_dic = {
   "A":{

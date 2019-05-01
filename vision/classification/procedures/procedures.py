@@ -8,7 +8,7 @@ import torch
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
-from classification.processing.data import a_retransform
+from vision.classification import a_retransform
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plot_cf, plt_html
 from warg import NOD

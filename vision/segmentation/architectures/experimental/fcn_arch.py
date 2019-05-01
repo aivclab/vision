@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from segmentation.loss_functions.experimental.cross_entropy_2d import cross_entropy2d
+from vision.segmentation import cross_entropy2d
 
 
 class fcn32s(nn.Module):

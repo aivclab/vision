@@ -39,8 +39,8 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 - [Other Components](#other-components-of-the-neodroid-platform)
 
 # Algorithms
-- [REINFORCE (PG)](agents/pg_agent.py)
-- [DQN](agents/dqn_agent.py)
+- [REINFORCE (PG)](agent/agents/pg_agent.py)
+- [DQN](agent/agents/dqn_agent.py)
 
 # Requirements
 - pytorch
@@ -77,7 +77,7 @@ python3 procedures/test_agent.py
 ## Semntation
 Using Depth, Segmentation And RGB images to estimate the location of target point in an environment.
 
-[Code](segmentation/run.py)
+[Code](vision/segmentation/run.py)
 
 ### Screenshots
 ![Segmentation](.github/images/results/ori_mask_seg_recon.png)

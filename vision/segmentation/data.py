@@ -4,9 +4,9 @@
 import numpy as np
 import torch.nn.functional as F
 
-from segmentation.loss_functions.dice_loss import dice_loss
-from segmentation.loss_functions.jaccard_loss import jaccard_loss
-from segmentation.segmentation_utilities.plot_utilities import channel_transform
+from vision.segmentation import dice_loss
+from vision.segmentation.loss_functions.jaccard_loss import jaccard_loss
+from vision.segmentation import channel_transform
 from warg import NOD
 
 __author__ = 'cnheider'

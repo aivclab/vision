@@ -3,9 +3,9 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 
-from segmentation.architectures.fcn.convolutions import conv1x1
-from segmentation.architectures.fcn.decoder import fcn_decoder
-from segmentation.architectures.fcn.encoder import fcn_encoder
+from vision.segmentation.architectures.fcn import conv1x1
+from vision.segmentation.architectures.fcn import fcn_decoder
+from vision.segmentation.architectures.fcn import fcn_encoder
 
 
 class MultiHeadedSkipFCN(nn.Module):

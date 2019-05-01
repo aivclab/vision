@@ -1,6 +1,6 @@
 from setuptools import find_packages
 
-from version import get_version
+from vision.version import get_version
 
 
 class NeodroidVisionPackage:

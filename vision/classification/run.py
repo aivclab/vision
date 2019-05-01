@@ -7,11 +7,11 @@ from pathlib import Path
 
 from torch import nn
 
-from classification.architectures.squeezenet_retrain import (squeezenet_retrain,
-                                                             )
-from classification.procedures.onnx_export import export
-from classification.procedures.procedures import test_model, train_model
-from classification.processing.data import (FileGenerator, NeodroidClassificationGenerator)
+from vision.classification import (squeezenet_retrain,
+                                   )
+from vision.classification import export
+from vision.classification import test_model, train_model
+from vision.classification import (FileGenerator, NeodroidClassificationGenerator)
 
 # from warg.pooled_queue_processor import PooledQueueTask
 

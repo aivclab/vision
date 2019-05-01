@@ -7,10 +7,10 @@ import time
 from pathlib import Path
 
 from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
-from segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
-from segmentation.data import calculate_loss, neodroid_batch_data_iterator
-from segmentation.segmentation_utilities import plot_utilities
-from segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
+from vision.segmentation.architectures.fcn import MultiHeadedSkipFCN
+from vision.segmentation.data import calculate_loss, neodroid_batch_data_iterator
+from vision.segmentation.segmentation_utilities import plot_utilities
+from vision.segmentation import reverse_channel_transform
 
 __author__ = 'cnheider'
 
@@ -142,6 +142,7 @@ def main():
   best_model_path = 'INTERRUPTED_BEST.pth'
   interrupted_path = str(base_path / best_model_path)
 
+  writer = SummaryWriter(str(base_path))
   env = CameraObservationWrapper()
 
   torch.manual_seed(seed)
@@ -160,7 +161,6 @@ def main():
   data_iter = iter(neodroid_batch_data_iterator(env, device, batch_size))
 
   if options.i:
-    writer = SummaryWriter(str(base_path))
     trained_aeu_model = train_model(aeu_model,
                                     data_iter,
                                     optimizer_ft,
@@ -168,7 +168,6 @@ def main():
                                     writer,
                                     interrupted_path)
     test_model(trained_aeu_model, data_iter)
-    writer.close()
   else:
     _list_of_files = home_path.glob('*')
     lastest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
@@ -177,6 +176,7 @@ def main():
 
   torch.cuda.empty_cache()
   env.close()
+  writer.close()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from segmentation.architectures.fcn.up_convolution import UpConvolution
+from vision.segmentation.architectures.fcn import UpConvolution
 
 __author__ = 'cnheider'
 
