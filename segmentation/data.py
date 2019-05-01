@@ -3,11 +3,11 @@
 
 import numpy as np
 import torch.nn.functional as F
-from warg import NOD
 
 from segmentation.loss_functions.dice_loss import dice_loss
 from segmentation.loss_functions.jaccard_loss import jaccard_loss
 from segmentation.segmentation_utilities.plot_utilities import channel_transform
+from warg import NOD
 
 __author__ = 'cnheider'
 
@@ -42,11 +42,11 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
 
       depth_image = np.zeros(depth_arr.shape[:-1])
 
-      depth_image[:,:] = depth_arr[..., 1]
+      depth_image[:, :] = depth_arr[..., 1]
 
       predictors.append(channel_transform(rgb_arr))
       mask_responses.append(np.asarray([red_mask, blue_mask, green_mask]))
-      depth_responses.append(np.clip(np.asarray([depth_image/255.0]),0, 1))
+      depth_responses.append(np.clip(np.asarray([depth_image / 255.0]), 0, 1))
       normals_responses.append(channel_transform(normal_arr))
     yield torch.FloatTensor(predictors).to(device), (torch.FloatTensor(mask_responses).to(device),
                                                      torch.FloatTensor(depth_responses).to(device),
@@ -54,10 +54,10 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
 
 
 def calculate_loss(seg, recon, depth, normals):
-  ((seg_pred,    seg_target),
-   (recon_pred,    recon_target),
-   (depth_pred,    depth_target),
-   (normals_pred,    normals_target)) = (seg, recon, depth, normals)
+  ((seg_pred, seg_target),
+   (recon_pred, recon_target),
+   (depth_pred, depth_target),
+   (normals_pred, normals_target)) = (seg, recon, depth, normals)
 
   seg_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(seg_pred, seg_target)
   ae_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(recon_pred, recon_target)

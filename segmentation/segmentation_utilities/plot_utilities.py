@@ -68,5 +68,5 @@ def plot_prediction(img_array, labels, max_pred, pred, n_col=3):
 
   for i in range(len(img_array)):
     plots[i // n_col, i % n_col].imshow(img_array[i])
-    plots[i // n_col, i % n_col].set_title(f'truth:{labels[i]},\n max_pred:{max_pred[i]},\n pred:{pred[    i]}',
+    plots[i // n_col, i % n_col].set_title(f'truth:{labels[i]},\n max_pred:{max_pred[i]},\n pred:{pred[i]}',
                                            fontsize=8)

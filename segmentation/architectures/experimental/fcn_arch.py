@@ -1,10 +1,10 @@
 import functools
 
 import numpy
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
 
 from segmentation.loss_functions.experimental.cross_entropy_2d import cross_entropy2d
 

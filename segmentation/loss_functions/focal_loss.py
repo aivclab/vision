@@ -21,7 +21,8 @@ class FocalLoss(nn.Module):
           alpha(1D Tensor, Variable) : the scalar factor for this criterion
           gamma(float, double) : gamma > 0; reduces the relative loss for well-classified examples (p > .5),
                                  putting more focus on hard, misclassified examples
-          size_average(bool): size_average(bool): By default, the loss_functions are averaged over observations for
+          size_average(bool): size_average(bool): By default, the loss_functions are averaged over
+          observations for
           each mini batch.
                               However, if the field size_average is set to False, the loss_functions are
                               instead summed for each mini batch.

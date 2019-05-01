@@ -1,7 +1,7 @@
 import torch
 
 
-def export(model,model_export_name,latest, batch_size = 1):
+def export(model, model_export_name, latest, batch_size=1):
   model.train(False)
   # Input to the model
   x = torch.randn(batch_size, 3, 224, 224, requires_grad=True, dtype=torch.float32)

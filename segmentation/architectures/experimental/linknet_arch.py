@@ -1,6 +1,8 @@
 import torch.nn as nn
 
-from segmentation.architectures.experimental.convolution_utilities import (conv2DBatchNorm, conv2DBatchNormRelu)
+from segmentation.architectures.experimental.convolution_utilities import (conv2DBatchNorm,
+                                                                           conv2DBatchNormRelu,
+                                                                           )
 
 
 class linknetUp(nn.Module):

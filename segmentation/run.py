@@ -7,7 +7,6 @@ import time
 from pathlib import Path
 
 from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
-
 from segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
 from segmentation.data import calculate_loss, neodroid_batch_data_iterator
 from segmentation.segmentation_utilities import plot_utilities
@@ -76,8 +75,8 @@ def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_
           writer.add_images(f'recon_pred', recon_pred, update_i)
           writer.add_images(f'seg_target', seg_target, update_i)
           writer.add_images(f'seg_pred', seg_pred, update_i)
-          writer.add_images(f'depth_target', depth_target, update_i,dataformats='NCHW')
-          writer.add_images(f'depth_pred', depth_pred, update_i,dataformats='NCHW')
+          writer.add_images(f'depth_target', depth_target, update_i, dataformats='NCHW')
+          writer.add_images(f'depth_pred', depth_pred, update_i, dataformats='NCHW')
           writer.add_images(f'normals_pred', normals_pred, update_i)
           writer.add_images(f'normals_target', normals_target, update_i)
           sess.write(f'New best model at update {update_i}')
@@ -143,7 +142,6 @@ def main():
   best_model_path = 'INTERRUPTED_BEST.pth'
   interrupted_path = str(base_path / best_model_path)
 
-
   env = CameraObservationWrapper()
 
   torch.manual_seed(seed)
@@ -179,7 +177,6 @@ def main():
 
   torch.cuda.empty_cache()
   env.close()
-
 
 
 if __name__ == '__main__':

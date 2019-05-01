@@ -159,7 +159,7 @@ class MultiHeadedSkipFCN(nn.Module):
 if __name__ == "__main__":
   model = MultiHeadedSkipFCN(3, depth=2, merge_mode='concat')
   x = torch.FloatTensor(np.random.random((1, 3, 320, 320)))
-  out, _,_,_ = model(x)
+  out, _, _, _ = model(x)
   loss = torch.sum(out)
   loss.backward()
   import matplotlib.pyplot as plt

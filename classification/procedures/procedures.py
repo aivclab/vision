@@ -1,4 +1,5 @@
 import copy
+import string
 import time
 
 import matplotlib.pyplot as plt
@@ -9,14 +10,13 @@ from tqdm import tqdm
 
 from classification.processing.data import a_retransform
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
-from munin.html_embeddings import generate_math_html, plot_cf, plt_html
+from munin.utilities.html_embeddings import generate_math_html, plot_cf, plt_html
 from warg import NOD
 
 
 def test_model(model,
                data_iterator,
-latest_model_path,
-               criterion=None,
+               latest_model_path,
                num_columns=2,
                device='cpu'):
   model = model.eval().to(device)
@@ -27,9 +27,6 @@ latest_model_path,
   labels = labels.to(device)
   with torch.no_grad():
     pred = model(inputs)
-
-  if criterion:
-    loss = criterion(pred, labels)
 
   y_pred = pred.data.to(device).numpy()
   y_pred_max = np.argmax(y_pred, axis=-1)
@@ -48,21 +45,29 @@ latest_model_path,
 
   plt.plot(np.random.random((3, 3)))
 
-  import string
   alphabet = string.ascii_lowercase
   class_names = np.array([*alphabet])
 
   samples = len(y_pred)
-  entries = [[None for _ in range(num_columns)] for _ in range(samples // num_columns)]
-  for i, a, b, c in zip(range(samples), input_images_rgb, y_pred_max, truth_labels):
+  predictions = [[None for _ in range(num_columns)] for _ in range(samples // num_columns)]
+  for i, a, b, c in zip(range(samples),
+                        input_images_rgb,
+                        y_pred_max,
+                        truth_labels):
     plt.imshow(a)
+    if b == c:
+      outcome = 'tp'
+    else:
+      outcome = 'fn'
+
     gd = ReportEntry(name=i,
-                     figure=plt_html(format='jpg', size=[cell_width, cell_width]),
+                     figure=plt_html(format='jpg',
+                                     size=[cell_width, cell_width]),
                      prediction=class_names[b],
-                     truth=class_names[c])
+                     truth=class_names[c],
+                     outcome=outcome)
 
-    entries[i // num_columns][i % num_columns] = gd
-
+    predictions[i // num_columns][i % num_columns] = gd
 
   plot_cf(y_pred_max, truth_labels, class_names)
 
@@ -77,7 +82,7 @@ latest_model_path,
   support = generate_math_html('N_{class_truth}'), support_a, support_w
   metrics = NOD.dict_of(accuracy, precision, f1_score, recall, support).as_flat_tuples()
 
-  bundle = NOD.dict_of(title, model_name, confusion_matrix, metrics, entries)
+  bundle = NOD.dict_of(title, model_name, confusion_matrix, metrics, predictions)
 
   file_name = title.lower().replace(" ", "_")
 
@@ -114,7 +119,8 @@ def train_model(model,
                 writer,
                 interrupted_path,
                 num_updates=250000,
-                early_stop=None, device='cpu'):
+                early_stop=None,
+                device='cpu'):
   best_model_wts = copy.deepcopy(model.state_dict())
   best_val_loss = 1e10
   since = time.time()

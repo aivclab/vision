@@ -8,8 +8,6 @@ from pathlib import Path
 from torch import nn
 
 from classification.architectures.squeezenet_retrain import (squeezenet_retrain,
-                                                             resnet18_retrain,
-                                                             resnet50_retrain,
                                                              )
 from classification.procedures.onnx_export import export
 from classification.procedures.procedures import test_model, train_model
@@ -27,7 +25,7 @@ from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObse
 
 device = 'cpu'
 seed = 42
-batch_size = 32
+batch_size = 20
 tqdm.monitor_interval = 0
 learning_rate = 3e-3
 weight_decay = 0
@@ -38,11 +36,10 @@ momentum = 0.9
 test_batch_size = 20
 early_stop = 3e-6
 
-#real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'all'
+# real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'all'
 real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'val'
 models_path = Path.home() / 'Models' / 'Vision'
 this_model_path = models_path / str(time.time())
-
 
 
 def main():
@@ -63,9 +60,9 @@ def main():
   if not options.no_cuda:
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  #model, params_to_update = squeezenet_retrain(num_classes)
-  #model, params_to_update = resnet18_retrain(num_classes)
-  model, params_to_update = resnet50_retrain(num_classes)
+  model, params_to_update = squeezenet_retrain(num_classes)
+  # model, params_to_update = resnet18_retrain(num_classes)
+  # model, params_to_update = resnet50_retrain(num_classes)
 
   model = model.to(device)
 
@@ -75,7 +72,7 @@ def main():
   optimizer_ft = optim.Adam(params_to_update, lr=learning_rate, weight_decay=weight_decay)
   exp_lr_scheduler = None
 
-  test_data_iter = FileGenerator(path=real_data_path,batch_size=test_batch_size)()
+  test_data_iter = FileGenerator(path=real_data_path, batch_size=test_batch_size)()
 
   _list_of_files = models_path.glob('*')
   latest = str(max(_list_of_files, key=os.path.getctime))
@@ -102,14 +99,14 @@ def main():
                                 writer,
                                 interrupted_path,
                                 device=device)
-    test_model(trained_model, test_data_iter,latest_model_path)
+    test_model(trained_model, test_data_iter, latest_model_path)
     writer.close()
     env.close()
   else:
     if latest_model_path is not None:
       print('loading previous model: ' + latest_model_path)
       model.load_state_dict(torch.load(latest_model_path))
-    test_model(model, test_data_iter,latest_model_path)
+    test_model(model, test_data_iter, latest_model_path)
 
   torch.cuda.empty_cache()
 
