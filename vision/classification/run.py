@@ -25,7 +25,7 @@ from neodroid.wrappers.observation_wrapper.observation_wrapper import CameraObse
 
 device = 'cpu'
 seed = 42
-batch_size = 20
+batch_size = 16
 tqdm.monitor_interval = 0
 learning_rate = 3e-3
 weight_decay = 0
@@ -33,7 +33,7 @@ lr_sch_step_size = 1000
 lr_sch_gamma = 0.1
 num_classes = 4
 momentum = 0.9
-test_batch_size = 20
+test_batch_size = batch_size
 early_stop = 3e-6
 
 # real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'all'
