@@ -5,9 +5,11 @@ import os
 import time
 from pathlib import Path
 
+import torchvision
 from torch import nn
 
 from vision.classification import (squeezenet_retrain,
+                                   resnet_retrain,
                                    )
 from vision.classification import export
 from vision.classification import test_model, train_model
@@ -60,9 +62,8 @@ def main():
   if not options.no_cuda:
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  model, params_to_update = squeezenet_retrain(num_classes)
-  # model, params_to_update = resnet18_retrain(num_classes)
-  # model, params_to_update = resnet50_retrain(num_classes)
+  #model, params_to_update = squeezenet_retrain(num_classes)
+  model, params_to_update = resnet_retrain(num_classes,resnet_version=torchvision.models.resnet50)
 
   model = model.to(device)
 
