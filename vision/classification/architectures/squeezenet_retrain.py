@@ -9,7 +9,7 @@ def set_parameter_requires_grad(model, feature_extracting):
       param.requires_grad = False
 
 
-def resnet_retrain(num_classes, train_only_last_layer=False, resnet_version=torchvision.models.resnet18):
+def resnet_retrain(num_classes, train_only_last_layer=True, resnet_version=torchvision.models.resnet18):
   if train_only_last_layer:
     model = resnet_version(pretrained=train_only_last_layer)
     num_ftrs = model.fc.in_features

@@ -128,7 +128,10 @@ def train_model(model,
 
   try:
     sess = tqdm(range(num_updates), leave=False)
+    val_loss = 0
+    update_loss = 0
     for update_i in sess:
+
       for phase in ['train', 'val']:
         if phase == 'train':
           if scheduler:
@@ -153,7 +156,7 @@ def train_model(model,
           update_loss = loss.data.cpu().numpy()
           writer.add_scalar(f'loss/train', update_loss, update_i)
 
-          sess.set_description_str(f'Update {update_i} - {phase} accum_loss:{update_loss:2f}')
+
 
         else:
           model.eval()
@@ -174,6 +177,7 @@ def train_model(model,
 
           if early_stop is not None and val_pred < early_stop:
             break
+      sess.set_description_str(      f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
 
   except KeyboardInterrupt:
     print('Interrupt')
