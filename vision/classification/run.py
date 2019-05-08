@@ -62,8 +62,8 @@ def main():
   if not options.no_cuda:
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  #model, params_to_update = squeezenet_retrain(num_classes)
-  model, params_to_update = resnet_retrain(num_classes,resnet_version=torchvision.models.resnet50)
+  model, params_to_update = squeezenet_retrain(num_classes)
+  #model, params_to_update = resnet_retrain(num_classes,resnet_version=torchvision.models.resnet50)
 
   model = model.to(device)
 

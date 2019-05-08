@@ -15,6 +15,9 @@ venv/
 *.pb
 *.onnx
 
+classification_report.pdf
+classification_report.html
+
 *.log
 
 

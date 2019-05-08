@@ -5,7 +5,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from draugr import plot_cf
+from draugr import plot_confusion_matrix
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
@@ -70,7 +70,7 @@ def test_model(model,
 
     predictions[i // num_columns][i % num_columns] = gd
 
-  plot_cf(y_pred_max, truth_labels, class_names)
+  plot_confusion_matrix(y_pred_max, truth_labels, class_names)
 
   title = 'Classification Report'
   model_name = latest_model_path
