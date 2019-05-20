@@ -16,7 +16,6 @@ from contextlib import suppress
 
 
 def main():
-
   frame_i = 0
   how_many = 100
 
@@ -34,7 +33,7 @@ def main():
 
       name = f'stepper_{frame_i}'
 
-      imageio.imwrite(name + '.png',rgb)
+      imageio.imwrite(name + '.png', rgb)
 
       numpy.savez_compressed(name + '.npz', obj.astype(numpy.float16))
 

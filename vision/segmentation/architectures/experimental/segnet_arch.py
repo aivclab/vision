@@ -43,7 +43,7 @@ class SegNetUp2(nn.Module):
     self.conv2 = conv2DBatchNormRelu(in_size, out_size, 3, 1, 1)
 
   def forward(self, inputs, indices, output_shape):
-    outputs = self.unpool(input=inputs, indices=indices, output_size=output_shape)
+    outputs = self.unpool(input=inputs, indices=indices, output_shape=output_shape)
     outputs = self.conv1(outputs)
     outputs = self.conv2(outputs)
     return outputs
@@ -58,7 +58,7 @@ class SegNetUp3(nn.Module):
     self.conv3 = conv2DBatchNormRelu(in_size, out_size, 3, 1, 1)
 
   def forward(self, inputs, indices, output_shape):
-    outputs = self.unpool(input=inputs, indices=indices, output_size=output_shape)
+    outputs = self.unpool(input=inputs, indices=indices, output_shape=output_shape)
     outputs = self.conv1(outputs)
     outputs = self.conv2(outputs)
     outputs = self.conv3(outputs)

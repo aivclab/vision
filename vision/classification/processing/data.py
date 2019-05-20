@@ -32,9 +32,9 @@ def NeodroidClassificationGenerator(env, device, batch_size=64):
     class_responses = []
     while len(predictors) < batch_size:
       state = env.update()
-      rgb_arr = state.observer('RGB').observation_value
+      rgb_arr = state.observer('RGB').value
       rgb_arr = Image.open(rgb_arr).convert('RGB')
-      a_class = state.observer('Class').observation_value
+      a_class = state.observer('Class').value
 
       predictors.append(a_transform(rgb_arr))
       class_responses.append(int(a_class))
@@ -58,9 +58,9 @@ class FetchConvert(PooledQueueTask):
 
     while len(predictors) < self.batch_size:
       state = self.env.update()
-      rgb_arr = state.observer('RGB').observation_value
+      rgb_arr = state.observer('RGB').value
       rgb_arr = Image.open(rgb_arr).convert('RGB')
-      a_class = state.observer('Class').observation_value
+      a_class = state.observer('Class').value
 
       predictors.append(a_transform(rgb_arr))
       class_responses.append(int(a_class))

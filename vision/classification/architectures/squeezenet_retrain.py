@@ -31,6 +31,7 @@ def resnet_retrain(num_classes, train_only_last_layer=True, resnet_version=torch
 
   return model, params_to_update
 
+
 def squeezenet_retrain(num_classes, train_only_last_layer=True):
   model = torchvision.models.squeezenet1_1(pretrained=train_only_last_layer)
   set_parameter_requires_grad(model, train_only_last_layer)

@@ -4,7 +4,6 @@ draugr
 torchvision
 torch
 numpy
-#caffe2
 scipy
 scikit-image
 tqdm
@@ -13,6 +12,4 @@ matplotlib
 tensorboard
 tensorboardX
 tensorflow
-
-
-
+pip

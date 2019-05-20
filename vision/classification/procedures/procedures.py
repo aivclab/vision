@@ -177,7 +177,8 @@ def train_model(model,
 
           if early_stop is not None and val_pred < early_stop:
             break
-      sess.set_description_str(      f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
+      sess.set_description_str(
+        f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
 
   except KeyboardInterrupt:
     print('Interrupt')
