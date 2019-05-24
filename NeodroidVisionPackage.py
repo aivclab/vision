@@ -1,7 +1,7 @@
-from setuptools import find_packages
-
 import os
 import re
+
+from setuptools import find_packages
 
 with open(pathlib.Path.joinpath(os.path.dirname(__file__), "vision/version.py"), "r") as f:
   # get version string from module

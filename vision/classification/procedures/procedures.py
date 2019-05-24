@@ -5,14 +5,14 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from draugr import plot_confusion_matrix
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
+from draugr import plot_confusion_matrix
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
 from vision.classification.processing import a_retransform
-from warg import NOD
+from warg.named_ordered_dictionary import NOD
 
 
 def test_model(model,
@@ -81,9 +81,9 @@ def test_model(model,
   recall = generate_math_html('\dfrac{tp}{tp+fn}'), recall_a, recall_w
   f1_score = generate_math_html('2*\dfrac{precision*recall}{precision+recall}'), fscore_a, fscore_w
   support = generate_math_html('N_{class_truth}'), support_a, support_w
-  metrics = NOD.dict_of(accuracy, precision, f1_score, recall, support).as_flat_tuples()
+  metrics = NOD.nod_of(accuracy, precision, f1_score, recall, support).as_flat_tuples()
 
-  bundle = NOD.dict_of(title, model_name, confusion_matrix, metrics, predictions)
+  bundle = NOD.nod_of(title, model_name, confusion_matrix, metrics, predictions)
 
   file_name = title.lower().replace(" ", "_")
 

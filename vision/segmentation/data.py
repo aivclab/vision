@@ -4,10 +4,9 @@
 import numpy as np
 import torch.nn.functional as F
 
-from vision.segmentation import dice_loss
+from vision.segmentation import channel_transform, dice_loss
 from vision.segmentation.loss_functions.jaccard_loss import jaccard_loss
-from vision.segmentation import channel_transform
-from warg import NOD
+from warg.named_ordered_dictionary import NOD
 
 __author__ = 'cnheider'
 
@@ -68,17 +67,17 @@ def calculate_loss(seg, recon, depth, normals):
   dice = dice_loss(pred_soft, seg_target, epsilon=1)
   jaccard = jaccard_loss(pred_soft, seg_target, epsilon=1)
 
-  terms = NOD.dict_of(dice,
-                      jaccard,
-                      ae_bce_loss,
-                      seg_bce_loss,
-                      depth_bce_loss,
-                      normals_bce_loss
-                      )
+  terms = NOD.nod_of(dice,
+                     jaccard,
+                     ae_bce_loss,
+                     seg_bce_loss,
+                     depth_bce_loss,
+                     normals_bce_loss
+                     )
 
   term_weight = 1 / len(terms)
   weighted_terms = [term.mean() * term_weight for term in terms.as_list()]
 
   loss = sum(weighted_terms)
 
-  return NOD.dict_of(loss, terms)
+  return NOD.nod_of(loss, terms)
