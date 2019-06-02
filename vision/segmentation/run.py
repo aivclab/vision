@@ -39,7 +39,7 @@ def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_
   since = time.time()
 
   try:
-    sess = tqdm(range(num_updates), leave=False)
+    sess = tqdm(range(num_updates), leave=False, disable=False)
     for update_i in sess:
       for phase in ['train', 'val']:
         if phase == 'train':

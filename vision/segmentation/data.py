@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import pathlib
 
 import numpy as np
 import torch.nn.functional as F
 
-from vision.segmentation import channel_transform, dice_loss
+from vision.segmentation.loss_functions.dice_loss import dice_loss
 from vision.segmentation.loss_functions.jaccard_loss import jaccard_loss
+from vision.segmentation.segmentation_utilities.plot_utilities import channel_transform
 from warg.named_ordered_dictionary import NOD
 
-__author__ = 'cnheider'
-
+import os
 import torch
+import torch.utils.data
+from PIL import Image
+
+__author__ = 'cnheider'
 
 
 def neodroid_batch_data_iterator(env, device, batch_size=12):

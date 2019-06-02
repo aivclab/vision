@@ -127,7 +127,7 @@ def train_model(model,
   since = time.time()
 
   try:
-    sess = tqdm(range(num_updates), leave=False)
+    sess = tqdm(range(num_updates), leave=False, disable=False)
     val_loss = 0
     update_loss = 0
     for update_i in sess:
@@ -178,7 +178,7 @@ def train_model(model,
           if early_stop is not None and val_pred < early_stop:
             break
       sess.set_description_str(
-        f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
+          f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
 
   except KeyboardInterrupt:
     print('Interrupt')
