@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import pathlib
 
 import numpy as np
+import torch
 import torch.nn.functional as F
+import torch.utils.data
+from warg.named_ordered_dictionary import NOD
 
 from vision.segmentation.loss_functions.dice_loss import dice_loss
 from vision.segmentation.loss_functions.jaccard_loss import jaccard_loss
 from vision.segmentation.segmentation_utilities.plot_utilities import channel_transform
-from warg.named_ordered_dictionary import NOD
-
-import os
-import torch
-import torch.utils.data
-from PIL import Image
 
 __author__ = 'cnheider'
 
@@ -25,7 +21,7 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
     depth_responses = []
     normals_responses = []
     while len(predictors) < batch_size:
-      env.update()
+      env.update_models()
       rgb_arr = env.sensor('RGBCameraObserver')
       seg_arr = env.sensor('LayerSegmentationCameraObserver')
       depth_arr = env.sensor('CompressedDepthCameraObserver')

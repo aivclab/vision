@@ -8,10 +8,10 @@ import torchvision.models.detection.mask_rcnn
 from vision.segmentation.new_vision.coco_eval import CocoEvaluator
 from vision.segmentation.new_vision.coco_utils import get_coco_api_from_dataset
 from vision.segmentation.new_vision.new_vision_utils import (MetricLogger,
-                                                     SmoothedValue,
-                                                     reduce_dict,
-                                                     warmup_lr_scheduler,
-                                                     )
+                                                             SmoothedValue,
+                                                             reduce_dict,
+                                                             warmup_lr_scheduler,
+                                                             )
 
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
