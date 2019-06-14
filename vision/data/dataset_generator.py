@@ -20,7 +20,7 @@ def main():
   how_many = 100
 
   with CameraObservationWrapper(connect_to_running=True) as _environment, suppress(KeyboardInterrupt):
-    observation_session = tqdm(_environment, leave=False)
+    observation_session = tqdm(_environment, leave=False, disable=False)
     for obs in observation_session:
       frame_i += 1
 

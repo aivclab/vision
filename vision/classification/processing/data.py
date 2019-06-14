@@ -6,7 +6,6 @@ import time
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
-
 # from warg.pooled_queue_processor import PooledQueueProcessor
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
 
@@ -31,7 +30,7 @@ def NeodroidClassificationGenerator(env, device, batch_size=64):
     predictors = []
     class_responses = []
     while len(predictors) < batch_size:
-      state = env.update()
+      state = env.update_models()
       rgb_arr = state.observer('RGB').value
       rgb_arr = Image.open(rgb_arr).convert('RGB')
       a_class = state.observer('Class').value
@@ -57,7 +56,7 @@ class FetchConvert(PooledQueueTask):
     class_responses = []
 
     while len(predictors) < self.batch_size:
-      state = self.env.update()
+      state = self.env.update_models()
       rgb_arr = state.observer('RGB').value
       rgb_arr = Image.open(rgb_arr).convert('RGB')
       a_class = state.observer('Class').value
@@ -109,8 +108,8 @@ def FileGenerator(batch_size=16,
 
 
 if __name__ == '__main__':
-  a = FileGenerator()
-  for i, (g, c) in enumerate(a):
+  LATEST_GPU_STATS = FileGenerator()
+  for i, (g, c) in enumerate(LATEST_GPU_STATS):
     print(c)
 
   '''

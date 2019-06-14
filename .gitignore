@@ -122,7 +122,10 @@ ENV/
 .pyre
 logs/*.csv
 
-exclude/
+*[Ee]xcluded.*
+*[Ee]xclude.*
+*[Ee]xcluded*
+*[Ee]xclude*
 
 
 # Android

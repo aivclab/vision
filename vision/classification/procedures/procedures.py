@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from draugr import plot_confusion_matrix
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from tqdm import tqdm
-
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from tqdm import tqdm
+from warg.named_ordered_dictionary import NOD
+
 from vision.classification.processing import a_retransform
-from warg import NOD
 
 
 def test_model(model,
@@ -81,9 +81,9 @@ def test_model(model,
   recall = generate_math_html('\dfrac{tp}{tp+fn}'), recall_a, recall_w
   f1_score = generate_math_html('2*\dfrac{precision*recall}{precision+recall}'), fscore_a, fscore_w
   support = generate_math_html('N_{class_truth}'), support_a, support_w
-  metrics = NOD.dict_of(accuracy, precision, f1_score, recall, support).as_flat_tuples()
+  metrics = NOD.nod_of(accuracy, precision, f1_score, recall, support).as_flat_tuples()
 
-  bundle = NOD.dict_of(title, model_name, confusion_matrix, metrics, predictions)
+  bundle = NOD.nod_of(title, model_name, confusion_matrix, metrics, predictions)
 
   file_name = title.lower().replace(" ", "_")
 
@@ -127,7 +127,7 @@ def train_model(model,
   since = time.time()
 
   try:
-    sess = tqdm(range(num_updates), leave=False)
+    sess = tqdm(range(num_updates), leave=False, disable=False)
     val_loss = 0
     update_loss = 0
     for update_i in sess:
@@ -178,7 +178,7 @@ def train_model(model,
           if early_stop is not None and val_pred < early_stop:
             break
       sess.set_description_str(
-        f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
+          f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
 
   except KeyboardInterrupt:
     print('Interrupt')

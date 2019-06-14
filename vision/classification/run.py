@@ -5,15 +5,15 @@ import os
 import time
 from pathlib import Path
 
-import torchvision
 from torch import nn
 
-from vision.classification import (squeezenet_retrain,
-                                   resnet_retrain,
+from vision.classification import (FileGenerator,
+                                   NeodroidClassificationGenerator,
+                                   export,
+                                   squeezenet_retrain,
+                                   test_model,
+                                   train_model,
                                    )
-from vision.classification import export
-from vision.classification import test_model, train_model
-from vision.classification import (FileGenerator, NeodroidClassificationGenerator)
 
 # from warg.pooled_queue_processor import PooledQueueTask
 

@@ -28,10 +28,10 @@ def dice_loss(prediction, target, *, epsilon=1e-10):
 if __name__ == '__main__':
   np.random.seed(2)
   data = np.random.random_sample((2, 1, 84, 84))
-  a = torch.FloatTensor(data)
+  LATEST_GPU_STATS = torch.FloatTensor(data)
   b = torch.FloatTensor(data.transpose((0, 1, 3, 2)))
-  print(dice_loss(a, a))
-  print(dice_loss(a, b))
+  print(dice_loss(LATEST_GPU_STATS, LATEST_GPU_STATS))
+  print(dice_loss(LATEST_GPU_STATS, b))
 
   h = torch.FloatTensor(np.array([[0, 1], [1, 1]]))
   j = torch.FloatTensor(np.ones((2, 2)))
