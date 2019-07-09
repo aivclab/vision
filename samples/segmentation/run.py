@@ -7,11 +7,11 @@ import time
 from pathlib import Path
 
 from neodroid.wrappers.observation_wrapper.observation_wrapper import (CameraObservationWrapper)
+from vision.segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
 
-from vision.segmentation import reverse_channel_transform
-from vision.segmentation.architectures.fcn import MultiHeadedSkipFCN
 from vision.segmentation.data import calculate_loss, neodroid_batch_data_iterator
 from vision.segmentation.segmentation_utilities import plot_utilities
+from vision.segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 
 __author__ = 'cnheider'
 

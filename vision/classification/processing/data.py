@@ -6,6 +6,7 @@ import time
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
+
 # from warg.pooled_queue_processor import PooledQueueProcessor
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
 
@@ -30,10 +31,10 @@ def NeodroidClassificationGenerator(env, device, batch_size=64):
     predictors = []
     class_responses = []
     while len(predictors) < batch_size:
-      state = env.update_models()
-      rgb_arr = state.observer('RGB').value
+      state = env.update()
+      rgb_arr = state.sensor('RGB').value
       rgb_arr = Image.open(rgb_arr).convert('RGB')
-      a_class = state.observer('Class').value
+      a_class = state.sensor('Class').value
 
       predictors.append(a_transform(rgb_arr))
       class_responses.append(int(a_class))
@@ -56,10 +57,10 @@ class FetchConvert(PooledQueueTask):
     class_responses = []
 
     while len(predictors) < self.batch_size:
-      state = self.env.update_models()
-      rgb_arr = state.observer('RGB').value
+      state = self.env.update()
+      rgb_arr = state.sensor('RGB').value
       rgb_arr = Image.open(rgb_arr).convert('RGB')
-      a_class = state.observer('Class').value
+      a_class = state.sensor('Class').value
 
       predictors.append(a_transform(rgb_arr))
       class_responses.append(int(a_class))

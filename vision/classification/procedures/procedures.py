@@ -5,14 +5,14 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from tqdm import tqdm
+
 from draugr import plot_confusion_matrix
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from tqdm import tqdm
-from warg.named_ordered_dictionary import NOD
-
 from vision.classification.processing import a_retransform
+from warg.named_ordered_dictionary import NOD
 
 
 def test_model(model,
