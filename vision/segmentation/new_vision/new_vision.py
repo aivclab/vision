@@ -67,7 +67,7 @@ if __name__ == '__main__':
       dataset_test, batch_size=1, shuffle=False, num_workers=4,
       collate_fn=collate_fn)
 
-  device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+  DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
   # our dataset has two classes only - background and person
   num_classes = 2
@@ -75,7 +75,7 @@ if __name__ == '__main__':
   # get the model using our helper function
   model = get_instance_segmentation_model(num_classes)
   # move model to the right device
-  model.to(device)
+  model.to(DEVICE)
 
   # construct an optimizer
   params = [p for p in model.parameters() if p.requires_grad]
@@ -92,18 +92,18 @@ if __name__ == '__main__':
 
   for epoch in range(num_epochs):
     # train for one epoch, printing every 10 iterations
-    train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
+    train_one_epoch(model, optimizer, data_loader, DEVICE, epoch, print_freq=10)
     # update the learning rate
     lr_scheduler.step()
     # evaluate on the test dataset
-    evaluate(model, data_loader_test, device=device)
+    evaluate(model, data_loader_test, device=DEVICE)
 
   # pick one image from the test set
   img, _ = dataset_test[0]
   # put the model in evaluation mode
   model.eval()
   with torch.no_grad():
-    prediction = model([img.to(device)])
+    prediction = model([img.to(DEVICE)])
 
   Image.fromarray(img.mul(255).permute(1, 2, 0).byte().numpy())
 

@@ -13,7 +13,6 @@ import torch
 import torch.distributed as dist
 import torch.utils.data
 from PIL import Image
-
 from warg.named_ordered_dictionary import NOD
 
 

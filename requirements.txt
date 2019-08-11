@@ -1,3 +1,4 @@
+apppath
 neodroid
 warg
 draugr

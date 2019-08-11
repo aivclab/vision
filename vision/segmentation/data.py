@@ -5,11 +5,11 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.utils.data
+from warg.named_ordered_dictionary import NOD
 
 from vision.segmentation.loss_functions.dice_loss import dice_loss
 from vision.segmentation.loss_functions.jaccard_loss import jaccard_loss
 from vision.segmentation.segmentation_utilities.plot_utilities import channel_transform
-from warg.named_ordered_dictionary import NOD
 
 __author__ = 'cnheider'
 
@@ -22,11 +22,11 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
     normals_responses = []
     while len(predictors) < batch_size:
       env.update()
-      rgb_arr = env.sensor('RGBCameraObserver')
-      seg_arr = env.sensor('LayerSegmentationCameraObserver')
-      depth_arr = env.sensor('CompressedDepthCameraObserver')
-      mul_depth_arr = env.sensor('DepthCameraObserver')
-      normal_arr = env.sensor('NormalCameraObserver')
+      rgb_arr = env.sensor('RGBCameraSensor')
+      seg_arr = env.sensor('LayerSegmentationCameraSensor')
+      depth_arr = env.sensor('CompressedDepthCameraSensor')
+      mul_depth_arr = env.sensor('DepthCameraSensor')
+      normal_arr = env.sensor('NormalCameraSensor')
 
       red_mask = np.zeros(seg_arr.shape[:-1])
       green_mask = np.zeros(seg_arr.shape[:-1])

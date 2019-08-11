@@ -11,7 +11,6 @@ import numpy as np
 import six
 import tensorflow as tf
 from attr import dataclass
-
 from warg.mixins import IterValuesMixin
 
 __author__ = 'cnheider'
@@ -708,9 +707,9 @@ if __name__ == '__main__':
     labels_str = numpy.arange(0, 5).astype(str).tolist()
 
     draw_bounding_boxes_on_image_array(im, bb, labels_str)
-    #bs = [BoundingBoxSpec(bb_,l_,None,None,None,'white') for bb_, l_ in zip(bb,labels_str)]
+    # bs = [BoundingBoxSpec(bb_,l_,None,None,None,'white') for bb_, l_ in zip(bb,labels_str)]
 
-    #visualize_boxes_and_labels_on_image_array(im, bs)
+    # visualize_boxes_and_labels_on_image_array(im, bs)
     plt.imshow(im)
     plt.show()
 

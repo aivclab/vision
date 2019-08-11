@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 tqdm.monitor_interval = 0
 
-from neodroid.wrappers import CameraObservationWrapper
+from neodroid.environments.wrappers import CameraObservationWrapper
 from contextlib import suppress
 
 
