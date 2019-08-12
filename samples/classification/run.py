@@ -6,15 +6,14 @@ import time
 from pathlib import Path
 
 # from warg.pooled_queue_processor import PooledQueueTask
-from vision import PROJECT_APP_PATH
-
-from vision.classification import (FileGenerator,
-                                   NeodroidClassificationGenerator,
-                                   export,
-                                   squeezenet_retrain,
-                                   test_model,
-                                   train_model,
-                                   )
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import (FileGenerator,
+                                           NeodroidClassificationGenerator,
+                                           export,
+                                           squeezenet_retrain,
+                                           test_model,
+                                           train_model,
+                                           )
 
 __author__ = 'cnheider'
 

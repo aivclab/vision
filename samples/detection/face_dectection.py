@@ -5,13 +5,13 @@ import os
 import time
 from pathlib import Path
 
-from vision.classification import (FileGenerator,
-                                   NeodroidClassificationGenerator,
-                                   export,
-                                   squeezenet_retrain,
-                                   test_model,
-                                   train_model,
-                                   )
+from neodroidvision.classification import (FileGenerator,
+                                           NeodroidClassificationGenerator,
+                                           export,
+                                           squeezenet_retrain,
+                                           test_model,
+                                           train_model,
+                                           )
 
 # from warg.pooled_queue_processor import PooledQueueTask
 

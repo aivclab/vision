@@ -11,10 +11,10 @@ import cv2
 import pygame
 from pygame import camera
 
-FACE_HAAR = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-EYE_HAAR = cv2.CascadeClassifier("haarcascade_mcs_righteye.xml")
-NOSE_HAAR = cv2.CascadeClassifier("haarcascade_mcs_nose.xml")
-MOUTH_HAAR = cv2.CascadeClassifier("haarcascade_mcs_mouth.xml")
+FACE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+EYE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_righteye.xml")
+NOSE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_nose.xml")
+MOUTH_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_mouth.xml")
 
 # Screen settings
 SCREEN = [640, 360]

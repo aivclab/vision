@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+__author__ = 'cnheider'
+
+
 def python_version_check():
   import sys
 
@@ -20,10 +23,7 @@ with open(pathlib.Path(__file__).parent / "vision" / "__init__.py", "r") as proj
   content = project_init_file.read()
   # get version string from module
   version = re.search(r"__version__ = ['\"]([^'\"]*)['\"]", content, re.M).group(1)
-
   project_name = re.search(r"PROJECT_NAME = ['\"]([^'\"]*)['\"]", content, re.M).group(1)
-
-__author__ = 'cnheider'
 
 
 class NeodroidVisionPackage:
@@ -104,7 +104,8 @@ class NeodroidVisionPackage:
         'neodroid-rec = reconstruction.run:main',
         'neodroid-det = detection.run:main',
         'neodroid-data = data.run:main',
-        'neodroid-vae-smp = samples.reconstruction.app.sampling_app:main',
+        'neodroid-face = samples.kivy_demo_app.opencv_face_tracking:main',
+        'neodroid-vae-smp = samples.kivy_demo_app.mnist_sampling:main',
         ]
       }
 

@@ -6,10 +6,12 @@ import os
 import time
 from pathlib import Path
 
-from neodroidvision.segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
+from neodroid.wrappers.observation_wrapper import (CameraObservationWrapper)
+
+from neodroidvision.segmentation import reverse_channel_transform
+from neodroidvision.segmentation.architectures.fcn import MultiHeadedSkipFCN
 from neodroidvision.segmentation.data import calculate_loss, neodroid_batch_data_iterator
 from neodroidvision.segmentation.segmentation_utilities import plot_utilities
-from neodroidvision.segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 
 __author__ = 'cnheider'
 
@@ -31,13 +33,19 @@ def get_metric_str(metrics, writer, update_i):
   return f'{", ".join(outputs)}'
 
 
-def train_model(model, data_iterator, optimizer, scheduler, writer, interrupted_path, num_updates=25000):
+def train_model(model,
+                data_iterator,
+                optimizer,
+                scheduler,
+                writer,
+                interrupted_path,
+                num_updates=25000):
   best_model_wts = copy.deepcopy(model.state_dict())
   best_loss = 1e10
   since = time.time()
 
   try:
-    sess = tqdm(range(num_updates), leave=False, disable=False)
+    sess = tqdm(range(num_updates), leave=False)
     for update_i in sess:
       for phase in ['train', 'val']:
         if phase == 'train':
@@ -141,6 +149,7 @@ def main():
   best_model_path = 'INTERRUPTED_BEST.pth'
   interrupted_path = str(base_path / best_model_path)
 
+  writer = SummaryWriter(str(base_path))
   env = CameraObservationWrapper()
 
   torch.manual_seed(seed)
@@ -159,7 +168,6 @@ def main():
   data_iter = iter(neodroid_batch_data_iterator(env, device, batch_size))
 
   if options.i:
-    writer = SummaryWriter(str(base_path))
     trained_aeu_model = train_model(aeu_model,
                                     data_iter,
                                     optimizer_ft,
@@ -167,7 +175,6 @@ def main():
                                     writer,
                                     interrupted_path)
     test_model(trained_aeu_model, data_iter)
-    writer.close()
   else:
     _list_of_files = home_path.glob('*')
     lastest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
@@ -176,6 +183,7 @@ def main():
 
   torch.cuda.empty_cache()
   env.close()
+  writer.close()
 
 
 if __name__ == '__main__':
