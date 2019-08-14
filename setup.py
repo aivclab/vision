@@ -19,7 +19,7 @@ import re
 
 from setuptools import find_packages, setup
 
-with open(pathlib.Path(__file__).parent / "vision" / "__init__.py", "r") as project_init_file:
+with open(pathlib.Path(__file__).parent / "neodroidvision" / "__init__.py", "r") as project_init_file:
   content = project_init_file.read()
   # get version string from module
   version = re.search(r"__version__ = ['\"]([^'\"]*)['\"]", content, re.M).group(1)
@@ -99,13 +99,7 @@ class NeodroidVisionPackage:
     return {
       'console_scripts':[
         # "name_of_executable = module.with:function_to_execute"
-        'neodroid-seg = segmentation.run:main',
-        'neodroid-cls = classification.run:main',
-        'neodroid-rec = reconstruction.run:main',
-        'neodroid-det = detection.run:main',
-        'neodroid-data = data.run:main',
-        'neodroid-face = samples.kivy_demo_app.opencv_face_tracking:main',
-        'neodroid-vae-smp = samples.kivy_demo_app.mnist_sampling:main',
+        "neodroidvision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
         ]
       }
 

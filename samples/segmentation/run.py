@@ -18,7 +18,7 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from tensorboardX import SummaryWriter
+
 
 
 def get_metric_str(metrics, writer, update_i):

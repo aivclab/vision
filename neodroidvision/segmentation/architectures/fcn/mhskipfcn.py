@@ -3,7 +3,9 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 
-from neodroidvision.segmentation.architectures.fcn import conv1x1, fcn_decoder, fcn_encoder
+from neodroidvision.segmentation.architectures.fcn.convolutions import conv1x1
+from neodroidvision.segmentation.architectures.fcn.decoder import fcn_decoder
+from neodroidvision.segmentation.architectures.fcn.encoder import fcn_encoder
 
 
 class MultiHeadedSkipFCN(nn.Module):

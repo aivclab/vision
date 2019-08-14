@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from neodroidvision.segmentation.architectures.fcn import conv3x3
+from neodroidvision.segmentation.architectures.fcn.convolutions import conv3x3
 
 
 class DownConvolution(nn.Module):

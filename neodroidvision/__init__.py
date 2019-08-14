@@ -8,7 +8,7 @@ from warnings import warn
 from apppath import AppPath
 
 __author__ = "cnheider"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __doc__ = r"""
 .. module:: neodroidvision
    :platform: Unix, Windows

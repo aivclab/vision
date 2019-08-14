@@ -8,10 +8,10 @@ from pathlib import Path
 
 from neodroid.wrappers.observation_wrapper import (CameraObservationWrapper)
 
-from neodroidvision.segmentation import reverse_channel_transform
-from neodroidvision.segmentation.architectures.fcn import MultiHeadedSkipFCN
+from neodroidvision.segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
 from neodroidvision.segmentation.data import calculate_loss, neodroid_batch_data_iterator
 from neodroidvision.segmentation.segmentation_utilities import plot_utilities
+from neodroidvision.segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 
 __author__ = 'cnheider'
 
@@ -20,7 +20,8 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from tensorboardX import SummaryWriter
+from draugr.writers import TensorBoardPytorchWriter
+
 
 
 def get_metric_str(metrics, writer, update_i):
@@ -149,7 +150,7 @@ def main():
   best_model_path = 'INTERRUPTED_BEST.pth'
   interrupted_path = str(base_path / best_model_path)
 
-  writer = SummaryWriter(str(base_path))
+  writer = TensorBoardPytorchWriter(str(base_path))
   env = CameraObservationWrapper()
 
   torch.manual_seed(seed)

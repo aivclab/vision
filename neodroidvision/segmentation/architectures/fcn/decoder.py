@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from neodroidvision.segmentation.architectures.fcn import UpConvolution
+from neodroidvision.segmentation.architectures.fcn.up_convolution import UpConvolution
 
 __author__ = 'cnheider'
 

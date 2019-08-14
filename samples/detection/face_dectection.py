@@ -20,7 +20,7 @@ __author__ = 'cnheider'
 import torch
 import torch.optim as optim
 from tqdm import tqdm
-from tensorboardX import SummaryWriter
+
 
 DEVICE = 'cpu'
 seed = 42

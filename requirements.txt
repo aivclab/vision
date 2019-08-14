@@ -12,6 +12,4 @@ pip
 h5py
 torchvision
 torch
-tensorboard
-tensorboardX
 tensorflow
