@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8'>
+    <title>Onnx Inference</title>
+    <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
+    <script src="onnx_inference.js"></script>
+  </head>
+  <body>
+    <h1>Tensor-Add Example</h1>
+    <p>Tensor 1: dims=[3,4,5], initialized to: 1's</p>
+    <p>Tensor 2: dims=[3,4,5], initialized to: 2's</p>
+    <div><input type="button" value="Run" onclick="runExample()"/></div>
+    <div id="predictions"></div>
+  </body>
+</html>
