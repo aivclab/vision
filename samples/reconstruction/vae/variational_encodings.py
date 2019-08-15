@@ -5,6 +5,7 @@ from math import inf
 from pathlib import Path
 
 import imageio
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
@@ -32,7 +33,7 @@ CHANNELS = 3  # 1
 DEVICE = torch.device('cuda')
 
 
-def train_model(epoch_i, metric_writer: Writer, loader):
+def train_model(epoch_i:int, metric_writer: Writer, loader:DataLoader):
   model.train()
   train_loss = 0
   generator = tqdm(enumerate(loader))
@@ -53,12 +54,12 @@ def train_model(epoch_i, metric_writer: Writer, loader):
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(data):.6f}')
 
-    
+
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
 
-def run_model(epoch_i, metric_writer, loader, save_images=False):
+def run_model(epoch_i:int, metric_writer:Writer, loader:DataLoader, save_images:bool=False):
   global LOWEST_L
   model.eval()
   test_loss = 0
@@ -88,6 +89,7 @@ def run_model(epoch_i, metric_writer, loader, save_images=False):
                                       mean.to('cpu').numpy(),
                                       log_var.to('cpu').numpy(),
                                       labels)
+      break
 
 
 
@@ -136,12 +138,12 @@ if __name__ == "__main__":
                  Path('/home/heider/Data/vggface2/identity_meta.csv'),
                  split=dset)
 
-  train_loader = torch.utils.data.DataLoader(ds,
+  train_loader = DataLoader(ds,
                                              batch_size=args.batch_size,
                                              shuffle=True,
                                              **kwargs)
 
-  test_loader = torch.utils.data.DataLoader(ds,
+  test_loader =DataLoader(ds,
                                             batch_size=args.batch_size,
                                             shuffle=True,
                                             **kwargs)
