@@ -52,6 +52,7 @@ class FlatNormalVAE(VAE):
 
   def __init__(self, sampling_distribution=sampler, input_size=784, encoding_size=2):
     super().__init__(input_size, encoding_size)
+    self._input_size = input_size
     self._encoder = Encoder(input_size=input_size, output_size=encoding_size)
     self._decoder = Decoder(input_size=encoding_size, output_size=input_size)
     self._sampling_distribution = sampling_distribution
@@ -62,10 +63,10 @@ class FlatNormalVAE(VAE):
     z = self._sampling_distribution(mean, log_var)
     return self._decoder(z), mean, log_var
 
-  @staticmethod
+
   # Reconstruction + KL divergence losses summed over all elements and batch
-  def loss_function(recon_x, x, mu, log_var):
-    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+  def loss_function(self, recon_x, x, mu, log_var):
+    BCE = F.binary_cross_entropy(recon_x, x.view(-1, self._input_size), reduction='sum')
 
     # see Appendix B from VAE paper:
     # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014

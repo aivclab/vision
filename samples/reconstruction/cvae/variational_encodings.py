@@ -40,7 +40,7 @@ def train_model(epoch_i, metric_writer: Writer, loader):
     data = data.to(DEVICE)
     optimizer.zero_grad()
     recon_batch, mean, log_var = model(data)
-    loss = FlatNormalVAE.loss_function(recon_batch, data, mean, log_var)
+    loss = model.loss_function(recon_batch, data, mean, log_var)
     loss.backward()
     train_loss += loss.item()
     optimizer.step()
@@ -56,7 +56,7 @@ def train_model(epoch_i, metric_writer: Writer, loader):
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
 
-def run_model(epoch_i, metric_writer, loader):
+def run_model(epoch_i, metric_writer, loader, save_images=False):
   global LOWEST_L
   model.eval()
   test_loss = 0
@@ -65,23 +65,24 @@ def run_model(epoch_i, metric_writer, loader):
     for i, (data, labels, *_) in enumerate(loader):
       data = data.to(DEVICE)
       recon_batch, mean, log_var = model(data)
-      test_loss += FlatNormalVAE.loss_function(recon_batch,
+      test_loss += model.loss_function(recon_batch,
                                                data,
                                                mean,
                                                log_var).item()
       metric_writer.scalar('test_loss', test_loss)
-      if i == 0:
-        n = min(data.size(0), 8)
-        comparison = torch.cat([data[:n],
-                                recon_batch.view(args.batch_size, CHANNELS, INPUT_SIZE, INPUT_SIZE)[:n]])
-        save_image(comparison.cpu(),
-                   str(result_base_path / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
+      if save_images:
+        if i == 0:
+          n = min(data.size(0), 8)
+          comparison = torch.cat([data[:n],
+                                  recon_batch.view(args.batch_size, CHANNELS, INPUT_SIZE, INPUT_SIZE)[:n]])
+          save_image(comparison.cpu(),
+                     str(result_base_path / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
-        scatter_plot_encoding_space(str(result_base_path /
-                                        f'encoding_space_{str(epoch_i)}.png'),
-                                    mean.to('cpu').numpy(),
-                                    log_var.to('cpu').numpy(),
-                                    labels)
+          scatter_plot_encoding_space(str(result_base_path /
+                                          f'encoding_space_{str(epoch_i)}.png'),
+                                      mean.to('cpu').numpy(),
+                                      log_var.to('cpu').numpy(),
+                                      labels)
 
   test_loss /= len(loader.dataset)
   print('====> Test set loss: {:.4f}'.format(test_loss))
@@ -151,7 +152,10 @@ if __name__ == "__main__":
       train_model(epoch, metric_writer, train_loader)
       run_model(epoch, metric_writer, test_loader)
       with torch.no_grad():
-        save_image(model.sample(device=DEVICE).view(args.batch_size, CHANNELS, INPUT_SIZE, INPUT_SIZE),
+        save_image(model.sample(device=DEVICE).view(args.batch_size,
+                                                    CHANNELS,
+                                                    INPUT_SIZE,
+                                                    INPUT_SIZE),
                    str(result_base_path / f"sample_{str(epoch)}.png"))
         if ENCODING_SIZE == 2:
           plot_manifold(model,
