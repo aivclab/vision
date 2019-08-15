@@ -25,7 +25,7 @@ from torchvision.utils import save_image
 lowest_l = inf
 ENCODING_SIZE = 3
 
-def train(epoch_i, stat_writer, loader):
+def train(epoch_i, metric_writer, loader):
   model.train()
   train_loss = 0
   s = tqdm(enumerate(loader))
@@ -37,7 +37,7 @@ def train(epoch_i, stat_writer, loader):
     loss.backward()
     train_loss += loss.item()
     optimizer.step()
-    stat_writer.scalar('train_loss', loss.item())
+    metric_writer.scalar('train_loss', loss.item())
 
     if batch_idx % args.log_interval == 0:
       s.set_description(f'Train Epoch: {epoch_i}'
@@ -48,7 +48,7 @@ def train(epoch_i, stat_writer, loader):
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
-def run_model(epoch_i, stat_writer, loader):
+def run_model(epoch_i, metric_writer, loader):
   global lowest_l
   model.eval()
   test_loss = 0
@@ -61,7 +61,7 @@ def run_model(epoch_i, stat_writer, loader):
                                                data,
                                                mean,
                                                log_var).item()
-      stat_writer.scalar('test_loss', test_loss)
+      metric_writer.scalar('test_loss', test_loss)
       if i == 0:
         n = min(data.size(0), 8)
         comparison = torch.cat([data[:n],
