@@ -27,7 +27,7 @@ from draugr.writers import Writer, TensorBoardPytorchWriter
 
 torch.manual_seed(42)
 LOWEST_L = inf
-ENCODING_SIZE = 6
+ENCODING_SIZE = 8
 INPUT_SIZE = 64
 CHANNELS = 3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -35,11 +35,11 @@ DL_KWARGS = {'num_workers':4, 'pin_memory':True} if torch.cuda.is_available() el
 BASE_PATH = (PROJECT_APP_PATH.user_data / 'vae')
 if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
-BATCH_SIZE = 32
+BATCH_SIZE = 256
 EPOCHS = 1000
 LR = 1e-4
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
-                    split='train',
+                    split='test',
                     resize_s=INPUT_SIZE)
 
 
@@ -80,7 +80,7 @@ def train_model(model,
                                 f' [{batch_idx * len(original)}/{len(loader.dataset)}'
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(original):.6f}')
-
+    break
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
@@ -121,6 +121,7 @@ def run_model(model,
   # test_loss /= len(loader.dataset)
   test_loss /= loader.batch_size
   print('====> Test set loss: {:.4f}'.format(test_loss))
+  torch.save(model.state_dict(), BASE_PATH / f'model_state_dict{str(epoch_i)}')
 
   if LOWEST_L > test_loss:
     LOWEST_L = test_loss
@@ -152,7 +153,8 @@ if __name__ == "__main__":
                            lr=LR,
                            betas=(0.9, 0.999))
 
-    with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
+    with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / 'VggFace2' / 'BetaVAE' / f'{time.time()}') as \
+        metric_writer:
       for epoch in range(1, EPOCHS + 1):
         train_model(model, optimiser, epoch, metric_writer, dataset_loader)
         run_model(model, epoch, metric_writer, dataset_loader)

@@ -14,6 +14,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.reconstruction.vae.architectures.beta_vae import BetaVAE
 from neodroidvision.reconstruction.vae.architectures.flat import FlatNormalVAE
 
 __author__ = 'cnheider'
@@ -21,16 +22,16 @@ __doc__ = ''
 
 Config.set('graphics', 'resizable', 0)
 
-Window.size = (600, 600)
+Window.size = (600, 800)
 Window.clearcolor = (.9, .9, .9, 1)
 
-size_x, size_y = (224,224)#(28, 28)
+size_x, size_y = (64,64)
 channels = 3
 
 DEVICE = torch.device('cpu')
-ENCODING_SIZE = 6
+ENCODING_SIZE = 8
 
-model = FlatNormalVAE(input_size=size_x*size_y*channels, encoding_size=ENCODING_SIZE).to(DEVICE)
+model = BetaVAE(256, ENCODING_SIZE).to(DEVICE)
 checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'results' / 'best_state_dict',
                         map_location=DEVICE)
 model.load_state_dict(checkpoint)
@@ -109,7 +110,9 @@ class MainLayout(BoxLayout):
                              self.ids.slider3.value,
                              self.ids.slider4.value,
                              self.ids.slider5.value,
-                             self.ids.slider6.value
+                             self.ids.slider6.value,
+                             self.ids.slider7.value,
+                             self.ids.slider8.value
                              ],
                             device=DEVICE)
     rgb: torch.Tensor = rgb.view(channels, size_x, size_y)
@@ -150,8 +153,8 @@ MainLayout:
         source: '{MainLayout._frame_name}'
     GridLayout:
       cols: 1
-      rows: 6
-      size_hint: [1,.20]
+      rows: 8
+      size_hint: [1,.60]
       BoxLayout:
         Label:
           size_hint: [.2,1]
@@ -236,6 +239,34 @@ MainLayout:
         Label:
           size_hint: [.2,1]
           text: str(slider6.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#7'
+        Slider:
+          id: slider7
+          value: 0
+          min: -1
+          max: 1
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider7.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#8'
+        Slider:
+          id: slider8
+          value: 0
+          min: -1
+          max: 1
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider8.value)
     BoxLayout:
       size_hint: [1,.10]
       GridLayout:

@@ -2,6 +2,8 @@
 import csv
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy
 import torch
 from PIL import Image
 from torch.utils import data
@@ -32,7 +34,8 @@ class VggFaces2(data.Dataset):
   def __init__(self,
                dataset_path: Path,
                split: str = 'train',
-               resize_s=64):
+               resize_s=256,
+               raw_images=False):
     """
     :type resize_s: int or tuple(w,h)
     :param dataset_path: dataset directory
@@ -48,29 +51,27 @@ class VggFaces2(data.Dataset):
     assert meta_id_path.exists(), f'meta id path {meta_id_path} does not exists'
     self._split = split
     self._id_label_dict = self.get_id_label_map(meta_id_path)
+    self._raw_images = raw_images
+
+    mean = numpy.array([0.485, 0.456, 0.406])
+    std = numpy.array([0.229, 0.224, 0.225])
 
     self.train_trans = transforms.Compose([
       transforms.RandomResizedCrop(resize_s),
       transforms.RandomHorizontalFlip(),
       transforms.ToTensor(),
-      transforms.Normalize([0.485, 0.456, 0.406],  # mean=[0.485, 0.456, 0.406] and
-                           [0.229, 0.224, 0.225])  # std=[0.229, 0.224, 0.225]
+      transforms.Normalize(mean, std)
       ])
 
     self.val_trans = transforms.Compose([
       transforms.Resize(resize_s),
       transforms.CenterCrop(resize_s),
       transforms.ToTensor(),
-      transforms.Normalize([0.485, 0.456, 0.406],
-                           [0.229, 0.224, 0.225])
+      transforms.Normalize(mean, std)
       ])
 
-
-    #unnormalize = T.Normalize((-mean / std).tolist(), (1.0 / std).tolist())
     self.inverse_trans = transforms.Compose([
-      transforms.Normalize(mean=[-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225],
-                           std=[1 / 0.229, 1 / 0.224, 1 / 0.255]
-                           ),
+      transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist()),
       transforms.ToPILImage()])
 
     self._img_info = []
@@ -94,10 +95,11 @@ class VggFaces2(data.Dataset):
     img_file = info['img']
     img = Image.open(str(self._dataset_path / img_file))
 
-    if self._split == 'train':
-      img = self.train_trans(img)
-    else:
-      img = self.val_trans(img)
+    if not self._raw_images:
+      if self._split == 'train':
+        img = self.train_trans(img)
+      else:
+        img = self.val_trans(img)
 
     label = info['label']
     class_id = info['class_id']
@@ -114,16 +116,23 @@ if __name__ == '__main__':
 
   batch_size = 32
 
-  dt = VggFaces2(Path('/home/heider/Data/vggface2'), split='test')
+  dt = VggFaces2(Path('/home/heider/Data/vggface2'),
+                 split='test',
+                 # raw_images=True
+                 )
 
   test_loader = torch.utils.data.DataLoader(dt,
                                             batch_size=batch_size,
-                                            shuffle=True)
+                                            shuffle=False)
 
-  for batch_idx, (imgs, target, img_files, class_ids) in tqdm.tqdm(enumerate(test_loader),
-                                                                   total=len(test_loader),
-                                                                   desc='Bro',
-                                                                   ncols=80,
-                                                                   leave=False):
-    print(imgs)
+  # test_loader = dt
+
+  for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(enumerate(test_loader),
+                                                                  total=len(test_loader),
+                                                                  desc='Bro',
+                                                                  ncols=80,
+                                                                  leave=False):
+    plt.imshow(dt.inverse_transform(imgs[0]))
+    # plt.imshow(imgs)
+    plt.show()
     break
