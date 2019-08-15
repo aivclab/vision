@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from math import inf
+from pathlib import Path
 
-from draugr.writers import TensorBoardPytorchWriter
+import time
 from tqdm import tqdm
+from vgg_face2 import VggFaces2
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.reconstruction.cvae.archs.flat import FlatNormalVAE
@@ -19,17 +21,20 @@ import torch
 import torch.utils.data
 from torch import optim
 
-from torchvision import datasets, transforms
+
 from torchvision.utils import save_image
+from draugr.writers import Writer,TensorBoardPytorchWriter
 
 lowest_l = inf
-ENCODING_SIZE = 3
+ENCODING_SIZE = 2
 
-def train(epoch_i, metric_writer, loader):
+
+def train_model(epoch_i, metric_writer: Writer, loader):
   model.train()
   train_loss = 0
-  s = tqdm(enumerate(loader))
-  for batch_idx, (data, _) in s:
+  generator = tqdm(enumerate(loader))
+  for batch_idx, (data, *_) in generator:
+
     data = data.to(DEVICE)
     optimizer.zero_grad()
     recon_batch, mean, log_var = model(data)
@@ -40,13 +45,14 @@ def train(epoch_i, metric_writer, loader):
     metric_writer.scalar('train_loss', loss.item())
 
     if batch_idx % args.log_interval == 0:
-      s.set_description(f'Train Epoch: {epoch_i}'
-                        f' [{batch_idx * len(data)}/{len(loader.dataset)}'
-                        f' ({100. * batch_idx / len(loader):.0f}%)]\t'
-                        f'Loss: {loss.item() / len(data):.6f}')
+      generator.set_description(f'Train Epoch: {epoch_i}'
+                                f' [{batch_idx * len(data)}/{len(loader.dataset)}'
+                                f' ({100. * batch_idx / len(loader):.0f}%)]\t'
+                                f'Loss: {loss.item() / len(data):.6f}')
 
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
+
 
 def run_model(epoch_i, metric_writer, loader):
   global lowest_l
@@ -54,7 +60,7 @@ def run_model(epoch_i, metric_writer, loader):
   test_loss = 0
 
   with torch.no_grad():
-    for i, (data, labels) in enumerate(loader):
+    for i, (data, labels, *_) in enumerate(loader):
       data = data.to(DEVICE)
       recon_batch, mean, log_var = model(data)
       test_loss += FlatNormalVAE.loss_function(recon_batch,
@@ -69,7 +75,8 @@ def run_model(epoch_i, metric_writer, loader):
         save_image(comparison.cpu(),
                    str(result_base_path / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
-        scatter_plot_encoding_space(str(result_base_path / f'encoding_space_{str(epoch_i)}.png'),
+        scatter_plot_encoding_space(str(result_base_path /
+                                        f'encoding_space_{str(epoch_i)}.png'),
                                     mean.to('cpu').numpy(),
                                     log_var.to('cpu').numpy(),
                                     labels)
@@ -102,21 +109,29 @@ if __name__ == "__main__":
 
   DEVICE = torch.device("cuda" if args.cuda else "cpu")
 
-  kwargs = {'num_workers':1, 'pin_memory':True} if args.cuda else {}
+  kwargs = {'num_workers':4, 'pin_memory':True} if args.cuda else {}
 
+  '''
   ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
                        train=True,
                        download=True,
                        transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
                                                                         train=False,
                                                                         transform=transforms.ToTensor())]
+                                                                        '''
+  dset = 'test'
 
-  train_loader = torch.utils.data.DataLoader(ds[0],
+  ds = VggFaces2(Path('/home/heider/Data/vggface2/{dset}'),
+                 Path('/home/heider/Data/vggface2/{dset}_list.txt'),
+                 Path('/home/heider/Data/vggface2/identity_meta.csv'),
+                 split=dset)
+
+  train_loader = torch.utils.data.DataLoader(ds,
                                              batch_size=args.batch_size,
                                              shuffle=True,
                                              **kwargs)
 
-  test_loader = torch.utils.data.DataLoader(ds[1],
+  test_loader = torch.utils.data.DataLoader(ds,
                                             batch_size=args.batch_size,
                                             shuffle=True,
                                             **kwargs)
@@ -129,9 +144,9 @@ if __name__ == "__main__":
   model = FlatNormalVAE(encoding_size=ENCODING_SIZE).to(DEVICE)
   optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
-  with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log) as metric_writer:
+  with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log/f'{time.time()}') as metric_writer:
     for epoch in range(1, args.epochs + 1):
-      train(epoch, metric_writer, train_loader)
+      train_model(epoch, metric_writer, train_loader)
       run_model(epoch, metric_writer, test_loader)
       with torch.no_grad():
         save_image(model.sample(device=DEVICE).view(64, 1, 28, 28),

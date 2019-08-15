@@ -11,6 +11,7 @@ import numpy as np
 import six
 import tensorflow as tf
 from attr import dataclass
+
 from warg.mixins import IterValuesMixin
 
 __author__ = 'cnheider'
@@ -176,20 +177,23 @@ def draw_bounding_box_on_image(image,
   are displayed below the bounding box.
 
   Args:
-    image: a PIL.Image object.
+    :param image: a PIL.Image object.
 
-    x_min: x_min of bounding box.
-    y_min: y_min of bounding box.
-    x_max: x_max of bounding box.
-    y_max: y_max of bounding box.
+    :param x_min: x_min of bounding box.
+    :param y_min: y_min of bounding box.
+    :param x_max: x_max of bounding box.
+    :param y_max: y_max of bounding box.
 
-    line_color: color to draw bounding box. Default is red.
-    thickness: line thickness. Default value is 2.
-    labels: list of strings to display in box
+    :param line_color: color to draw bounding box. Default is red.
+    :param thickness: line thickness. Default value is 2.
+    :param labels: list of strings to display in box
                       (each to be shown on its own line).
-    use_normalized_coordinates: If True (default), treat coordinates
+    :param use_normalized_coordinates: If True (default), treat coordinates
       y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
       coordinates as absolute.
+
+    :param label_inside:
+    :param text_color:
   """
   draw = ImageDraw.Draw(image)
   im_width, im_height = image.size
@@ -257,17 +261,17 @@ def draw_bounding_boxes_on_image_array(image,
   """Draws bounding boxes on image (numpy array).
 
   Args:
-    image: a numpy array object.
-    boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
+    :param image: a numpy array object.
+    :param boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
            The coordinates are in normalized format between [0, 1].
-    color: color to draw bounding box. Default is red.
-    thickness: line thickness. Default value is 4.
-    labels: list of list of strings.
+    :param color: color to draw bounding box. Default is red.
+    :param thickness: line thickness. Default value is 4.
+    :param labels: list of list of strings.
                            a list of strings for each bounding box.
                            The reason to pass a list of strings for a
                            bounding box is that it might contain
                            multiple labels.
-
+    :param mode:
   Raises:
     ValueError: if boxes is not a [N, 4] array
   """
@@ -474,6 +478,12 @@ def draw_keypoints_on_image_array(image,
     radius: keypoint radius. Default value is 2.
     use_normalized_coordinates: if True (default), treat keypoint values as
       relative to the image.  Otherwise treat them as absolute.
+      :param use_normalized_coordinates:
+      :param radius:
+      :param color:
+      :param keypoints:
+      :param image:
+      :param mode:
   """
   image_pil = Image.fromarray(image, mode=mode)
   draw_keypoints_on_image(image_pil,
@@ -528,6 +538,11 @@ def draw_mask_on_image_array(image,
 
   Raises:
     ValueError: On incorrect data type for image or masks.
+    :param alpha:
+    :param color:
+    :param mask:
+    :param image:
+    :param mode:
   """
   if image.dtype != np.uint8:
     raise ValueError('`image` not of type np.uint8')
@@ -594,6 +609,7 @@ def visualize_boxes_and_labels_on_image_array(image,
 
   Returns:
     uint8 numpy array with shape (img_height, img_width, 3) with overlaid boxes.
+    :param bounding_boxes:
   """
   # Create a display string (and color) for every box location, group any boxes
   # that correspond to the same location.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import torch
-from neodroidagent.utilities import to_tensor
+from torchvision.transforms.functional import to_tensor
 
 __author__ = 'cnheider'
 __doc__ = ''
