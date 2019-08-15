@@ -121,8 +121,8 @@ if __name__ == "__main__":
                                                                         '''
   dset = 'test'
 
-  ds = VggFaces2(Path('/home/heider/Data/vggface2/{dset}'),
-                 Path('/home/heider/Data/vggface2/{dset}_list.txt'),
+  ds = VggFaces2(Path(f'/home/heider/Data/vggface2/{dset}'),
+                 Path(f'/home/heider/Data/vggface2/{dset}_list.txt'),
                  Path('/home/heider/Data/vggface2/identity_meta.csv'),
                  split=dset)
 
