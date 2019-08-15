@@ -74,7 +74,10 @@ def run_model(epoch_i, metric_writer, loader, save_images=False):
         if i == 0:
           n = min(data.size(0), 8)
           comparison = torch.cat([data[:n],
-                                  recon_batch.view(args.batch_size, CHANNELS, INPUT_SIZE, INPUT_SIZE)[:n]])
+                                  recon_batch.view(args.batch_size,
+                                                   CHANNELS,
+                                                   INPUT_SIZE,
+                                                   INPUT_SIZE)[:n]])
           save_image(comparison.cpu(),
                      str(result_base_path / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
@@ -144,7 +147,7 @@ if __name__ == "__main__":
   if not result_base_path.exists():
     result_base_path.mkdir(parents=True)
 
-  model = FlatNormalVAE(input_size=INPUT_SIZE * 2 * CHANNELS, encoding_size=ENCODING_SIZE).to(DEVICE)
+  model = FlatNormalVAE(input_size=(INPUT_SIZE **2) * CHANNELS, encoding_size=ENCODING_SIZE).to(DEVICE)
   optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
   with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
