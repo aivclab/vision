@@ -4,7 +4,7 @@ import time
 from math import inf
 from pathlib import Path
 
-from torch.nn.functional import mse_loss, binary_cross_entropy
+from torch.nn.functional import binary_cross_entropy
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -37,7 +37,7 @@ if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
 BATCH_SIZE = 32
 EPOCHS = 100
-LR=1e-4
+LR = 1e-4
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
                     split='test',
                     resize_s=INPUT_SIZE)
@@ -53,6 +53,7 @@ def loss_function(reconstruction, original, mu, log_var, beta=1):
   kl_diverge = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
 
   return (recon_loss + beta * kl_diverge) / original.shape[0]  # divide total loss by batch size
+
 
 def train_model(model,
                 optimiser,
@@ -80,7 +81,6 @@ def train_model(model,
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(original):.6f}')
 
-    break
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
@@ -99,9 +99,9 @@ def run_model(model,
       original = original.to(DEVICE)
       recon_batch, mean, log_var = model(original)
       test_loss += loss_function(recon_batch,
-                                       original,
-                                       mean,
-                                       log_var).item()
+                                 original,
+                                 mean,
+                                 log_var).item()
       metric_writer.scalar('test_loss', test_loss)
       if save_images:
         if i == 0:
@@ -118,7 +118,7 @@ def run_model(model,
                                       labels)
       break
 
-  #test_loss /= len(loader.dataset)
+  # test_loss /= len(loader.dataset)
   test_loss /= loader.batch_size
   print('====> Test set loss: {:.4f}'.format(test_loss))
 
@@ -128,7 +128,6 @@ def run_model(model,
 
 
 if __name__ == "__main__":
-
 
   def main():
 
@@ -141,7 +140,6 @@ if __name__ == "__main__":
                                                                           transform=transforms.ToTensor())]
                                                                           '''
 
-
     dataset_loader = DataLoader(DATASET,
                                 batch_size=BATCH_SIZE,
                                 shuffle=True,
@@ -150,7 +148,9 @@ if __name__ == "__main__":
     model: VAE = BetaVAE(
         CHANNELS,
         latent_size=ENCODING_SIZE).to(DEVICE)
-    optimiser = optim.Adam(model.parameters(), lr=LR, betas=(0.9,0.999))
+    optimiser = optim.Adam(model.parameters(),
+                           lr=LR,
+                           betas=(0.9, 0.999))
 
     with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
       for epoch in range(1, EPOCHS + 1):
