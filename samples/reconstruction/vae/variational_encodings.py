@@ -36,14 +36,14 @@ BASE_PATH = (PROJECT_APP_PATH.user_data / 'vae')
 if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
 BATCH_SIZE = 32
-EPOCHS = 100
+EPOCHS = 1000
 LR = 1e-4
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
-                    split='test',
+                    split='train',
                     resize_s=INPUT_SIZE)
 
 
-def loss_function(reconstruction, original, mu, log_var, beta=1):
+def loss_function(reconstruction, original, mu, log_var, beta=1.42):
   recon_loss = binary_cross_entropy(reconstruction, original, reduction='sum')
 
   # see Appendix B from VAE paper:
