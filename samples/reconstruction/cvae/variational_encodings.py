@@ -25,7 +25,7 @@ from torchvision.utils import save_image
 from draugr.writers import Writer, TensorBoardPytorchWriter
 
 LOWEST_L = inf
-ENCODING_SIZE = 2
+ENCODING_SIZE = 6
 INPUT_SIZE = 224  # 28
 CHANNELS = 3  # 1
 DEVICE = torch.device('cuda')
