@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import time
 from math import inf
 from pathlib import Path
 
-import time
 from tqdm import tqdm
 from vgg_face2 import VggFaces2
 
@@ -21,12 +21,14 @@ import torch
 import torch.utils.data
 from torch import optim
 
-
 from torchvision.utils import save_image
-from draugr.writers import Writer,TensorBoardPytorchWriter
+from draugr.writers import Writer, TensorBoardPytorchWriter
 
-lowest_l = inf
+LOWEST_L = inf
 ENCODING_SIZE = 2
+INPUT_SIZE = 224  # 28
+CHANNELS = 3  # 1
+DEVICE = torch.device('cuda')
 
 
 def train_model(epoch_i, metric_writer: Writer, loader):
@@ -55,7 +57,7 @@ def train_model(epoch_i, metric_writer: Writer, loader):
 
 
 def run_model(epoch_i, metric_writer, loader):
-  global lowest_l
+  global LOWEST_L
   model.eval()
   test_loss = 0
 
@@ -71,7 +73,7 @@ def run_model(epoch_i, metric_writer, loader):
       if i == 0:
         n = min(data.size(0), 8)
         comparison = torch.cat([data[:n],
-                                recon_batch.view(args.batch_size, 1, 28, 28)[:n]])
+                                recon_batch.view(args.batch_size, CHANNELS, INPUT_SIZE, INPUT_SIZE)[:n]])
         save_image(comparison.cpu(),
                    str(result_base_path / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
@@ -84,8 +86,8 @@ def run_model(epoch_i, metric_writer, loader):
   test_loss /= len(loader.dataset)
   print('====> Test set loss: {:.4f}'.format(test_loss))
 
-  if lowest_l > test_loss:
-    lowest_l = test_loss
+  if LOWEST_L > test_loss:
+    LOWEST_L = test_loss
     torch.save(model.state_dict(), result_base_path / f'best_state_dict')
 
 
@@ -141,15 +143,15 @@ if __name__ == "__main__":
   if not result_base_path.exists():
     result_base_path.mkdir(parents=True)
 
-  model = FlatNormalVAE(encoding_size=ENCODING_SIZE).to(DEVICE)
+  model = FlatNormalVAE(input_size=INPUT_SIZE * 2 * CHANNELS, encoding_size=ENCODING_SIZE).to(DEVICE)
   optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
-  with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log/f'{time.time()}') as metric_writer:
+  with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
     for epoch in range(1, args.epochs + 1):
       train_model(epoch, metric_writer, train_loader)
       run_model(epoch, metric_writer, test_loader)
       with torch.no_grad():
-        save_image(model.sample(device=DEVICE).view(64, 1, 28, 28),
+        save_image(model.sample(device=DEVICE).view(args.batch_size, CHANNELS, INPUT_SIZE, INPUT_SIZE),
                    str(result_base_path / f"sample_{str(epoch)}.png"))
         if ENCODING_SIZE == 2:
           plot_manifold(model,

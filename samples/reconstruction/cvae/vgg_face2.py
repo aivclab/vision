@@ -11,6 +11,8 @@ from torch.utils import data
 
 class VggFaces2(data.Dataset):
   mean_bgr = np.array([91.4953, 103.8827, 131.0912])  # from resnet50_ft.prototxt
+  resize_s = 256
+  crop_s = 224
 
   @staticmethod
   def get_id_label_map(meta_file):
@@ -81,13 +83,13 @@ class VggFaces2(data.Dataset):
     info = self._img_info[index]
     img_file = info['img']
     img = PIL.Image.open(str(self._dataset_path / img_file))
-    img = torchvision.transforms.Resize(256)(img)
+    img = torchvision.transforms.Resize(self.resize_s)(img)
 
     if self._split == 'train':
-      img = torchvision.transforms.RandomCrop(224)(img)
+      img = torchvision.transforms.RandomCrop(self.crop_s)(img)
       img = torchvision.transforms.RandomGrayscale(p=0.2)(img)
     else:
-      img = torchvision.transforms.CenterCrop(224)(img)
+      img = torchvision.transforms.CenterCrop(self.crop_s)(img)
 
     if self._horizontal_flip:
       img = torchvision.transforms.functional.hflip(img)
