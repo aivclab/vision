@@ -53,7 +53,7 @@ def train_model(epoch_i, metric_writer: Writer, loader):
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(data):.6f}')
 
-    break
+    
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
@@ -89,7 +89,7 @@ def run_model(epoch_i, metric_writer, loader, save_images=False):
                                       log_var.to('cpu').numpy(),
                                       labels)
 
-      break
+
 
   test_loss /= len(loader.dataset)
   print('====> Test set loss: {:.4f}'.format(test_loss))
