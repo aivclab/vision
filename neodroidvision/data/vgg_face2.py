@@ -2,17 +2,13 @@
 import csv
 from pathlib import Path
 
-import PIL.Image
-import numpy as np
 import torch
-import torchvision.transforms
+from PIL import Image
 from torch.utils import data
+from torchvision import transforms
 
 
 class VggFaces2(data.Dataset):
-  mean_bgr = np.array([91.4953, 103.8827, 131.0912])  # from resnet50_ft.prototxt
-  resize_s = 256
-  crop_s = 224
 
   @staticmethod
   def get_id_label_map(meta_file):
@@ -35,31 +31,47 @@ class VggFaces2(data.Dataset):
 
   def __init__(self,
                dataset_path: Path,
-               image_list_file_path: Path,
-               meta_id_path: Path,
-               split='train',
-               transform: bool = True,
-               horizontal_flip: bool = False,
-               upper=None):
+               split: str = 'train',
+               resize_s=224):
     """
+    :type resize_s: int or tuple(w,h)
     :param dataset_path: dataset directory
-    :param image_list_file_path: contains image file names under root
-    :param meta_id_path: path meta file for X[class_id] -> label dict
-    :param split: train or valid
-    :param transform:
-    :param horizontal_flip:
-    :param upper: max number of image used for debug
+    :param split: train, valid, test
     """
     assert dataset_path.exists(), f"root: {dataset_path} not found."
-    self._dataset_path = dataset_path
-    assert image_list_file_path.exists(), f"image_list_file: {image_list_file_path} not found."
+    self._dataset_path = dataset_path / split
+    image_list_file_path = dataset_path / f'{split}_list.txt'
+    assert (image_list_file_path.exists(),
+            f"image_list_file: {image_list_file_path} not found.")
     self._image_list_file_path = image_list_file_path
+    meta_id_path = dataset_path / 'identity_meta.csv'
     assert meta_id_path.exists(), f'meta id path {meta_id_path} does not exists'
+    self._split = split
     self._id_label_dict = self.get_id_label_map(meta_id_path)
 
-    self._split = split
-    self._transform = transform
-    self._horizontal_flip = horizontal_flip
+    self.train_trans = transforms.Compose([
+      transforms.RandomResizedCrop(resize_s),
+      transforms.RandomHorizontalFlip(),
+      transforms.ToTensor(),
+      transforms.Normalize([0.485, 0.456, 0.406],  # mean=[0.485, 0.456, 0.406] and
+                           [0.229, 0.224, 0.225])  # std=[0.229, 0.224, 0.225]
+      ])
+
+    self.val_trans = transforms.Compose([
+      transforms.Resize(resize_s),
+      transforms.CenterCrop(resize_s),
+      transforms.ToTensor(),
+      transforms.Normalize([0.485, 0.456, 0.406],
+                           [0.229, 0.224, 0.225])
+      ])
+
+
+    #unnormalize = T.Normalize((-mean / std).tolist(), (1.0 / std).tolist())
+    self.inverse_trans = transforms.Compose([
+      transforms.Normalize(mean=[-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225],
+                           std=[1 / 0.229, 1 / 0.224, 1 / 0.255]
+                           ),
+      transforms.ToPILImage()])
 
     self._img_info = []
     with open(str(self._image_list_file_path), 'r') as f:
@@ -72,9 +84,7 @@ class VggFaces2(data.Dataset):
                                'label':   label,
                                })
         if i % 1000 == 0:
-          print(f"processing: {i} images for {self._split}")
-        if upper and i == upper - 1:  # for debug purpose
-          break
+          print(f"Processing: {i} images for {self._split} split")
 
   def __len__(self):
     return len(self._img_info)
@@ -82,42 +92,20 @@ class VggFaces2(data.Dataset):
   def __getitem__(self, index):
     info = self._img_info[index]
     img_file = info['img']
-    img = PIL.Image.open(str(self._dataset_path / img_file))
-    img = torchvision.transforms.Resize(self.resize_s)(img)
+    img = Image.open(str(self._dataset_path / img_file))
 
     if self._split == 'train':
-      img = torchvision.transforms.RandomCrop(self.crop_s)(img)
-      img = torchvision.transforms.RandomGrayscale(p=0.2)(img)
+      img = self.train_trans(img)
     else:
-      img = torchvision.transforms.CenterCrop(self.crop_s)(img)
-
-    if self._horizontal_flip:
-      img = torchvision.transforms.functional.hflip(img)
-
-    img = np.array(img, dtype=np.uint8)
-    assert len(img.shape) == 3  # assumes color images and no alpha channel
+      img = self.val_trans(img)
 
     label = info['label']
     class_id = info['class_id']
-    if self._transform:
-      return self.transform(img), label, img_file, class_id
-    else:
-      return img, label, img_file, class_id
 
-  def transform(self, img):
-    img = img[:, :, ::-1]  # RGB -> BGR
-    img = img.astype(np.float32)
-    img -= self.mean_bgr
-    img = img.transpose(2, 0, 1)  # C x H x W
-    img = torch.from_numpy(img).float() / 255.0
-    return img
+    return img, label, img_file, class_id
 
-  def untransform(self, img):
-    img = img.numpy() * 255.0
-    img = img.transpose(1, 2, 0)
-    img += self.mean_bgr
-    img = img.astype(np.uint8)
-    img = img[:, :, ::-1]
+  def inverse_transform(self, img) -> Image:
+    img = self.inverse_trans(img)
     return img
 
 
@@ -126,10 +114,7 @@ if __name__ == '__main__':
 
   batch_size = 32
 
-  dt = VggFaces2(Path('/home/heider/Data/vggface2/test'),
-                 Path('/home/heider/Data/vggface2/test_list.txt'),
-                 Path('/home/heider/Data/vggface2/identity_meta.csv'),
-                 split='test')
+  dt = VggFaces2(Path('/home/heider/Data/vggface2'), split='test')
 
   test_loader = torch.utils.data.DataLoader(dt,
                                             batch_size=batch_size,

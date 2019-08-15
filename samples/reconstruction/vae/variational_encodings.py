@@ -4,20 +4,18 @@ import time
 from math import inf
 from pathlib import Path
 
-import imageio
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction.vae.architectures.flat import FlatNormalVAE
+from neodroidvision.reconstruction.vae.architectures.beta_vae import BetaVAE
 from neodroidvision.reconstruction.vae.architectures.vae import VAE
+from neodroidvision.reconstruction.visualisation.encoder_utilities import plot_manifold
 from neodroidvision.reconstruction.visualisation.encoding_space import scatter_plot_encoding_space
 
 __author__ = 'cnheider'
 __doc__ = ''
-
-import argparse
 
 import torch
 import torch.utils.data
@@ -26,40 +24,54 @@ from torch import optim
 from torchvision.utils import save_image
 from draugr.writers import Writer, TensorBoardPytorchWriter
 
+torch.manual_seed(42)
 LOWEST_L = inf
 ENCODING_SIZE = 6
-INPUT_SIZE = 224  # 28
-CHANNELS = 3  # 1
-DEVICE = torch.device('cuda')
+INPUT_SIZE = 64
+CHANNELS = 3
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DL_KWARGS = {'num_workers':4, 'pin_memory':True} if torch.cuda.is_available() else {}
+BASE_PATH = (PROJECT_APP_PATH.user_data / 'vae')
+if not BASE_PATH.exists():
+  BASE_PATH.mkdir(parents=True)
+BATCH_SIZE = 32
+EPOCHS = 100
 
 
-def train_model(epoch_i:int, metric_writer: Writer, loader:DataLoader):
+def train_model(model,
+                optimiser,
+                epoch_i: int,
+                metric_writer: Writer,
+                loader: DataLoader,
+                log_interval=10):
   model.train()
   train_loss = 0
   generator = tqdm(enumerate(loader))
-  for batch_idx, (data, *_) in generator:
+  for batch_idx, (original, *_) in generator:
 
-    data = data.to(DEVICE)
-    optimizer.zero_grad()
-    recon_batch, mean, log_var = model(data)
-    loss = model.loss_function(recon_batch, data, mean, log_var)
+    original = original.to(DEVICE)
+    optimiser.zero_grad()
+    reconstruction, mean, log_var = model(original)
+    loss = model.loss_function(reconstruction, original, mean, log_var)
     loss.backward()
     train_loss += loss.item()
-    optimizer.step()
+    optimiser.step()
     metric_writer.scalar('train_loss', loss.item())
 
-    if batch_idx % args.log_interval == 0:
+    if batch_idx % log_interval == 0:
       generator.set_description(f'Train Epoch: {epoch_i}'
-                                f' [{batch_idx * len(data)}/{len(loader.dataset)}'
+                                f' [{batch_idx * len(original)}/{len(loader.dataset)}'
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
-                                f'Loss: {loss.item() / len(data):.6f}')
-
-
+                                f'Loss: {loss.item() / len(original):.6f}')
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
 
-def run_model(epoch_i:int, metric_writer:Writer, loader:DataLoader, save_images:bool=False):
+def run_model(model,
+              epoch_i: int,
+              metric_writer: Writer,
+              loader: DataLoader,
+              save_images: bool = True):
   global LOWEST_L
   model.eval()
   test_loss = 0
@@ -77,102 +89,68 @@ def run_model(epoch_i:int, metric_writer:Writer, loader:DataLoader, save_images:
         if i == 0:
           n = min(data.size(0), 8)
           comparison = torch.cat([data[:n],
-                                  recon_batch.view(args.batch_size,
+                                  recon_batch.view(loader.batch_size,
                                                    CHANNELS,
                                                    INPUT_SIZE,
                                                    INPUT_SIZE)[:n]])
           save_image(comparison.cpu(),
-                     str(result_base_path / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
+                     str(BASE_PATH / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
-          scatter_plot_encoding_space(str(result_base_path /
+          scatter_plot_encoding_space(str(BASE_PATH /
                                           f'encoding_space_{str(epoch_i)}.png'),
                                       mean.to('cpu').numpy(),
                                       log_var.to('cpu').numpy(),
                                       labels)
       break
 
-
-
   test_loss /= len(loader.dataset)
   print('====> Test set loss: {:.4f}'.format(test_loss))
 
   if LOWEST_L > test_loss:
     LOWEST_L = test_loss
-    torch.save(model.state_dict(), result_base_path / f'best_state_dict')
+    torch.save(model.state_dict(), BASE_PATH / f'best_state_dict')
 
 
 if __name__ == "__main__":
+  def main():
 
-  parser = argparse.ArgumentParser(description='VAE MNIST Example')
-  parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-                      help='input batch size for training (default: 128)')
-  parser.add_argument('--epochs', type=int, default=100, metavar='N',
-                      help='number of epochs to train (default: 10)')
-  parser.add_argument('--no-cuda', action='store_true', default=False,
-                      help='enables CUDA training')
-  parser.add_argument('--seed', type=int, default=1, metavar='S',
-                      help='random seed (default: 1)')
-  parser.add_argument('--log-interval', type=int, default=10, metavar='N',
-                      help='how many batches to wait before logging training status')
-  args = parser.parse_args()
-  args.cuda = not args.no_cuda and torch.cuda.is_available()
+    '''
+    ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
+                         train=True,
+                         download=True,
+                         transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
+                                                                          train=False,
+                                                                          transform=transforms.ToTensor())]
+                                                                          '''
 
-  torch.manual_seed(args.seed)
+    dataset = VggFaces2(Path(f'/home/heider/Data/vggface2'),
+                        split='test',
+                        resize_s=INPUT_SIZE)
 
-  DEVICE = torch.device("cuda" if args.cuda else "cpu")
+    dataset_loader = DataLoader(dataset,
+                                batch_size=BATCH_SIZE,
+                                shuffle=True,
+                                **DL_KWARGS)
 
-  kwargs = {'num_workers':4, 'pin_memory':True} if args.cuda else {}
+    model: VAE = BetaVAE(
+        CHANNELS,
+        encoding_size=ENCODING_SIZE).to(DEVICE)
+    optimiser = optim.Adam(model.parameters(), lr=1e-3)
 
-  '''
-  ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
-                       train=True,
-                       download=True,
-                       transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
-                                                                        train=False,
-                                                                        transform=transforms.ToTensor())]
-                                                                        '''
-  dset = 'test'
+    with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
+      for epoch in range(1, EPOCHS + 1):
+        train_model(model, optimiser, epoch, metric_writer, dataset_loader)
+        run_model(model, epoch, metric_writer, dataset_loader)
+        with torch.no_grad():
+          a = model.sample(1, device=DEVICE).view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
+          A = dataset.inverse_transform(a)
+          A.save(str(BASE_PATH / f"sample_{str(epoch)}.png"))
+          if ENCODING_SIZE == 2:
+            plot_manifold(model,
+                          out_path=str(BASE_PATH /
+                                       f"manifold_{str(epoch)}.png"),
+                          img_w=INPUT_SIZE,
+                          img_h=INPUT_SIZE)
 
-  ds = VggFaces2(Path(f'/home/heider/Data/vggface2/{dset}'),
-                 Path(f'/home/heider/Data/vggface2/{dset}_list.txt'),
-                 Path('/home/heider/Data/vggface2/identity_meta.csv'),
-                 split=dset)
 
-  train_loader = DataLoader(ds,
-                                             batch_size=args.batch_size,
-                                             shuffle=True,
-                                             **kwargs)
-
-  test_loader =DataLoader(ds,
-                                            batch_size=args.batch_size,
-                                            shuffle=True,
-                                            **kwargs)
-
-  result_base_path = (PROJECT_APP_PATH.user_data / 'results')
-
-  if not result_base_path.exists():
-    result_base_path.mkdir(parents=True)
-
-  model: VAE = FlatNormalVAE(input_size=(INPUT_SIZE ** 2) * CHANNELS,
-                             encoding_size=ENCODING_SIZE).to(DEVICE)
-  optimizer = optim.Adam(model.parameters(), lr=1e-3)
-
-  with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
-    for epoch in range(1, args.epochs + 1):
-      train_model(epoch, metric_writer, train_loader)
-      run_model(epoch, metric_writer, test_loader)
-      with torch.no_grad():
-        A = [ds.untransform(a) for a in
-             model.sample(args.batch_size, device=DEVICE)
-               .view(args.batch_size,
-                     CHANNELS,
-                     INPUT_SIZE,
-                     INPUT_SIZE)]
-        [imageio.imwrite(str(result_base_path / f"sample{i}_{str(epoch)}.png"), a)
-         for i, a in enumerate(A)]
-        if ENCODING_SIZE == 2:
-          plot_manifold(model,
-                        out_path=str(result_base_path /
-                                     f"manifold_{str(epoch)}.png"),
-                        img_w=INPUT_SIZE,
-                        img_h=INPUT_SIZE)
+  main()

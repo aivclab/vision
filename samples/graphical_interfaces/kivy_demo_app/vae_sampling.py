@@ -14,7 +14,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.vae.archs import FlatNormalVAE
+from neodroidvision.reconstruction.vae.architectures.flat import FlatNormalVAE
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -24,12 +24,13 @@ Config.set('graphics', 'resizable', 0)
 Window.size = (600, 600)
 Window.clearcolor = (.9, .9, .9, 1)
 
-size_x, size_y = (28, 28)
+size_x, size_y = (224,224)#(28, 28)
+channels = 3
 
 DEVICE = torch.device('cpu')
-ENCODING_SIZE = 3
+ENCODING_SIZE = 6
 
-model = FlatNormalVAE(encoding_size=ENCODING_SIZE).to(DEVICE)
+model = FlatNormalVAE(input_size=size_x*size_y*channels, encoding_size=ENCODING_SIZE).to(DEVICE)
 checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'results' / 'best_state_dict',
                         map_location=DEVICE)
 model.load_state_dict(checkpoint)
@@ -48,6 +49,9 @@ class MainLayout(BoxLayout):
     self.ids.slider1.bind(value=self.sample)
     self.ids.slider2.bind(value=self.sample)
     self.ids.slider3.bind(value=self.sample)
+    self.ids.slider4.bind(value=self.sample)
+    self.ids.slider5.bind(value=self.sample)
+    self.ids.slider6.bind(value=self.sample)
 
   def build_dropdown(self):
     dropdown_layout = DropDown()
@@ -102,9 +106,15 @@ class MainLayout(BoxLayout):
   def sample(self, *args):
     rgb = model.sample_from([self.ids.slider1.value,
                              self.ids.slider2.value,
-                             self.ids.slider3.value
+                             self.ids.slider3.value,
+                             self.ids.slider4.value,
+                             self.ids.slider5.value,
+                             self.ids.slider6.value
                              ],
-                            device=DEVICE).view(size_x, size_y).detach().numpy()
+                            device=DEVICE)
+    rgb: torch.Tensor = rgb.view(channels, size_x, size_y)
+    rgb = rgb.permute((1,2,0))
+    rgb = rgb.detach().numpy()
 
     imageio.imsave(self._frame_name, rgb)
     self.ids.image_source.reload()
@@ -140,7 +150,7 @@ MainLayout:
         source: '{MainLayout._frame_name}'
     GridLayout:
       cols: 1
-      rows: 3
+      rows: 6
       size_hint: [1,.20]
       BoxLayout:
         Label:
@@ -184,6 +194,48 @@ MainLayout:
         Label:
           size_hint: [.2,1]
           text: str(slider3.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#4'
+        Slider:
+          id: slider4
+          value: 0
+          min: -1
+          max: 1
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider4.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#5'
+        Slider:
+          id: slider5
+          value: 0
+          min: -1
+          max: 1
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider5.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#6'
+        Slider:
+          id: slider6
+          value: 0
+          min: -1
+          max: 1
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider6.value)
     BoxLayout:
       size_hint: [1,.10]
       GridLayout:

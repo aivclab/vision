@@ -13,8 +13,9 @@ def scatter_plot_encoding_space(out_path,
                                 log_var,
                                 labels,
                                 encoding_space_range=1,
+                                min_size_constant=2,
                                 N=10):
-  sizes = np.abs(log_var.mean(-1))
+  sizes = np.abs(log_var.mean(-1)) + min_size_constant
 
   plt.figure(figsize=(8, 6))
   plt.scatter(mean[:, 0],

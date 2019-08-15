@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from neodroidvision.reconstruction.vae.archs import VAE
+from typing import Tuple
+
+from neodroidvision.reconstruction.vae.architectures.vae import VAE
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -10,31 +12,56 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+class View(nn.Module):
+  def __init__(self, size):
+    super(View, self).__init__()
+    self.size = size
+
+  def forward(self, tensor):
+    return tensor.view(self.size)
+
 class BetaVAE(VAE):
 
-  def __init__(self, flat_image_size=224, channels=3, encoding_size=20, beta=3e-1):
+  def __init__(self,  channels=3, encoding_size=20, beta=3e-1):
     super().__init__(encoding_size=encoding_size)
 
     self.beta = beta
-    self.flat_image_size = flat_image_size
+    self.flat_image_size = 256
 
-    # encoder
-    self.encoder = nn.Sequential(self._conv_module(channels, 32),
-                                 self._conv_module(32, 32),
-                                 self._conv_module(32, 64),
-                                 self._conv_module(64, 64),
-                                 )
-    self.fc_mu = nn.Linear(flat_image_size, encoding_size)
-    self.fc_var = nn.Linear(flat_image_size, encoding_size)
+    self.encoder = nn.Sequential(
+        nn.Conv2d(channels, 32, 4, 2, 1),  # B,  32, 32, 32
+        nn.ReLU(True),
+        nn.Conv2d(32, 32, 4, 2, 1),  # B,  32, 16, 16
+        nn.ReLU(True),
+        nn.Conv2d(32, 32, 4, 2, 1),  # B,  32,  8,  8
+        nn.ReLU(True),
+        nn.Conv2d(32, 32, 4, 2, 1),  # B,  32,  4,  4
+        nn.ReLU(True),
+        View((-1, 32 * 4 * 4)),  # B, 512
+        nn.Linear(32 * 4 * 4, 256),  # B, 256
+        nn.ReLU(True),
+        nn.Linear(256, 256),  # B, 256
+        nn.ReLU(True)
+        )
 
-    # decoder
-    self.decoder = nn.Sequential(self._deconv_module(64, 64),
-                                 self._deconv_module(64, 32),
-                                 self._deconv_module(32, 32, 1),
-                                 self._deconv_module(32, channels),
-                                 nn.Sigmoid()
-                                 )
-    self.fc_z = nn.Linear(encoding_size, flat_image_size)
+    self.fc_mu = nn.Linear(self.flat_image_size, encoding_size)
+    self.fc_var = nn.Linear(self.flat_image_size, encoding_size)
+
+    self.fc_z = nn.Linear(encoding_size, self.flat_image_size)
+
+    self.decoder = nn.Sequential(
+        nn.ReLU(True),
+        nn.ConvTranspose2d(256, 64, 4),  # B,  64,  4,  4
+        nn.ReLU(True),
+        nn.ConvTranspose2d(64, 64, 4, 2, 1),  # B,  64,  8,  8
+        nn.ReLU(True),
+        nn.ConvTranspose2d(64, 32, 4, 2, 1),  # B,  32, 16, 16
+        nn.ReLU(True),
+        nn.ConvTranspose2d(32, 32, 4, 2, 1),  # B,  32, 32, 32
+        nn.ReLU(True),
+        nn.ConvTranspose2d(32, channels, 4, 2, 1),  # B, nc, 64, 64,
+        nn.Sigmoid()
+        )
 
   def encode(self, x):
     x = self.encoder(x).view(-1, self.flat_image_size)
@@ -47,43 +74,21 @@ class BetaVAE(VAE):
     return eps.mul(std).add_(mu)
 
   def decode(self, z):
-    z = self.fc_z(z).view(-1, 64, 2, 2)
+    z = self.fc_z(z).view(-1, self.flat_image_size, 1, 1)
     return self.decoder(z)
 
-  def forward(self, x):
+  def forward(self, x) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mu, log_var = self.encode(x)
     z = self.sampler(mu, log_var)
-    rx = self.decode(z)
-    return rx, mu, log_var
+    reconstruction = self.decode(z)
+    return reconstruction, mu, log_var
 
-  @staticmethod
-  def _conv_module(in_channels, out_channels):
-    return nn.Sequential(nn.Conv2d(in_channels,
-                                   out_channels,
-                                   kernel_size=4,
-                                   stride=2
-                                   ),
-                         nn.BatchNorm2d(out_channels),
-                         nn.ReLU()
-                         )
 
-  # out_padding is used to ensure output size matches EXACTLY of conv2d;
-  # it does not actually add zero-padding to output :)
-  @staticmethod
-  def _deconv_module(in_channels, out_channels, out_padding=0):
-    return nn.Sequential(nn.ConvTranspose2d(in_channels,
-                                            out_channels,
-                                            kernel_size=4,
-                                            stride=2,
-                                            output_padding=out_padding
-                                            ),
-                         nn.BatchNorm2d(out_channels),
-                         nn.ReLU()
-                         )
-
-  def loss(self, recon_x, x, mu, log_var):
+  def loss_function(self, reconstruction, original, mu, log_var):
     # reconstruction losses are summed over all elements and batch
-    recon_loss = F.binary_cross_entropy(recon_x, x, reduction='sum')
+    recon_loss = F.binary_cross_entropy(input=reconstruction,
+                                        target=original,
+                                        reduction='sum')
 
     # see Appendix B from VAE paper:
     # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
@@ -91,4 +96,4 @@ class BetaVAE(VAE):
     # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
     kl_diverge = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
 
-    return (recon_loss + self.beta * kl_diverge) / x.shape[0]  # divide total loss by batch size
+    return (recon_loss + self.beta * kl_diverge) / original.shape[0]  # divide total loss by batch size
