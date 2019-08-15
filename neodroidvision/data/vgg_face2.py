@@ -32,7 +32,7 @@ class VggFaces2(data.Dataset):
   def __init__(self,
                dataset_path: Path,
                split: str = 'train',
-               resize_s=224):
+               resize_s=64):
     """
     :type resize_s: int or tuple(w,h)
     :param dataset_path: dataset directory

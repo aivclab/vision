@@ -4,6 +4,7 @@ import time
 from math import inf
 from pathlib import Path
 
+from torch.nn.functional import mse_loss, binary_cross_entropy
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -36,7 +37,22 @@ if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
 BATCH_SIZE = 32
 EPOCHS = 100
+LR=1e-4
+DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
+                    split='test',
+                    resize_s=INPUT_SIZE)
 
+
+def loss_function(reconstruction, original, mu, log_var, beta=1):
+  recon_loss = binary_cross_entropy(reconstruction, original, reduction='sum')
+
+  # see Appendix B from VAE paper:
+  # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
+  # https://arxiv.org/abs/1312.6114
+  # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+  kl_diverge = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
+
+  return (recon_loss + beta * kl_diverge) / original.shape[0]  # divide total loss by batch size
 
 def train_model(model,
                 optimiser,
@@ -52,7 +68,7 @@ def train_model(model,
     original = original.to(DEVICE)
     optimiser.zero_grad()
     reconstruction, mean, log_var = model(original)
-    loss = model.loss_function(reconstruction, original, mean, log_var)
+    loss = loss_function(reconstruction, original, mean, log_var)
     loss.backward()
     train_loss += loss.item()
     optimiser.step()
@@ -63,6 +79,8 @@ def train_model(model,
                                 f' [{batch_idx * len(original)}/{len(loader.dataset)}'
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(original):.6f}')
+
+    break
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
@@ -77,22 +95,19 @@ def run_model(model,
   test_loss = 0
 
   with torch.no_grad():
-    for i, (data, labels, *_) in enumerate(loader):
-      data = data.to(DEVICE)
-      recon_batch, mean, log_var = model(data)
-      test_loss += model.loss_function(recon_batch,
-                                       data,
+    for i, (original, labels, *_) in enumerate(loader):
+      original = original.to(DEVICE)
+      recon_batch, mean, log_var = model(original)
+      test_loss += loss_function(recon_batch,
+                                       original,
                                        mean,
                                        log_var).item()
       metric_writer.scalar('test_loss', test_loss)
       if save_images:
         if i == 0:
-          n = min(data.size(0), 8)
-          comparison = torch.cat([data[:n],
-                                  recon_batch.view(loader.batch_size,
-                                                   CHANNELS,
-                                                   INPUT_SIZE,
-                                                   INPUT_SIZE)[:n]])
+          n = min(original.size(0), 8)
+          comparison = torch.cat([original[:n],
+                                  recon_batch[:n]])
           save_image(comparison.cpu(),
                      str(BASE_PATH / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
@@ -103,7 +118,8 @@ def run_model(model,
                                       labels)
       break
 
-  test_loss /= len(loader.dataset)
+  #test_loss /= len(loader.dataset)
+  test_loss /= loader.batch_size
   print('====> Test set loss: {:.4f}'.format(test_loss))
 
   if LOWEST_L > test_loss:
@@ -112,6 +128,8 @@ def run_model(model,
 
 
 if __name__ == "__main__":
+
+
   def main():
 
     '''
@@ -123,19 +141,16 @@ if __name__ == "__main__":
                                                                           transform=transforms.ToTensor())]
                                                                           '''
 
-    dataset = VggFaces2(Path(f'/home/heider/Data/vggface2'),
-                        split='test',
-                        resize_s=INPUT_SIZE)
 
-    dataset_loader = DataLoader(dataset,
+    dataset_loader = DataLoader(DATASET,
                                 batch_size=BATCH_SIZE,
                                 shuffle=True,
                                 **DL_KWARGS)
 
     model: VAE = BetaVAE(
         CHANNELS,
-        encoding_size=ENCODING_SIZE).to(DEVICE)
-    optimiser = optim.Adam(model.parameters(), lr=1e-3)
+        latent_size=ENCODING_SIZE).to(DEVICE)
+    optimiser = optim.Adam(model.parameters(), lr=LR, betas=(0.9,0.999))
 
     with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
       for epoch in range(1, EPOCHS + 1):
@@ -143,7 +158,7 @@ if __name__ == "__main__":
         run_model(model, epoch, metric_writer, dataset_loader)
         with torch.no_grad():
           a = model.sample(1, device=DEVICE).view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
-          A = dataset.inverse_transform(a)
+          A = DATASET.inverse_transform(a)
           A.save(str(BASE_PATH / f"sample_{str(epoch)}.png"))
           if ENCODING_SIZE == 2:
             plot_manifold(model,

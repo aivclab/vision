@@ -22,49 +22,49 @@ class View(nn.Module):
 
 class BetaVAE(VAE):
 
-  def __init__(self,  channels=3, encoding_size=20, beta=3e-1):
-    super().__init__(encoding_size=encoding_size)
+  def __init__(self, channels=3, latent_size=32):
+    super().__init__(encoding_size=latent_size)
 
-    self.beta = beta
     self.flat_image_size = 256
 
     self.encoder = nn.Sequential(
-        nn.Conv2d(channels, 32, 4, 2, 1),  # B,  32, 32, 32
+        nn.Conv2d(channels, 32, 4, 2),
+        nn.BatchNorm2d(32),
         nn.ReLU(True),
-        nn.Conv2d(32, 32, 4, 2, 1),  # B,  32, 16, 16
+        nn.Conv2d(32, 32, 4, 2),
+        nn.BatchNorm2d(32),
         nn.ReLU(True),
-        nn.Conv2d(32, 32, 4, 2, 1),  # B,  32,  8,  8
+        nn.Conv2d(32, 64, 4, 2),
+        nn.BatchNorm2d(64),
         nn.ReLU(True),
-        nn.Conv2d(32, 32, 4, 2, 1),  # B,  32,  4,  4
-        nn.ReLU(True),
-        View((-1, 32 * 4 * 4)),  # B, 512
-        nn.Linear(32 * 4 * 4, 256),  # B, 256
-        nn.ReLU(True),
-        nn.Linear(256, 256),  # B, 256
+        nn.Conv2d(64, 64, 4, 2),
+        nn.BatchNorm2d(64),
         nn.ReLU(True)
         )
 
-    self.fc_mu = nn.Linear(self.flat_image_size, encoding_size)
-    self.fc_var = nn.Linear(self.flat_image_size, encoding_size)
+    self.fc_mu = nn.Linear(self.flat_image_size, latent_size)
+    self.fc_var = nn.Linear(self.flat_image_size, latent_size)
 
-    self.fc_z = nn.Linear(encoding_size, self.flat_image_size)
+    self.fc_z = nn.Linear(latent_size, self.flat_image_size)
 
     self.decoder = nn.Sequential(
+        nn.ConvTranspose2d(64, 64, 4, 2),
+        nn.BatchNorm2d(64),
         nn.ReLU(True),
-        nn.ConvTranspose2d(256, 64, 4),  # B,  64,  4,  4
+        nn.ConvTranspose2d(64, 32, 4, 2),
+        nn.BatchNorm2d(32),
         nn.ReLU(True),
-        nn.ConvTranspose2d(64, 64, 4, 2, 1),  # B,  64,  8,  8
+        nn.ConvTranspose2d(32, 32, 4, 2, output_padding=1),
+        nn.BatchNorm2d(32),
         nn.ReLU(True),
-        nn.ConvTranspose2d(64, 32, 4, 2, 1),  # B,  32, 16, 16
-        nn.ReLU(True),
-        nn.ConvTranspose2d(32, 32, 4, 2, 1),  # B,  32, 32, 32
-        nn.ReLU(True),
-        nn.ConvTranspose2d(32, channels, 4, 2, 1),  # B, nc, 64, 64,
+        nn.ConvTranspose2d(32, channels, 4, 2),
+        nn.BatchNorm2d(channels),
         nn.Sigmoid()
         )
 
   def encode(self, x):
-    x = self.encoder(x).view(-1, self.flat_image_size)
+    x = self.encoder(x)
+    x=x.view(-1, self.flat_image_size)
     return self.fc_mu(x), self.fc_var(x)
 
   @staticmethod
@@ -74,7 +74,8 @@ class BetaVAE(VAE):
     return eps.mul(std).add_(mu)
 
   def decode(self, z):
-    z = self.fc_z(z).view(-1, self.flat_image_size, 1, 1)
+    z = self.fc_z(z)
+    z= z.view(-1, 64, 2, 2)
     return self.decoder(z)
 
   def forward(self, x) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -84,16 +85,4 @@ class BetaVAE(VAE):
     return reconstruction, mu, log_var
 
 
-  def loss_function(self, reconstruction, original, mu, log_var):
-    # reconstruction losses are summed over all elements and batch
-    recon_loss = F.binary_cross_entropy(input=reconstruction,
-                                        target=original,
-                                        reduction='sum')
 
-    # see Appendix B from VAE paper:
-    # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
-    # https://arxiv.org/abs/1312.6114
-    # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
-    kl_diverge = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
-
-    return (recon_loss + self.beta * kl_diverge) / original.shape[0]  # divide total loss by batch size
