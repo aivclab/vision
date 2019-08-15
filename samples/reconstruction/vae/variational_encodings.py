@@ -25,9 +25,9 @@ from torch import optim
 from torchvision.utils import save_image
 from draugr.writers import Writer, TensorBoardPytorchWriter
 
-torch.manual_seed(42)
+torch.manual_seed(82375329)
 LOWEST_L = inf
-ENCODING_SIZE = 8
+ENCODING_SIZE = 32
 INPUT_SIZE = 64
 CHANNELS = 3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -35,15 +35,15 @@ DL_KWARGS = {'num_workers':4, 'pin_memory':True} if torch.cuda.is_available() el
 BASE_PATH = (PROJECT_APP_PATH.user_data / 'vae')
 if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
-BATCH_SIZE = 256
+BATCH_SIZE = 1024
 EPOCHS = 1000
 LR = 1e-4
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
-                    split='test',
+                    split='train',
                     resize_s=INPUT_SIZE)
 
 
-def loss_function(reconstruction, original, mu, log_var, beta=1.42):
+def loss_function(reconstruction, original, mu, log_var, beta=1):
   recon_loss = binary_cross_entropy(reconstruction, original, reduction='sum')
 
   # see Appendix B from VAE paper:
