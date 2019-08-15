@@ -1,0 +1,3 @@
+Soft Attention -  “global”  - concatinating(Additive) or Scaled Dot-Product(Multiplicative) Attention, differentiable
+
+Hard Attention - “local” - Non differentiable, requires monte-carlo rollouts and Temporal difference learning
