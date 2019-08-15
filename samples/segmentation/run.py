@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 from neodroidvision.segmentation.architectures.fcn.mhskipfcn import MultiHeadedSkipFCN
-from neodroidvision.segmentation.data import calculate_loss, neodroid_batch_data_iterator
+from neodroidvision.data.data import calculate_loss, neodroid_batch_data_iterator
 from neodroidvision.segmentation.segmentation_utilities import plot_utilities
 from neodroidvision.segmentation.segmentation_utilities.plot_utilities import reverse_channel_transform
 

@@ -14,7 +14,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.cvae.archs.flat import FlatNormalVAE
+from neodroidvision.reconstruction.vae.archs import FlatNormalVAE
 
 __author__ = 'cnheider'
 __doc__ = ''

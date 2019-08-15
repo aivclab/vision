@@ -5,16 +5,18 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.utils.data
-from warg.named_ordered_dictionary import NOD
 
 from neodroidvision.segmentation.loss_functions.dice_loss import dice_loss
 from neodroidvision.segmentation.loss_functions.jaccard_loss import jaccard_loss
 from neodroidvision.segmentation.segmentation_utilities.plot_utilities import channel_transform
+from warg.named_ordered_dictionary import NOD
 
 __author__ = 'cnheider'
 
 
-def neodroid_batch_data_iterator(env, device, batch_size=12):
+def neodroid_batch_data_iterator(env,
+                                 device,
+                                 batch_size=12):
   while True:
     predictors = []
     mask_responses = []
@@ -48,9 +50,11 @@ def neodroid_batch_data_iterator(env, device, batch_size=12):
       mask_responses.append(np.asarray([red_mask, blue_mask, green_mask]))
       depth_responses.append(np.clip(np.asarray([depth_image / 255.0]), 0, 1))
       normals_responses.append(channel_transform(normal_arr))
-    yield torch.FloatTensor(predictors).to(device), (torch.FloatTensor(mask_responses).to(device),
-                                                     torch.FloatTensor(depth_responses).to(device),
-                                                     torch.FloatTensor(normals_responses).to(device))
+    yield (torch.FloatTensor(predictors).to(device),
+           (torch.FloatTensor(mask_responses).to(device),
+            torch.FloatTensor(depth_responses).to(device),
+            torch.FloatTensor(normals_responses).to(device))
+           )
 
 
 def calculate_loss(seg, recon, depth, normals):

@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 
-from samples.reconstruction.cvae.cvae_utilities.models import VAE
+from neodroidvision.reconstruction.cvae.cvae import CVAE
 
 
 def main(args):
@@ -42,11 +42,11 @@ def main(args):
 
     return (BCE + KLD) / x.size(0)
 
-  vae = VAE(encoder_layer_sizes=args.encoder_layer_sizes,
-            latent_size=args.latent_size,
-            decoder_layer_sizes=args.decoder_layer_sizes,
-            conditional=args.conditional,
-            num_labels=10 if args.conditional else 0).to(device)
+  vae = CVAE(encoder_layer_sizes=args.encoder_layer_sizes,
+             latent_size=args.latent_size,
+             decoder_layer_sizes=args.decoder_layer_sizes,
+             conditional=args.conditional,
+             num_labels=10 if args.conditional else 0).to(device)
 
   optimizer = torch.optim.Adam(vae.parameters(), lr=args.learning_rate)
 

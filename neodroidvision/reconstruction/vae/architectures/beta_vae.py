@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from neodroidvision.reconstruction.cvae.archs.vae import VAE
+from neodroidvision.reconstruction.vae.archs import VAE
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -12,7 +12,7 @@ import torch.nn.functional as F
 
 class BetaVAE(VAE):
 
-  def __init__(self, flat_image_size=256, channels=3, encoding_size=20, beta=3e-1):
+  def __init__(self, flat_image_size=224, channels=3, encoding_size=20, beta=3e-1):
     super().__init__(encoding_size=encoding_size)
 
     self.beta = beta

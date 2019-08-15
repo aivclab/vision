@@ -4,13 +4,14 @@ import time
 from math import inf
 from pathlib import Path
 
+import imageio
 from tqdm import tqdm
-from vgg_face2 import VggFaces2
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.cvae.archs.flat import FlatNormalVAE
-from neodroidvision.reconstruction.cvae.plotting.encoder_utilities import plot_manifold
-from neodroidvision.reconstruction.cvae.plotting.encoding_space import scatter_plot_encoding_space
+from neodroidvision.data.vgg_face2 import VggFaces2
+from neodroidvision.reconstruction.vae.architectures.flat import FlatNormalVAE
+from neodroidvision.reconstruction.vae.architectures.vae import VAE
+from neodroidvision.reconstruction.visualisation.encoding_space import scatter_plot_encoding_space
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -52,6 +53,7 @@ def train_model(epoch_i, metric_writer: Writer, loader):
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(data):.6f}')
 
+    break
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
@@ -66,9 +68,9 @@ def run_model(epoch_i, metric_writer, loader, save_images=False):
       data = data.to(DEVICE)
       recon_batch, mean, log_var = model(data)
       test_loss += model.loss_function(recon_batch,
-                                               data,
-                                               mean,
-                                               log_var).item()
+                                       data,
+                                       mean,
+                                       log_var).item()
       metric_writer.scalar('test_loss', test_loss)
       if save_images:
         if i == 0:
@@ -86,6 +88,8 @@ def run_model(epoch_i, metric_writer, loader, save_images=False):
                                       mean.to('cpu').numpy(),
                                       log_var.to('cpu').numpy(),
                                       labels)
+
+      break
 
   test_loss /= len(loader.dataset)
   print('====> Test set loss: {:.4f}'.format(test_loss))
@@ -147,7 +151,8 @@ if __name__ == "__main__":
   if not result_base_path.exists():
     result_base_path.mkdir(parents=True)
 
-  model = FlatNormalVAE(input_size=(INPUT_SIZE **2) * CHANNELS, encoding_size=ENCODING_SIZE).to(DEVICE)
+  model: VAE = FlatNormalVAE(input_size=(INPUT_SIZE ** 2) * CHANNELS,
+                             encoding_size=ENCODING_SIZE).to(DEVICE)
   optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
   with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / f'{time.time()}') as metric_writer:
@@ -155,12 +160,17 @@ if __name__ == "__main__":
       train_model(epoch, metric_writer, train_loader)
       run_model(epoch, metric_writer, test_loader)
       with torch.no_grad():
-        save_image(model.sample(device=DEVICE).view(args.batch_size,
-                                                    CHANNELS,
-                                                    INPUT_SIZE,
-                                                    INPUT_SIZE),
-                   str(result_base_path / f"sample_{str(epoch)}.png"))
+        A = [ds.untransform(a) for a in
+             model.sample(args.batch_size, device=DEVICE)
+               .view(args.batch_size,
+                     CHANNELS,
+                     INPUT_SIZE,
+                     INPUT_SIZE)]
+        [imageio.imwrite(str(result_base_path / f"sample{i}_{str(epoch)}.png"), a)
+         for i, a in enumerate(A)]
         if ENCODING_SIZE == 2:
           plot_manifold(model,
                         out_path=str(result_base_path /
-                                     f"manifold_{str(epoch)}.png"))
+                                     f"manifold_{str(epoch)}.png"),
+                        img_w=INPUT_SIZE,
+                        img_h=INPUT_SIZE)

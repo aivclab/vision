@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from neodroidvision.reconstruction.cvae.archs.vae import VAE
+from neodroidvision.reconstruction.vae.architectures.vae import VAE
 
 __author__ = 'cnheider'
 __doc__ = ''

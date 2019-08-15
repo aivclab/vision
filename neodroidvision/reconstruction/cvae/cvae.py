@@ -1,13 +1,17 @@
 import torch
 import torch.nn as nn
 
-from samples.reconstruction.cvae.cvae_utilities.label_transformation import idx2onehot
+from samples.reconstruction.cvae.label_transformation import idx2onehot
 
 
-class VAE(nn.Module):
+class CVAE(nn.Module):
 
-  def __init__(self, encoder_layer_sizes, latent_size, decoder_layer_sizes,
-               conditional=False, num_labels=0):
+  def __init__(self,
+               encoder_layer_sizes,
+               latent_size,
+               decoder_layer_sizes,
+               conditional=False,
+               num_labels=0):
 
     super().__init__()
 
@@ -20,10 +24,14 @@ class VAE(nn.Module):
 
     self.latent_size = latent_size
 
-    self.encoder = Encoder(
-        encoder_layer_sizes, latent_size, conditional, num_labels)
-    self.decoder = Decoder(
-        decoder_layer_sizes, latent_size, conditional, num_labels)
+    self.encoder = Encoder(encoder_layer_sizes,
+                           latent_size,
+                           conditional,
+                           num_labels)
+    self.decoder = Decoder(decoder_layer_sizes,
+                           latent_size,
+                           conditional,
+                           num_labels)
 
   def forward(self, x, c=None):
 
@@ -54,7 +62,11 @@ class VAE(nn.Module):
 
 class Encoder(nn.Module):
 
-  def __init__(self, layer_sizes, latent_size, conditional, num_labels):
+  def __init__(self,
+               layer_sizes,
+               latent_size,
+               conditional,
+               num_labels):
 
     super().__init__()
 
@@ -88,7 +100,11 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
 
-  def __init__(self, layer_sizes, latent_size, conditional, num_labels):
+  def __init__(self,
+               layer_sizes,
+               latent_size,
+               conditional,
+               num_labels):
 
     super().__init__()
 

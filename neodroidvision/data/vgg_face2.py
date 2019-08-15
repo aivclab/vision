@@ -44,7 +44,7 @@ class VggFaces2(data.Dataset):
     """
     :param dataset_path: dataset directory
     :param image_list_file_path: contains image file names under root
-    :param id_label_dict: X[class_id] -> label
+    :param meta_id_path: path meta file for X[class_id] -> label dict
     :param split: train or valid
     :param transform:
     :param horizontal_flip:
@@ -67,9 +67,9 @@ class VggFaces2(data.Dataset):
         img_file = img_file.strip()  # e.g. n004332/0317_01.jpg
         class_id = img_file.split("/")[0]  # like n004332
         label = self._id_label_dict[class_id]
-        self._img_info.append({'cid':class_id,
-                              'img': img_file,
-                              'lbl': label,
+        self._img_info.append({'class_id':class_id,
+                               'img':     img_file,
+                               'label':   label,
                                })
         if i % 1000 == 0:
           print(f"processing: {i} images for {self._split}")
@@ -97,8 +97,8 @@ class VggFaces2(data.Dataset):
     img = np.array(img, dtype=np.uint8)
     assert len(img.shape) == 3  # assumes color images and no alpha channel
 
-    label = info['lbl']
-    class_id = info['cid']
+    label = info['label']
+    class_id = info['class_id']
     if self._transform:
       return self.transform(img), label, img_file, class_id
     else:
@@ -109,16 +109,16 @@ class VggFaces2(data.Dataset):
     img = img.astype(np.float32)
     img -= self.mean_bgr
     img = img.transpose(2, 0, 1)  # C x H x W
-    img = torch.from_numpy(img).float()
+    img = torch.from_numpy(img).float() / 255.0
     return img
 
-  def untransform(self, img, lbl):
-    img = img.numpy()
+  def untransform(self, img):
+    img = img.numpy() * 255.0
     img = img.transpose(1, 2, 0)
     img += self.mean_bgr
     img = img.astype(np.uint8)
     img = img[:, :, ::-1]
-    return img, lbl
+    return img
 
 
 if __name__ == '__main__':
