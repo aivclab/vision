@@ -11,6 +11,13 @@ from torchvision import transforms
 
 
 class VggFaces2(data.Dataset):
+  #mean = numpy.array([0.485, 0.456, 0.406])
+  #std = numpy.array([0.229, 0.224, 0.225])
+
+  inverse_transform = transforms.Compose([
+    #transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist()),
+    transforms.ToPILImage()
+    ])
 
   @staticmethod
   def get_id_label_map(meta_file):
@@ -53,26 +60,19 @@ class VggFaces2(data.Dataset):
     self._id_label_dict = self.get_id_label_map(meta_id_path)
     self._raw_images = raw_images
 
-    mean = numpy.array([0.485, 0.456, 0.406])
-    std = numpy.array([0.229, 0.224, 0.225])
-
     self.train_trans = transforms.Compose([
       transforms.RandomResizedCrop(resize_s),
       transforms.RandomHorizontalFlip(),
       transforms.ToTensor(),
-      transforms.Normalize(mean, std)
+      #transforms.Normalize(self.mean, self.std)
       ])
 
     self.val_trans = transforms.Compose([
       transforms.Resize(resize_s),
       transforms.CenterCrop(resize_s),
       transforms.ToTensor(),
-      transforms.Normalize(mean, std)
+      #transforms.Normalize(self.mean, self.std)
       ])
-
-    self.inverse_trans = transforms.Compose([
-      transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist()),
-      transforms.ToPILImage()])
 
     self._img_info = []
     with open(str(self._image_list_file_path), 'r') as f:
@@ -105,10 +105,6 @@ class VggFaces2(data.Dataset):
     class_id = info['class_id']
 
     return img, label, img_file, class_id
-
-  def inverse_transform(self, img) -> Image:
-    img = self.inverse_trans(img)
-    return img
 
 
 if __name__ == '__main__':

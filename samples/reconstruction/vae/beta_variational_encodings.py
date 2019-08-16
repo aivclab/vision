@@ -4,13 +4,13 @@ import time
 from math import inf
 from pathlib import Path
 
-from torch.nn.functional import binary_cross_entropy
+from torch.nn.functional import binary_cross_entropy, mse_loss
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae, VAE
+from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae, VAE, BurgessBetaVae
 from neodroidvision.reconstruction.visualisation.encoder_utilities import plot_manifold
 from neodroidvision.reconstruction.visualisation.encoding_space import scatter_plot_encoding_space
 
@@ -26,12 +26,12 @@ from draugr.writers import Writer, TensorBoardPytorchWriter
 
 torch.manual_seed(82375329)
 LOWEST_L = inf
-ENCODING_SIZE = 32
+ENCODING_SIZE = 10
 INPUT_SIZE = 64
 CHANNELS = 3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DL_KWARGS = {'num_workers':4, 'pin_memory':True} if torch.cuda.is_available() else {}
-BASE_PATH = (PROJECT_APP_PATH.user_data / 'vae')
+BASE_PATH = (PROJECT_APP_PATH.user_data / 'bvae')
 if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
 BATCH_SIZE = 256
@@ -40,19 +40,40 @@ LR = 3e-3
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
                     split='train',
                     resize_s=INPUT_SIZE)
+BETA=4
+
+def reconstruction_loss(reconstruction,original):
+    batch_size = original.size(0)
+    assert batch_size != 0
+
+      #recon_loss = F.binary_cross_entropy_with_logits(reconstruction,
+    # original,
+    # size_average=False).div(batch_size)
+
+    #reconstruction = torch.sigmoid(reconstruction)
+    recon_loss = mse_loss(reconstruction, original, size_average=False).div(batch_size)
+
+    return recon_loss
 
 
-def loss_function(reconstruction, original, mu, log_var, beta=1):
-  recon_loss = binary_cross_entropy(reconstruction, original, reduction='sum')
-  #recon_loss = F.mse_loss(reconstruction, original, size_average=False).div(batch_size)
+def kl_divergence(mean, log_var):
+  batch_size = mean.size(0)
+  assert batch_size != 0
+  if mean.data.ndimension() == 4:
+    mean = mean.view(mean.size(0), mean.size(1))
+  if log_var.data.ndimension() == 4:
+    log_var = log_var.view(log_var.size(0), log_var.size(1))
 
-  # see Appendix B from VAE paper:
-  # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
-  # https://arxiv.org/abs/1312.6114
-  # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
-  kl_diverge = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
+  klds = -0.5 * (1 + log_var - mean.pow(2) - log_var.exp())
+  total_kld = klds.sum(1).mean(0, True)
+  dimension_wise_kld = klds.mean(0)
+  mean_kld = klds.mean(1).mean(0, True)
 
-  return (recon_loss + beta * kl_diverge) / original.shape[0]  # divide total loss by batch size
+  return total_kld, dimension_wise_kld, mean_kld
+
+
+def loss_function(reconstruction, original, mean, log_var, beta=1):
+  return reconstruction_loss(reconstruction,original) + beta * kl_divergence(mean,log_var)[0]
 
 
 def train_model(model,
@@ -80,7 +101,7 @@ def train_model(model,
                                 f' [{batch_idx * len(original)}/{len(loader.dataset)}'
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(original):.6f}')
-    
+
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
@@ -146,7 +167,7 @@ if __name__ == "__main__":
                                 shuffle=True,
                                 **DL_KWARGS)
 
-    model: VAE = HigginsBetaVae(CHANNELS,
+    model: VAE = BurgessBetaVae(CHANNELS,
                                 latent_size=ENCODING_SIZE).to(DEVICE)
     optimiser = optim.Adam(model.parameters(),
                            lr=LR,

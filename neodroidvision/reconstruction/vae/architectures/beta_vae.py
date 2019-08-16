@@ -59,9 +59,9 @@ class VAE(torch.nn.Module):
 
   def sample_from(self, encoding, device='cpu'):
     sample = to_tensor(encoding).to(device)
-    assert (sample.shape[-1] == self._encoding_size,
+    assert (sample.shape[-1] == self._latent_size,
             f'sample.shape[-1]:{sample.shape[-1]} !='
-            f' self._encoding_size:{self._encoding_size}')
+            f' self._encoding_size:{self._latent_size}')
     sample = self.decode(sample).to('cpu')
     return sample
 
@@ -139,7 +139,9 @@ class HigginsBetaVae(VAE):
     return self.fc_mean(x), self.fc_std(x)
 
   def decode(self, z) -> torch.Tensor:
-    return torch.sigmoid(self.decoder(z))
+    out = self.decoder(z)
+    out = torch.sigmoid(out)
+    return out
 
   def forward(self, x) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mu, log_var = self.encode(x)

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from random import random
+
 import imageio
+import numpy
 import torch
 from kivy.app import App
 from kivy.config import Config
@@ -14,8 +17,8 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae
-from neodroidvision.reconstruction.vae.architectures.flat import FlatNormalVAE
+from neodroidvision.data.vgg_face2 import VggFaces2
+from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae, BurgessBetaVae
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -29,13 +32,13 @@ size_x, size_y = (64,64)
 channels = 3
 
 DEVICE = torch.device('cpu')
-ENCODING_SIZE = 8
+ENCODING_SIZE = 10
 
-model = HigginsBetaVae(256, ENCODING_SIZE).to(DEVICE)
-checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'results' / 'best_state_dict',
+DS = VggFaces2
+model = BurgessBetaVae(channels, ENCODING_SIZE).to(DEVICE)
+checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'bvae' / 'best_state_dict',
                         map_location=DEVICE)
 model.load_state_dict(checkpoint)
-
 
 class MainLayout(BoxLayout):
   _video_capture = None
@@ -53,6 +56,10 @@ class MainLayout(BoxLayout):
     self.ids.slider4.bind(value=self.sample)
     self.ids.slider5.bind(value=self.sample)
     self.ids.slider6.bind(value=self.sample)
+    self.ids.slider7.bind(value=self.sample)
+    self.ids.slider8.bind(value=self.sample)
+    self.ids.slider9.bind(value=self.sample)
+    self.ids.slider10.bind(value=self.sample)
 
   def build_dropdown(self):
     dropdown_layout = DropDown()
@@ -112,14 +119,14 @@ class MainLayout(BoxLayout):
                              self.ids.slider5.value,
                              self.ids.slider6.value,
                              self.ids.slider7.value,
-                             self.ids.slider8.value
+                             self.ids.slider8.value,
+                             self.ids.slider9.value,
+                             self.ids.slider10.value
                              ],
                             device=DEVICE)
     rgb: torch.Tensor = rgb.view(channels, size_x, size_y)
-    rgb = rgb.permute((1,2,0))
-    rgb = rgb.detach().numpy()
-
-    imageio.imsave(self._frame_name, rgb)
+    rgb = DS.inverse_transform(rgb)
+    rgb.save(self._frame_name)
     self.ids.image_source.reload()
 
   @staticmethod
@@ -135,6 +142,9 @@ class MainLayout(BoxLayout):
     except:
       pass
     self._popup.dismiss()
+
+mins=0
+maxs=1
 
 
 class SamplerApp(App):
@@ -153,7 +163,7 @@ MainLayout:
         source: '{MainLayout._frame_name}'
     GridLayout:
       cols: 1
-      rows: 8
+      rows: 10
       size_hint: [1,.60]
       BoxLayout:
         Label:
@@ -161,9 +171,9 @@ MainLayout:
           text: '#1'
         Slider:
           id: slider1
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -175,9 +185,9 @@ MainLayout:
           text: '#2'
         Slider:
           id: slider2
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -189,9 +199,9 @@ MainLayout:
           text: '#3'
         Slider:
           id: slider3
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -203,9 +213,9 @@ MainLayout:
           text: '#4'
         Slider:
           id: slider4
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -217,9 +227,9 @@ MainLayout:
           text: '#5'
         Slider:
           id: slider5
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -231,9 +241,9 @@ MainLayout:
           text: '#6'
         Slider:
           id: slider6
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -245,9 +255,9 @@ MainLayout:
           text: '#7'
         Slider:
           id: slider7
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -259,14 +269,42 @@ MainLayout:
           text: '#8'
         Slider:
           id: slider8
-          value: 0
-          min: -1
-          max: 1
+          value: {random()}
+          min: {mins}
+          max: {maxs}
           step: 0.01
           orientation: 'horizontal'
         Label:
           size_hint: [.2,1]
           text: str(slider8.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#9'
+        Slider:
+          id: slider9
+          value: {random()}
+          min: {mins}
+          max: {maxs}
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider9.value)
+      BoxLayout:
+        Label:
+          size_hint: [.2,1]
+          text: '#10'
+        Slider:
+          id: slider10
+          value: {random()}
+          min: {mins}
+          max: {maxs}
+          step: 0.01
+          orientation: 'horizontal'
+        Label:
+          size_hint: [.2,1]
+          text: str(slider10.value)
     BoxLayout:
       size_hint: [1,.10]
       GridLayout:
