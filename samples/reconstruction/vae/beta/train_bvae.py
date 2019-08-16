@@ -6,6 +6,7 @@ from pathlib import Path
 
 import torch
 import torch.utils.data
+from objectives import kl_divergence, reconstruction_loss
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
@@ -16,7 +17,6 @@ from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.vgg_face2 import VggFaces2
 from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsVae, VAE
 from neodroidvision.reconstruction.visualisation.encoder_utilities import plot_manifold
-from objectives import kl_divergence, reconstruction_loss
 
 __author__ = 'cnheider'
 __doc__ = r''' 
@@ -27,11 +27,12 @@ torch.manual_seed(82375329)
 LOWEST_L = inf
 import multiprocessing
 
-core_count= min(8,multiprocessing.cpu_count()-1)
+core_count = min(8, multiprocessing.cpu_count() - 1)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DL_KWARGS = {'num_workers':core_count,
-             'pin_memory':True} if torch.cuda.is_available() else {}
+             'pin_memory': True
+             } if torch.cuda.is_available() else {}
 BASE_PATH = (PROJECT_APP_PATH.user_data / 'bvae')
 if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
@@ -44,7 +45,7 @@ EPOCHS = 1000
 LR = 3e-3
 ENCODING_SIZE = 10
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
-                    split='train',
+                    split='test',
                     resize_s=INPUT_SIZE)
 MODEL: VAE = HigginsVae(CHANNELS,
                         latent_size=ENCODING_SIZE).to(DEVICE)
@@ -158,13 +159,12 @@ if __name__ == "__main__":
                            betas=(0.9, 0.999))
 
     with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / 'VggFace2'
-                                  / 'BetaVAE' /
-                                  f'{time.time()}') as metric_writer:
+                                  / 'BetaVAE' / f'{time.time()}') as metric_writer:
       for epoch in range(1, EPOCHS + 1):
         train_model(MODEL, optimiser, epoch, metric_writer, dataset_loader)
         run_model(MODEL, epoch, metric_writer, dataset_loader)
         with torch.no_grad():
-          a = MODEL.generate(1, device=DEVICE).view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
+          a = MODEL.sample().view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
           A = DATASET.inverse_transform(a)
           A.save(str(BASE_PATH / f"sample_{str(epoch)}.png"))
           if ENCODING_SIZE == 2:

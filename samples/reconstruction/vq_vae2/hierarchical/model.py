@@ -6,18 +6,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from neodroidvision.reconstruction.vqvae2.attention import PixelAttention
-from neodroidvision.reconstruction.vqvae2.pixel_cnn import (ChannelNorm,
-                                                            PixelCNN,
-                                                            PixelConvA,
-                                                            PixelConvB,
-                                                            )
-from neodroidvision.reconstruction.vqvae2.vq_vae import (HalfDecoder,
-                                                         HalfEncoder,
-                                                         HalfQuarterDecoder,
-                                                         QuarterEncoder,
-                                                         VQVAE,
-                                                         )
+from neodroidvision.reconstruction.vae.vqvae2.attention import PixelAttention
+from neodroidvision.reconstruction.vae.vqvae2.pixel_cnn import (ChannelNorm,
+                                                                PixelCNN,
+                                                                PixelConvA,
+                                                                PixelConvB,
+                                                                )
+from neodroidvision.reconstruction.vae.vqvae2.vq_vae import (HalfDecoder,
+                                                             HalfEncoder,
+                                                             HalfQuarterDecoder,
+                                                             QuarterEncoder,
+                                                             VQVAE,
+                                                             )
 
 
 def make_vae():

@@ -20,6 +20,7 @@ class Encoder(nn.Module):
     self.log_std = nn.Linear(200, output_size)
 
   def encode(self, x):
+    x.view(-1, self._input_size)
     h1 = self.fcs(x)
     return self.mean(h1), self.log_std(h1)
 
@@ -39,30 +40,26 @@ class Decoder(nn.Module):
     return h3
 
   def forward(self, x):
-    return self.decode(x)
+    return self.decode(x).view(-1, 28, 28)
 
 
-class FlatNormalVAE(VAE):
-  # sampler = torch.normal
+class VanillaVAE(VAE):
+  def encode(self, *x: torch.Tensor) -> torch.Tensor:
+    return self._encoder(*x)
 
-  def sampler(mean, log_var):
-    std = torch.exp(0.5 * log_var)
-    eps = torch.randn_like(std)
-    return mean + eps * std
+  def decode(self, *x: torch.Tensor) -> torch.Tensor:
+    return self._decoder(*x)
 
-  def __init__(self, sampling_distribution=sampler, input_size=784, encoding_size=2):
-    super().__init__(input_size, encoding_size)
+  def __init__(self, input_size=784, latent_size=2):
+    super().__init__(latent_size)
     self._input_size = input_size
-    self._encoder = Encoder(input_size=input_size, output_size=encoding_size)
-    self._decoder = Decoder(input_size=encoding_size, output_size=input_size)
-    self._sampling_distribution = sampling_distribution
+    self._encoder = Encoder(input_size=input_size, output_size=latent_size)
+    self._decoder = Decoder(input_size=latent_size, output_size=input_size)
 
   def forward(self, x):
-    flat = x.view(-1, self._input_size)
-    mean, log_var = self._encoder(flat)
-    z = self._sampling_distribution(mean, log_var)
-    return self._decoder(z), mean, log_var
-
+    mean, log_var = self.encode(x)
+    z = self.reparameterise(mean, log_var)
+    return self.decode(z), mean, log_var
 
   # Reconstruction + KL divergence losses summed over all elements and batch
   def loss_function(self, recon_x, x, mu, log_var):

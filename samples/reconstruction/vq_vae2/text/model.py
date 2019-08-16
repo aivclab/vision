@@ -4,7 +4,7 @@ Models for compressing natural language.
 
 import torch.nn as nn
 
-from neodroidvision.reconstruction.vqvae2.vq_vae import Decoder, Encoder, VQVAE
+from neodroidvision.reconstruction.vae.vqvae2.vq_vae import Decoder, Encoder, VQVAE
 
 DEAD_RATE = 100
 

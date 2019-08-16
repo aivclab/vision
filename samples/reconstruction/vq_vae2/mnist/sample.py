@@ -7,8 +7,8 @@ import torch
 from PIL import Image
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.vqvae2.models import Generator, make_vq_vae
-from neodroidvision.reconstruction.vqvae2.sampling import random_sample_softmax
+from neodroidvision.reconstruction.vae.vqvae2.models import Generator, make_vq_vae
+from neodroidvision.reconstruction.vae.vqvae2 import random_sample_softmax
 
 LATENT_SIZE = 16
 LATENT_COUNT = 32

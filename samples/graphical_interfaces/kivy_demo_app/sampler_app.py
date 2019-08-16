@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from random import random
-
+import numpy
 import torch
 from kivy.app import App
 from kivy.config import Config
@@ -26,17 +25,17 @@ Config.set('graphics', 'resizable', 0)
 Window.size = (600, 800)
 Window.clearcolor = (.9, .9, .9, 1)
 
-size_x, size_y = (64, 64)
-channels = 3
-
+CHANNELS =3
+MIN = -1
+MAX = 1
 DEVICE = torch.device('cpu')
 ENCODING_SIZE = 10
 
 DS = VggFaces2
-model = BurgessVae(channels, ENCODING_SIZE).to(DEVICE)
-checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'bvae' / 'best_state_dict',
+MODEL = BurgessVae(CHANNELS, ENCODING_SIZE).to(DEVICE)
+CHECKPOINT = torch.load(PROJECT_APP_PATH.user_data / 'bvae' / 'best_state_dict',
                         map_location=DEVICE)
-model.load_state_dict(checkpoint)
+MODEL.load_state_dict(CHECKPOINT)
 
 
 class MainLayout(BoxLayout):
@@ -111,21 +110,21 @@ class MainLayout(BoxLayout):
     self._popup = Popup(title='Settings', content=settings_layout, size_hint=(.6, .2))
 
   def resample(self):
-    self.ids.slider1.set_norm_value(random())
-    self.ids.slider2.set_norm_value(random())
-    self.ids.slider3.set_norm_value(random())
-    self.ids.slider4.set_norm_value(random())
-    self.ids.slider5.set_norm_value(random())
-    self.ids.slider6.set_norm_value(random())
-    self.ids.slider7.set_norm_value(random())
-    self.ids.slider8.set_norm_value(random())
-    self.ids.slider9.set_norm_value(random())
-    self.ids.slider10.set_norm_value(random())
+    self.ids.slider1.set_norm_value(numpy.random.random())
+    self.ids.slider2.set_norm_value(numpy.random.random())
+    self.ids.slider3.set_norm_value(numpy.random.random())
+    self.ids.slider4.set_norm_value(numpy.random.random())
+    self.ids.slider5.set_norm_value(numpy.random.random())
+    self.ids.slider6.set_norm_value(numpy.random.random())
+    self.ids.slider7.set_norm_value(numpy.random.random())
+    self.ids.slider8.set_norm_value(numpy.random.random())
+    self.ids.slider9.set_norm_value(numpy.random.random())
+    self.ids.slider10.set_norm_value(numpy.random.random())
 
     self.sample()
 
   def sample(self, *args):
-    rgb = model.sample_from([self.ids.slider1.value,
+    rgb = MODEL.sample_from([self.ids.slider1.value,
                              self.ids.slider2.value,
                              self.ids.slider3.value,
                              self.ids.slider4.value,
@@ -137,7 +136,7 @@ class MainLayout(BoxLayout):
                              self.ids.slider10.value
                              ],
                             device=DEVICE)
-    rgb: torch.Tensor = rgb.view(channels, size_x, size_y)
+    rgb: torch.Tensor = rgb
     rgb = DS.inverse_transform(rgb)
     rgb.save(self._frame_name)
     self.ids.image_source.reload()
@@ -155,10 +154,6 @@ class MainLayout(BoxLayout):
     except:
       pass
     self._popup.dismiss()
-
-
-mins = 0
-maxs = 1
 
 
 class SamplerApp(App):
@@ -185,9 +180,9 @@ MainLayout:
           text: '#1'
         Slider:
           id: slider1
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -199,9 +194,9 @@ MainLayout:
           text: '#2'
         Slider:
           id: slider2
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -213,9 +208,9 @@ MainLayout:
           text: '#3'
         Slider:
           id: slider3
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -227,9 +222,9 @@ MainLayout:
           text: '#4'
         Slider:
           id: slider4
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -241,9 +236,9 @@ MainLayout:
           text: '#5'
         Slider:
           id: slider5
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -255,9 +250,9 @@ MainLayout:
           text: '#6'
         Slider:
           id: slider6
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -269,9 +264,9 @@ MainLayout:
           text: '#7'
         Slider:
           id: slider7
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -283,9 +278,9 @@ MainLayout:
           text: '#8'
         Slider:
           id: slider8
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -297,9 +292,9 @@ MainLayout:
           text: '#9'
         Slider:
           id: slider9
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:
@@ -311,9 +306,9 @@ MainLayout:
           text: '#10'
         Slider:
           id: slider10
-          value: {random()}
-          min: {mins}
-          max: {maxs}
+          value: {numpy.random.normal (0,1)}
+          min: {MIN}
+          max: {MAX}
           step: 0.01
           orientation: 'horizontal'
         Label:

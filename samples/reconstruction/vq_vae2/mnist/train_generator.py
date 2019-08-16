@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.vqvae2.models import Generator, make_vq_vae
+from neodroidvision.reconstruction.vae.vqvae2.models import Generator, make_vq_vae
 from samples.reconstruction.vq_vae2.mnist import load_images
 
 LATENT_SIZE = 16

@@ -4,8 +4,8 @@ A basic PixelCNN + VQ-VAE model.
 
 import torch.nn as nn
 
-from neodroidvision.reconstruction.vqvae2.pixel_cnn import PixelCNN, PixelConvA, PixelConvB
-from neodroidvision.reconstruction.vqvae2.vq_vae import QuarterDecoder, QuarterEncoder, VQVAE
+from neodroidvision.reconstruction.vae.vqvae2.pixel_cnn import PixelCNN, PixelConvA, PixelConvB
+from neodroidvision.reconstruction.vae.vqvae2.vq_vae import QuarterDecoder, QuarterEncoder, VQVAE
 
 
 def make_vq_vae(LATENT_SIZE=16, LATENT_COUNT=32):

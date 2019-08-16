@@ -10,7 +10,7 @@ import torch.optim as optim
 from PIL import Image
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.vqvae2.models import make_vq_vae
+from neodroidvision.reconstruction.vae.vqvae2.models import make_vq_vae
 from samples.reconstruction.vq_vae2.mnist.data_loader import load_images
 
 DEVICE = torch.device('cuda')

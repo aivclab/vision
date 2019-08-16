@@ -1,4 +1,3 @@
-import argparse
 import os
 import time
 from collections import defaultdict
@@ -7,73 +6,76 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import torch
+from objectives import loss_fn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 
-from neodroidvision.reconstruction.cvae.cvae import CVAE
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.reconstruction.vae.architectures.conditional_vae import ConditionalVAE
+from warg.named_ordered_dictionary import NOD
+
+fig_root = PROJECT_APP_PATH.user_data / 'cvae'
+
+args = NOD()
+args.seed = 58329583
+args.epochs = 1000
+args.batch_size = 256
+args.learning_rate = 0.001
+args.encoder_layer_sizes = [784, 256]
+args.decoder_layer_sizes = [256, 784]
+args.latent_size = 10
+args.print_every = 100
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+timstamp = time.time()
+torch.manual_seed(args.seed)
+if torch.cuda.is_available():
+  torch.cuda.manual_seed(args.seed)
+
+vae = ConditionalVAE(encoder_layer_sizes=args.encoder_layer_sizes,
+                     latent_size=args.latent_size,
+                     decoder_layer_sizes=args.decoder_layer_sizes,
+                     num_conditions=10).to(DEVICE)
+dataset = MNIST(root=str(PROJECT_APP_PATH.user_data / 'MNIST'),
+                train=True,
+                transform=transforms.ToTensor(),
+                download=True)
 
 
-def main(args):
-  torch.manual_seed(args.seed)
-  if torch.cuda.is_available():
-    torch.cuda.manual_seed(args.seed)
+def one_hot(labels, num_labels, device='cpu'):
+  targets = torch.zeros(labels.size(0), num_labels)
+  for i, label in enumerate(labels):
+    targets[i, label] = 1
+  return targets.to(device=device)
 
-  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  ts = time.time()
-
-  dataset = MNIST(root='data',
-                  train=True,
-                  transform=transforms.ToTensor(),
-                  download=True)
+def main():
   data_loader = DataLoader(dataset=dataset,
                            batch_size=args.batch_size,
                            shuffle=True)
-
-  def loss_fn(recon_x,
-              x,
-              mean,
-              log_var):
-    BCE = torch.nn.functional.binary_cross_entropy(recon_x.view(-1, 28 * 28),
-                                                   x.view(-1, 28 * 28),
-                                                   reduction='sum')
-    KLD = -0.5 * torch.sum(1 + log_var - mean.pow(2) - log_var.exp())
-
-    return (BCE + KLD) / x.size(0)
-
-  vae = CVAE(encoder_layer_sizes=args.encoder_layer_sizes,
-             latent_size=args.latent_size,
-             decoder_layer_sizes=args.decoder_layer_sizes,
-             conditional=args.conditional,
-             num_labels=10 if args.conditional else 0).to(device)
 
   optimizer = torch.optim.Adam(vae.parameters(), lr=args.learning_rate)
 
   logs = defaultdict(list)
 
   for epoch in range(args.epochs):
-
     tracker_epoch = defaultdict(lambda:defaultdict(dict))
 
-    for iteration, (x, y) in enumerate(data_loader):
+    for iteration, (original, label) in enumerate(data_loader):
 
-      x, y = x.to(device), y.to(device)
+      original, label = original.to(DEVICE), label.to(DEVICE)
+      reconstruction, mean, log_var, z = vae(original, one_hot(label,
+                                                               10,
+                                                               device=DEVICE))
 
-      if args.conditional:
-        recon_x, mean, log_var, z = vae(x, y)
-      else:
-        recon_x, mean, log_var, z = vae(x)
-
-      for i, yi in enumerate(y):
+      for i, yi in enumerate(label):
         id = len(tracker_epoch)
         tracker_epoch[id]['x'] = z[i, 0].item()
         tracker_epoch[id]['y'] = z[i, 1].item()
         tracker_epoch[id]['label'] = yi.item()
 
-      loss = loss_fn(recon_x, x, mean, log_var)
-
       optimizer.zero_grad()
+      loss = loss_fn(reconstruction, original, mean, log_var)
       loss.backward()
       optimizer.step()
 
@@ -81,34 +83,32 @@ def main(args):
 
       if iteration % args.print_every == 0 or iteration == len(data_loader) - 1:
         print(f"Epoch {epoch:02d}/{args.epochs:02d}"
-              f" Batch {iteration:04d}/{len(data_loader) - 1:d}, Loss {loss.item():9.4f}")
+              f" Batch {iteration:04d}/{len(data_loader) - 1:d},"
+              f" Loss {loss.item():9.4f}")
 
-        if args.conditional:
-          c = torch.arange(0, 10).long().unsqueeze(1)
-          x = vae.inference(n=c.size(0), c=c)
-        else:
-          x = vae.inference(n=10)
+        condition_vector = torch.arange(0, 10, device=DEVICE).long().unsqueeze(1)
+        sample = vae.sample(one_hot(condition_vector, 10, device=DEVICE), num=condition_vector.size(0))
 
         plt.figure()
         plt.figure(figsize=(5, 10))
         for p in range(10):
           plt.subplot(5, 2, p + 1)
-          if args.conditional:
-            plt.text(
-                0, 0, f"c={c[p].item():d}", color='black',
-                backgroundcolor='white', fontsize=8)
-          plt.imshow(x[p].view(28, 28).data.numpy())
+
+          plt.text(0, 0, f"c={condition_vector[p].item():d}",
+                   color='black',
+                   backgroundcolor='white',
+                   fontsize=8)
+          plt.imshow(sample[p].cpu().data.numpy())
           plt.axis('off')
 
-        if not os.path.exists(os.path.join(args.fig_root, str(ts))):
-          if not (os.path.exists(os.path.join(args.fig_root))):
-            os.mkdir(os.path.join(args.fig_root))
-          os.mkdir(os.path.join(args.fig_root, str(ts)))
+        if not os.path.exists(os.path.join(fig_root, str(timstamp))):
+          if not (os.path.exists(os.path.join(fig_root))):
+            os.mkdir(os.path.join(fig_root))
+          os.mkdir(os.path.join(fig_root, str(timstamp)))
 
-        plt.savefig(
-            os.path.join(args.fig_root, str(ts),
-                         "E{:d}I{:d}.png".format(epoch, iteration)),
-            dpi=300)
+        plt.savefig(os.path.join(fig_root, str(timstamp),
+                                 f"Epoch{epoch:d}_Iter{iteration:d}.png"),
+                    dpi=300)
         plt.clf()
         plt.close('all')
 
@@ -119,26 +119,12 @@ def main(args):
                    data=df.groupby('label').head(100),
                    fit_reg=False,
                    legend=True)
-    g.savefig(os.path.join(args.fig_root,
-                           str(ts),
-                           f"E{epoch:d}-Dist.png"),
+    g.savefig(os.path.join(fig_root,
+                           str(timstamp),
+                           f"Epoch{epoch:d}_latent_space.png"),
               dpi=300)
 
 
 if __name__ == '__main__':
 
-  parser = argparse.ArgumentParser()
-  parser.add_argument("--seed", type=int, default=0)
-  parser.add_argument("--epochs", type=int, default=10)
-  parser.add_argument("--batch_size", type=int, default=64)
-  parser.add_argument("--learning_rate", type=float, default=0.001)
-  parser.add_argument("--encoder_layer_sizes", type=list, default=[784, 256])
-  parser.add_argument("--decoder_layer_sizes", type=list, default=[256, 784])
-  parser.add_argument("--latent_size", type=int, default=2)
-  parser.add_argument("--print_every", type=int, default=100)
-  parser.add_argument("--fig_root", type=str, default='figs')
-  parser.add_argument("--conditional", action='store_true')
-
-  args = parser.parse_args()
-
-  main(args)
+  main()

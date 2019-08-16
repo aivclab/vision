@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from abc import abstractmethod
 from typing import Tuple
 
 import numpy
-from torch.nn.init import kaiming_normal, kaiming_normal_
+from torch.nn.init import kaiming_normal_
 
-from neodroidagent.utilities import to_tensor
+from neodroidvision.reconstruction.vae.architectures.vae import VAE
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -14,60 +15,12 @@ import torch
 import torch.nn as nn
 
 
-class View(nn.Module):
-  def __init__(self, size):
-    super(View, self).__init__()
-    self.size = size
-
-  def forward(self, tensor):
-    return tensor.view(self.size)
-
-
-def kaiming_init(m):
-  if isinstance(m, (nn.Linear, nn.Conv2d)):
-    kaiming_normal_(m.weight)
-    if m.bias is not None:
-      m.bias.data.fill_(0)
-  elif isinstance(m, (nn.BatchNorm1d, nn.BatchNorm2d)):
-    m.weight.data.fill_(1)
-    if m.bias is not None:
-      m.bias.data.fill_(0)
-
-
-class VAE(torch.nn.Module):
-  def __init__(self, latent_size=10):
-    super().__init__()
-    self._latent_size = latent_size
-
-  def generate(self, num=32, device='cpu'):
-    z = torch.randn(num, self._latent_size).to(device)
-    samples = self.decode(z).to('cpu')
-    return samples
-
-  def get_z(self, im):
-    with torch.no_grad():
-      mu, log_var = self.encode(im)
-      z = self.sample(mu, log_var)
-    return z
-
-  @staticmethod
-  def sample(mu, log_var):
-    std = torch.exp(0.5 * log_var)  # e^(1/2 * log(std^2))
-    eps = torch.randn_like(std)  # random ~ N(0, 1)
-    z = eps.mul(std).add_(mu)  # Reparameterise distribution
-    return z
-
-  def sample_from(self, encoding, device='cpu'):
-    sample = to_tensor(encoding).to(device)
-    assert sample.shape[-1] == self._latent_size,(
-            f'sample.shape[-1]:{sample.shape[-1]} !='
-            f' self._encoding_size:{self._latent_size}')
-    sample = self.decode(sample).to('cpu')
-    return sample
 
 
 class HigginsVae(VAE):
   """Model proposed in original beta-VAE paper(Higgins et al, ICLR, 2017)."""
+
+
 
   def __init__(self, input_channels=3, latent_size=10):
     super().__init__(latent_size)
@@ -80,7 +33,7 @@ class HigginsVae(VAE):
                                  self.conv_module(32, 64),
                                  self.conv_module(64, 64),
                                  self.conv_module(64, self.inner_fc_shape, stride=1, padding=0),
-                                 View((-1, self.inner_fc_shape))
+                                 self.View((-1, self.inner_fc_shape))
                                  )
 
     self.fc_mean = nn.Linear(self.inner_fc_shape, self._latent_size)
@@ -88,7 +41,7 @@ class HigginsVae(VAE):
 
     self.decoder = nn.Sequential(nn.Linear(self._latent_size, self.inner_fc_shape),
                                  nn.ReLU(True),
-                                 View((-1, *self.inner_2d_shape)),
+                                 self.View((-1, *self.inner_2d_shape)),
                                  self.deconv_module(self.inner_fc_shape, 64, stride=1, padding=0),
                                  self.deconv_module(64, 64),
                                  self.deconv_module(64, 32),
@@ -103,9 +56,7 @@ class HigginsVae(VAE):
 
     self.weight_init()
 
-  def weight_init(self):
-    for m in self.modules():
-      kaiming_init(m)
+
 
   @staticmethod
   def conv_module(in_channels, out_channels, kernel_size=4, stride=2, padding=1, **conv_kwargs):
@@ -134,18 +85,18 @@ class HigginsVae(VAE):
         nn.ReLU(True)
         )
 
-  def encode(self, x) -> Tuple[torch.Tensor, torch.Tensor]:
-    x = self.encoder(x)
+  def encode(self, *x) -> Tuple[torch.Tensor, torch.Tensor]:
+    x = self.encoder(*x)
     return self.fc_mean(x), self.fc_std(x)
 
-  def decode(self, z) -> torch.Tensor:
-    out = self.decoder(z)
+  def decode(self, *z) -> torch.Tensor:
+    out = self.decoder(*z)
     out = torch.sigmoid(out)
     return out
 
   def forward(self, x) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mu, log_var = self.encode(x)
-    z = self.sample(mu, log_var)
+    z = self.reparameterise(mu, log_var)
     reconstruction = self.decode(z)
     return reconstruction, mu, log_var
 
@@ -163,7 +114,7 @@ class BurgessVae(HigginsVae):
                                  self.conv_module(32, 32),
                                  self.conv_module(32, 32),
                                  self.conv_module(32, 32),
-                                 View((-1, self.inner_fc_shape)),
+                                 self.View((-1, self.inner_fc_shape)),
                                  nn.Linear(self.inner_fc_shape, 256),
                                  nn.ReLU(True),
                                  nn.Linear(256, 256),
@@ -179,7 +130,7 @@ class BurgessVae(HigginsVae):
                                  nn.ReLU(True),
                                  nn.Linear(256, self.inner_fc_shape),
                                  nn.ReLU(True),
-                                 View((-1, *self.inner_2d_shape)),
+                                 self.View((-1, *self.inner_2d_shape)),
                                  self.deconv_module(32, 32),
                                  self.deconv_module(32, 32),
                                  self.deconv_module(32, 32),
