@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 from random import random
 
-import imageio
-import numpy
 import torch
 from kivy.app import App
 from kivy.config import Config
@@ -18,7 +16,7 @@ from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae, BurgessBetaVae
+from neodroidvision.reconstruction.vae.architectures.beta_vae import BurgessVae
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -28,17 +26,18 @@ Config.set('graphics', 'resizable', 0)
 Window.size = (600, 800)
 Window.clearcolor = (.9, .9, .9, 1)
 
-size_x, size_y = (64,64)
+size_x, size_y = (64, 64)
 channels = 3
 
 DEVICE = torch.device('cpu')
 ENCODING_SIZE = 10
 
 DS = VggFaces2
-model = BurgessBetaVae(channels, ENCODING_SIZE).to(DEVICE)
+model = BurgessVae(channels, ENCODING_SIZE).to(DEVICE)
 checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'bvae' / 'best_state_dict',
                         map_location=DEVICE)
 model.load_state_dict(checkpoint)
+
 
 class MainLayout(BoxLayout):
   _video_capture = None
@@ -111,6 +110,20 @@ class MainLayout(BoxLayout):
 
     self._popup = Popup(title='Settings', content=settings_layout, size_hint=(.6, .2))
 
+  def resample(self):
+    self.ids.slider1.set_norm_value(random())
+    self.ids.slider2.set_norm_value(random())
+    self.ids.slider3.set_norm_value(random())
+    self.ids.slider4.set_norm_value(random())
+    self.ids.slider5.set_norm_value(random())
+    self.ids.slider6.set_norm_value(random())
+    self.ids.slider7.set_norm_value(random())
+    self.ids.slider8.set_norm_value(random())
+    self.ids.slider9.set_norm_value(random())
+    self.ids.slider10.set_norm_value(random())
+
+    self.sample()
+
   def sample(self, *args):
     rgb = model.sample_from([self.ids.slider1.value,
                              self.ids.slider2.value,
@@ -143,8 +156,9 @@ class MainLayout(BoxLayout):
       pass
     self._popup.dismiss()
 
-mins=0
-maxs=1
+
+mins = 0
+maxs = 1
 
 
 class SamplerApp(App):
@@ -316,7 +330,7 @@ MainLayout:
           bold: True
           background_normal: ''
           background_color: (0.82, 0.82, 0.82, 1.0)
-          on_press: root.sample()
+          on_press: root.resample()
         Button:
           text: 'Setting'
           bold: True

@@ -3,7 +3,7 @@
 from typing import Tuple
 
 import numpy
-from torch.nn.init import kaiming_normal
+from torch.nn.init import kaiming_normal, kaiming_normal_
 
 from neodroidagent.utilities import to_tensor
 
@@ -25,7 +25,7 @@ class View(nn.Module):
 
 def kaiming_init(m):
   if isinstance(m, (nn.Linear, nn.Conv2d)):
-    kaiming_normal(m.weight)
+    kaiming_normal_(m.weight)
     if m.bias is not None:
       m.bias.data.fill_(0)
   elif isinstance(m, (nn.BatchNorm1d, nn.BatchNorm2d)):
@@ -59,14 +59,14 @@ class VAE(torch.nn.Module):
 
   def sample_from(self, encoding, device='cpu'):
     sample = to_tensor(encoding).to(device)
-    assert (sample.shape[-1] == self._latent_size,
+    assert sample.shape[-1] == self._latent_size,(
             f'sample.shape[-1]:{sample.shape[-1]} !='
             f' self._encoding_size:{self._latent_size}')
     sample = self.decode(sample).to('cpu')
     return sample
 
 
-class HigginsBetaVae(VAE):
+class HigginsVae(VAE):
   """Model proposed in original beta-VAE paper(Higgins et al, ICLR, 2017)."""
 
   def __init__(self, input_channels=3, latent_size=10):
@@ -150,7 +150,7 @@ class HigginsBetaVae(VAE):
     return reconstruction, mu, log_var
 
 
-class BurgessBetaVae(HigginsBetaVae):
+class BurgessVae(HigginsVae):
   """Model proposed in understanding beta-VAE paper(Burgess et al, arxiv:1804.03599, 2018)."""
 
   def __init__(self, input_channels=3, latent_size=10):
