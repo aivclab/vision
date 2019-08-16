@@ -80,7 +80,7 @@ def train_model(model,
                                 f' [{batch_idx * len(original)}/{len(loader.dataset)}'
                                 f' ({100. * batch_idx / len(loader):.0f}%)]\t'
                                 f'Loss: {loss.item() / len(original):.6f}')
-    break
+    
   print(f'====> Epoch: {epoch_i}'
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
