@@ -10,8 +10,7 @@ from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction.vae.architectures.beta_vae import BetaVAE
-from neodroidvision.reconstruction.vae.architectures.vae import VAE
+from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae, VAE
 from neodroidvision.reconstruction.visualisation.encoder_utilities import plot_manifold
 from neodroidvision.reconstruction.visualisation.encoding_space import scatter_plot_encoding_space
 
@@ -35,9 +34,9 @@ DL_KWARGS = {'num_workers':4, 'pin_memory':True} if torch.cuda.is_available() el
 BASE_PATH = (PROJECT_APP_PATH.user_data / 'vae')
 if not BASE_PATH.exists():
   BASE_PATH.mkdir(parents=True)
-BATCH_SIZE = 1024
+BATCH_SIZE = 256
 EPOCHS = 1000
-LR = 1e-4
+LR = 3e-3
 DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
                     split='train',
                     resize_s=INPUT_SIZE)
@@ -45,6 +44,7 @@ DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
 
 def loss_function(reconstruction, original, mu, log_var, beta=1):
   recon_loss = binary_cross_entropy(reconstruction, original, reduction='sum')
+  #recon_loss = F.mse_loss(reconstruction, original, size_average=False).div(batch_size)
 
   # see Appendix B from VAE paper:
   # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
@@ -85,7 +85,7 @@ def train_model(model,
         f' Average loss: {train_loss / len(loader.dataset):.4f}')
 
 
-def run_model(model,
+def run_model(model: VAE,
               epoch_i: int,
               metric_writer: Writer,
               loader: DataLoader,
@@ -97,8 +97,8 @@ def run_model(model,
   with torch.no_grad():
     for i, (original, labels, *_) in enumerate(loader):
       original = original.to(DEVICE)
-      recon_batch, mean, log_var = model(original)
-      test_loss += loss_function(recon_batch,
+      reconstruction, mean, log_var = model(original)
+      test_loss += loss_function(reconstruction,
                                  original,
                                  mean,
                                  log_var).item()
@@ -107,7 +107,7 @@ def run_model(model,
         if i == 0:
           n = min(original.size(0), 8)
           comparison = torch.cat([original[:n],
-                                  recon_batch[:n]])
+                                  reconstruction[:n]])
           save_image(comparison.cpu(),
                      str(BASE_PATH / f'reconstruction_{str(epoch_i)}.png'), nrow=n)
 
@@ -146,20 +146,20 @@ if __name__ == "__main__":
                                 shuffle=True,
                                 **DL_KWARGS)
 
-    model: VAE = BetaVAE(
-        CHANNELS,
-        latent_size=ENCODING_SIZE).to(DEVICE)
+    model: VAE = HigginsBetaVae(CHANNELS,
+                                latent_size=ENCODING_SIZE).to(DEVICE)
     optimiser = optim.Adam(model.parameters(),
                            lr=LR,
                            betas=(0.9, 0.999))
 
-    with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / 'VggFace2' / 'BetaVAE' / f'{time.time()}') as \
-        metric_writer:
+    with TensorBoardPytorchWriter(PROJECT_APP_PATH.user_log / 'VggFace2'
+                                  / 'BetaVAE' /
+                                  f'{time.time()}') as metric_writer:
       for epoch in range(1, EPOCHS + 1):
         train_model(model, optimiser, epoch, metric_writer, dataset_loader)
         run_model(model, epoch, metric_writer, dataset_loader)
         with torch.no_grad():
-          a = model.sample(1, device=DEVICE).view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
+          a = model.generate(1, device=DEVICE).view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
           A = DATASET.inverse_transform(a)
           A.save(str(BASE_PATH / f"sample_{str(epoch)}.png"))
           if ENCODING_SIZE == 2:

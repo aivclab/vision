@@ -14,7 +14,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction.vae.architectures.beta_vae import BetaVAE
+from neodroidvision.reconstruction.vae.architectures.beta_vae import HigginsBetaVae
 from neodroidvision.reconstruction.vae.architectures.flat import FlatNormalVAE
 
 __author__ = 'cnheider'
@@ -31,7 +31,7 @@ channels = 3
 DEVICE = torch.device('cpu')
 ENCODING_SIZE = 8
 
-model = BetaVAE(256, ENCODING_SIZE).to(DEVICE)
+model = HigginsBetaVae(256, ENCODING_SIZE).to(DEVICE)
 checkpoint = torch.load(PROJECT_APP_PATH.user_data / 'results' / 'best_state_dict',
                         map_location=DEVICE)
 model.load_state_dict(checkpoint)
