@@ -1,0 +1,3 @@
+/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/eye/build/CMakeFiles/rebuild_cache.dir
+/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/eye/build/CMakeFiles/edit_cache.dir
+/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/eye/build/CMakeFiles/eye.dir

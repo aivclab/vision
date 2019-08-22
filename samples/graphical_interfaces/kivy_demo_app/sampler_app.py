@@ -14,8 +14,8 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction.vae.architectures.beta_vae import BurgessVae
+from neodroidvision.data.dataset_wrappers.vgg_face2 import VggFaces2
+from neodroidvision.regression.reconstruction.generative import BurgessVae
 
 __author__ = 'cnheider'
 __doc__ = ''
@@ -25,7 +25,7 @@ Config.set('graphics', 'resizable', 0)
 Window.size = (600, 800)
 Window.clearcolor = (.9, .9, .9, 1)
 
-CHANNELS =3
+CHANNELS = 3
 MIN = -1
 MAX = 1
 DEVICE = torch.device('cpu')
@@ -180,7 +180,7 @@ MainLayout:
           text: '#1'
         Slider:
           id: slider1
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -194,7 +194,7 @@ MainLayout:
           text: '#2'
         Slider:
           id: slider2
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -208,7 +208,7 @@ MainLayout:
           text: '#3'
         Slider:
           id: slider3
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -222,7 +222,7 @@ MainLayout:
           text: '#4'
         Slider:
           id: slider4
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -236,7 +236,7 @@ MainLayout:
           text: '#5'
         Slider:
           id: slider5
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -250,7 +250,7 @@ MainLayout:
           text: '#6'
         Slider:
           id: slider6
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -264,7 +264,7 @@ MainLayout:
           text: '#7'
         Slider:
           id: slider7
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -278,7 +278,7 @@ MainLayout:
           text: '#8'
         Slider:
           id: slider8
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -292,7 +292,7 @@ MainLayout:
           text: '#9'
         Slider:
           id: slider9
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01
@@ -306,7 +306,7 @@ MainLayout:
           text: '#10'
         Slider:
           id: slider10
-          value: {numpy.random.normal (0,1)}
+          value: {numpy.random.normal(0, 1)}
           min: {MIN}
           max: {MAX}
           step: 0.01

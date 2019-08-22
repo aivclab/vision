@@ -1,3 +1,4 @@
+import numpy
 import torch
 
 
@@ -35,7 +36,7 @@ def export(model, model_export_name, latest, batch_size=1):
   c2_out = prepared_backend.run(W)[0]
 
   # Verify the numerical correctness upto 3 decimal places
-  np.testing.assert_almost_equal(torch_out.data.cpu().numpy(), c2_out, decimal=3)
+  numpy.testing.assert_almost_equal(torch_out.data.cpu().numpy(), c2_out, decimal=3)
 
   print("Exported model has been executed on Caffe2 backend, and the result looks good!")
 

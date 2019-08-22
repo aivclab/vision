@@ -6,6 +6,7 @@ import time
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
+
 # from warg.pooled_queue_processor import PooledQueueProcessor
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
 
@@ -14,15 +15,15 @@ __author__ = 'cnheider'
 import torch
 
 a_transform = transforms.Compose([
-  transforms.Resize(224),
-  transforms.CenterCrop(224),
-  transforms.RandomHorizontalFlip(),
-  transforms.ToTensor()
-  ])
+    transforms.Resize(224),
+    transforms.CenterCrop(224),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor()
+    ])
 
 a_retransform = transforms.Compose([
-  transforms.ToPILImage('RGB')
-  ])
+    transforms.ToPILImage('RGB')
+    ])
 
 
 def NeodroidClassificationGenerator(env, device, batch_size=64):

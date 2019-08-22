@@ -9,8 +9,8 @@ def python_version_check():
   import sys
 
   assert sys.version_info.major == 3 and sys.version_info.minor >= 6, (
-    f'This project is utilises language features only present Python 3.6 and greater. '
-    f'You are running {sys.version_info}.')
+      f'This project is utilises language features only present Python 3.6 and greater. '
+      f'You are running {sys.version_info}.')
 
 
 python_version_check()
@@ -31,15 +31,15 @@ class NeodroidVisionPackage:
   @property
   def test_dependencies(self) -> list:
     return [
-      'pytest',
-      'mock'
-      ]
+        'pytest',
+        'mock'
+        ]
 
   @property
   def setup_dependencies(self) -> list:
     return [
-      'pytest-runner'
-      ]
+        'pytest-runner'
+        ]
 
   @property
   def package_name(self) -> str:
@@ -61,8 +61,8 @@ class NeodroidVisionPackage:
   def packages(self):
     return find_packages(
         exclude=[
-          # 'neodroid/environment_utilities'
-          ]
+            # 'neodroid/environment_utilities'
+            ]
         )
 
   @property
@@ -85,29 +85,29 @@ class NeodroidVisionPackage:
   def package_data(self):
     # data = glob.glob('environment_utilities/mab/**', recursive=True)
     return {
-      # 'neodroid':[
-      # *data
-      # 'environment_utilities/mab/**',
-      # 'environment_utilities/mab/**_Data/*',
-      # 'environment_utilities/mab/windows/*'
-      # 'environment_utilities/mab/windows/*_Data/*'
-      #  ]
-      }
+        # 'neodroid':[
+        # *data
+        # 'environment_utilities/mab/**',
+        # 'environment_utilities/mab/**_Data/*',
+        # 'environment_utilities/mab/windows/*'
+        # 'environment_utilities/mab/windows/*_Data/*'
+        #  ]
+        }
 
   @property
   def entry_points(self):
     return {
-      'console_scripts':[
-        # "name_of_executable = module.with:function_to_execute"
-        "neodroidvision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
-        ]
-      }
+        'console_scripts':[
+            # "name_of_executable = module.with:function_to_execute"
+            "neodroidvision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
+            ]
+        }
 
   @property
   def extras(self):
     these_extras = {
-      # 'ExtraName':['package-name; platform_system == "System(Linux,Windows)"'
-      }
+        # 'ExtraName':['package-name; platform_system == "System(Linux,Windows)"'
+        }
 
     all_dependencies = []
 
@@ -149,20 +149,20 @@ class NeodroidVisionPackage:
   @property
   def classifiers(self):
     return [
-      'Development Status :: 4 - Beta',
-      'Environment :: Console',
-      'Intended Audience :: End Users/Desktop',
-      'Intended Audience :: Developers',
-      'License :: OSI Approved :: Apache Software License',
-      'Operating System :: MacOS :: MacOS X',
-      'Operating System :: Microsoft :: Windows',
-      'Operating System :: POSIX',
-      'Operating System :: OS Independent',
-      'Programming Language :: Python :: 3',
-      'Natural Language :: English',
-      # 'Topic :: Scientific/Engineering :: Artificial Intelligence'
-      # 'Topic :: Software Development :: Bug Tracking',
-      ]
+        'Development Status :: 4 - Beta',
+        'Environment :: Console',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Natural Language :: English',
+        # 'Topic :: Scientific/Engineering :: Artificial Intelligence'
+        # 'Topic :: Software Development :: Bug Tracking',
+        ]
 
   @property
   def version(self):

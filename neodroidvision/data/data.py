@@ -6,9 +6,9 @@ import torch
 import torch.nn.functional as F
 import torch.utils.data
 
-from neodroidvision.segmentation.loss_functions.dice_loss import dice_loss
-from neodroidvision.segmentation.loss_functions.jaccard_loss import jaccard_loss
-from neodroidvision.segmentation.segmentation_utilities.plot_utilities import channel_transform
+from neodroidvision.regression.segmentation.loss_functions import jaccard_loss
+from neodroidvision.regression.segmentation.loss_functions.dice_loss import dice_loss
+from neodroidvision.regression.segmentation.segmentation_utilities.plot_utilities import channel_transform
 from warg.named_ordered_dictionary import NOD
 
 __author__ = 'cnheider'

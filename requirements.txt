@@ -13,3 +13,5 @@ h5py
 torchvision
 torch
 tensorflow
+pycocotools
+pathlib
