@@ -7,7 +7,8 @@ from warnings import warn
 
 from apppath import AppPath
 
-__author__ = "cnheider"
+__project__ = 'NeodroidVision'
+__author__ = "Christian Heider Nielsen"
 __version__ = "0.1.1"
 __doc__ = r"""
 .. module:: neodroidvision
@@ -37,8 +38,8 @@ def dist_is_editable(dist):
     return False
 '''
 
-PROJECT_NAME = 'neodroidvision'
-PROJECT_AUTHOR = __author__
+PROJECT_NAME = __project__.lower().strip().replace(' ','_')
+PROJECT_AUTHOR = __author__.lower().strip().replace(' ','_')
 PROJECT_APP_PATH = AppPath(app_name=PROJECT_NAME, app_author=PROJECT_AUTHOR)
 
 distributions = {v.key:v for v in pkg_resources.working_set}

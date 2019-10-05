@@ -16,7 +16,7 @@ from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
 
-__author__ = 'cnheider'
+__author__ = 'Christian Heider Nielsen'
 __doc__ = ''
 
 Config.set('graphics', 'resizable', 0)

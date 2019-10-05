@@ -3,7 +3,7 @@ import string
 import time
 
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy
 import torch
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
@@ -30,7 +30,7 @@ def test_model(model,
     pred = model(inputs)
 
   y_pred = pred.data.to(device).numpy()
-  y_pred_max = np.argmax(y_pred, axis=-1)
+  y_pred_max = numpy.argmax(y_pred, axis=-1)
   accuracy_w = accuracy_score(labels, y_pred_max)
   precision_a, recall_a, fscore_a, support_a = precision_recall_fscore_support(labels, y_pred_max)
   precision_w, recall_w, fscore_w, support_w = precision_recall_fscore_support(labels, y_pred_max,
@@ -44,10 +44,10 @@ def test_model(model,
 
   cell_width = (800 / num_columns) - 6 - 6 * 2
 
-  plt.plot(np.random.random((3, 3)))
+  plt.plot(numpy.random.random((3, 3)))
 
   alphabet = string.ascii_lowercase
-  class_names = np.array([*alphabet])
+  class_names = numpy.array([*alphabet])
 
   samples = len(y_pred)
   predictions = [[None for _ in range(num_columns)] for _ in range(samples // num_columns)]

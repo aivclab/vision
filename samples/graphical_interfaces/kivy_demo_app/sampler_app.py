@@ -15,9 +15,9 @@ from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.dataset_wrappers.vgg_face2 import VggFaces2
-from neodroidvision.regression.reconstruction.generative import BurgessVae
+from neodroidvision.reconstruction import BurgessVae
 
-__author__ = 'cnheider'
+__author__ = 'Christian Heider Nielsen'
 __doc__ = ''
 
 Config.set('graphics', 'resizable', 0)

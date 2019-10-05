@@ -1,13 +1,13 @@
-import numpy as np
+import numpy
 import pytest
 import torch
 import torch.nn as nn
 
-from neodroidvision.regression.reconstruction.generative.vae.vqvae2.attention import PixelAttention
-from neodroidvision.regression.reconstruction.generative.vae.vqvae2.pixel_cnn import (PixelCNN,
-                                                                                      PixelConvA,
-                                                                                      PixelConvB,
-                                                                                      )
+from neodroidvision.reconstruction import PixelAttention
+from neodroidvision.reconstruction import (PixelCNN,
+                                           PixelConvA,
+                                           PixelConvB,
+                                           )
 
 TEST_IMG_WIDTH = 7
 TEST_IMG_HEIGHT = 11
@@ -43,7 +43,7 @@ def test_pixel_cnn_masking(start, middle):
         output.backward()
         gradient = input_img.grad.data.numpy()
         if outer_idx > 0:
-          assert np.max(np.abs(gradient)) > 1e-4, 'at %d,%d,%d' % (row, col, z)
+          assert numpy.max(numpy.abs(gradient)) > 1e-4, 'at %d,%d,%d' % (row, col, z)
         inner_idx = 0
         for inner_row in range(TEST_IMG_HEIGHT):
           for inner_col in range(TEST_IMG_WIDTH):

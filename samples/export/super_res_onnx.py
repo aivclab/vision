@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'cnheider'
+__author__ = 'Christian Heider Nielsen'
 __doc__ = r'''
            '''
 
@@ -32,7 +32,7 @@ the instructions `here <https://github.com/pytorch/pytorch#from-source>`__
 """
 
 # Some standard imports
-import numpy as np
+import numpy
 # Super Resolution model definition in PyTorch
 import torch.nn as nn
 import torch.nn.init as init
@@ -210,7 +210,7 @@ ort_inputs = {ort_session.get_inputs()[0].name:to_numpy(x)}
 ort_outs = ort_session.run(None, ort_inputs)
 
 # compare onnxruntime and PyTorch results
-np.testing.assert_allclose(to_numpy(torch_out), ort_outs[0], rtol=1e-03, atol=1e-05)
+numpy.testing.assert_allclose(to_numpy(torch_out), ort_outs[0], rtol=1e-03, atol=1e-05)
 
 print("Exported model has been tested with ONNXRuntime, and the result looks good!")
 
@@ -289,7 +289,7 @@ img_out_y = ort_outs[0]
 # `here <https://github.com/pytorch/examples/blob/master/super_resolution/super_resolve.py>`__.
 #
 
-img_out_y = Image.fromarray(np.uint8((img_out_y[0] * 255.0).clip(0, 255)[0]),
+img_out_y = Image.fromarray(numpy.uint8((img_out_y[0] * 255.0).clip(0, 255)[0]),
                             mode='L')
 
 # get the output image follow post-processing step from PyTorch implementation
