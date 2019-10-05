@@ -1,38 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import numpy as np
+import numpy
 import torch
 import torch.nn.functional as F
 import torch.utils.data
 
-from neodroidvision.regression.segmentation.loss_functions import jaccard_loss
-from neodroidvision.regression.segmentation.loss_functions.dice_loss import dice_loss
-from neodroidvision.regression.segmentation.segmentation_utilities.plot_utilities import channel_transform
+from draugr.torch_utilities import channel_transform
+from draugr.torch_utilities.to_tensor import to_tensor
+from neodroidvision.segmentation.loss_functions import jaccard_loss
+from neodroidvision.segmentation.loss_functions.dice_loss import dice_loss
 from warg.named_ordered_dictionary import NOD
 
-__author__ = 'cnheider'
+__author__ = 'Christian Heider Nielsen'
 
 
 def neodroid_batch_data_iterator(env,
                                  device,
                                  batch_size=12):
   while True:
-    predictors = []
+    rgb = []
     mask_responses = []
     depth_responses = []
     normals_responses = []
-    while len(predictors) < batch_size:
+    while len(rgb) < batch_size:
       env.update()
-      rgb_arr = env.sensor('RGBCameraSensor')
-      seg_arr = env.sensor('LayerSegmentationCameraSensor')
-      depth_arr = env.sensor('CompressedDepthCameraSensor')
-      mul_depth_arr = env.sensor('DepthCameraSensor')
-      normal_arr = env.sensor('NormalCameraSensor')
+      rgb_arr = env.sensor('RGB')
+      seg_arr = env.sensor('Layer')
+      depth_arr = env.sensor('CompressedDepth')
+      normal_arr = env.sensor('Normal')
 
-      red_mask = np.zeros(seg_arr.shape[:-1])
-      green_mask = np.zeros(seg_arr.shape[:-1])
-      blue_mask = np.zeros(seg_arr.shape[:-1])
+      red_mask = numpy.zeros(seg_arr.shape[:-1])
+      green_mask = numpy.zeros(seg_arr.shape[:-1])
+      blue_mask = numpy.zeros(seg_arr.shape[:-1])
+      #alpha_mask = numpy.ones(seg_arr.shape[:-1])
 
       reddish = seg_arr[:, :, 0] > 50
       greenish = seg_arr[:, :, 1] > 50
@@ -42,19 +43,19 @@ def neodroid_batch_data_iterator(env,
       green_mask[greenish] = 1
       blue_mask[blueish] = 1
 
-      depth_image = np.zeros(depth_arr.shape[:-1])
+      depth_image = numpy.zeros(depth_arr.shape[:-1])
 
-      depth_image[:, :] = depth_arr[..., 1]
+      depth_image[:, :] = depth_arr[..., 0]
 
-      predictors.append(channel_transform(rgb_arr))
-      mask_responses.append(np.asarray([red_mask, blue_mask, green_mask]))
-      depth_responses.append(np.clip(np.asarray([depth_image / 255.0]), 0, 1))
-      normals_responses.append(channel_transform(normal_arr))
-    yield (torch.FloatTensor(predictors).to(device),
-           (torch.FloatTensor(mask_responses).to(device),
-            torch.FloatTensor(depth_responses).to(device),
-            torch.FloatTensor(normals_responses).to(device))
-           )
+      rgb.append(channel_transform(rgb_arr)[:3,:,:])
+      mask_responses.append(numpy.asarray([red_mask, blue_mask, green_mask]))
+      depth_responses.append(numpy.clip(numpy.asarray([depth_image / 255.0]), 0, 1))
+      normals_responses.append(channel_transform(normal_arr)[:3,:,:])
+    yield (to_tensor(rgb,device=device),
+           (to_tensor(mask_responses,device=device),
+            to_tensor(depth_responses,device=device),
+            to_tensor(normals_responses,device=device)
+           ))
 
 
 def calculate_loss(seg, recon, depth, normals):
@@ -70,9 +71,9 @@ def calculate_loss(seg, recon, depth, normals):
 
   pred_soft = torch.sigmoid(seg_pred)
   dice = dice_loss(pred_soft, seg_target, epsilon=1)
-  jaccard = jaccard_loss(pred_soft, seg_target, epsilon=1)
+  jaccard = jaccard_loss.jaccard_loss(pred_soft, seg_target, epsilon=1)
 
-  terms = NOD.nod_of(dice,
+  terms =(dice,
                      jaccard,
                      ae_bce_loss,
                      seg_bce_loss,
@@ -81,8 +82,8 @@ def calculate_loss(seg, recon, depth, normals):
                      )
 
   term_weight = 1 / len(terms)
-  weighted_terms = [term.mean() * term_weight for term in terms.as_list()]
+  weighted_terms = [term.mean() * term_weight for term in terms]
 
   loss = sum(weighted_terms)
 
-  return NOD.nod_of(loss, terms)
+  return NOD(loss=loss, terms=terms)

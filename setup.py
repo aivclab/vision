@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 
-__author__ = 'cnheider'
 
 
-def python_version_check():
+def python_version_check(major=3, minor=6):
   import sys
 
-  assert sys.version_info.major == 3 and sys.version_info.minor >= 6, (
-      f'This project is utilises language features only present Python 3.6 and greater. '
-      f'You are running {sys.version_info}.')
+  assert sys.version_info.major == major and sys.version_info.minor >= minor, (
+      f"This project is utilises language features only present Python {major}.{minor} and greater. "
+      f"You are running {sys.version_info}."
+  )
+
 
 
 python_version_check()
@@ -20,11 +21,12 @@ import re
 from setuptools import find_packages, setup
 
 with open(pathlib.Path(__file__).parent / "neodroidvision" / "__init__.py", "r") as project_init_file:
-  content = project_init_file.read()
-  # get version string from module
-  version = re.search(r"__version__ = ['\"]([^'\"]*)['\"]", content, re.M).group(1)
-  project_name = re.search(r"PROJECT_NAME = ['\"]([^'\"]*)['\"]", content, re.M).group(1)
-
+  str_reg_exp = "['\"]([^'\"]*)['\"]"
+  content = project_init_file.read()  # get strings from module
+  version = re.search(rf"__version__ = {str_reg_exp}", content, re.M).group(1)
+  project_name = re.search(rf"__project__ = {str_reg_exp}", content, re.M).group(1)
+  author = re.search(rf"__author__ = {str_reg_exp}", content, re.M).group(1)
+__author__ = author
 
 class NeodroidVisionPackage:
 
@@ -67,7 +69,7 @@ class NeodroidVisionPackage:
 
   @property
   def author_name(self):
-    return 'Christian Heider Nielsen'
+    return author
 
   @property
   def author_email(self):
@@ -83,16 +85,12 @@ class NeodroidVisionPackage:
 
   @property
   def package_data(self):
-    # data = glob.glob('environment_utilities/mab/**', recursive=True)
+    # data = glob.glob('data/', recursive=True)
     return {
-        # 'neodroid':[
-        # *data
-        # 'environment_utilities/mab/**',
-        # 'environment_utilities/mab/**_Data/*',
-        # 'environment_utilities/mab/windows/*'
-        # 'environment_utilities/mab/windows/*_Data/*'
-        #  ]
-        }
+      # 'PackageName':[
+      # *data
+      #  ]
+      }
 
   @property
   def entry_points(self):
@@ -107,7 +105,24 @@ class NeodroidVisionPackage:
   def extras(self):
     these_extras = {
         # 'ExtraName':['package-name; platform_system == "System(Linux,Windows)"'
+
         }
+
+    path: pathlib.Path = pathlib.Path(__file__).parent
+
+    for file in path.iterdir():
+      if (file.name.startswith('requirements_')):
+
+        requirements_group = []
+        with open(str(file.absolute())) as f:
+          requirements = f.readlines()
+
+          for requirement in requirements:
+            requirements_group.append(requirement.strip())
+
+        group_name_ = '_'.join(file.name.strip('.txt').split('_')[1:])
+
+        these_extras[group_name_] = requirements_group
 
     all_dependencies = []
 

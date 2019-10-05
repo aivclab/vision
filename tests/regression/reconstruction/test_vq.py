@@ -1,7 +1,7 @@
-import numpy as np
+import numpy
 import torch
 
-from neodroidvision.regression.reconstruction.generative.vae.vqvae2.vq import embedding_distances
+from neodroidvision.reconstruction import embedding_distances
 
 
 def test_embedding_distances():
@@ -10,7 +10,7 @@ def test_embedding_distances():
   with torch.no_grad():
     actual = embedding_distances(dictionary, tensor).numpy()
     expected = naive_embedding_distances(dictionary, tensor).numpy()
-    assert np.allclose(actual, expected, atol=1e-4)
+    assert numpy.allclose(actual, expected, atol=1e-4)
 
 
 def naive_embedding_distances(dictionary, tensor):

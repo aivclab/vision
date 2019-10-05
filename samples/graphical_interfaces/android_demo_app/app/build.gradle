@@ -3,18 +3,18 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "ai.demo.vestas"
+        applicationId "ai.demo.app"
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        externalNativeBuild {
+        /*externalNativeBuild {
             cmake {
                 cppFlags "-frtti -fexceptions -std=c++11"
                 arguments "-DANDROID_STL=gnustl_shared"
             }
-        }
+        }*/
         ndk {
             // Specifies the ABI configurations of your native
             // libraries Gradle should build and package with your APK.
@@ -35,12 +35,17 @@ android {
     packagingOptions {
         pickFirst 'lib/armeabi-v7a/libgnustl_shared.so'
     }
+    compileOptions {
+        sourceCompatibility = 1.6
+        targetCompatibility = 1.8
+    }
+    buildToolsVersion = '29.0.2'
 
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.so'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.support:appcompat-v7:28.0.0'

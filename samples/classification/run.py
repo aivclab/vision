@@ -13,12 +13,12 @@ from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import (FileGenerator,
                                            NeodroidClassificationGenerator,
                                            export,
-                                           squeezenet_retrain,
+                                           resnet_retrain,
                                            test_model,
                                            train_model,
                                            )
 
-__author__ = 'cnheider'
+__author__ = 'Christian Heider Nielsen'
 
 import torch
 import torch.optim as optim
@@ -62,9 +62,7 @@ def main():
   if not options.no_cuda:
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  model, params_to_update = squeezenet_retrain(num_classes)
-  # model, params_to_update = resnet_retrain(num_classes,resnet_version=torchvision.models.resnet50)
-
+  model, params_to_update = resnet_retrain(num_classes)
   model = model.to(DEVICE)
 
   criterion = torch.nn.CrossEntropyLoss()

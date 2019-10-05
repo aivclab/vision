@@ -3,7 +3,7 @@
 
 import os
 
-import numpy as np
+import numpy
 import torch
 import torchvision
 import torchvision.transforms as T
@@ -12,9 +12,9 @@ from torch.utils.data import Dataset
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
-from neodroidvision.regression.segmentation.coco_vision.coco_eval import evaluate
-from neodroidvision.regression.segmentation.coco_vision.new_vision_engine import train_one_epoch
-from neodroidvision.regression.segmentation.coco_vision.new_vision_utils import collate_fn
+from neodroidvision.segmentation.coco_vision import evaluate
+from neodroidvision.segmentation.coco_vision import train_one_epoch
+from neodroidvision.segmentation.coco_vision import collate_fn
 
 
 class PennFudanDataset(Dataset):
@@ -36,9 +36,9 @@ class PennFudanDataset(Dataset):
     # with 0 being background
     mask = Image.open(mask_path)
 
-    mask = np.array(mask)
+    mask = numpy.array(mask)
     # instances are encoded as different colors
-    obj_ids = np.unique(mask)
+    obj_ids = numpy.unique(mask)
     # first id is the background, so remove it
     obj_ids = obj_ids[1:]
 
@@ -50,11 +50,11 @@ class PennFudanDataset(Dataset):
     num_objs = len(obj_ids)
     boxes = []
     for i in range(num_objs):
-      pos = np.where(masks[i])
-      xmin = np.min(pos[1])
-      xmax = np.max(pos[1])
-      ymin = np.min(pos[0])
-      ymax = np.max(pos[0])
+      pos = numpy.where(masks[i])
+      xmin = numpy.min(pos[1])
+      xmax = numpy.max(pos[1])
+      ymin = numpy.min(pos[0])
+      ymax = numpy.max(pos[0])
       boxes.append([xmin, ymin, xmax, ymax])
 
     boxes = torch.as_tensor(boxes, dtype=torch.float32)
