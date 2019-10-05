@@ -15,9 +15,9 @@ from warg.named_ordered_dictionary import NOD
 __author__ = 'Christian Heider Nielsen'
 
 
-def neodroid_batch_data_iterator(env,
-                                 device,
-                                 batch_size=12):
+def neodroid_camera_data_iterator(env,
+                                  device,
+                                  batch_size=12):
   while True:
     rgb = []
     mask_responses = []

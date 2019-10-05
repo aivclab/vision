@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 from neodroid.wrappers.observation_wrapper import (CameraObservationWrapper)
-from neodroidvision.data.data import calculate_loss, neodroid_batch_data_iterator
+from neodroidvision.data.data import calculate_loss, neodroid_camera_data_iterator
 from neodroidvision.segmentation import MultiHeadedSkipFCN
 from neodroidvision.segmentation import (reverse_channel_transform,
                                          )
@@ -165,7 +165,7 @@ def main():
 
   exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
 
-  data_iter = iter(neodroid_batch_data_iterator(env, device, batch_size))
+  data_iter = iter(neodroid_camera_data_iterator(env, device, batch_size))
 
   if options.i:
     trained_aeu_model = train_model(aeu_model,

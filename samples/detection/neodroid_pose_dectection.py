@@ -14,7 +14,7 @@ from torchvision.transforms.functional import to_tensor
 #from draugr.torch_utilities.to_tensor import to_tensor
 from neodroid.environments import UnityEnvironment
 from neodroid.environments.unity.vector_unity_environment import VectorWrapper
-from neodroid.interfaces.neodroid_standard_modules.neodroid_camera_extraction import extract_all_as_camera
+from neodroid.utilities import extract_all_as_camera
 from warg.named_ordered_dictionary import NOD
 
 cudnn = torch.backends.cudnn

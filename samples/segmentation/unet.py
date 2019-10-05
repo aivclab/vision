@@ -9,7 +9,7 @@ from draugr.torch_utilities import reverse_channel_transform
 from draugr.writers import TensorBoardPytorchWriter
 from neodroid.wrappers import CameraObservationWrapper
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.data import calculate_loss, neodroid_batch_data_iterator
+from neodroidvision.data.data import calculate_loss, neodroid_camera_data_iterator
 from neodroidvision.segmentation import MultiHeadedSkipFCN
 
 from neodroidvision.segmentation.segmentation_utilities import plot_utilities
@@ -160,8 +160,8 @@ def main():
 
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-  aeu_model = MultiHeadedSkipFCN((3, 3, 1, 3),
-                                 input_channels=input_channels,
+  aeu_model = MultiHeadedSkipFCN(input_channels,
+                                 (3, 3, 1, 3),
                                  encoding_depth=depth,
                                  start_channels=model_start_channels)
   aeu_model = aeu_model.to(device)
@@ -170,7 +170,7 @@ def main():
 
   exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
 
-  data_iter = iter(neodroid_batch_data_iterator(env, device, batch_size))
+  data_iter = iter(neodroid_camera_data_iterator(env, device, batch_size))
 
   if options.i:
     with TensorBoardPytorchWriter(str(home_path.user_log / str(time.time()))) as writer:

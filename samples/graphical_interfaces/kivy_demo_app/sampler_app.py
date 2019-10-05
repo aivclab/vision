@@ -15,7 +15,7 @@ from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.dataset_wrappers.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction import BurgessVae
+from neodroidvision.regression.generative.vae.architectures.beta_vae import BurgessVae
 
 __author__ = 'Christian Heider Nielsen'
 __doc__ = ''

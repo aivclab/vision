@@ -1,7 +1,7 @@
 import numpy
 import torch
 
-from neodroidvision.reconstruction import embedding_distances
+from neodroidvision.regression.generative.vae.vqvae2.vq import embedding_distances
 
 
 def test_embedding_distances():

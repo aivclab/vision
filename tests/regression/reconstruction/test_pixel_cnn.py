@@ -3,17 +3,13 @@ import pytest
 import torch
 import torch.nn as nn
 
-from neodroidvision.reconstruction import PixelAttention
-from neodroidvision.reconstruction import (PixelCNN,
-                                           PixelConvA,
-                                           PixelConvB,
-                                           )
+from neodroidvision.regression.generative.vae.vqvae2.attention import PixelAttention
+from neodroidvision.regression.generative.vae.vqvae2.pixel_cnn import PixelConvA, PixelConvB, PixelCNN
 
 TEST_IMG_WIDTH = 7
 TEST_IMG_HEIGHT = 11
 TEST_IMG_DEPTH_IN = 2
 TEST_IMG_DEPTH = 4
-
 
 @pytest.mark.parametrize('start,middle', [
     (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=3),
@@ -35,7 +31,8 @@ def test_pixel_cnn_masking(start, middle):
   for row in range(TEST_IMG_HEIGHT):
     for col in range(TEST_IMG_WIDTH):
       for z in range(TEST_IMG_DEPTH):
-        input_img = nn.Parameter(torch.randn(1, TEST_IMG_DEPTH_IN,
+        input_img = nn.Parameter(torch.randn(1,
+                                             TEST_IMG_DEPTH_IN,
                                              TEST_IMG_HEIGHT,
                                              TEST_IMG_WIDTH))
         output = network(input_img)
