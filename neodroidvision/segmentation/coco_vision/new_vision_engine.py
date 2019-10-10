@@ -6,7 +6,6 @@ import torch
 import torchvision.models.detection.mask_rcnn
 
 
-
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
   model.train()
   metric_logger = MetricLogger(delimiter="  ")

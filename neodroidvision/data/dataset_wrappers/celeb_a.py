@@ -2,7 +2,7 @@
 import csv
 from pathlib import Path
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import torch
 from PIL import Image
 from torch.utils import data
@@ -14,9 +14,9 @@ class VggFaces2(data.Dataset):
   # std = numpy.array([0.229, 0.224, 0.225])
 
   inverse_transform = transforms.Compose([
-      # transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist()),
-      transforms.ToPILImage()
-      ])
+    # transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist()),
+    transforms.ToPILImage()
+    ])
 
   @staticmethod
   def get_id_label_map(meta_file):
@@ -60,18 +60,18 @@ class VggFaces2(data.Dataset):
     self._raw_images = raw_images
 
     self.train_trans = transforms.Compose([
-        transforms.RandomResizedCrop(resize_s),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        # transforms.Normalize(self.mean, self.std)
-        ])
+      transforms.RandomResizedCrop(resize_s),
+      transforms.RandomHorizontalFlip(),
+      transforms.ToTensor(),
+      # transforms.Normalize(self.mean, self.std)
+      ])
 
     self.val_trans = transforms.Compose([
-        transforms.Resize(resize_s),
-        transforms.CenterCrop(resize_s),
-        transforms.ToTensor(),
-        # transforms.Normalize(self.mean, self.std)
-        ])
+      transforms.Resize(resize_s),
+      transforms.CenterCrop(resize_s),
+      transforms.ToTensor(),
+      # transforms.Normalize(self.mean, self.std)
+      ])
 
     self._img_info = []
     with open(str(self._image_list_file_path), 'r') as f:
@@ -127,7 +127,7 @@ if __name__ == '__main__':
                                                                   desc='Bro',
                                                                   ncols=80,
                                                                   leave=False):
-    plt.imshow(dt.inverse_transform(imgs[0]))
-    # plt.imshow(imgs)
-    plt.show()
+    pyplot.imshow(dt.inverse_transform(imgs[0]))
+    # pyplot.imshow(imgs)
+    pyplot.show()
     break

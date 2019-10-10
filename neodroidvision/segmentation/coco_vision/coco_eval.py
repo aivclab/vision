@@ -7,7 +7,6 @@ import torch
 import torch._six
 
 
-
 class CocoEvaluator(object):
   def __init__(self, coco_gt, iou_types):
     assert isinstance(iou_types, (list, tuple))
@@ -73,16 +72,16 @@ class CocoEvaluator(object):
       labels = prediction["labels"].tolist()
 
       coco_results.extend(
-          [
-              {
-                  "image_id":   original_id,
-                  "category_id":labels[k],
-                  "bbox":       box,
-                  "score":      scores[k],
-                  }
-              for k, box in enumerate(boxes)
-              ]
-          )
+        [
+          {
+            "image_id":   original_id,
+            "category_id":labels[k],
+            "bbox":       box,
+            "score":      scores[k],
+            }
+          for k, box in enumerate(boxes)
+          ]
+        )
     return coco_results
 
   def prepare_for_coco_segmentation(self, predictions):
@@ -101,23 +100,23 @@ class CocoEvaluator(object):
       labels = prediction["labels"].tolist()
 
       rles = [
-          mask_util.encode(numpy.array(mask[0, :, :, numpy.newaxis], order="F"))[0]
-          for mask in masks
-          ]
+        mask_util.encode(numpy.array(mask[0, :, :, numpy.newaxis], order="F"))[0]
+        for mask in masks
+        ]
       for rle in rles:
         rle["counts"] = rle["counts"].decode("utf-8")
 
       coco_results.extend(
-          [
-              {
-                  "image_id":    original_id,
-                  "category_id": labels[k],
-                  "segmentation":rle,
-                  "score":       scores[k],
-                  }
-              for k, rle in enumerate(rles)
-              ]
-          )
+        [
+          {
+            "image_id":    original_id,
+            "category_id": labels[k],
+            "segmentation":rle,
+            "score":       scores[k],
+            }
+          for k, rle in enumerate(rles)
+          ]
+        )
     return coco_results
 
   def prepare_for_coco_keypoint(self, predictions):
@@ -134,16 +133,16 @@ class CocoEvaluator(object):
       keypoints = keypoints.flatten(start_dim=1).tolist()
 
       coco_results.extend(
-          [
-              {
-                  "image_id":   original_id,
-                  "category_id":labels[k],
-                  'keypoints':  keypoint,
-                  "score":      scores[k],
-                  }
-              for k, keypoint in enumerate(keypoints)
-              ]
-          )
+        [
+          {
+            "image_id":   original_id,
+            "category_id":labels[k],
+            'keypoints':  keypoint,
+            "score":      scores[k],
+            }
+          for k, keypoint in enumerate(keypoints)
+          ]
+        )
     return coco_results
 
 
@@ -317,18 +316,18 @@ def evaluate(self):
   elif p.iouType == 'keypoints':
     computeIoU = self.computeOks
   self.ious = {
-      (imgId, catId):computeIoU(imgId, catId)
-      for imgId in p.imgIds
-      for catId in catIds}
+    (imgId, catId):computeIoU(imgId, catId)
+    for imgId in p.imgIds
+    for catId in catIds}
 
   evaluateImg = self.evaluateImg
   maxDet = p.maxDets[-1]
   evalImgs = [
-      evaluateImg(imgId, catId, areaRng, maxDet)
-      for catId in catIds
-      for areaRng in p.areaRng
-      for imgId in p.imgIds
-      ]
+    evaluateImg(imgId, catId, areaRng, maxDet)
+    for catId in catIds
+    for areaRng in p.areaRng
+    for imgId in p.imgIds
+    ]
   # this is NOT in the pycocotools code, but could be done outside
   evalImgs = numpy.asarray(evalImgs).reshape(len(catIds), len(p.areaRng), len(p.imgIds))
   self._paramsEval = copy.deepcopy(self.params)

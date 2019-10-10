@@ -2,7 +2,7 @@ import copy
 import string
 import time
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import numpy
 import torch
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
@@ -44,7 +44,7 @@ def test_model(model,
 
   cell_width = (800 / num_columns) - 6 - 6 * 2
 
-  plt.plot(numpy.random.random((3, 3)))
+  pyplot.plot(numpy.random.random((3, 3)))
 
   alphabet = string.ascii_lowercase
   class_names = numpy.array([*alphabet])
@@ -55,7 +55,7 @@ def test_model(model,
                         input_images_rgb,
                         y_pred_max,
                         truth_labels):
-    plt.imshow(a)
+    pyplot.imshow(a)
     if b == c:
       outcome = 'tp'
     else:
@@ -91,7 +91,7 @@ def test_model(model,
   generate_pdf(file_name)
 
   # plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, pred)
-  # plt.show()
+  # pyplot.show()
 
 
 def confusion_matrisx():
@@ -178,7 +178,7 @@ def train_model(model,
           if early_stop is not None and val_pred < early_stop:
             break
       sess.set_description_str(
-          f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
+        f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
 
   except KeyboardInterrupt:
     print('Interrupt')

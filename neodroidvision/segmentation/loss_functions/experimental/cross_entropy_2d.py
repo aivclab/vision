@@ -50,8 +50,8 @@ def bootstrapped_cross_entropy2d(input, target, K, weight=None, size_average=Tru
     input = input.transpose(1, 2).transpose(2, 3).contiguous().view(-1, c)
     target = target.view(-1)
     loss = F.cross_entropy(
-        input, target, weight=weight, reduce=False, size_average=False, ignore_index=250
-        )
+      input, target, weight=weight, reduce=False, size_average=False, ignore_index=250
+      )
 
     topk_loss, _ = loss.topk(K)
     reduced_topk_loss = topk_loss.sum() / K

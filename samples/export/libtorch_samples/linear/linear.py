@@ -1,10 +1,10 @@
 import torch
 from torch.utils.data import TensorDataset, DataLoader
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 
 
 input_size = 1
-output_size = 1 
+output_size = 1
 num_epochs = 60
 learning_rate = 0.001
 
@@ -40,9 +40,9 @@ for epoch in range(num_epochs):
 
 
 predicted = model(x_train).detach()
-plt.plot(x_train.numpy(), y_train.numpy(), 'ro', label='Original data')
-plt.plot(x_train.numpy(), predicted.numpy(), label='Fitted line')
-plt.legend()
-plt.show()
+pyplot.plot(x_train.numpy(), y_train.numpy(), 'ro', label='Original data')
+pyplot.plot(x_train.numpy(), predicted.numpy(), label='Fitted line')
+pyplot.legend()
+pyplot.show()
 
 

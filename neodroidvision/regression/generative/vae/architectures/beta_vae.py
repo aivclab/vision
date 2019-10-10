@@ -66,16 +66,16 @@ class HigginsVae(VAE):
   @staticmethod
   def deconv_module(in_channels, out_channels, kernel_size=4, stride=2, padding=1, **convt_kwargs):
     return nn.Sequential(
-        nn.ConvTranspose2d(in_channels,
-                           out_channels,
-                           kernel_size=kernel_size,
-                           stride=stride,
-                           padding=padding,
-                           **convt_kwargs
-                           ),
-        # nn.BatchNorm2d(out_channels),
-        nn.ReLU(True)
-        )
+      nn.ConvTranspose2d(in_channels,
+                         out_channels,
+                         kernel_size=kernel_size,
+                         stride=stride,
+                         padding=padding,
+                         **convt_kwargs
+                         ),
+      # nn.BatchNorm2d(out_channels),
+      nn.ReLU(True)
+      )
 
   def encode(self, *x) -> Tuple[torch.Tensor, torch.Tensor]:
     x = self.encoder(*x)

@@ -33,7 +33,7 @@ def neodroid_camera_data_iterator(env,
       red_mask = numpy.zeros(seg_arr.shape[:-1])
       green_mask = numpy.zeros(seg_arr.shape[:-1])
       blue_mask = numpy.zeros(seg_arr.shape[:-1])
-      #alpha_mask = numpy.ones(seg_arr.shape[:-1])
+      # alpha_mask = numpy.ones(seg_arr.shape[:-1])
 
       reddish = seg_arr[:, :, 0] > 50
       greenish = seg_arr[:, :, 1] > 50
@@ -47,15 +47,15 @@ def neodroid_camera_data_iterator(env,
 
       depth_image[:, :] = depth_arr[..., 0]
 
-      rgb.append(channel_transform(rgb_arr)[:3,:,:])
+      rgb.append(channel_transform(rgb_arr)[:3, :, :])
       mask_responses.append(numpy.asarray([red_mask, blue_mask, green_mask]))
       depth_responses.append(numpy.clip(numpy.asarray([depth_image / 255.0]), 0, 1))
-      normals_responses.append(channel_transform(normal_arr)[:3,:,:])
-    yield (to_tensor(rgb,device=device),
-           (to_tensor(mask_responses,device=device),
-            to_tensor(depth_responses,device=device),
-            to_tensor(normals_responses,device=device)
-           ))
+      normals_responses.append(channel_transform(normal_arr)[:3, :, :])
+    yield (to_tensor(rgb, device=device),
+           (to_tensor(mask_responses, device=device),
+            to_tensor(depth_responses, device=device),
+            to_tensor(normals_responses, device=device)
+            ))
 
 
 def calculate_loss(seg, recon, depth, normals):
@@ -73,13 +73,13 @@ def calculate_loss(seg, recon, depth, normals):
   dice = dice_loss(pred_soft, seg_target, epsilon=1)
   jaccard = jaccard_loss.jaccard_loss(pred_soft, seg_target, epsilon=1)
 
-  terms =(dice,
-                     jaccard,
-                     ae_bce_loss,
-                     seg_bce_loss,
-                     depth_bce_loss,
-                     normals_bce_loss
-                     )
+  terms = (dice,
+           jaccard,
+           ae_bce_loss,
+           seg_bce_loss,
+           depth_bce_loss,
+           normals_bce_loss
+           )
 
   term_weight = 1 / len(terms)
   weighted_terms = [term.mean() * term_weight for term in terms]

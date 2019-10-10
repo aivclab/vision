@@ -3,7 +3,7 @@
 import math
 import time
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import numpy
 import torch
 from PIL import Image, ImageDraw
@@ -11,7 +11,6 @@ from matplotlib import animation
 from torchvision.models.detection import keypointrcnn_resnet50_fpn
 from torchvision.transforms.functional import to_tensor
 
-#from draugr.torch_utilities.to_tensor import to_tensor
 from neodroid.environments import UnityEnvironment
 from neodroid.environments.unity.vector_unity_environment import VectorWrapper
 from neodroid.utilities import extract_all_as_camera
@@ -124,7 +123,7 @@ time_s = time.time()
 image_axs = NOD()
 
 env = VectorWrapper(UnityEnvironment(connect_to_running=True))
-fig = plt.figure()
+fig = pyplot.figure()
 print_obs = False
 
 
@@ -208,7 +207,7 @@ def main():
         image_axs[k] = ax.imshow(v)
 
   _ = animation.FuncAnimation(fig, update_figures)
-  plt.show()
+  pyplot.show()
 
 
 if __name__ == '__main__':

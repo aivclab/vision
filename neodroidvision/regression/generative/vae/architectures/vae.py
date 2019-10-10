@@ -64,7 +64,7 @@ class VAE(torch.nn.Module):
   def sample_from(self, *encoding) -> torch.Tensor:
     sample = to_tensor(*encoding).to(device=next(self.parameters()).device)
     assert sample.shape[-1] == self._latent_size, (
-        f'sample.shape[-1]:{sample.shape[-1]} !='
-        f' self._encoding_size:{self._latent_size}')
+      f'sample.shape[-1]:{sample.shape[-1]} !='
+      f' self._encoding_size:{self._latent_size}')
     sample = self.decode(*sample).to('cpu')
     return sample

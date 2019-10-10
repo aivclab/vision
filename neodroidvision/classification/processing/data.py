@@ -15,15 +15,15 @@ __author__ = 'Christian Heider Nielsen'
 import torch
 
 a_transform = transforms.Compose([
-    transforms.Resize(224),
-    transforms.CenterCrop(224),
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor()
-    ])
+  transforms.Resize(224),
+  transforms.CenterCrop(224),
+  transforms.RandomHorizontalFlip(),
+  transforms.ToTensor()
+  ])
 
 a_retransform = transforms.Compose([
-    transforms.ToPILImage('RGB')
-    ])
+  transforms.ToPILImage('RGB')
+  ])
 
 
 def NeodroidClassificationGenerator(env, device, batch_size=64):

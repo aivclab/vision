@@ -5,7 +5,7 @@ import PIL.Image as Image
 import PIL.ImageColor as ImageColor
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import numpy
 import numpy
 import six
@@ -557,7 +557,7 @@ def draw_mask_on_image_array(image,
   pil_image = Image.fromarray(image, mode=mode)
 
   solid_color = numpy.expand_dims(numpy.ones_like(mask),
-                               axis=2) * numpy.reshape(list(rgb), [1, 1, 3])
+                                  axis=2) * numpy.reshape(list(rgb), [1, 1, 3])
   pil_solid_color = Image.fromarray(numpy.uint8(solid_color)).convert('RGBA')
   pil_mask = Image.fromarray(numpy.uint8(255.0 * alpha * mask)).convert('L')
   pil_image = Image.composite(pil_solid_color, pil_image, pil_mask)
@@ -667,7 +667,7 @@ def add_cdf_image_summary(values, name):
     cumulative_values = numpy.cumsum(sorted_values)
     fraction_of_examples = (numpy.arange(cumulative_values.size, dtype=numpy.float32)
                             / cumulative_values.size)
-    fig = plt.figure(frameon=False)
+    fig = pyplot.figure(frameon=False)
     ax = fig.add_subplot('111')
     ax.plot(fraction_of_examples, cumulative_values)
     ax.set_ylabel('cumulative normalized values')
@@ -694,7 +694,7 @@ def add_hist_image_summary(values, bins, name):
 
   def hist_plot(values, bins):
     """Numpy function to plot hist."""
-    fig = plt.figure(frameon=False)
+    fig = pyplot.figure(frameon=False)
     ax = fig.add_subplot('111')
     y, x = numpy.histogram(values, bins=bins)
     ax.plot(x[:-1], y)
@@ -703,7 +703,7 @@ def add_hist_image_summary(values, bins, name):
     fig.canvas.draw()
     width, height = fig.get_size_inches() * fig.get_dpi()
     image = numpy.fromstring(fig.canvas.tostring_rgb(),
-                          dtype='uint8').reshape(1, int(height), int(width), 3)
+                             dtype='uint8').reshape(1, int(height), int(width), 3)
     return image
 
   hist_plot = tf.py_func(hist_plot, [values, bins], tf.uint8)
@@ -726,8 +726,8 @@ if __name__ == '__main__':
     # bs = [BoundingBoxSpec(bb_,l_,None,None,None,'white') for bb_, l_ in zip(bb,labels_str)]
 
     # visualize_boxes_and_labels_on_image_array(im, bs)
-    plt.imshow(im)
-    plt.show()
+    pyplot.imshow(im)
+    pyplot.show()
 
 
   main()

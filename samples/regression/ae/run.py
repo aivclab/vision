@@ -19,7 +19,7 @@ import torch
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from tqdm import tqdm
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 from draugr.writers import TensorBoardPytorchWriter
 
 
@@ -126,7 +126,7 @@ def test_model(model, data_iterator, load_path=None):
   pred_recon = [reverse_channel_transform(x) for x in recon]
 
   plot_utilities.plot_side_by_side([input_images_rgb, target_masks_rgb, pred_rgb, pred_recon])
-  plt.show()
+  pyplot.show()
 
 
 def main():

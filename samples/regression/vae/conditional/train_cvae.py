@@ -2,7 +2,7 @@ import os
 import time
 from collections import defaultdict
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import pandas as pd
 import seaborn as sns
 import torch
@@ -89,28 +89,28 @@ def main():
         condition_vector = torch.arange(0, 10, device=DEVICE).long().unsqueeze(1)
         sample = vae.sample(one_hot(condition_vector, 10, device=DEVICE), num=condition_vector.size(0))
 
-        plt.figure()
-        plt.figure(figsize=(5, 10))
+        pyplot.figure()
+        pyplot.figure(figsize=(5, 10))
         for p in range(10):
-          plt.subplot(5, 2, p + 1)
+          pyplot.subplot(5, 2, p + 1)
 
-          plt.text(0, 0, f"c={condition_vector[p].item():d}",
+          pyplot.text(0, 0, f"c={condition_vector[p].item():d}",
                    color='black',
                    backgroundcolor='white',
                    fontsize=8)
-          plt.imshow(sample[p].cpu().data.numpy())
-          plt.axis('off')
+          pyplot.imshow(sample[p].cpu().data.numpy())
+          pyplot.axis('off')
 
         if not os.path.exists(os.path.join(fig_root, str(timstamp))):
           if not (os.path.exists(os.path.join(fig_root))):
             os.mkdir(os.path.join(fig_root))
           os.mkdir(os.path.join(fig_root, str(timstamp)))
 
-        plt.savefig(os.path.join(fig_root, str(timstamp),
+        pyplot.savefig(os.path.join(fig_root, str(timstamp),
                                  f"Epoch{epoch:d}_Iter{iteration:d}.png"),
                     dpi=300)
-        plt.clf()
-        plt.close('all')
+        pyplot.clf()
+        pyplot.close('all')
 
     df = pd.DataFrame.from_dict(tracker_epoch, orient='index')
     g = sns.lmplot(x='x',

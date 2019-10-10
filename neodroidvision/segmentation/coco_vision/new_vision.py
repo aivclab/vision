@@ -46,7 +46,7 @@ if __name__ == '__main__':
   dataset = PennFudanDataset('/home/heider/Data/Datasets/Segmentation/PennFudanPed/',
                              get_transform(train=True))
   dataset_test = PennFudanDataset('/home/heider/Data/Datasets/Segmentation/PennFudanPed/', get_transform(
-      train=False))
+    train=False))
 
   # split the dataset in train and test set
   torch.manual_seed(1)
@@ -56,12 +56,12 @@ if __name__ == '__main__':
 
   # define training and validation data loaders
   data_loader = torch.utils.data.DataLoader(
-      dataset, batch_size=2, shuffle=True, num_workers=4,
-      collate_fn=collate_fn)
+    dataset, batch_size=2, shuffle=True, num_workers=4,
+    collate_fn=collate_fn)
 
   data_loader_test = torch.utils.data.DataLoader(
-      dataset_test, batch_size=1, shuffle=False, num_workers=4,
-      collate_fn=collate_fn)
+    dataset_test, batch_size=1, shuffle=False, num_workers=4,
+    collate_fn=collate_fn)
 
   DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 

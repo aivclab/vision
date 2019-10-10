@@ -5,11 +5,14 @@ import copy
 import os
 import time
 
+from torch.utils.data import DataLoader
+from torchvision.transforms import transforms
+
 from draugr.torch_utilities import reverse_channel_transform
 from draugr.writers import TensorBoardPytorchWriter
 from neodroid.wrappers import CameraObservationWrapper
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.data import calculate_loss, neodroid_camera_data_iterator
+from neodroidvision.data.neodroid_environments.data import neodroid_camera_data_iterator, calculate_loss
 from neodroidvision.segmentation import MultiHeadedSkipFCN
 
 from neodroidvision.segmentation.segmentation_utilities import plot_utilities
@@ -17,10 +20,9 @@ from neodroidvision.segmentation.segmentation_utilities import plot_utilities
 __author__ = 'Christian Heider Nielsen'
 
 import torch
-import torch.optim as optim
-from torch.optim import lr_scheduler
+from torch import optim
 from tqdm import tqdm
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 
 
 def get_metric_str(metrics, writer, update_i):
@@ -57,7 +59,7 @@ def train_model(model,
         else:
           model.eval()
 
-        rgb_imgs, (seg_target, depth_target, normals_target) = next(data_iterator)
+        rgb_imgs, (seg_target,depth_target,normals_target) = next(data_iterator)
 
         optimizer.zero_grad()
         with torch.set_grad_enabled(phase == 'train'):
@@ -131,7 +133,7 @@ def inference(model, data_iterator, load_path=None):
   pred_recon = [reverse_channel_transform(x) for x in recon]
 
   plot_utilities.plot_side_by_side([input_images_rgb, target_masks_rgb, pred_rgb, pred_recon])
-  plt.show()
+  pyplot.show()
 
 
 def main():
@@ -147,6 +149,7 @@ def main():
   lr_sch_step_size = int(1000 // batch_size) + 4
   lr_sch_gamma = 0.1
   model_start_channels = 16
+  input_shape = (28,28)
   input_channels = 3
 
   home_path = PROJECT_APP_PATH
@@ -161,14 +164,14 @@ def main():
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
   aeu_model = MultiHeadedSkipFCN(input_channels,
-                                 (3, 3, 1, 3),
+                                 (input_channels,3,1,3),
                                  encoding_depth=depth,
                                  start_channels=model_start_channels)
   aeu_model = aeu_model.to(device)
 
   optimizer_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
 
-  exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
+  exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma)
 
   data_iter = iter(neodroid_camera_data_iterator(env, device, batch_size))
 
