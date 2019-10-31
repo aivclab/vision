@@ -48,7 +48,7 @@ DATASET = VggFaces2(Path(f'/home/heider/Data/vggface2'),
                     split='test',
                     resize_s=INPUT_SIZE)
 MODEL: VAE = HigginsVae(CHANNELS,
-                        latent_size=ENCODING_SIZE).to(DEVICE)
+                        latent_size=ENCODING_SIZE).to(get_torch_device())
 BETA = 4
 
 
@@ -66,7 +66,7 @@ def train_model(model,
   train_accum_loss = 0
   generator = tqdm(enumerate(loader))
   for batch_idx, (original, *_) in generator:
-    original = original.to(DEVICE)
+    original = original.to(get_torch_device())
 
     optimiser.zero_grad()
     reconstruction, mean, log_var = model(original)
@@ -99,7 +99,7 @@ def run_model(model: VAE,
 
   with torch.no_grad():
     for i, (original, labels, *_) in enumerate(loader):
-      original = original.to(DEVICE)
+      original = original.to(get_torch_device())
 
       reconstruction, mean, log_var = model(original)
       loss = loss_function(reconstruction,

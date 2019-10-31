@@ -22,10 +22,10 @@ def main():
   vae = make_vae()
   if os.path.exists(VAE_PATH):
     vae.load_state_dict(torch.load(VAE_PATH, map_location='cpu'))
-  vae.to(device)
+  vae.to(get_torch_device())
 
   batch = next(load_text_samples(args.data, 1, args.context_len))
-  batch = batch.to(device)
+  batch = batch.to(get_torch_device())
   print_bytes('Original', batch[0])
   recons = vae.full_reconstructions(batch)
   for j, recon in enumerate(recons):

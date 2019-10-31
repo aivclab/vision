@@ -24,22 +24,22 @@ GEN_PATH = PROJECT_APP_PATH.user_data / 'gen.pt'
 def main():
   vae = make_vq_vae(LATENT_SIZE, LATENT_COUNT)
   vae.load_state_dict(torch.load(VAE_PATH, map_location='cpu'))
-  vae.to(DEVICE)
+  vae.to(get_torch_device())
   vae.eval()
 
   generator = Generator(LATENT_COUNT)
   if os.path.exists(GEN_PATH):
     generator.load_state_dict(torch.load(GEN_PATH, map_location='cpu'))
-  generator.to(DEVICE)
+  generator.to(get_torch_device())
 
   optimizer = optim.Adam(generator.parameters(), lr=LR)
   loss_fn = nn.CrossEntropyLoss()
 
   test_images = load_images(train=False)
   for batch_idx, images in enumerate(load_images()):
-    images = images.to(DEVICE)
+    images = images.to(get_torch_device())
     losses = []
-    for img_set in [images, next(test_images).to(DEVICE)]:
+    for img_set in [images, next(test_images).to(get_torch_device())]:
       _, _, encoded = vae.encoders[0](img_set)
       logits = generator(encoded)
       logits = logits.permute(0, 2, 3, 1).contiguous()

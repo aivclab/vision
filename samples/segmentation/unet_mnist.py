@@ -9,16 +9,14 @@ from pathlib import Path
 from typing import Iterator
 
 from torch.nn.modules.module import Module
-from torch.optim.lr_scheduler import _LRScheduler
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
-from draugr.writers import TensorBoardPytorchWriter, Writer, ImageWriter
-from draugr.writers.tensorboard.tensorboard_writer import TensorBoardWriter
+from draugr.writers import TensorBoardPytorchWriter, ImageWriter
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.to_device_tensor_iterator import to_device_tensor_iterator
-from neodroidvision.segmentation import MultiHeadedSkipFCN
+from neodroidvision.segmentation import SkipBottleNeckFissionNet
 from neodroidvision.utilities.torch_utilities import MinMaxNorm
 
 __author__ = 'Christian Heider Nielsen'
@@ -31,24 +29,14 @@ from torchvision.datasets import MNIST
 criterion = torch.nn.MSELoss()
 
 
-def get_metric_str(metrics, writer, update_i):
-  outputs = []
-  for k, v in metrics:
-    a = v.data.cpu().numpy()
-    writer.add_scalar(f'loss/{k}', a, update_i)
-    outputs.append(f'{k}:{a:2f}')
-
-  return f'{", ".join(outputs)}'
-
-
-def train_model(model:Module,
-                data_iterator:Iterator,
-                optimizer:Optimizer,
-                scheduler,
-                writer:ImageWriter,
-                interrupted_path:Path,
-                num_updates=2500000,
-                early_stop_threshold=1e-9) -> Module:
+def training(model: Module,
+             data_iterator: Iterator,
+             optimizer: Optimizer,
+             scheduler,
+             writer: ImageWriter,
+             interrupted_path: Path,
+             num_updates=2500000,
+             early_stop_threshold=1e-9) -> Module:
   best_model_wts = copy.deepcopy(model.state_dict())
   best_loss = 1e10
   since = time.time()
@@ -109,17 +97,13 @@ def train_model(model:Module,
   return model
 
 
-def inference(model:Module, data_iterator:Iterator):
+def inference(model: Module, data_iterator: Iterator):
   model.eval()
   inputs, *_ = next(data_iterator)
   pred, *_ = model(inputs)
 
 
-def main():
-  args = argparse.ArgumentParser()
-  args.add_argument('-i', action='store_false')
-  options = args.parse_args()
-
+def main(load_earlier=False, train=True):
   seed = 2554215
   batch_size = 32
 
@@ -130,20 +114,20 @@ def main():
   unet_depth = 3
   unet_start_channels = 16
   input_channels = 1
+  output_channels = (input_channels,)
 
   home_path = PROJECT_APP_PATH
-  best_model_path = 'INTERRUPTED_BEST.pth'
-  interrupted_path = PROJECT_APP_PATH.user_data / best_model_path
+  model_file_ending = '.model'
+  interrupted_path = PROJECT_APP_PATH.user_data / f'INTERRUPTED_BEST{model_file_ending}'
 
   torch.manual_seed(seed)
 
-  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+  device = get_torch_device()
 
-  img_transform = transforms.Compose([
-    transforms.ToTensor(),
-    MinMaxNorm(),
-    transforms.Lambda(lambda tensor:torch.round(tensor))
-    ])
+  img_transform = transforms.Compose([transforms.ToTensor(),
+                                      MinMaxNorm(),
+                                      transforms.Lambda(lambda tensor:torch.round(tensor))
+                                      ])
   dataset = MNIST(PROJECT_APP_PATH.user_data / 'mnist',
                   transform=img_transform,
                   download=True)
@@ -153,10 +137,10 @@ def main():
                                     pin_memory=True)))
   data_iter = to_device_tensor_iterator(data_iter, device)
 
-  model = MultiHeadedSkipFCN(input_channels,
-                             (input_channels,),
-                             encoding_depth=unet_depth,
-                             start_channels=unet_start_channels).to(device)
+  model = SkipBottleNeckFissionNet(input_channels,
+                                   output_channels,
+                                   encoding_depth=unet_depth,
+                                   start_channels=unet_start_channels).to(get_torch_device())
 
   optimizer_ft = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -164,22 +148,23 @@ def main():
                                                step_size=lr_sch_step_size,
                                                gamma=lr_sch_gamma)
 
-  if options.i:
-    with TensorBoardPytorchWriter(home_path.user_log / str(time.time())) as writer:
-      trained_aeu_model = train_model(model,
-                                      data_iter,
-                                      optimizer_ft,
-                                      exp_lr_scheduler,
-                                      writer,
-                                      interrupted_path)
-
-  else:
-    _list_of_files = home_path.glob('*')
-    lastest_model_path = str(max(_list_of_files, key=os.path.getctime)) + f'/{best_model_path}'
+  if load_earlier:
+    _list_of_files = PROJECT_APP_PATH.user_data.glob('*.model')
+    lastest_model_path = str(max(_list_of_files, key=os.path.getctime))
     print(f'loading previous model: {lastest_model_path}')
     if lastest_model_path is not None:
       model.load_state_dict(torch.load(lastest_model_path))
-      
+
+  if train:
+    with TensorBoardPytorchWriter(home_path.user_log / str(time.time())) as writer:
+      model = training(model,
+                       data_iter,
+                       optimizer_ft,
+                       exp_lr_scheduler,
+                       writer,
+                       interrupted_path)
+      torch.save(model, PROJECT_APP_PATH.user_data / f'fission_net{model_file_ending}')
+
   inference(model, data_iter)
 
   torch.cuda.empty_cache()

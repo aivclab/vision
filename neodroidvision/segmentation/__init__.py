@@ -3,4 +3,5 @@
 
 __author__ = 'Christian Heider Nielsen'
 
-from .architectures import *
+from .evaluation import *
+from .segmentation_utilities import *

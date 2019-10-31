@@ -12,7 +12,7 @@ from torchvision.models.detection import keypointrcnn_resnet50_fpn
 from torchvision.transforms.functional import to_tensor
 
 from neodroid.environments import UnityEnvironment
-from neodroid.environments.unity.vector_unity_environment import VectorWrapper
+from neodroid.environments.unity_environment.vector_unity_environment import VectorWrapper
 from neodroid.utilities import extract_all_as_camera
 from warg.named_ordered_dictionary import NOD
 

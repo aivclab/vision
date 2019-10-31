@@ -23,17 +23,17 @@ def main():
 
   vae = make_vae()
   vae.load_state_dict(torch.load(VAE_PATH))
-  vae.to(device)
+  vae.to(get_torch_device())
   vae.eval()
 
   top_prior = TopPrior()
   top_prior.load_state_dict(torch.load(TOP_PRIOR_PATH))
-  top_prior.to(device)
+  top_prior.to(get_torch_device())
 
   results = numpy.zeros([NUM_SAMPLES, 32, 32], dtype=numpy.long)
   for row in range(results.shape[1]):
     for col in range(results.shape[2]):
-      partial_in = torch.from_numpy(results[:, :row + 1]).to(device)
+      partial_in = torch.from_numpy(results[:, :row + 1]).to(get_torch_device())
       with torch.no_grad():
         outputs = torch.softmax(top_prior(partial_in), dim=1).cpu().numpy()
       for i, out in enumerate(outputs):
@@ -41,7 +41,7 @@ def main():
         results[i, row, col] = sample_softmax(probs)
     print('done row', row)
   with torch.no_grad():
-    full_latents = torch.from_numpy(results).to(device)
+    full_latents = torch.from_numpy(results).to(get_torch_device())
     top_embedded = vae.encoders[1].vq.embed(full_latents)
     bottom_encoded = vae.decoders[0]([top_embedded])
     bottom_embedded, _, _ = vae.encoders[0].vq(bottom_encoded)

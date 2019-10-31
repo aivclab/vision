@@ -23,20 +23,20 @@ def main():
 
   vae = make_vae()
   vae.load_state_dict(torch.load(VAE_PATH, map_location='cpu'))
-  vae.to(device)
+  vae.to(get_torch_device())
   vae.eval()
 
   top_prior = TopPrior()
   if os.path.exists(TOP_PRIOR_PATH):
     top_prior.load_state_dict(torch.load(TOP_PRIOR_PATH, map_location='cpu'))
-  top_prior.to(device)
+  top_prior.to(get_torch_device())
 
   optimizer = optim.Adam(top_prior.parameters(), lr=1e-4)
   loss_fn = nn.CrossEntropyLoss()
 
   data = load_images(args.data, batch_size=2)
   for i in itertools.count():
-    images = next(data).to(device)
+    images = next(data).to(get_torch_device())
     _, _, encoded = vae.encoders[1](vae.encoders[0].encode(images))
     logits = top_prior(encoded)
     logits = logits.permute(0, 2, 3, 1).contiguous()

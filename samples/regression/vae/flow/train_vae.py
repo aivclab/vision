@@ -95,8 +95,8 @@ if __name__ == '__main__':
     generator.load_state_dict(checkpoint['model'])
     variational_encoder.load_state_dict(checkpoint['variational'])
 
-  generator.to(device)
-  variational_encoder.to(device)
+  generator.to(get_torch_device())
+  variational_encoder.to(get_torch_device())
 
   parameters = list(generator.parameters()) + list(variational_encoder.parameters())
   optimizer = torch.optim.RMSprop(parameters,
@@ -110,7 +110,7 @@ if __name__ == '__main__':
   num_no_improvement = 0
 
   for step, batch in enumerate(cycle(train_data)):
-    x = batch[0].to(device)
+    x = batch[0].to(get_torch_device())
     generator.zero_grad()
     variational_encoder.zero_grad()
     z, log_q_z = variational_encoder(x, n_samples=1)

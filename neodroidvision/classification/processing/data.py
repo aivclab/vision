@@ -8,6 +8,7 @@ from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 
 # from warg.pooled_queue_processor import PooledQueueProcessor
+from draugr.torch_utilities.initialisation.seeding import get_torch_device
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
 
 __author__ = 'Christian Heider Nielsen'
@@ -39,8 +40,8 @@ def NeodroidClassificationGenerator(env, device, batch_size=64):
       predictors.append(a_transform(rgb_arr))
       class_responses.append(int(a_class))
 
-    a = torch.stack(predictors).to(device)
-    b = torch.LongTensor(class_responses).to(device)
+    a = torch.stack(predictors).to(get_torch_device())
+    b = torch.LongTensor(class_responses).to(get_torch_device())
     yield a, b
 
 

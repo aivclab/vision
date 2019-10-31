@@ -22,12 +22,12 @@ def main():
   vae = make_vae()
   if os.path.exists(VAE_PATH):
     vae.load_state_dict(torch.load(VAE_PATH, map_location='cpu'))
-  vae.to(device)
+  vae.to(get_torch_device())
 
   optimizer = optim.Adam(vae.parameters(), lr=1e-4)
 
   for i, batch in enumerate(load_text_samples(args.data, args.batch_size, args.context_len)):
-    batch = batch.to(device)
+    batch = batch.to(get_torch_device())
     terms = vae(batch)
     print('step %d: loss=%f' % (i, terms['losses'][-1].item()))
     optimizer.zero_grad()

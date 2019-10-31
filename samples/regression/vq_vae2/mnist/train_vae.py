@@ -26,11 +26,11 @@ def main():
   if os.path.exists(VAE_PATH):
     vae.load_state_dict(torch.load(VAE_PATH, map_location='cpu'))
 
-  vae.to(DEVICE)
+  vae.to(get_torch_device())
   optimizer = optim.Adam(vae.parameters())
 
   for i, batch in enumerate(load_images()):
-    batch = batch.to(DEVICE)
+    batch = batch.to(get_torch_device())
     terms = vae(batch)
     print(f'step {i:d}: loss={terms["loss"].item():f} '
           f'mse={terms["losses"][-1].item():f}')

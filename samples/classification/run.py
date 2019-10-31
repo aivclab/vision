@@ -60,10 +60,10 @@ def main():
   torch.manual_seed(seed)
 
   if not options.no_cuda:
-    DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    DEVICE = get_torch_device()
 
   model, params_to_update = resnet_retrain(num_classes)
-  model = model.to(DEVICE)
+  model = model.to(get_torch_device())
 
   criterion = torch.nn.CrossEntropyLoss()
   # criterion = torch.nn.NLLLoss()

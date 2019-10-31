@@ -12,9 +12,9 @@ from torch.utils.data import Dataset
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
-from neodroidvision.segmentation.coco_vision import evaluate
-from neodroidvision.segmentation.coco_vision import train_one_epoch
-from neodroidvision.segmentation.coco_vision import collate_fn
+from neodroidvision.segmentation.exclude.coco_vision import evaluate
+from neodroidvision.segmentation.exclude.coco_vision import train_one_epoch
+from neodroidvision.segmentation.exclude.coco_vision import collate_fn
 
 
 class PennFudanDataset(Dataset):
@@ -140,7 +140,7 @@ def main():
   model = get_model_instance_segmentation(num_classes)
 
   # move model to the right device
-  model.to(device)
+  model.to(get_torch_device())
 
   # construct an optimizer
   params = [p for p in model.parameters() if p.requires_grad]

@@ -83,8 +83,8 @@ if __name__ == '__main__':
     generator.load_state_dict(checkpoint['model'])
     variational_encoder.load_state_dict(checkpoint['variational'])
 
-  generator.to(device)
-  variational_encoder.to(device)
+  generator.to(get_torch_device())
+  variational_encoder.to(get_torch_device())
 
   parameters = list(generator.parameters()) + list(variational_encoder.parameters())
   optimizer = torch.optim.RMSprop(parameters,

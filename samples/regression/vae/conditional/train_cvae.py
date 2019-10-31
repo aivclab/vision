@@ -26,7 +26,7 @@ args.encoder_layer_sizes = [784, 256]
 args.decoder_layer_sizes = [256, 784]
 args.latent_size = 10
 args.print_every = 100
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+DEVICE = get_torch_device()
 timstamp = time.time()
 torch.manual_seed(args.seed)
 if torch.cuda.is_available():
@@ -35,7 +35,7 @@ if torch.cuda.is_available():
 vae = ConditionalVAE(encoder_layer_sizes=args.encoder_layer_sizes,
                      latent_size=args.latent_size,
                      decoder_layer_sizes=args.decoder_layer_sizes,
-                     num_conditions=10).to(DEVICE)
+                     num_conditions=10).to(get_torch_device())
 dataset = MNIST(root=str(PROJECT_APP_PATH.user_data / 'MNIST'),
                 train=True,
                 transform=transforms.ToTensor(),
@@ -63,7 +63,7 @@ def main():
 
     for iteration, (original, label) in enumerate(data_loader):
 
-      original, label = original.to(DEVICE), label.to(DEVICE)
+      original, label = original.to(get_torch_device()), label.to(get_torch_device())
       reconstruction, mean, log_var, z = vae(original, one_hot(label,
                                                                10,
                                                                device=DEVICE))

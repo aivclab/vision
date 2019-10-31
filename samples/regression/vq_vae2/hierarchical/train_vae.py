@@ -24,11 +24,11 @@ def main():
   model = make_vae()
   if os.path.exists(VAE_PATH):
     model.load_state_dict(torch.load(VAE_PATH, map_location='cpu'))
-  model.to(device)
+  model.to(get_torch_device())
   optimizer = optim.Adam(model.parameters())
   data = load_images(args.data)
   for i in itertools.count():
-    images = next(data).to(device)
+    images = next(data).to(get_torch_device())
     terms = model(images)
     print('step %d: mse=%f mse_top=%f' %
           (i, terms['losses'][-1].item(), terms['losses'][0].item()))

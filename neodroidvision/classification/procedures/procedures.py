@@ -20,16 +20,16 @@ def test_model(model,
                latest_model_path,
                num_columns=2,
                device='cpu'):
-  model = model.eval().to(device)
+  model = model.eval().to(get_torch_device())
 
   inputs, labels = next(data_iterator)
 
-  inputs = inputs.to(device)
-  labels = labels.to(device)
+  inputs = inputs.to(get_torch_device())
+  labels = labels.to(get_torch_device())
   with torch.no_grad():
     pred = model(inputs)
 
-  y_pred = pred.data.to(device).numpy()
+  y_pred = pred.data.to(get_torch_device()).numpy()
   y_pred_max = numpy.argmax(y_pred, axis=-1)
   accuracy_w = accuracy_score(labels, y_pred_max)
   precision_a, recall_a, fscore_a, support_a = precision_recall_fscore_support(labels, y_pred_max)
@@ -38,9 +38,9 @@ def test_model(model,
 
   _, predicted = torch.max(pred, 1)
 
-  truth_labels = labels.data.to(device).numpy()
+  truth_labels = labels.data.to(get_torch_device()).numpy()
 
-  input_images_rgb = [a_retransform(x) for x in inputs.to(device)]
+  input_images_rgb = [a_retransform(x) for x in inputs.to(get_torch_device())]
 
   cell_width = (800 / num_columns) - 6 - 6 * 2
 
@@ -100,8 +100,8 @@ def confusion_matrisx():
   cf = torch.zeros(nb_classes, nb_classes)
   with torch.no_grad():
     for i, (inputs, classes) in enumerate(dataloaders['val']):
-      inputs = inputs.to(device)
-      classes = classes.to(device)
+      inputs = inputs.to(get_torch_device())
+      classes = classes.to(get_torch_device())
       outputs = model_ft(inputs)
       _, preds = torch.max(outputs, 1)
       for t, p in zip(classes.view(-1), preds.view(-1)):
@@ -162,7 +162,7 @@ def train_model(model,
           model.eval()
 
           test_rgb_imgs, test_true_label = next(test_data_iterator)
-          test_rgb_imgs, test_true_label = test_rgb_imgs.to(device), test_true_label.to(device)
+          test_rgb_imgs, test_true_label = test_rgb_imgs.to(get_torch_device()), test_true_label.to(get_torch_device())
           with torch.set_grad_enabled(False):
             val_pred = model(test_rgb_imgs)
             val_loss = criterion(val_pred, test_true_label)

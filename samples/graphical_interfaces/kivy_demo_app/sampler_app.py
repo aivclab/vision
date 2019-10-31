@@ -32,7 +32,7 @@ DEVICE = torch.device('cpu')
 ENCODING_SIZE = 10
 
 DS = VggFaces2
-MODEL = BurgessVae(CHANNELS, ENCODING_SIZE).to(DEVICE)
+MODEL = BurgessVae(CHANNELS, ENCODING_SIZE).to(get_torch_device())
 CHECKPOINT = torch.load(PROJECT_APP_PATH.user_data / 'bvae' / 'best_state_dict',
                         map_location=DEVICE)
 MODEL.load_state_dict(CHECKPOINT)
