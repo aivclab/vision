@@ -110,8 +110,6 @@ def to_dict_detections(preds):
     res.append(d)
   return res
 
-
-
 def grab_video_frame(cap):
   ret, frame = cap.read()
   return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

@@ -13,6 +13,7 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
+from draugr import get_global_torch_device
 from draugr.writers import TensorBoardPytorchWriter, ImageWriter
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.to_device_tensor_iterator import to_device_tensor_iterator
@@ -122,7 +123,7 @@ def main(load_earlier=False, train=True):
 
   torch.manual_seed(seed)
 
-  device = get_torch_device()
+  device = get_global_torch_device()
 
   img_transform = transforms.Compose([transforms.ToTensor(),
                                       MinMaxNorm(),

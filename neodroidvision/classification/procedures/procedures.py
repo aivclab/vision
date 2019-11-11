@@ -8,6 +8,7 @@ import torch
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
+from draugr import get_global_torch_device, to_tensor
 from draugr.visualisation import plot_confusion_matrix
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
@@ -20,16 +21,16 @@ def test_model(model,
                latest_model_path,
                num_columns=2,
                device='cpu'):
-  model = model.eval().to(get_torch_device())
+  model = model.eval().to(get_global_torch_device())
 
   inputs, labels = next(data_iterator)
 
-  inputs = inputs.to(get_torch_device())
-  labels = labels.to(get_torch_device())
+  inputs = inputs.to(get_global_torch_device())
+  labels = labels.to(get_global_torch_device())
   with torch.no_grad():
     pred = model(inputs)
 
-  y_pred = pred.data.to(get_torch_device()).numpy()
+  y_pred = pred.data.to(get_global_torch_device()).numpy()
   y_pred_max = numpy.argmax(y_pred, axis=-1)
   accuracy_w = accuracy_score(labels, y_pred_max)
   precision_a, recall_a, fscore_a, support_a = precision_recall_fscore_support(labels, y_pred_max)
@@ -38,9 +39,9 @@ def test_model(model,
 
   _, predicted = torch.max(pred, 1)
 
-  truth_labels = labels.data.to(get_torch_device()).numpy()
+  truth_labels = labels.data.to(get_global_torch_device()).numpy()
 
-  input_images_rgb = [a_retransform(x) for x in inputs.to(get_torch_device())]
+  input_images_rgb = [a_retransform(x) for x in inputs.to(get_global_torch_device())]
 
   cell_width = (800 / num_columns) - 6 - 6 * 2
 
@@ -93,35 +94,17 @@ def test_model(model,
   # plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, pred)
   # pyplot.show()
 
-
-def confusion_matrisx():
-  nb_classes = 9
-
-  cf = torch.zeros(nb_classes, nb_classes)
-  with torch.no_grad():
-    for i, (inputs, classes) in enumerate(dataloaders['val']):
-      inputs = inputs.to(get_torch_device())
-      classes = classes.to(get_torch_device())
-      outputs = model_ft(inputs)
-      _, preds = torch.max(outputs, 1)
-      for t, p in zip(classes.view(-1), preds.view(-1)):
-        cf[t.long(), p.long()] += 1
-
-  print(cf)
-  print(cf.diag() / cf.sum(1))
-
-
-def train_model(model,
-                data_iterator,
-                test_data_iterator,
-                criterion,
-                optimizer,
-                scheduler,
-                writer,
-                interrupted_path,
-                num_updates=250000,
-                early_stop=None,
-                device='cpu'):
+def pred_target_train_model(model,
+                            data_iterator,
+                            criterion,
+                            optimizer,
+                            scheduler,
+                            writer,
+                            interrupted_path,
+                            test_data_iterator=None,
+                            num_updates=250000,
+                            early_stop=None,
+                            device='cpu'):
   best_model_wts = copy.deepcopy(model.state_dict())
   best_val_loss = 1e10
   since = time.time()
@@ -131,17 +114,18 @@ def train_model(model,
     val_loss = 0
     update_loss = 0
     for update_i in sess:
-
       for phase in ['train', 'val']:
         if phase == 'train':
           if scheduler:
             scheduler.step()
             for param_group in optimizer.param_groups:
-              writer.add_scalar('lr', param_group['lr'], update_i)
+              writer.scalar('lr', param_group['lr'], update_i)
 
           model.train()
 
-          rgb_imgs, true_label = next(data_iterator)
+          rgb_imgs, true_label = zip(*next(data_iterator))
+          rgb_imgs = to_tensor(rgb_imgs)[:,:,:,:3].transpose(1,3)
+          true_label = to_tensor(true_label, dtype=torch.long)
 
           optimizer.zero_grad()
 
@@ -154,20 +138,17 @@ def train_model(model,
               optimizer.step()
 
           update_loss = loss.data.cpu().numpy()
-          writer.add_scalar(f'loss/train', update_loss, update_i)
-
-
-
-        else:
+          writer.scalar(f'loss/train', update_loss, update_i)
+        elif test_data_iterator:
           model.eval()
 
           test_rgb_imgs, test_true_label = next(test_data_iterator)
-          test_rgb_imgs, test_true_label = test_rgb_imgs.to(get_torch_device()), test_true_label.to(get_torch_device())
+          test_rgb_imgs, test_true_label = test_rgb_imgs.to(get_global_torch_device()), test_true_label.to(get_global_torch_device())
           with torch.set_grad_enabled(False):
             val_pred = model(test_rgb_imgs)
             val_loss = criterion(val_pred, test_true_label)
 
-          writer.add_scalar(f'loss/val', val_loss, update_i)
+          writer.scalar(f'loss/val', val_loss, update_i)
           if val_loss < best_val_loss:
             best_val_loss = val_loss
             best_model_wts = copy.deepcopy(model.state_dict())

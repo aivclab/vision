@@ -2,7 +2,8 @@ import torch
 import torchvision
 
 # An instance of your model.
-model = torchvision.models.resnet18()
+model = torchvision.models.resnet18(True)
+model.eval()
 
 # An example input you would normally provide to your model's forward() method.
 example = torch.rand(1, 3, 224, 224)
@@ -28,4 +29,4 @@ traced_script_module = torch.jit.script(my_module)
 '''
 
 
-traced_script_module.save("traced_resnet_model.pt")
+traced_script_module.save("imagenet_resnet18.pt")

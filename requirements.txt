@@ -10,8 +10,8 @@ Pillow
 matplotlib
 pip
 h5py
-torchvision
 torch
+torchvision
 tensorflow
 pycocotools
 pathlib

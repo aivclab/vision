@@ -7,8 +7,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 
-# from warg.pooled_queue_processor import PooledQueueProcessor
-from draugr.torch_utilities.initialisation.seeding import get_torch_device
+from draugr.torch_utilities.initialisation.seeding import get_global_torch_device
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
 
 __author__ = 'Christian Heider Nielsen'
@@ -40,8 +39,8 @@ def NeodroidClassificationGenerator(env, device, batch_size=64):
       predictors.append(a_transform(rgb_arr))
       class_responses.append(int(a_class))
 
-    a = torch.stack(predictors).to(get_torch_device())
-    b = torch.LongTensor(class_responses).to(get_torch_device())
+    a = torch.stack(predictors).to(get_global_torch_device())
+    b = torch.LongTensor(class_responses).to(get_global_torch_device())
     yield a, b
 
 
@@ -83,43 +82,13 @@ def NeodroidClassificationGenerator2(env, device, batch_size=64):
     yield a
 
 
-def FileGenerator(batch_size=16,
-                  workers=1,
-                  path='/home/heider/Data/Datasets/Vision/vestas'):
-  train_dataset = datasets.ImageFolder(path, a_transform)
-
-  if False:
-    train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-  else:
-    train_sampler = None
-
-  torch.manual_seed(time.time())
-  train_loader = torch.utils.data.DataLoader(train_dataset,
-                                             batch_size=batch_size,
-                                             shuffle=(train_sampler is None),
-                                             num_workers=workers,
-                                             pin_memory=True,
-                                             sampler=train_sampler)
-
-  def loopy():
-    while True:
-      for x in iter(train_loader):
-        yield x
-
-  return loopy
 
 
 if __name__ == '__main__':
-  LATEST_GPU_STATS = FileGenerator()
-  for i, (g, c) in enumerate(LATEST_GPU_STATS):
-    print(c)
-
-  '''
-
   neodroid_generator = NeodroidDataGenerator()
   train_loader = torch.utils.data.DataLoader(dataset=neodroid_generator,
                                              batch_size=12,
                                              shuffle=True)
   for p, r in train_loader:
     print(r)
-  '''
+

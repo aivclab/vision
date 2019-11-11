@@ -24,7 +24,6 @@ Created on 27/04/2019
 """
 
 
-
 def dist_is_editable(dist):
   """
   Return True if given Distribution is an editable install.
@@ -36,6 +35,7 @@ def dist_is_editable(dist):
     if egg_link.is_file():
       return True
   return False
+
 
 PROJECT_NAME = __project__.lower().strip().replace(' ', '_')
 PROJECT_AUTHOR = __author__.lower().strip().replace(' ', '_')
