@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Queue;
 
 import dk.aivclab.demo.CameraXActivity;
-import dk.aivclab.demo.utilities.Utils;
+import dk.aivclab.demo.utilities.FileUtilities;
 
 public class SegmentationActivity extends CameraXActivity<SegmentationActivity.AnalysisResult> {
 
@@ -94,7 +94,7 @@ public class SegmentationActivity extends CameraXActivity<SegmentationActivity.A
 
     try {
       if (mModule == null) {
-        final String moduleFileAbsoluteFilePath = new File(Utils.assetFilePath(this,
+        final String moduleFileAbsoluteFilePath = new File(FileUtilities.assetFilePath(this,
             getModuleAssetName())).getAbsolutePath();
         mModule = Module.load(moduleFileAbsoluteFilePath);
 

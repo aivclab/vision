@@ -30,9 +30,9 @@ import java.util.Queue;
 
 import dk.aivclab.demo.CameraXActivity;
 import dk.aivclab.demo.R;
-import dk.aivclab.demo.usecases.classification.views.ResultHeaderView;
 import dk.aivclab.demo.usecases.classification.views.ResultRowView;
-import dk.aivclab.demo.utilities.Utils;
+import dk.aivclab.demo.utilities.FileUtilities;
+import dk.aivclab.demo.utilities.Selection;
 
 
 public class ClassificationActivity extends CameraXActivity<ClassificationActivity.AnalysisResult> {
@@ -51,18 +51,15 @@ public class ClassificationActivity extends CameraXActivity<ClassificationActivi
     private final float[] topNScores;
     private final long analysisDuration;
     private final long moduleForwardDuration;
-    private final float accum_score;
 
     AnalysisResult(String[] topNClassNames,
                    float[] topNScores,
                    long moduleForwardDuration,
-                   long analysisDuration,
-                   float accum_score) {
+                   long analysisDuration) {
       this.topNClassNames = topNClassNames;
       this.topNScores = topNScores;
       this.moduleForwardDuration = moduleForwardDuration;
       this.analysisDuration = analysisDuration;
-      this.accum_score = accum_score;
     }
   }
 
@@ -86,11 +83,11 @@ public class ClassificationActivity extends CameraXActivity<ClassificationActivi
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+/*
     final ResultHeaderView headerResultRowView = findViewById(R.id.image_classification_result_header_row);
     headerResultRowView.nameTextView.setText(R.string.image_classification_results_header_row_name);
     headerResultRowView.scoreTextView.setText(R.string.image_classification_results_header_row_score);
-
+*/
     mResultRowViews[0] = findViewById(R.id.image_classification_top1_result_row);
     mResultRowViews[1] = findViewById(R.id.image_classification_top2_result_row);
     mResultRowViews[2] = findViewById(R.id.image_classification_top3_result_row);
@@ -130,7 +127,7 @@ public class ClassificationActivity extends CameraXActivity<ClassificationActivi
 
     try {
       if (mModule == null) {
-        final String moduleFileAbsoluteFilePath = new File(Utils.assetFilePath(this,
+        final String moduleFileAbsoluteFilePath = new File(FileUtilities.assetFilePath(this,
             getModuleAssetName())).getAbsolutePath();
         mModule = Module.load(moduleFileAbsoluteFilePath);
 
@@ -162,19 +159,16 @@ public class ClassificationActivity extends CameraXActivity<ClassificationActivi
 
       final String[] topKClassNames = new String[Constants.TOP_K];
       final float[] topKScores = new float[Constants.TOP_K];
-      float AccumScore = 0;
       for (int i = 0; i < Constants.TOP_K; i++) {
         final int ix = ixs[i];
-        topKClassNames[i] = Constants.IMAGENET_CLASSES[ix];
+        topKClassNames[i] = Constants.CATEGORIES[ix];
         topKScores[i] = scores[ix];
-        AccumScore += scores[ix];
       }
       final long analysisDuration = SystemClock.elapsedRealtime() - startTime;
       return new AnalysisResult(topKClassNames,
           topKScores,
           moduleForwardDuration,
-          analysisDuration,
-          AccumScore);
+          analysisDuration);
     } catch (Exception e) {
       Log.e(Constants.TAG, "Error during image analysis", e);
       mAnalyzeImageErrorState = true;
@@ -194,12 +188,15 @@ public class ClassificationActivity extends CameraXActivity<ClassificationActivi
       mMovingAvgSum -= mMovingAvgQueue.remove();
     }
 
+    float[] soft_maxed_res = Selection.SoftMax(result.topNScores);
+
     for (int i = 0; i < Constants.TOP_K; i++) {
       final ResultRowView rowView = mResultRowViews[i];
       rowView.nameTextView.setText(result.topNClassNames[i]);
-      rowView.scoreTextView.setText(String.format(Locale.US, Constants.SCORES_FORMAT, result.topNScores[i]));
+      rowView.scoreTextView.setText(String.format(Locale.US, Constants.SCORES_FORMAT, soft_maxed_res[i]));
       rowView.setProgressState(false);
-      rowView.scoreProgressBar.setProgress((int) ((result.topNScores[i] / result.accum_score) * 100));
+
+      rowView.scoreProgressBar.setProgress((int) (soft_maxed_res[i] * 100));
     }
 
     if (mMsText != null) {

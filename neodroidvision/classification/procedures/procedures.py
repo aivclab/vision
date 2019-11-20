@@ -8,7 +8,7 @@ import torch
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
-from draugr import get_global_torch_device, to_tensor
+from draugr import global_torch_device, to_tensor, rgb_channel_transform_batch, torch_vision_normalize_batch
 from draugr.visualisation import plot_confusion_matrix
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
@@ -19,18 +19,17 @@ from warg.named_ordered_dictionary import NOD
 def test_model(model,
                data_iterator,
                latest_model_path,
-               num_columns=2,
-               device='cpu'):
-  model = model.eval().to(get_global_torch_device())
+               num_columns=2):
+  model = model.eval().to(global_torch_device())
 
   inputs, labels = next(data_iterator)
 
-  inputs = inputs.to(get_global_torch_device())
-  labels = labels.to(get_global_torch_device())
+  inputs = inputs.to(global_torch_device())
+  labels = labels.to(global_torch_device())
   with torch.no_grad():
     pred = model(inputs)
 
-  y_pred = pred.data.to(get_global_torch_device()).numpy()
+  y_pred = pred.data.to('cpu').numpy()
   y_pred_max = numpy.argmax(y_pred, axis=-1)
   accuracy_w = accuracy_score(labels, y_pred_max)
   precision_a, recall_a, fscore_a, support_a = precision_recall_fscore_support(labels, y_pred_max)
@@ -39,9 +38,9 @@ def test_model(model,
 
   _, predicted = torch.max(pred, 1)
 
-  truth_labels = labels.data.to(get_global_torch_device()).numpy()
+  truth_labels = labels.data.to('cpu').numpy()
 
-  input_images_rgb = [a_retransform(x) for x in inputs.to(get_global_torch_device())]
+  input_images_rgb = [a_retransform(x) for x in inputs.to(global_torch_device())]
 
   cell_width = (800 / num_columns) - 6 - 6 * 2
 
@@ -94,8 +93,9 @@ def test_model(model,
   # plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, pred)
   # pyplot.show()
 
+
 def pred_target_train_model(model,
-                            data_iterator,
+                            train_iterator,
                             criterion,
                             optimizer,
                             scheduler,
@@ -103,8 +103,7 @@ def pred_target_train_model(model,
                             interrupted_path,
                             test_data_iterator=None,
                             num_updates=250000,
-                            early_stop=None,
-                            device='cpu'):
+                            early_stop=None):
   best_model_wts = copy.deepcopy(model.state_dict())
   best_val_loss = 1e10
   since = time.time()
@@ -113,53 +112,79 @@ def pred_target_train_model(model,
     sess = tqdm(range(num_updates), leave=False, disable=False)
     val_loss = 0
     update_loss = 0
-    for update_i in sess:
-      for phase in ['train', 'val']:
-        if phase == 'train':
-          if scheduler:
-            scheduler.step()
-            for param_group in optimizer.param_groups:
-              writer.scalar('lr', param_group['lr'], update_i)
+    val_acc = 0
+    last_val = None
+    last_out = None
+    with torch.autograd.detect_anomaly():
+      for update_i in sess:
+        for phase in ['train', 'val']:
+          if phase == 'train':
+            #model.train()
 
-          model.train()
+            input, true_label = zip(*next(train_iterator))
 
-          rgb_imgs, true_label = zip(*next(data_iterator))
-          rgb_imgs = to_tensor(rgb_imgs)[:,:,:,:3].transpose(1,3)
-          true_label = to_tensor(true_label, dtype=torch.long)
+            rgb_imgs = torch_vision_normalize_batch(rgb_channel_transform_batch(
+              to_tensor(input)
+              ))
+            true_label = to_tensor(true_label, dtype=torch.long)
+            optimizer.zero_grad()
 
-          optimizer.zero_grad()
-
-          with torch.set_grad_enabled(phase == 'train'):
             pred = model(rgb_imgs)
             loss = criterion(pred, true_label)
+            loss.backward()
+            optimizer.step()
 
-            if phase == 'train':
-              loss.backward()
-              optimizer.step()
+            if last_out is None:
+              last_out = pred
+            else:
+              if not torch.dist(last_out, pred)>0:
+                print(f'Same output{last_out},{pred}')
+              last_out = pred
 
-          update_loss = loss.data.cpu().numpy()
-          writer.scalar(f'loss/train', update_loss, update_i)
-        elif test_data_iterator:
-          model.eval()
+            update_loss = loss.data.cpu().numpy()
+            writer.scalar(f'loss/train', update_loss, update_i)
 
-          test_rgb_imgs, test_true_label = next(test_data_iterator)
-          test_rgb_imgs, test_true_label = test_rgb_imgs.to(get_global_torch_device()), test_true_label.to(get_global_torch_device())
-          with torch.set_grad_enabled(False):
-            val_pred = model(test_rgb_imgs)
-            val_loss = criterion(val_pred, test_true_label)
+            if scheduler:
+              scheduler.step()
+          elif test_data_iterator:
+            #model.eval()
 
-          writer.scalar(f'loss/val', val_loss, update_i)
-          if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            best_model_wts = copy.deepcopy(model.state_dict())
-            # writer.add_images(f'rgb_imgs', test_rgb_imgs, update_i)
-            sess.write(f'New best model at update {update_i} with test_loss {best_val_loss}')
-            torch.save(model.state_dict(), interrupted_path)
+            test_rgb_imgs, test_true_label = zip(*next(train_iterator))
+            test_rgb_imgs= torch_vision_normalize_batch(rgb_channel_transform_batch(to_tensor(
+              test_rgb_imgs)))
 
-          if early_stop is not None and val_pred < early_stop:
-            break
-      sess.set_description_str(
-        f'Update {update_i} - {phase} accum_loss:{update_loss:2f} test_loss:{val_loss}')
+            test_true_label=          to_tensor(test_true_label, dtype=torch.long)
+
+            with torch.no_grad():
+              val_pred = model(test_rgb_imgs)
+              val_loss = criterion(val_pred, test_true_label)
+
+            _,cat = torch.max(val_pred, -1)
+            val_acc = torch.sum(cat == test_true_label)/float(cat.size(0))
+            writer.scalar(f'loss/acc', val_acc, update_i)
+            writer.scalar(f'loss/val', val_loss, update_i)
+
+            if last_val is None:
+              last_val = cat
+            else:
+              if(all(last_val == cat)):
+                print(f'Same val{last_val},{cat}')
+              last_val = cat
+
+            if val_loss < best_val_loss:
+              best_val_loss = val_loss
+
+              best_model_wts = copy.deepcopy(model.state_dict())
+              sess.write(f'New best validation model at update {update_i} with test_loss {best_val_loss}')
+              torch.save(model.state_dict(), interrupted_path)
+
+            if early_stop is not None and val_pred < early_stop:
+              break
+        sess.set_description_str(
+          f'Update {update_i} - {phase} '
+          f'update_loss:{update_loss:2f} '
+          f'test_loss:{val_loss}'
+          f'val_acc:{val_acc}')
 
   except KeyboardInterrupt:
     print('Interrupt')
@@ -167,7 +192,6 @@ def pred_target_train_model(model,
     pass
 
   model.load_state_dict(best_model_wts)  # load best model weights
-  torch.save(model.state_dict(), interrupted_path)
 
   time_elapsed = time.time() - since
   print(f'{time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')

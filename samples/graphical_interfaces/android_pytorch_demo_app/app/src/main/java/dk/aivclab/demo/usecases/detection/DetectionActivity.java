@@ -2,14 +2,11 @@ package dk.aivclab.demo.usecases.detection;
 
 import android.os.SystemClock;
 import android.util.Log;
-import android.util.Size;
 import android.view.TextureView;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
-import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageAnalysisConfig;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.core.PreviewConfig;
@@ -22,7 +19,6 @@ import org.pytorch.torchvision.TensorImageUtils;
 
 import java.io.File;
 import java.nio.FloatBuffer;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Objects;
@@ -30,7 +26,7 @@ import java.util.Queue;
 
 import dk.aivclab.demo.CameraXActivity;
 import dk.aivclab.demo.R;
-import dk.aivclab.demo.utilities.Utils;
+import dk.aivclab.demo.utilities.FileUtilities;
 
 
 public class DetectionActivity extends CameraXActivity<DetectionActivity.AnalysisResult> {
@@ -85,7 +81,7 @@ public class DetectionActivity extends CameraXActivity<DetectionActivity.Analysi
 
     try {
       if (mModule == null) {
-        final String moduleFileAbsoluteFilePath = new File(Utils.assetFilePath(this,
+        final String moduleFileAbsoluteFilePath = new File(FileUtilities.assetFilePath(this,
             getModuleAssetName())).getAbsolutePath();
         mModule = Module.load(moduleFileAbsoluteFilePath);
 

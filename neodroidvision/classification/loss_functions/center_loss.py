@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.autograd.function import Function
 
-from draugr.torch_utilities.initialisation.seeding import get_global_torch_device
+from draugr.torch_utilities.initialisation.seeding import global_torch_device
 
 
 class CenterLoss(nn.Module):
@@ -51,9 +51,9 @@ class CenterLossFunc(Function):
 def main(test_cuda=False):
   print('-' * 80)
   device = torch.device("cuda" if test_cuda else "cpu")
-  ct = CenterLoss(10, 2, size_average=True).to(get_global_torch_device())
-  y = torch.Tensor([0, 0, 2, 1]).to(get_global_torch_device())
-  feat = torch.zeros(4, 2).to(get_global_torch_device()).requires_grad_()
+  ct = CenterLoss(10, 2, size_average=True).to(global_torch_device())
+  y = torch.Tensor([0, 0, 2, 1]).to(global_torch_device())
+  feat = torch.zeros(4, 2).to(global_torch_device()).requires_grad_()
   print(list(ct.parameters()))
   print(ct.centers.grad)
   out = ct(y, feat)

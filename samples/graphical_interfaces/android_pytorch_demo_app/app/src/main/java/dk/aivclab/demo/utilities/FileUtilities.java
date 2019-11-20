@@ -11,7 +11,7 @@ import java.io.OutputStream;
 
 import dk.aivclab.demo.usecases.classification.Constants;
 
-public class Utils {
+public class FileUtilities {
   public static String assetFilePath(Context context, String assetName) {
     File file = new File(context.getFilesDir(), assetName);
     if (file.exists() && file.length() > 0) {

@@ -35,7 +35,7 @@
       android:layout_marginBottom="8dp"
       android:elevation="1dp"
       android:visibility="invisible"
-      app:layout_constraintBottom_toBottomOf="@id/image_classification_texture_view"
+      app:layout_constraintTop_toTopOf="@id/image_classification_texture_view"
       app:layout_constraintRight_toRightOf="@id/image_classification_texture_view" />
 
   <TextView
@@ -47,7 +47,7 @@
       android:layout_marginBottom="8dp"
       android:elevation="1dp"
       android:visibility="invisible"
-      app:layout_constraintBottom_toBottomOf="@id/image_classification_texture_view"
+      app:layout_constraintTop_toTopOf="@id/image_classification_texture_view"
       app:layout_constraintRight_toLeftOf="@id/image_classification_ms_text" />
 
   <TextView
@@ -59,10 +59,10 @@
       android:layout_marginBottom="8dp"
       android:elevation="1dp"
       android:visibility="invisible"
-      app:layout_constraintBottom_toBottomOf="@id/image_classification_texture_view"
+      app:layout_constraintTop_toTopOf="@id/image_classification_texture_view"
       app:layout_constraintRight_toLeftOf="@id/image_classification_fps_text" />
 
-  <dk.aivclab.demo.usecases.classification.views.ResultHeaderView
+  <!--<dk.aivclab.demo.usecases.classification.views.ResultHeaderView
       android:id="@+id/image_classification_result_header_row"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -72,6 +72,7 @@
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
       app:textAppearance="@style/TextAppearanceImageClassificationResultHeader" />
+-->
 
   <dk.aivclab.demo.usecases.classification.views.ResultRowView
       android:id="@+id/image_classification_top1_result_row"

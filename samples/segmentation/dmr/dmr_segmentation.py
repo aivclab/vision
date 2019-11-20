@@ -7,7 +7,7 @@ from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask.fission_net.skip_hourglass import SkipHourglassFissionNet
 from neodroidvision.segmentation import BCEDiceLoss, bool_dice
 from pathlib import Path
-from draugr.torch_utilities import torch_seed, get_global_torch_device
+from draugr.torch_utilities import torch_seed, global_torch_device
 import cv2
 from matplotlib import pyplot
 import numpy
@@ -78,7 +78,7 @@ def train_d(model,
     model.train()
     train_set = tqdm(train_loader, postfix={"train_loss":0.0})
     for data, target in train_set:
-      data, target = data.to(get_global_torch_device()), target.to(get_global_torch_device())
+      data, target = data.to(global_torch_device()), target.to(global_torch_device())
       optimizer.zero_grad()
       output, *_ = model(data)
       output = torch.sigmoid(output)
@@ -92,7 +92,7 @@ def train_d(model,
     with torch.no_grad():
       validation_set = tqdm(valid_loader, postfix={"valid_loss":0.0, "dice_score":0.0})
       for data, target in validation_set:
-        data, target = data.to(get_global_torch_device()), target.to(get_global_torch_device())
+        data, target = data.to(global_torch_device()), target.to(global_torch_device())
         # forward pass: compute predicted outputs by passing inputs to the model
         output, *_ = model(data)
         output = torch.sigmoid(output)
@@ -169,7 +169,7 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
   best_size = attempts_df['size'].values[0]
 
   for i, (data, target) in enumerate(valid_loader):
-    data = data.to(get_global_torch_device())
+    data = data.to(global_torch_device())
     output, *_ = model(data)
     output = torch.sigmoid(output)[0].cpu().detach().numpy()
     image = data[0].cpu().detach().numpy()
@@ -222,7 +222,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
   cou = 0
   np_saved = 0
   for data, target in tqdm(test_loader):
-    data = data.to(get_global_torch_device())
+    data = data.to(global_torch_device())
     output, *_ = model(data)
     output = torch.sigmoid(output)
     del data
@@ -285,7 +285,7 @@ def main():
   model = SkipHourglassFissionNet(CloudDataset.predictors_shape[-1],
                                   CloudDataset.response_shape,
                                   encoding_depth=2)
-  model.to(get_global_torch_device())
+  model.to(global_torch_device())
 
   if save_model_path.exists():
     model.load_state_dict(torch.load(str(save_model_path)))  # load last model
@@ -316,7 +316,7 @@ def main():
   tr = min(len(valid_loader.dataset) * 4, 2000)
   probabilities = numpy.zeros((tr, 350, 525), dtype=numpy.float32)
   for data, target in tqdm(valid_loader):
-    data = data.to(get_global_torch_device())
+    data = data.to(global_torch_device())
     target = target.cpu().detach().numpy()
     outpu, *_ = model(data)
     outpu = torch.sigmoid(outpu).cpu().detach().numpy()
