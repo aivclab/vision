@@ -20,12 +20,12 @@ class BottomEncoder(Encoder):
     super().__init__(num_channels, num_latents, dead_rate=DEAD_RATE)
     self.embed = nn.Embedding(256, num_channels)
     self.stack = nn.Sequential(
-        nn.Conv1d(num_channels, num_channels, 5, padding=2),
-        nn.Tanh(),
-        nn.Conv1d(num_channels, num_channels, 3, stride=2, padding=1),
-        Residual1d(num_channels),
-        Residual1d(num_channels),
-        )
+      nn.Conv1d(num_channels, num_channels, 5, padding=2),
+      nn.Tanh(),
+      nn.Conv1d(num_channels, num_channels, 3, stride=2, padding=1),
+      Residual1d(num_channels),
+      Residual1d(num_channels),
+      )
 
   def encode(self, x):
     x = self.embed(x)
@@ -39,12 +39,12 @@ class HighEncoder(Encoder):
   def __init__(self, num_channels=512, num_latents=512):
     super().__init__(num_channels, num_latents, dead_rate=DEAD_RATE)
     self.stack = nn.Sequential(
-        nn.Conv1d(num_channels, num_channels, 5, padding=2),
-        nn.Tanh(),
-        nn.Conv1d(num_channels, num_channels, 3, stride=2, padding=1),
-        Residual1d(num_channels),
-        Residual1d(num_channels),
-        )
+      nn.Conv1d(num_channels, num_channels, 5, padding=2),
+      nn.Tanh(),
+      nn.Conv1d(num_channels, num_channels, 3, stride=2, padding=1),
+      Residual1d(num_channels),
+      Residual1d(num_channels),
+      )
 
   def encode(self, x):
     x = x.permute(0, 2, 1).contiguous()
@@ -59,10 +59,10 @@ class HierarchyDecoder(Decoder):
     self.layers = []
     for i in range(num_inputs):
       stack = nn.Sequential(
-          Residual1d(in_channels),
-          Residual1d(in_channels),
-          nn.ConvTranspose1d(in_channels, in_channels, 4, stride=2, padding=1),
-          )
+        Residual1d(in_channels),
+        Residual1d(in_channels),
+        nn.ConvTranspose1d(in_channels, in_channels, 4, stride=2, padding=1),
+        )
       self.add_module('hierarchy%d' % i, stack)
       self.layers.append(stack)
     self.conv_out = nn.Conv1d(in_channels, out_channels, 3, padding=1)
@@ -86,11 +86,11 @@ class Residual1d(nn.Module):
   def __init__(self, num_channels):
     super().__init__()
     self.stack = nn.Sequential(
-        nn.Tanh(),
-        nn.Conv1d(num_channels, num_channels, 3, padding=1),
-        nn.Tanh(),
-        nn.Conv1d(num_channels, num_channels, 3, padding=1)
-        )
+      nn.Tanh(),
+      nn.Conv1d(num_channels, num_channels, 3, padding=1),
+      nn.Tanh(),
+      nn.Conv1d(num_channels, num_channels, 3, padding=1)
+      )
 
   def forward(self, x):
     return x + self.stack(x)

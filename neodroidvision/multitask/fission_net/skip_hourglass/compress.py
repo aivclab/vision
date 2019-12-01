@@ -41,4 +41,3 @@ class Compress(nn.Module):
       x = self.pool(x)
 
     return x, before_pool
-

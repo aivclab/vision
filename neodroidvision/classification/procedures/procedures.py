@@ -8,7 +8,8 @@ import torch
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
-from draugr import global_torch_device, to_tensor, rgb_channel_transform_batch, torch_vision_normalize_batch
+from draugr import global_torch_device, to_tensor, uint_hwc_to_chw_float_batch, torch_vision_normalize_chw
+from draugr.torch_utilities.images.channel_transform import rgb_drop_alpha_batch
 from draugr.visualisation import plot_confusion_matrix
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
@@ -119,12 +120,12 @@ def pred_target_train_model(model,
       for update_i in sess:
         for phase in ['train', 'val']:
           if phase == 'train':
-            #model.train()
+            # model.train()
 
             input, true_label = zip(*next(train_iterator))
 
-            rgb_imgs = torch_vision_normalize_batch(rgb_channel_transform_batch(
-              to_tensor(input)
+            rgb_imgs = torch_vision_normalize_chw(uint_hwc_to_chw_float_batch(
+              rgb_drop_alpha_batch(to_tensor(input))
               ))
             true_label = to_tensor(true_label, dtype=torch.long)
             optimizer.zero_grad()
@@ -137,7 +138,7 @@ def pred_target_train_model(model,
             if last_out is None:
               last_out = pred
             else:
-              if not torch.dist(last_out, pred)>0:
+              if not torch.dist(last_out, pred) > 0:
                 print(f'Same output{last_out},{pred}')
               last_out = pred
 
@@ -147,27 +148,27 @@ def pred_target_train_model(model,
             if scheduler:
               scheduler.step()
           elif test_data_iterator:
-            #model.eval()
+            # model.eval()
 
             test_rgb_imgs, test_true_label = zip(*next(train_iterator))
-            test_rgb_imgs= torch_vision_normalize_batch(rgb_channel_transform_batch(to_tensor(
-              test_rgb_imgs)))
+            test_rgb_imgs = torch_vision_normalize_chw(uint_hwc_to_chw_float_batch(rgb_drop_alpha_batch(to_tensor(
+              test_rgb_imgs))))
 
-            test_true_label=          to_tensor(test_true_label, dtype=torch.long)
+            test_true_label = to_tensor(test_true_label, dtype=torch.long)
 
             with torch.no_grad():
               val_pred = model(test_rgb_imgs)
               val_loss = criterion(val_pred, test_true_label)
 
-            _,cat = torch.max(val_pred, -1)
-            val_acc = torch.sum(cat == test_true_label)/float(cat.size(0))
+            _, cat = torch.max(val_pred, -1)
+            val_acc = torch.sum(cat == test_true_label) / float(cat.size(0))
             writer.scalar(f'loss/acc', val_acc, update_i)
             writer.scalar(f'loss/val', val_loss, update_i)
 
             if last_val is None:
               last_val = cat
             else:
-              if(all(last_val == cat)):
+              if (all(last_val == cat)):
                 print(f'Same val{last_val},{cat}')
               last_val = cat
 

@@ -23,7 +23,8 @@ def fcn_encoder(in_channels: int, depth: int, start_channels: int):
 
   return down_convolutions, prev_layer_channels
 
-def fcn_decoder(in_channels: int, depth: int, up_mode:str, merge_mode:str):
+
+def fcn_decoder(in_channels: int, depth: int, up_mode: str, merge_mode: str):
   up_convolutions_ae = []
   ae_prev_layer_channels = in_channels
   for i in range(depth - 1):
@@ -37,4 +38,3 @@ def fcn_decoder(in_channels: int, depth: int, up_mode:str, merge_mode:str):
     up_convolutions_ae.append(up_conv)
 
   return up_convolutions_ae, ae_prev_layer_channels
-

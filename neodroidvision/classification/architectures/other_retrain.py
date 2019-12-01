@@ -8,6 +8,7 @@ __doc__ = r'''
            Created on 13/11/2019
            '''
 
+
 def other_retrain(arch, model, num_classes):
   if arch.startswith("alexnet"):
     model.classifier[6] = torch.nn.Linear(model.classifier[6].in_features, num_classes)

@@ -10,7 +10,7 @@ from apppath import AppPath
 
 __project__ = 'NeodroidVision'
 __author__ = "Christian Heider Nielsen"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __doc__ = r"""
 .. module:: neodroidvision
    :platform: Unix, Windows

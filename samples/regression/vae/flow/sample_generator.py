@@ -95,7 +95,7 @@ if __name__ == '__main__':
   train_data, valid_data, test_data = load_binary_mnist(cfg, **kwargs)
 
   evaluate(
-      generator,
+    generator,
 
-      test_data,
-      next(generator.parameters()).device)
+    test_data,
+    next(generator.parameters()).device)

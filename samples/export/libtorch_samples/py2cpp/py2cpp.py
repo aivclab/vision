@@ -28,5 +28,4 @@ my_module = MyModule(10,20)
 traced_script_module = torch.jit.script(my_module)
 '''
 
-
 traced_script_module.save("imagenet_resnet18.pt")

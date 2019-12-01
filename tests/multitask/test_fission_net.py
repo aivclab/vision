@@ -11,6 +11,7 @@ __doc__ = r'''
            Created on 29/10/2019
            '''
 
+
 def test_skip_fission_multi_dict():
   channels = 3
   model = SkipHourglassFissionNet(input_channels=channels, output_channels={'RGB':channels, 'Depth':1},
@@ -33,13 +34,12 @@ def test_skip_fission_multi_dict():
   pyplot.show()
 
 
-
 def test_skip_fission_multi_int():
   channels = 3
   model = SkipHourglassFissionNet(input_channels=channels, output_channels=(channels, 1), encoding_depth=2,
                                   merge_mode='concat')
   x = torch.FloatTensor(numpy.random.random((1, channels, 320, 320)))
-  out, out2,*_ = model(x)
+  out, out2, *_ = model(x)
   loss = torch.sum(out)
   loss.backward()
   from matplotlib import pyplot

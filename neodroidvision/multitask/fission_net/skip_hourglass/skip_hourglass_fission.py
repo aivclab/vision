@@ -1,10 +1,11 @@
-from typing import Sized, Dict
+from typing import Sized, Dict, Union, Iterable
 
 import numpy
 import torch
 import torch.nn as nn
 from torch.nn import init
 
+from draugr import to_tensor
 from neodroidvision.multitask.fission_net.skip_hourglass.factory import fcn_encoder, fcn_decoder
 
 
@@ -13,7 +14,8 @@ class SkipHourglassFissionNet(nn.Module):
   Multi Headed Skip Fully Convolutional Network
 
   Based on https://arxiv.org/abs/1505.04597
-  Contextual spatial information (from the decoding, expansive pathway) about an input tensor is merged with information representing the localization of details (from the encoding, compressive pathway).
+  Contextual spatial information (from the decoding, expansive pathway) about an input tensor is merged
+  with information representing the localization of details (from the encoding, compressive pathway).
 
   Modifications to the original paper:
   (1) padding is used in 3x3 convolutions to prevent loss of border pixels
@@ -47,7 +49,7 @@ class SkipHourglassFissionNet(nn.Module):
 
   def __init__(self,
                input_channels: int,
-               output_channels,  #: Union[Dict[str,int],Sized[int]],
+               output_channels: Union[Dict, Iterable],
                *,
                encoding_depth: int = 5,
                start_channels: int = 32,
@@ -76,7 +78,6 @@ class SkipHourglassFissionNet(nn.Module):
     self.start_channels = start_channels
     self.network_depth = encoding_depth
 
-
     down_convolutions, encoding_channels = fcn_encoder(input_channels,
                                                        self.network_depth,
                                                        self.start_channels)
@@ -97,10 +98,10 @@ class SkipHourglassFissionNet(nn.Module):
                                                                self.up_mode,
                                                                self.merge_mode)
       out = nn.Conv2d(ae_prev_layer_channels,
-                                          channel_size,
-                                          kernel_size=1,
-                                          groups=1,
-                                          stride=1)
+                      channel_size,
+                      kernel_size=1,
+                      groups=1,
+                      stride=1)
       up_convolutions_ae.append(out)
       setattr(self, iden, nn.ModuleList(up_convolutions_ae))
 
@@ -116,7 +117,7 @@ class SkipHourglassFissionNet(nn.Module):
     for i, m in enumerate(self.modules()):
       self.weight_init(m)
 
-  def forward(self, x_enc: torch.Tensor):# -> Union[List[torch.Tensor],Dict[torch.Tensor]]:
+  def forward(self, x_enc: torch.Tensor):  # -> Union[List[torch.Tensor],Dict[torch.Tensor]]:
     encoder_skips = []
 
     for i, module in enumerate(self.down_convolutions):  # encoder pathway, save outputs for merging
@@ -130,13 +131,13 @@ class SkipHourglassFissionNet(nn.Module):
       for j, module in enumerate(fork_i[:-1]):
         before_pool_skip = encoder_skips[-(j + 2)]
         x_prev = module(before_pool_skip, x_prev)
-      out[key]=fork_i[-1](x_prev)
+      out[key] = fork_i[-1](x_prev)
 
     if self._dict_output:
       return out
     return out.values()
 
-  def trim(self, idx):#: Sized[Union[str, int]]):
+  def trim(self, idx):  #: Sized[Union[str, int]]):
     if not isinstance(idx, Sized):
       idx = list(idx)
     for a in idx:
@@ -146,14 +147,15 @@ class SkipHourglassFissionNet(nn.Module):
 
 
 if __name__ == "__main__":
+  from matplotlib import pyplot
+
   channels = 3
   model = SkipHourglassFissionNet(input_channels=channels, output_channels=(channels, 1), encoding_depth=2,
                                   merge_mode='concat')
-  x = torch.FloatTensor(numpy.random.random((1, channels, 320, 320)))
-  out, out2,*_ = model(x)
+  x = to_tensor(numpy.random.random((1, channels, 320, 320)), device='cpu')
+  out, out2, *_ = model(x)
   loss = torch.sum(out)
   loss.backward()
-  from matplotlib import pyplot
 
   im = out.detach()
   print(im.shape)

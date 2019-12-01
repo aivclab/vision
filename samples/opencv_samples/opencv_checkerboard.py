@@ -6,8 +6,6 @@ import numpy
 import cv2
 import glob
 
-
-
 from pynput import keyboard
 from drawing_utilities import draw_cube, draw_axis
 
@@ -45,24 +43,25 @@ def image_loader_generator():
     yield cv2.imread(fname)
 
 
-a=''
+a = ''
+
 
 def on_press(key):
-    global a
-    try:
-        a=key
-    except AttributeError:
-        pass
+  global a
+  try:
+    a = key
+  except AttributeError:
+    pass
+
 
 def on_release(key):
-    if key == keyboard.Key.esc:
-        return False
+  if key == keyboard.Key.esc:
+    return False
 
 
 with keyboard.Listener(
-        on_press=on_press,
-        on_release=on_release) as listener: # Collect events until released
-
+  on_press=on_press,
+  on_release=on_release) as listener:  # Collect events until released
 
   def webcam_generator():
     global a
@@ -77,7 +76,7 @@ with keyboard.Listener(
 
         yield frame
 
-      a=''
+      a = ''
 
     # When everything done, release the capture
     cap.release()
@@ -85,7 +84,7 @@ with keyboard.Listener(
     raise StopIteration
 
 
-  #images = image_loader_generator()
+  # images = image_loader_generator()
   images = webcam_generator()
 
 
@@ -137,7 +136,8 @@ with keyboard.Listener(
     # This is the shortest path. Just call the function and use ROI obtained above to crop the result.
     dst = cv2.undistort(img, camera_mtx, dist_coef, None, new_camera_mtx)
   
-    #This is curved path. First find a mapping function from distorted image to undistorted image. Then use the remap function.
+    #This is curved path. First find a mapping function from distorted image to undistorted image. Then use 
+    the remap function.
     #mapx,mapy = cv2.initUndistortRectifyMap(camera_mtx,dist_coef,None,new_camera_mtx,(w,h),5)
     #dst = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
   

@@ -7,7 +7,7 @@ import time
 from matplotlib import pyplot
 from torch import nn
 
-from draugr import to_tensor, horizontal_imshow, rgb_channel_transform_batch, torch_vision_normalize_batch
+from draugr import to_tensor, horizontal_imshow, uint_hwc_to_chw_float_batch, torch_vision_normalize_chw
 from draugr import (TensorBoardPytorchWriter,
                     ensure_directory_exist,
                     generator_batch,
@@ -15,7 +15,11 @@ from draugr import (TensorBoardPytorchWriter,
                     )
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import MixedObservationWrapper
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import (pred_target_train_model, torchvision, squeezenet_retrain)
+from neodroidvision.classification import (pred_target_train_model,
+                                           torchvision,
+                                           squeezenet_retrain,
+                                           rgb_drop_alpha_batch,
+                                           )
 
 # from warg.pooled_queue_processor import PooledQueueTask
 from neodroidvision.classification.architectures.resnet_retrain import resnet_retrain
@@ -31,18 +35,17 @@ batch_size = 16
 tqdm.monitor_interval = 0
 learning_rate = 3e-5
 momentum = 0.9
-wd= 3e-8
+wd = 3e-8
 test_batch_size = batch_size
 early_stop = 3e-6
 num_updates = 6000
 lr_cycles = 1
-flatt_size = 224*224*3
+flatt_size = 224 * 224 * 3
 
 # real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'val'
 
 normalise = torchvision.transforms.Normalize([0.485, 0.456, 0.406],
                                              [0.229, 0.224, 0.225])
-
 
 
 def main():
@@ -109,12 +112,10 @@ def main():
                                     test_data_iterator=test_iter,
                                     num_updates=num_updates)
 
-
-
   inputs, true_label = zip(*next(train_iter))
-  rgb_imgs = torch_vision_normalize_batch(
-    rgb_channel_transform_batch(
-      to_tensor(inputs)))
+  rgb_imgs = torch_vision_normalize_chw(
+    uint_hwc_to_chw_float_batch(rgb_drop_alpha_batch(
+      to_tensor(inputs))))
 
   pred = model(rgb_imgs)
   predicted = torch.argmax(pred, -1)

@@ -24,7 +24,7 @@ def draw_axis(img,
                                    rot_vecs,
                                    trans_vecs,
                                    camera_mtx,
-                                   dist_coef) # project 3D points to image plane
+                                   dist_coef)  # project 3D points to image plane
 
   corner = tuple(corners[0].ravel())
   img = cv2.line(img, corner, tuple(img_pts[0].ravel()), (255, 0, 0), 5)
@@ -65,7 +65,7 @@ def draw_cube(img,
 
   # draw pillars in blue color
   for i, j in zip(range(4), range(4, 8)):
-    img = cv2.line(img, tuple(imgpts[i]), tuple(imgpts[j]), (255,0,0), 3)
+    img = cv2.line(img, tuple(imgpts[i]), tuple(imgpts[j]), (255, 0, 0), 3)
 
   # draw top layer in red color
   img = cv2.drawContours(img, [imgpts[4:]], -1, (0, 0, 255), 3)

@@ -122,8 +122,8 @@ class MADE(nn.Module):
       assert numpy.triu(final).all() == 0
     else:
       for submat in numpy.split(final,
-                             indices_or_sections=num_output // num_input,
-                             axis=1):
+                                indices_or_sections=num_output // num_input,
+                                axis=1):
         assert numpy.triu(submat).all() == 0
 
   def forward(self, input, context=None):

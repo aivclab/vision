@@ -11,7 +11,6 @@ import torch.utils
 import torch.utils.data
 
 
-
 def load_binary_mnist(cfg, **kwcfg):
   fname = cfg.data_dir / 'binary_mnist.h5'
   if not fname.exists():

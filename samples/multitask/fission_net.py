@@ -13,13 +13,14 @@ def no_gradient_fusion():
   seperately to the encoder'''
   pass
 
+
 def late_gradient_fusion():
   ''' calculate gradient per individual loss function and optimisers and but collect and combine gradients at
   encoder'''
   pass
 
+
 def early_gradient_fusion():
   ''' calculate gradient as collective loss function and pass gradients on through encoder with one monolithic
   optimiser'''
   pass
-

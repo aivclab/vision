@@ -77,7 +77,6 @@ class SkipHourglassFissionNet(nn.Module):
     self.start_channels = start_channels
     self.network_depth = encoding_depth
 
-
     down_convolutions, encoding_channels = fcn_encoder(input_channels,
                                                        self.network_depth,
                                                        self.start_channels)
@@ -98,10 +97,10 @@ class SkipHourglassFissionNet(nn.Module):
                                                                self.up_mode,
                                                                self.merge_mode)
       out = nn.Conv2d(ae_prev_layer_channels,
-                                          channel_size,
-                                          kernel_size=1,
-                                          groups=1,
-                                          stride=1)
+                      channel_size,
+                      kernel_size=1,
+                      groups=1,
+                      stride=1)
       up_convolutions_ae.append(out)
       setattr(self, iden, nn.ModuleList(up_convolutions_ae))
 
@@ -117,7 +116,7 @@ class SkipHourglassFissionNet(nn.Module):
     for i, m in enumerate(self.modules()):
       self.weight_init(m)
 
-  def forward(self, x_enc: torch.Tensor):# -> Union[List[torch.Tensor],Dict[torch.Tensor]]:
+  def forward(self, x_enc: torch.Tensor):  # -> Union[List[torch.Tensor],Dict[torch.Tensor]]:
     encoder_skips = []
 
     for i, module in enumerate(self.down_convolutions):  # encoder pathway, save outputs for merging
@@ -131,13 +130,13 @@ class SkipHourglassFissionNet(nn.Module):
       for j, module in enumerate(fork_i[:-1]):
         before_pool_skip = encoder_skips[-(j + 2)]
         x_prev = module(before_pool_skip, x_prev)
-      out[key]=fork_i[-1](x_prev)
+      out[key] = fork_i[-1](x_prev)
 
     if self._dict_output:
       return out
     return out.values()
 
-  def trim(self, idx):#: Sized[Union[str, int]]):
+  def trim(self, idx):  #: Sized[Union[str, int]]):
     if not isinstance(idx, Sized):
       idx = list(idx)
     for a in idx:
@@ -151,7 +150,7 @@ if __name__ == "__main__":
   model = SkipHourglassFissionNet(input_channels=channels, output_channels=(channels, 1), encoding_depth=2,
                                   merge_mode='concat')
   x = torch.FloatTensor(numpy.random.random((1, channels, 320, 320)))
-  out, out2,*_ = model(x)
+  out, out2, *_ = model(x)
   loss = torch.sum(out)
   loss.backward()
   from matplotlib import pyplot

@@ -11,20 +11,21 @@ TEST_IMG_HEIGHT = 11
 TEST_IMG_DEPTH_IN = 2
 TEST_IMG_DEPTH = 4
 
+
 @pytest.mark.parametrize('start,middle', [
-    (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=3),
-     PixelAttention(TEST_IMG_DEPTH, num_heads=2),
-     ),
-    (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=2),
-     PixelConvB(TEST_IMG_DEPTH, horizontal=2, vertical=2),
-     ),
-    (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=3, vertical=2),
-     PixelConvB(TEST_IMG_DEPTH, horizontal=3, vertical=2),
-     ),
-    (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=3),
-     PixelConvB(TEST_IMG_DEPTH, horizontal=2, vertical=3),
-     ),
-    ])
+  (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=3),
+   PixelAttention(TEST_IMG_DEPTH, num_heads=2),
+   ),
+  (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=2),
+   PixelConvB(TEST_IMG_DEPTH, horizontal=2, vertical=2),
+   ),
+  (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=3, vertical=2),
+   PixelConvB(TEST_IMG_DEPTH, horizontal=3, vertical=2),
+   ),
+  (PixelConvA(TEST_IMG_DEPTH_IN, TEST_IMG_DEPTH, horizontal=2, vertical=3),
+   PixelConvB(TEST_IMG_DEPTH, horizontal=2, vertical=3),
+   ),
+  ])
 def test_pixel_cnn_masking(start, middle):
   network = PixelCNN(start, middle)
   outer_idx = 0

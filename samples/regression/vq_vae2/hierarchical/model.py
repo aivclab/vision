@@ -85,47 +85,47 @@ class BottomPrior(nn.Module):
     self.embed_top = nn.Embedding(512, depth)
     self.embed_bottom = nn.Embedding(512, depth)
     self.cond_stack = nn.Sequential(
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        Residual3x3(depth),
-        nn.ConvTranspose2d(depth, depth, 4, stride=2, padding=1),
-        )
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      Residual3x3(depth),
+      nn.ConvTranspose2d(depth, depth, 4, stride=2, padding=1),
+      )
     self.pixel_cnn = PixelCNN(
-        PixelConvA(depth, depth, cond_depth=depth),
+      PixelConvA(depth, depth, cond_depth=depth),
 
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
 
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
 
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
 
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        PixelConvB(depth, cond_depth=depth, norm=True),
-        )
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      PixelConvB(depth, cond_depth=depth, norm=True),
+      )
     self.out_stack = nn.Sequential(
-        nn.Conv2d(depth * 2, depth, 1),
-        nn.Conv2d(depth, 512, 1),
-        )
+      nn.Conv2d(depth * 2, depth, 1),
+      nn.Conv2d(depth, 512, 1),
+      )
 
   def forward(self, bottom, top):
     conds = self.embed_top(top)

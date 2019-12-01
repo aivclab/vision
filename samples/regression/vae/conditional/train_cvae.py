@@ -95,9 +95,9 @@ def main():
           pyplot.subplot(5, 2, p + 1)
 
           pyplot.text(0, 0, f"c={condition_vector[p].item():d}",
-                   color='black',
-                   backgroundcolor='white',
-                   fontsize=8)
+                      color='black',
+                      backgroundcolor='white',
+                      fontsize=8)
           pyplot.imshow(sample[p].cpu().data.numpy())
           pyplot.axis('off')
 
@@ -107,8 +107,8 @@ def main():
           os.mkdir(os.path.join(fig_root, str(timstamp)))
 
         pyplot.savefig(os.path.join(fig_root, str(timstamp),
-                                 f"Epoch{epoch:d}_Iter{iteration:d}.png"),
-                    dpi=300)
+                                    f"Epoch{epoch:d}_Iter{iteration:d}.png"),
+                       dpi=300)
         pyplot.clf()
         pyplot.close('all')
 

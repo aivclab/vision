@@ -16,7 +16,6 @@ def bool_dice(img1, img2):
   return 2.0 * intersection.sum() / (img1.sum() + img2.sum())
 
 
-
 def dice_coefficient(pred, target, *, epsilon=1e-10):
   """
   This definition generalize to real valued pred and target vector.

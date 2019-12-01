@@ -16,8 +16,6 @@ def squeezenet_retrain(num_classes, pretrained=True, train_only_last_layer=False
                                         kernel_size=(1, 1),
                                         stride=(1, 1))
 
-
-
   params_to_update = []
   for name, param in model.named_parameters():
     if param.requires_grad == True:

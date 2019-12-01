@@ -82,8 +82,6 @@ def NeodroidClassificationGenerator2(env, device, batch_size=64):
     yield a
 
 
-
-
 if __name__ == '__main__':
   neodroid_generator = NeodroidDataGenerator()
   train_loader = torch.utils.data.DataLoader(dataset=neodroid_generator,
@@ -91,4 +89,3 @@ if __name__ == '__main__':
                                              shuffle=True)
   for p, r in train_loader:
     print(r)
-

@@ -46,12 +46,13 @@ def reset_grads(modules: Iterable[nn.Module]):
   for m in modules:
     m.zero_grad()
 
+
 def sample_x(X, size):
   start_idx = numpy.random.randint(0, X.shape[0] - size)
   return X[start_idx:start_idx + size]
 
-def main():
 
+def main():
   mnist_l = torchvision.datasets.MNIST(PROJECT_APP_PATH.user_cache / 'data',
                                        train=True,
                                        download=True,
@@ -69,7 +70,7 @@ def main():
   lr = 1e-4
   n_critics = 3
   lam1, lam2 = 100, 100
-  num_samples=4
+  num_samples = 4
 
   Generator1 = torch.nn.Sequential(torch.nn.Linear(X_dim + z_dim, h_dim),
                                    torch.nn.ReLU(),
@@ -193,20 +194,20 @@ def main():
               f' D_loss: {D1_loss.item() + D2_loss.item():.4};'
               f' G_loss: {G_loss.item():.4}')
 
-        real1:torch.Tensor = X1.data[:num_samples]
-        real2:torch.Tensor = X2.data[:num_samples]
-        samples1:torch.Tensor = X1_sample.data[:num_samples]
+        real1: torch.Tensor = X1.data[:num_samples]
+        real2: torch.Tensor = X2.data[:num_samples]
+        samples1: torch.Tensor = X1_sample.data[:num_samples]
         samples2: torch.Tensor = X2_sample.data[:num_samples]
-        real1 = real1.view(-1,1,28,28)
-        real2 = real2.view(-1,1,28,28)
-        samples1 = samples1.view(-1,1,28,28)
-        samples2 = samples2.view(-1,1,28,28)
+        real1 = real1.view(-1, 1, 28, 28)
+        real2 = real2.view(-1, 1, 28, 28)
+        samples1 = samples1.view(-1, 1, 28, 28)
+        samples2 = samples2.view(-1, 1, 28, 28)
         real_generate_samples = torch.cat([real2,
-                                             samples1,
-                                             real1,
-                                             samples2])
+                                           samples1,
+                                           real1,
+                                           samples2])
 
-        grid = torchvision.utils.make_grid(real_generate_samples,nrow=4)
+        grid = torchvision.utils.make_grid(real_generate_samples, nrow=4)
 
         writer.image(f'Samples',
                      data=grid,

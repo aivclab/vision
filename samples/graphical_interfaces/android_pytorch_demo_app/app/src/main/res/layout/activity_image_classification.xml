@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:fitsSystemWindows="true">
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:background="@android:color/black"
+                                                   android:fitsSystemWindows="true">
 
   <androidx.appcompat.widget.Toolbar
       android:id="@+id/toolbar"
@@ -17,14 +17,14 @@
       app:layout_constraintTop_toTopOf="parent"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:title="@string/vision_app_title" />
+      app:title="@string/vision_app_title"/>
 
   <TextureView
       android:id="@+id/image_classification_texture_view"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"/>
 
   <TextView
       android:id="@+id/image_classification_ms_text"
@@ -36,7 +36,7 @@
       android:elevation="1dp"
       android:visibility="invisible"
       app:layout_constraintTop_toTopOf="@id/image_classification_texture_view"
-      app:layout_constraintRight_toRightOf="@id/image_classification_texture_view" />
+      app:layout_constraintRight_toRightOf="@id/image_classification_texture_view"/>
 
   <TextView
       android:id="@+id/image_classification_fps_text"
@@ -48,7 +48,7 @@
       android:elevation="1dp"
       android:visibility="invisible"
       app:layout_constraintTop_toTopOf="@id/image_classification_texture_view"
-      app:layout_constraintRight_toLeftOf="@id/image_classification_ms_text" />
+      app:layout_constraintRight_toLeftOf="@id/image_classification_ms_text"/>
 
   <TextView
       android:id="@+id/image_classification_ms_avg_text"
@@ -60,7 +60,7 @@
       android:elevation="1dp"
       android:visibility="invisible"
       app:layout_constraintTop_toTopOf="@id/image_classification_texture_view"
-      app:layout_constraintRight_toLeftOf="@id/image_classification_fps_text" />
+      app:layout_constraintRight_toLeftOf="@id/image_classification_fps_text"/>
 
   <!--<dk.aivclab.demo.usecases.classification.views.ResultHeaderView
       android:id="@+id/image_classification_result_header_row"
@@ -85,7 +85,7 @@
       app:layout_constraintRight_toRightOf="parent"
       app:progressBarHeightRes="@dimen/result_row_progress_bar_height_top1"
       app:progressBarPaddingRes="@dimen/result_row_progress_bar_padding"
-      app:textAppearance="@style/TextAppearanceImageClassificationResult" />
+      app:textAppearance="@style/TextAppearanceImageClassificationResult"/>
 
   <dk.aivclab.demo.usecases.classification.views.ResultRowView
       android:id="@+id/image_classification_top2_result_row"
@@ -98,7 +98,7 @@
       app:layout_constraintRight_toRightOf="parent"
       app:progressBarHeightRes="@dimen/result_row_progress_bar_height_top2plus"
       app:progressBarPaddingRes="@dimen/result_row_progress_bar_padding"
-      app:textAppearance="@style/TextAppearanceImageClassificationResult" />
+      app:textAppearance="@style/TextAppearanceImageClassificationResult"/>
 
   <dk.aivclab.demo.usecases.classification.views.ResultRowView
       android:id="@+id/image_classification_top3_result_row"
@@ -111,9 +111,7 @@
       app:layout_constraintRight_toRightOf="parent"
       app:progressBarHeightRes="@dimen/result_row_progress_bar_height_top2plus"
       app:progressBarPaddingRes="@dimen/result_row_progress_bar_padding"
-      app:textAppearance="@style/TextAppearanceImageClassificationResult" />
-
-
+      app:textAppearance="@style/TextAppearanceImageClassificationResult"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

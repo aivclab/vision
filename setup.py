@@ -2,16 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 def python_version_check(major=3, minor=6):
   import sys
 
   assert sys.version_info.major == major and sys.version_info.minor >= minor, (
-      f"This project is utilises language features only present Python {major}.{minor} and greater. "
-      f"You are running {sys.version_info}."
+    f"This project is utilises language features only present Python {major}.{minor} and greater. "
+    f"You are running {sys.version_info}."
   )
-
 
 
 python_version_check()
@@ -28,20 +25,21 @@ with open(pathlib.Path(__file__).parent / "neodroidvision" / "__init__.py", "r")
   author = re.search(rf"__author__ = {str_reg_exp}", content, re.M).group(1)
 __author__ = author
 
+
 class NeodroidVisionPackage:
 
   @property
   def test_dependencies(self) -> list:
     return [
-        'pytest',
-        'mock'
-        ]
+      'pytest',
+      'mock'
+      ]
 
   @property
   def setup_dependencies(self) -> list:
     return [
-        'pytest-runner'
-        ]
+      'pytest-runner'
+      ]
 
   @property
   def package_name(self) -> str:
@@ -62,10 +60,10 @@ class NeodroidVisionPackage:
   @property
   def packages(self):
     return find_packages(
-        exclude=[
-            # 'neodroid/environment_utilities'
-            ]
-        )
+      exclude=[
+        # 'neodroid/environment_utilities'
+        ]
+      )
 
   @property
   def author_name(self):
@@ -95,18 +93,18 @@ class NeodroidVisionPackage:
   @property
   def entry_points(self):
     return {
-        'console_scripts':[
-            # "name_of_executable = module.with:function_to_execute"
-            "neodroidvision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
-            ]
-        }
+      'console_scripts':[
+        # "name_of_executable = module.with:function_to_execute"
+        "neodroidvision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
+        ]
+      }
 
   @property
   def extras(self):
     these_extras = {
-        # 'ExtraName':['package-name; platform_system == "System(Linux,Windows)"'
+      # 'ExtraName':['package-name; platform_system == "System(Linux,Windows)"'
 
-        }
+      }
 
     path: pathlib.Path = pathlib.Path(__file__).parent
 
@@ -164,20 +162,20 @@ class NeodroidVisionPackage:
   @property
   def classifiers(self):
     return [
-        'Development Status :: 4 - Beta',
-        'Environment :: Console',
-        'Intended Audience :: End Users/Desktop',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: POSIX',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Natural Language :: English',
-        # 'Topic :: Scientific/Engineering :: Artificial Intelligence'
-        # 'Topic :: Software Development :: Bug Tracking',
-        ]
+      'Development Status :: 4 - Beta',
+      'Environment :: Console',
+      'Intended Audience :: End Users/Desktop',
+      'Intended Audience :: Developers',
+      'License :: OSI Approved :: Apache Software License',
+      'Operating System :: MacOS :: MacOS X',
+      'Operating System :: Microsoft :: Windows',
+      'Operating System :: POSIX',
+      'Operating System :: OS Independent',
+      'Programming Language :: Python :: 3',
+      'Natural Language :: English',
+      # 'Topic :: Scientific/Engineering :: Artificial Intelligence'
+      # 'Topic :: Software Development :: Bug Tracking',
+      ]
 
   @property
   def version(self):

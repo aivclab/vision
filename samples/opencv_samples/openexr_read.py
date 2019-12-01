@@ -12,6 +12,7 @@ __doc__ = r'''
            Created on 09/10/2019
            '''
 
+
 def read_exr_file(filename):
   """Read RGB + Depth data from EXR image file.
   Parameters

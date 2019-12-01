@@ -9,7 +9,8 @@ __doc__ = r'''
            '''
 
 
-def run_length_encoding2mask(mask_rle: str = "", shape: tuple = (1400, 2100)):
+def run_length_to_mask(mask_rle: str = '',
+                       shape: tuple = (1400, 2100)):
   """
   Decode rle encoded mask.
 
@@ -27,7 +28,7 @@ def run_length_encoding2mask(mask_rle: str = "", shape: tuple = (1400, 2100)):
   return img.reshape(shape, order="F")
 
 
-def mask2run_length_encoding(img):
+def mask_to_run_length(img):
   """
   Convert mask to rle.
   img: numpy array, 1 - mask, 0 - background

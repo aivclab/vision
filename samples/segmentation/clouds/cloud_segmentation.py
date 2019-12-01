@@ -5,27 +5,21 @@ from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask.fission_net.skip_hourglass import SkipHourglassFissionNet
-from neodroidvision.segmentation import BCEDiceLoss, bool_dice
+from neodroidvision.segmentation import BCEDiceLoss, bool_dice, draw_convex_hull
 from pathlib import Path
-from draugr.torch_utilities import torch_seed, global_torch_device
-import cv2
+from draugr.torch_utilities import torch_seed, global_torch_device, float_chw_to_hwc_uint, chw_to_hwc
+
 from matplotlib import pyplot
-import numpy
 import pandas
 import seaborn
 import torch
 from torch.utils.data import DataLoader
 
-from cloud_segmentation_utilities import (
-  CloudDataset,
-  post_process,
-  resize_it,
-  visualize_with_raw,
+from neodroidvision.segmentation import mask_to_run_length
+from cloud_segmentation_dataset import CloudSegmentationDataset
+import numpy
 
-  )
-
-from neodroidvision.segmentation.segmentation_utilities.masks.run_length_encoding import \
-  mask2run_length_encoding
+import cv2
 
 __author__ = 'Christian Heider Nielsen'
 __doc__ = r'''
@@ -34,48 +28,48 @@ __doc__ = r'''
            '''
 
 
-def reschedule(model, epoch, scheduler):
-  "This can be improved its just a hacky way to write SGDWR "
-  if epoch == 7:
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-    current_lr = next(iter(optimizer.param_groups))['lr']
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,
-                                                           6,
-                                                           eta_min=current_lr / 100,
-                                                           last_epoch=-1)
-  if epoch == 13:
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-    current_lr = next(iter(optimizer.param_groups))['lr']
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,
-                                                           6,
-                                                           eta_min=current_lr / 100,
-                                                           last_epoch=-1)
-  if epoch == 19:
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-    current_lr = next(iter(optimizer.param_groups))['lr']
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,
-                                                           6,
-                                                           eta_min=current_lr / 100,
-                                                           last_epoch=-1)
-  if epoch == 25:
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-    current_lr = next(iter(optimizer.param_groups))['lr']
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,
-                                                           6,
-                                                           eta_min=current_lr / 100,
-                                                           last_epoch=-1)
-
-  return model, scheduler
+def post_process_minsize(mask, min_size):
+  """
+  Post processing of each predicted mask, components with lesser number of pixels
+  than `min_size` are ignored
+  """
+  num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
+  predictions, num = numpy.zeros(mask.shape), 0
+  for c in range(1, num_component):
+    p = (component == c)
+    if p.sum() > min_size:
+      predictions[p] = 1
+      num += 1
+  return predictions
 
 
-def train_d(model,
-            train_loader,
-            valid_loader,
-            criterion,
-            optimizer,
-            scheduler,
-            save_model_path,
-            n_epochs=0):
+def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
+  """
+  This is slightly different from other kernels as we draw convex hull here itself.
+  Post processing of each predicted mask, components with lesser number of pixels
+  than `min_size` are ignored
+  """
+  mask = cv2.threshold(probability, threshold, 1, cv2.THRESH_BINARY)[1]
+  mask = draw_convex_hull(mask.astype(numpy.uint8))
+  num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
+  predictions = numpy.zeros(psize, numpy.float32)
+  num = 0
+  for c in range(1, num_component):
+    p = component == c
+    if p.sum() > min_size:
+      predictions[p] = 1
+      num += 1
+  return predictions, num
+
+
+def train_model(model,
+                train_loader,
+                valid_loader,
+                criterion,
+                optimizer,
+                scheduler,
+                save_model_path: Path,
+                n_epochs=99):
   valid_loss_min = numpy.Inf  # track change in validation loss
   E = tqdm(range(1, n_epochs + 1))
   for epoch in E:
@@ -86,7 +80,7 @@ def train_d(model,
     model.train()
     train_set = tqdm(train_loader, postfix={"train_loss":0.0})
     for data, target in train_set:
-      data, target = data.to(global_torch_device()), target.to(global_torch_device())
+      data, target = data.to(global_torch_device(),dtype=torch.float), target.to(global_torch_device(),dtype=torch.float)
       optimizer.zero_grad()
       output, *_ = model(data)
       output = torch.sigmoid(output)
@@ -100,14 +94,14 @@ def train_d(model,
     with torch.no_grad():
       validation_set = tqdm(valid_loader, postfix={"valid_loss":0.0, "dice_score":0.0})
       for data, target in validation_set:
-        data, target = data.to(global_torch_device()), target.to(global_torch_device())
-        # forward pass: compute predicted outputs by passing inputs to the model
-        output, *_ = model(data)
+        data, target = data.to(global_torch_device(),dtype=torch.float), target.to(global_torch_device(),dtype=torch.float)
+
+        output, *_ = model(data)  # forward pass: compute predicted outputs by passing inputs to the model
         output = torch.sigmoid(output)
-        # calculate the batch loss
-        loss = criterion(output, target)
-        # update average validation loss
-        valid_loss += loss.item() * data.size(0)
+
+        loss = criterion(output, target)  # calculate the batch loss
+
+        valid_loss += loss.item() * data.size(0)  # update average validation loss
         dice_cof = bool_dice(output.cpu().detach().numpy(), target.cpu().detach().numpy())
         dice_score += dice_cof * data.size(0)
         validation_set.set_postfix(ordered_dict={"valid_loss":loss.item(), "dice_score":dice_cof})
@@ -126,21 +120,45 @@ def train_d(model,
     # save model if validation loss has decreased
     if valid_loss <= valid_loss_min:
       print(f'Validation loss decreased ({valid_loss_min:.6f} --> {valid_loss:.6f}).  Saving model ...')
-      torch.save(model.state_dict(), save_model_path)
+      torch.save(model.state_dict(), str(save_model_path))
       valid_loss_min = valid_loss
 
     scheduler.step()
-    model, scheduler = reschedule(model, epoch, scheduler)
 
   return model
 
 
-def grid_search(model, probabilities, valid_masks, valid_loader):
-  ## Grid Search for best Threshold
+def threshold_grid_search(model, valid_loader, max_samples=2000):
+  ''' Grid Search for best Threshold '''
+
+  valid_masks = []
+  count = 0
+  tr = min(valid_loader.dataset.__len__(), max_samples)
+  probabilities = numpy.zeros((tr,
+                               *CloudSegmentationDataset.image_size_T),
+                              dtype=numpy.float32)
+  for data, targets in tqdm(valid_loader):
+    data = data.to(global_torch_device(),dtype=torch.float)
+    predictions, *_ = model(data)
+    predictions = torch.sigmoid(predictions)
+    predictions = predictions.cpu().detach().numpy()
+    targets = targets.cpu().detach().numpy()
+    for p in range(data.shape[0]):
+      pred, target = predictions[p], targets[p]
+      for mask_ in target:
+        valid_masks.append(mask_)
+      for probability in pred:
+        probabilities[count, :, :] = probability
+        count += 1
+      if count >= tr - 1:
+        break
+    if count >= tr - 1:
+      break
+
   class_params = {}
 
-  for class_id in CloudDataset.classes.keys():
-    print(CloudDataset.classes[class_id])
+  for class_id in CloudSegmentationDataset.categories.keys():
+    print(CloudSegmentationDataset.categories[class_id])
     attempts = []
     for t in range(0, 100, 5):
       t /= 100
@@ -148,7 +166,7 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
         masks, d = [], []
         for i in range(class_id, len(probabilities), 4):
           probability_ = probabilities[i]
-          predict, num_predict = post_process(probability_, t, ms)
+          predict, num_predict = threshold_mask(probability_, t, ms)
           masks.append(predict)
         for i, j in zip(masks, valid_masks[class_id::4]):
           if (i.sum() == 0) & (j.sum() == 0):
@@ -164,105 +182,54 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
     best_size = attempts_df['size'].values[0]
     class_params[class_id] = (best_threshold, best_size)
 
-  attempts_df = pandas.DataFrame(attempts, columns=['threshold', 'size', 'dice'])
-  print(class_params)
-  attempts_df.groupby(['threshold'])['dice'].max()
-
-  attempts_df.groupby(['size'])['dice'].max()
-  attempts_df = attempts_df.sort_values('dice', ascending=False)
-  attempts_df.head(10)
-  seaborn.lineplot(x='threshold', y='dice', hue='size', data=attempts_df)
-  pyplot.title('Threshold and min size vs dice')
-  best_threshold = attempts_df['threshold'].values[0]
-  best_size = attempts_df['size'].values[0]
-
-  for i, (data, target) in enumerate(valid_loader):
-    data = data.to(global_torch_device())
-    output, *_ = model(data)
-    output = torch.sigmoid(output)[0].cpu().detach().numpy()
-    image = data[0].cpu().detach().numpy()
-    mask = target[0].cpu().detach().numpy()
-    output = output.transpose(1, 2, 0)
-    image_vis = image.transpose(1, 2, 0)
-    mask = mask.astype('uint8').transpose(1, 2, 0)
-    pr_mask = numpy.zeros((350, 525, 4))
-    for j in range(4):
-      probability_ = resize_it(output[:, :, j])
-      pr_mask[:, :, j], _ = post_process(probability_,
-                                         class_params[j][0],
-                                         class_params[j][1])
-    visualize_with_raw(image=image_vis,
-                       mask=pr_mask,
-                       original_image=image_vis,
-                       original_mask=mask,
-                       raw_image=image_vis,
-                       raw_mask=output)
-    if i >= 6:
-      break
-
   return class_params
 
+def prepare_submission(model, class_params, test_loader, submission_file_path = 'submission.csv'):
+  #encoded_pixels = []
+  submission_i = 0
+  number_of_pixels_saved = 0
+  df:pandas.DataFrame = test_loader.dataset.data_frame
 
-def submission(model, class_params, base_path, batch_size, resized_loc):
-  test_loader = DataLoader(CloudDataset(df_path=base_path / 'sample_submission.csv',
-                                        resized_loc=resized_loc,
-                                        subset='test'),
-                           batch_size=batch_size,
-                           shuffle=False,
-                           num_workers=2)
+  with open(submission_file_path, mode='w') as f:
+    f.write("Image_Label,EncodedPixels\n")
+    for data, target, black_mask in tqdm(test_loader):
+      data = data.to(global_torch_device(),dtype=torch.float)
+      output, *_ = model(data)
+      del data
+      output = torch.sigmoid(output)
+      output = output.cpu().detach().numpy()
+      black_mask = black_mask.cpu().detach().numpy()
+      a = df['Image_Label']
+      for category in output:
+        for probability in category:
+          thr, min_size = class_params[submission_i % 4][0], class_params[submission_i % 4][1]
+          predict, num_predict = threshold_mask(probability, thr, min_size)
+          if num_predict == 0:
+            rle=''
+            #encoded_pixels.append('')
+          else:
+            number_of_pixels_saved += numpy.sum(predict)
+            predict_masked = numpy.multiply(predict, black_mask)
+            number_of_pixels_saved -= numpy.sum(predict_masked)
+            rle = mask_to_run_length(predict_masked)
+            #encoded_pixels.append(rle)
 
-  submit_ = pandas.read_csv(str(base_path / 'sample_submission.csv'))
-  pathlist = [f'{base_path}/test_images/{i.split("_")[0]}' for i in submit_['Image_Label']]
+          f.write(f"{a[submission_i]},{rle}\n")
+          submission_i += 1
 
-  def get_black_mask(image_path):
-    img = cv2.imread(image_path)
-    img = cv2.resize(img, (525, 350))
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    lower = numpy.array([0, 0, 0], numpy.uint8)
-    upper = numpy.array([180, 255, 10], numpy.uint8)
-    return (~ (cv2.inRange(hsv, lower, upper) > 250)).astype(int)
+    #df['EncodedPixels'] = encoded_pixels
+    #df.to_csv(submission_file_path, columns=['Image_Label', 'EncodedPixels'], index=False)
 
-  pyplot.imshow(get_black_mask(pathlist[120]))
-  pyplot.show()
+  print(f"Number of pixel saved {number_of_pixels_saved}")
 
-  encoded_pixels = []
-  image_id = 0
-  cou = 0
-  np_saved = 0
-  for data, target in tqdm(test_loader):
-    data = data.to(global_torch_device())
-    output, *_ = model(data)
-    output = torch.sigmoid(output)
-    del data
-    for i, batch in enumerate(output):
-      for probability in batch:
-        probability = resize_it(probability.cpu().detach().numpy())
-        predict, num_predict = post_process(probability,
-                                            class_params[image_id % 4][0],
-                                            class_params[image_id % 4][1])
-        if num_predict == 0:
-          encoded_pixels.append('')
-        else:
-          black_mask = get_black_mask(pathlist[cou])
-          np_saved += numpy.sum(predict)
-          predict = numpy.multiply(predict, black_mask)
-          np_saved -= numpy.sum(predict)
-          r = mask2run_length_encoding(predict)
-          encoded_pixels.append(r)
-        cou += 1
-        image_id += 1
 
-  print(f"number of pixel saved {np_saved}")
-
-  submit_['EncodedPixels'] = encoded_pixels
-  submit_.to_csv('submission.csv', columns=['Image_Label', 'EncodedPixels'], index=False)
 
 
 def main():
   pyplot.style.use('bmh')
 
-  base_path = Path.home() / 'Data' / 'Datasets' / 'Clouds'
-  resized_loc = base_path / 'resized'
+  base_dataset_path = Path.home() / 'Data' / 'Datasets' / 'Clouds'
+  image_path = base_dataset_path / 'resized'
 
   save_model_path = PROJECT_APP_PATH.user_data / 'cloud_seg.model'
 
@@ -271,83 +238,90 @@ def main():
   num_workers = 2
   torch_seed(SEED)
 
-  min_size = (10000, 10000, 10000, 10000)
-
-  train_loader = DataLoader(CloudDataset(df_path=base_path / 'train.csv',
-                                         resized_loc=resized_loc,
-                                         subset="train",
-                                         ),
+  train_loader = DataLoader(CloudSegmentationDataset(base_dataset_path,
+                                                     image_path,
+                                                     subset="train",
+                                                     ),
                             batch_size=batch_size,
                             shuffle=True,
                             num_workers=num_workers
                             )
-  valid_loader = DataLoader(CloudDataset(df_path=base_path / 'train.csv',
-                                         resized_loc=resized_loc,
-                                         subset="valid",
-                                         ),
+  valid_loader = DataLoader(CloudSegmentationDataset(base_dataset_path,
+                                                     image_path,
+                                                     subset="valid",
+                                                     ),
                             batch_size=batch_size,
                             shuffle=False,
                             num_workers=num_workers
                             )
+  test_loader = DataLoader(CloudSegmentationDataset(base_dataset_path,
+                                                    image_path,
+                                                    subset='test'),
+                           batch_size=batch_size,
+                           shuffle=False,
+                           num_workers=num_workers)
 
-  model = SkipHourglassFissionNet(CloudDataset.predictors_shape[-1],
-                                  CloudDataset.response_shape,
-                                  encoding_depth=2)
+  model = SkipHourglassFissionNet(CloudSegmentationDataset.predictor_channels,
+                                  (CloudSegmentationDataset.response_channels,),
+                                  encoding_depth=1)
   model.to(global_torch_device())
 
   if save_model_path.exists():
     model.load_state_dict(torch.load(str(save_model_path)))  # load last model
+    print('loading previous model')
 
   criterion = BCEDiceLoss(eps=1.0)
-  optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-  current_lr = next(iter(optimizer.param_groups))['lr']
-  scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,
-                                                         7,
-                                                         eta_min=current_lr / 100,
-                                                         last_epoch=-1)
-  model = train_d(model,
-                  train_loader,
-                  valid_loader,
-                  criterion,
-                  optimizer,
-                  scheduler,
-                  str(save_model_path))
+  lr = 3e-3
+  optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+  scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer,
+                                                                   7,
+                                                                   eta_min=lr / 100,
+                                                                   last_epoch=-1)
+
+
+  model = train_model(model,
+                        train_loader,
+                        valid_loader,
+                        criterion,
+                        optimizer,
+                        scheduler,
+                        save_model_path)
+
 
   if save_model_path.exists():
     model.load_state_dict(torch.load(str(save_model_path)))  # load best model
   model.eval()
 
-  valid_masks = []
-  count = 0
-  tr = min(len(valid_loader.dataset) * 4, 2000)
-  probabilities = numpy.zeros((tr, 350, 525), dtype=numpy.float32)
-  for data, target in tqdm(valid_loader):
-    data = data.to(global_torch_device())
-    target = target.cpu().detach().numpy()
-    outpu, *_ = model(data)
-    outpu = torch.sigmoid(outpu).cpu().detach().numpy()
-    for p in range(data.shape[0]):
-      output, mask = outpu[p], target[p]
-      for m in mask:
-        valid_masks.append(resize_it(m))
-      for probability in output:
-        probabilities[count, :, :] = resize_it(probability)
-        count += 1
-      if count >= tr - 1:
-        break
-    if count >= tr - 1:
-      break
+  class_parameters = threshold_grid_search(model, valid_loader)
 
-  class_parameters = grid_search(model,
-                                 probabilities,
-                                 valid_masks,
-                                 valid_loader)
+  for _, (data, target) in zip(range(2),valid_loader):
+    data = data.to(global_torch_device(),dtype=torch.float)
+    output, *_ = model(data)
+    output = torch.sigmoid(output)
+    output= output[0].cpu().detach().numpy()
+    image_vis = data[0].cpu().detach().numpy()
+    mask = target[0].cpu().detach().numpy()
 
-  submission(model,
-             class_parameters,
-             base_path=base_path,
-             batch_size=batch_size,
-             resized_loc=resized_loc)
+    mask = chw_to_hwc(mask)
+    output = chw_to_hwc(output)
+    image_vis = float_chw_to_hwc_uint(image_vis)
+
+    pr_mask = numpy.zeros(CloudSegmentationDataset.response_shape)
+    for j in range(len(CloudSegmentationDataset.categories)):
+      probability_ = output[:, :, j]
+      thr, min_size = class_parameters[j][0], class_parameters[j][1]
+      pr_mask[:, :, j], _ = threshold_mask(probability_, thr, min_size)
+    CloudSegmentationDataset.visualise_prediction(image_vis,
+                                                  pr_mask,
+                                                  original_image=image_vis,
+                                                  original_mask=mask,
+                                                  raw_image=image_vis,
+                                                  raw_mask=output)
+
+  prepare_submission(model,
+                     class_parameters,
+                     test_loader
+                     )
 
 
 if __name__ == '__main__':

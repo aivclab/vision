@@ -9,6 +9,7 @@ __doc__ = r'''
            Created on 20/10/2019
            '''
 
+
 def draw_masks(img2, img_mask_list):
   img = img2.copy()
   for ii in range(4):  # for each of the 4 masks

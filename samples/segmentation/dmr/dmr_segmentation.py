@@ -17,7 +17,12 @@ import torch
 from torch.utils.data import DataLoader
 
 from neodroidvision.segmentation.segmentation_utilities.masks.run_length_encoding import \
-  mask2run_length_encoding
+  mask_to_run_length
+from samples.segmentation.clouds.cloud_segmentation_utilities import (CloudDataset,
+                                                                      post_process,
+                                                                      resize_image_cv,
+                                                                      visualize_with_raw,
+                                                                      )
 
 __author__ = 'Christian Heider Nielsen'
 __doc__ = r'''
@@ -179,7 +184,7 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
     mask = mask.astype('uint8').transpose(1, 2, 0)
     pr_mask = numpy.zeros((350, 525, 4))
     for j in range(4):
-      probability_ = resize_it(output[:, :, j])
+      probability_ = resize_image_cv(output[:, :, j])
       pr_mask[:, :, j], _ = post_process(probability_,
                                          class_params[j][0],
                                          class_params[j][1])
@@ -208,7 +213,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
 
   def get_black_mask(image_path):
     img = cv2.imread(image_path)
-    img = cv2.resize(img, (525, 350))
+    img = resize_image_cv(img, (525, 350))
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     lower = numpy.array([0, 0, 0], numpy.uint8)
     upper = numpy.array([180, 255, 10], numpy.uint8)
@@ -228,7 +233,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
     del data
     for i, batch in enumerate(output):
       for probability in batch:
-        probability = resize_it(probability.cpu().detach().numpy())
+        probability = resize_image_cv(probability.cpu().detach().numpy())
         predict, num_predict = post_process(probability,
                                             class_params[image_id % 4][0],
                                             class_params[image_id % 4][1])
@@ -239,7 +244,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
           np_saved += numpy.sum(predict)
           predict = numpy.multiply(predict, black_mask)
           np_saved -= numpy.sum(predict)
-          r = mask2run_length_encoding(predict)
+          r = mask_to_run_length(predict)
           encoded_pixels.append(r)
         cou += 1
         image_id += 1
@@ -323,9 +328,9 @@ def main():
     for p in range(data.shape[0]):
       output, mask = outpu[p], target[p]
       for m in mask:
-        valid_masks.append(resize_it(m))
+        valid_masks.append(resize_image_cv(m))
       for probability in output:
-        probabilities[count, :, :] = resize_it(probability)
+        probabilities[count, :, :] = resize_image_cv(probability)
         count += 1
       if count >= tr - 1:
         break

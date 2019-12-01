@@ -110,6 +110,7 @@ def to_dict_detections(preds):
     res.append(d)
   return res
 
+
 def grab_video_frame(cap):
   ret, frame = cap.read()
   return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -137,7 +138,7 @@ def update_figures(i):
 
   new_images = extract_all_as_camera(info)
 
-  #new_images['RGB'] = new_images['RGB'] ** 0.454545
+  # new_images['RGB'] = new_images['RGB'] ** 0.454545
 
   # print( numpy.max(new_images['RGB']))
 
@@ -156,9 +157,9 @@ def update_figures(i):
                f'Terminated: {bool(terminated)}')
 
   for k, v in new_images.items():
-    v = v*255.0
+    v = v * 255.0
     v = numpy.ascontiguousarray(v.astype(numpy.uint8))
-    t = Image.fromarray(v,mode='RGBA').convert('RGB')
+    t = Image.fromarray(v, mode='RGBA').convert('RGB')
     img_t = to_tensor(t).unsqueeze(0)
     preds = get_preds(img_t, .70)
     v_out = show_preds(t, preds)
