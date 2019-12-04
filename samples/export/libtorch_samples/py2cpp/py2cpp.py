@@ -11,7 +11,7 @@ example = torch.rand(1, 3, 224, 224)
 # Use torch.jit.trace to generate a torch.jit.ScriptModule via tracing.
 traced_script_module = torch.jit.trace(model, example)
 
-'''
+"""
 class MyModule(torch.nn.Module):
     def __init__(self, N, M):
         super(MyModule, self).__init__()
@@ -26,6 +26,6 @@ class MyModule(torch.nn.Module):
 
 my_module = MyModule(10,20)
 traced_script_module = torch.jit.script(my_module)
-'''
+"""
 
 traced_script_module.save("imagenet_resnet18.pt")
