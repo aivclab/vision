@@ -10,24 +10,24 @@ __doc__ = r"""
 
 
 def other_retrain(arch, model, num_classes: int):
-  if arch.startswith("alexnet"):
-    model.classifier[6] = torch.nn.Linear(
-      model.classifier[6].in_features, num_classes
-      )
-    print("=> reshaped AlexNet classifier layer with: " + str(model.classifier[6]))
+    if arch.startswith("alexnet"):
+        model.classifier[6] = torch.nn.Linear(
+            model.classifier[6].in_features, num_classes
+        )
+        print("=> reshaped AlexNet classifier layer with: " + str(model.classifier[6]))
 
-  elif arch.startswith("vgg"):
-    model.classifier[6] = torch.nn.Linear(
-      model.classifier[6].in_features, num_classes
-      )
-    print("=> reshaped VGG classifier layer with: " + str(model.classifier[6]))
+    elif arch.startswith("vgg"):
+        model.classifier[6] = torch.nn.Linear(
+            model.classifier[6].in_features, num_classes
+        )
+        print("=> reshaped VGG classifier layer with: " + str(model.classifier[6]))
 
-  elif arch.startswith("densenet"):
-    model.classifier = torch.nn.Linear(model.classifier.in_features, num_classes)
-    print("=> reshaped DenseNet classifier layer with: " + str(model.classifier))
+    elif arch.startswith("densenet"):
+        model.classifier = torch.nn.Linear(model.classifier.in_features, num_classes)
+        print("=> reshaped DenseNet classifier layer with: " + str(model.classifier))
 
-  elif arch.startswith("inception"):
-    model.AuxLogits.fc = torch.nn.Linear(
-      model.AuxLogits.fc.in_features, num_classes
-      )
-    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    elif arch.startswith("inception"):
+        model.AuxLogits.fc = torch.nn.Linear(
+            model.AuxLogits.fc.in_features, num_classes
+        )
+        model.fc = torch.nn.Linear(model.fc.in_features, num_classes)

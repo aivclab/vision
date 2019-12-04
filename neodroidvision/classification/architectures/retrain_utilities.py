@@ -11,11 +11,11 @@ from torch import nn
 
 
 def set_all_parameter_requires_grad(model: nn.Module, bo: bool = False):
-  for param in model.parameters():
-    param.requires_grad = bo
+    for param in model.parameters():
+        param.requires_grad = bo
 
 
 def set_first_n_parameter_requires_grad(model: nn.Module, n: int = 6, bo: bool = False):
-  for i, child in enumerate(model.children()):
-    if i <= n:
-      set_all_parameter_requires_grad(child, bo)
+    for i, child in enumerate(model.children()):
+        if i <= n:
+            set_all_parameter_requires_grad(child, bo)

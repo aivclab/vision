@@ -8,9 +8,9 @@ __doc__ = r"""
 
 
 def random_sample_softmax(probs):
-  number = random.random()
-  for i, x in enumerate(probs):
-    number -= x
-    if number <= 0:
-      return i
-  return len(probs) - 1
+    number = random.random()
+    for i, x in enumerate(probs):
+        number -= x
+        if number <= 0:
+            return i
+    return len(probs) - 1
