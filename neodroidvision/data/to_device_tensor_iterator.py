@@ -10,15 +10,15 @@ __doc__ = r"""
 
 
 def to_device_tensor_iterator(data_iterator, device):
-    while True:
-        yield (to_tensor(i, device=device) for i in next(data_iterator))
+  while True:
+    yield (to_tensor(i, device=device) for i in next(data_iterator))
 
 
 if __name__ == "__main__":
-    import numpy
+  import numpy
 
-    a = iter(numpy.random.sample((5, 5, 5)))
-    for a in to_device_tensor_iterator(a, "cpu"):
-        d, *_ = a
-        print(d)
-        print(type(d))
+  a = iter(numpy.random.sample((5, 5, 5)))
+  for a in to_device_tensor_iterator(a, "cpu"):
+    d, *_ = a
+    print(d)
+    print(type(d))
