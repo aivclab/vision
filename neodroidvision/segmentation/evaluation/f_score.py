@@ -16,8 +16,9 @@ def f_score(pr: torch.Tensor,
             beta: float = 1.0,
             eps: float = 1e-7,
             threshold: float = None,
-            activation: Callable = torch.sigmoid):
+            activation: Callable = torch.sigmoid) -> torch.Tensor:
   """
+
   Args:
       pr (torch.Tensor): A list of predicted elements
       gt (torch.Tensor):  A list of elements that are to be predicted
@@ -25,6 +26,14 @@ def f_score(pr: torch.Tensor,
       threshold: threshold for outputs binarization
   Returns:
       float: IoU (Jaccard) score
+
+  :param pr:
+  :param gt:
+  :param beta:
+  :param eps:
+  :param threshold:
+  :param activation:
+  :return:
   """
   if activation:
     pr = activation(pr)

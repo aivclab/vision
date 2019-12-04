@@ -23,7 +23,7 @@ __all__ = ['CloudSegmentationDataset']
 
 class CloudSegmentationDataset(Dataset):
   categories = {0:"Fish", 1:"Flower", 2:"Gravel", 3:"Sugar"}
-  image_size = (525, 350)
+  image_size = (640, 320)
   image_size_T = image_size[::-1]
 
   predictor_channels = 3
@@ -50,7 +50,7 @@ class CloudSegmentationDataset(Dataset):
   def validation_augmentations(self):
     """Add paddings to make image shape divisible by 32"""
     return [
-      # albumentations.Resize(*self.image_size_T),
+      albumentations.Resize(*self.image_size_T),
       # albumentations.Normalize(mean=self.mean, std=self.std)
       # Standardization
       ]

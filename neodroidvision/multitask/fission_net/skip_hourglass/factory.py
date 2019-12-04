@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from neodroidvision.multitask.fission_net.skip_hourglass.compress import Compress
-from neodroidvision.multitask.fission_net.skip_hourglass.decompress import Decompress
 
 __author__ = 'Christian Heider Nielsen'
 __doc__ = r'''
 
            Created on 29/10/2019
            '''
+
+from neodroidvision.multitask.fission_net.skip_hourglass.compress import Compress
+from neodroidvision.multitask.fission_net.skip_hourglass.decompress import Decompress
 
 
 def fcn_encoder(in_channels: int, depth: int, start_channels: int):

@@ -7,7 +7,10 @@ import numpy
 import torch
 
 
-def jaccard_similarity_score(pred, target, *, epsilon=1e-10):
+def jaccard_similarity_score(pred: torch.Tensor,
+                             target: torch.Tensor,
+                             *,
+                             epsilon: float = 1e-10) -> torch.Tensor:
   pred_flat = pred.contiguous().view(-1)  # have to use contiguous since they may from a torch.view op
   target_flat = target.contiguous().view(-1)
 
@@ -19,7 +22,10 @@ def jaccard_similarity_score(pred, target, *, epsilon=1e-10):
   return dice_coefficient
 
 
-def jaccard_loss(pred, target, *, epsilon=1e-10):
+def jaccard_loss(pred: torch.Tensor,
+                 target: torch.Tensor,
+                 *,
+                 epsilon: float = 1e-10) -> torch.Tensor:
   return 1 - jaccard_similarity_score(pred, target, epsilon=epsilon)
 
 

@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import torch
 import torch.nn as nn
 
@@ -8,7 +10,7 @@ class Compress(nn.Module):
   A ReLU activation follows each convolution.
   """
 
-  def __init__(self, in_channels, out_channels, pooling=True):
+  def __init__(self, in_channels:int, out_channels:int, pooling:bool=True):
     super().__init__()
 
     self.in_channels = in_channels
@@ -32,7 +34,7 @@ class Compress(nn.Module):
     if self.pooling:
       self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
-  def forward(self, x):
+  def forward(self, x:torch.Tensor)->Tuple[torch.Tensor,torch.Tensor]:
     x = torch.relu(self.conv1(x))
     x = torch.relu(self.conv2(x))
     before_pool = x

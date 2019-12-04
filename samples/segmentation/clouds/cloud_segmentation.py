@@ -222,9 +222,6 @@ def prepare_submission(model, class_params, test_loader, submission_file_path = 
 
   print(f"Number of pixel saved {number_of_pixels_saved}")
 
-
-
-
 def main():
   pyplot.style.use('bmh')
 

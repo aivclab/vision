@@ -9,10 +9,10 @@ class Decompress(nn.Module):
   """
 
   @staticmethod
-  def decompress(in_channels,
-                 out_channels,
-                 mode='fractional',
-                 factor=2):
+  def decompress(in_channels:int,
+                 out_channels:int,
+                 mode:str='fractional',
+                 factor:int=2):
     if mode == 'fractional':
       return nn.ConvTranspose2d(in_channels,
                                 out_channels,
@@ -30,10 +30,11 @@ class Decompress(nn.Module):
                                      stride=1)
                            )
 
-  def __init__(self, in_channels,
-               out_channels,
-               merge_mode='concat',
-               up_mode='fractional'):
+  def __init__(self,
+               in_channels:int,
+               out_channels:int,
+               merge_mode:str='concat',
+               up_mode:str='fractional'):
     super().__init__()
 
     self.in_channels = in_channels
@@ -41,7 +42,9 @@ class Decompress(nn.Module):
     self.merge_mode = merge_mode
     self.up_mode = up_mode
 
-    self.upconv = self.decompress(self.in_channels, self.out_channels, mode=self.up_mode)
+    self.upconv = self.decompress(self.in_channels,
+                                  self.out_channels,
+                                  mode=self.up_mode)
 
     if self.merge_mode == 'concat':
       self.conv1 = nn.Conv2d(2 * self.out_channels,
@@ -68,7 +71,9 @@ class Decompress(nn.Module):
                            bias=True,
                            groups=1)
 
-  def forward(self, from_down, from_up):
+  def forward(self,
+              from_down:torch.Tensor,
+              from_up:torch.Tensor)->torch.Tensor:
     """
     Forward pass
     Arguments:

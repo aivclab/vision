@@ -7,7 +7,7 @@ from torch import nn
 from neodroidvision.segmentation.evaluation.f_score import f_score
 
 
-def bool_dice(img1, img2):
+def bool_dice(img1, img2) -> float:
   img1 = numpy.asarray(img1).astype(numpy.bool)
   img2 = numpy.asarray(img2).astype(numpy.bool)
 
@@ -16,7 +16,10 @@ def bool_dice(img1, img2):
   return 2.0 * intersection.sum() / (img1.sum() + img2.sum())
 
 
-def dice_coefficient(pred, target, *, epsilon=1e-10):
+def dice_coefficient(pred: torch.Tensor,
+                     target: torch.Tensor,
+                     *,
+                     epsilon: float = 1e-10) -> torch.Tensor:
   """
   This definition generalize to real valued pred and target vector.
 This should be differentiable.
@@ -30,24 +33,29 @@ This should be differentiable.
   intersection = 2. * (pred_flat * target_flat).sum() + epsilon
   union = (target_flat ** 2).sum() + (pred_flat ** 2).sum() + epsilon
 
-  dice_coefficient = intersection / union
-
-  return dice_coefficient
+  return intersection / union
 
 
-def dice_loss(prediction, target, *, epsilon=1e-10):
+def dice_loss(prediction: torch.Tensor,
+              target: torch.Tensor,
+              *,
+              epsilon: float = 1e-10) -> torch.Tensor:
   return 1 - dice_coefficient(prediction, target, epsilon=epsilon)
 
 
 class DiceLoss(nn.Module):
-  __name__ = 'dice_loss'
 
-  def __init__(self, *, eps: float = 1e-7, activation=torch.sigmoid):
+  def __init__(self,
+               *,
+               eps: float = 1e-7,
+               activation: callable = torch.sigmoid):
     super().__init__()
     self.activation = activation
     self.eps = eps
 
-  def forward(self, y_pr, y_gt):
+  def forward(self,
+              y_pr: torch.Tensor,
+              y_gt: torch.Tensor) -> torch.Tensor:
     return 1 - f_score(y_pr,
                        y_gt,
                        beta=1.0,
@@ -57,7 +65,6 @@ class DiceLoss(nn.Module):
 
 
 class BCEDiceLoss(DiceLoss):
-  __name__ = 'bce_dice_loss'
 
   def __init__(self,
                eps: float = 1e-7,
@@ -74,7 +81,9 @@ class BCEDiceLoss(DiceLoss):
     self.lambda_dice = lambda_dice
     self.lambda_bce = lambda_bce
 
-  def forward(self, y_pr, y_gt):
+  def forward(self,
+              y_pr: torch.Tensor,
+              y_gt: torch.Tensor) -> torch.Tensor:
     dice = super().forward(y_pr, y_gt)
     bce = self.bce(y_pr, y_gt)
     return (self.lambda_dice * dice) + (self.lambda_bce * bce)
