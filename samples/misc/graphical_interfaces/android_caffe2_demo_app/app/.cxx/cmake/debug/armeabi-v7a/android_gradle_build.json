@@ -1,0 +1,87 @@
+{
+  "buildFiles": [
+    "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/CMakeLists.txt"
+  ],
+  "cFileExtensions": [
+    "c"
+  ],
+  "cleanCommands": [
+    "/home/heider/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a --target clean"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ],
+  "libraries": {
+    "NNPACK-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "NNPACK",
+      "buildType": "debug",
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/src/main/jniLibs/armeabi-v7a/libCAFFE2_NNPACK.a",
+      "toolchain": "8303790342441341603"
+    },
+    "caffe2-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "caffe2",
+      "buildType": "debug",
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/src/main/jniLibs/armeabi-v7a/libCaffe2_CPU.a",
+      "toolchain": "8303790342441341603"
+    },
+    "caffe2_native_lib-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "caffe2_native_lib",
+      "buildCommand": "/home/heider/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a --target caffe2_native_lib",
+      "buildType": "debug",
+      "files": [
+        {
+          "flags": "  --target=armv7-none-linux-androideabi22 --gcc-toolchain=/home/heider/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/heider/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -Dcaffe2_native_lib_EXPORTS -I/home/heider/Android/Sdk/ndk-bundle/sources/android/cpufeatures -I../../../../src/main/cpp  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC    -c ",
+          "src": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/src/main/cpp/caffe2_native_lib.cpp",
+          "workingDirectory": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a"
+        }
+      ],
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libcaffe2_native_lib.so",
+      "toolchain": "8303790342441341603"
+    },
+    "cpufeatures-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "cpufeatures",
+      "buildCommand": "/home/heider/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a --target cpufeatures",
+      "buildType": "debug",
+      "files": [
+        {
+          "flags": "  --target=armv7-none-linux-androideabi22 --gcc-toolchain=/home/heider/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/heider/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -I/home/heider/Android/Sdk/ndk-bundle/sources/android/cpufeatures -I../../../../src/main/cpp  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC      -c ",
+          "src": "/home/heider/Android/Sdk/ndk-bundle/sources/android/cpufeatures/cpu-features.c",
+          "workingDirectory": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a"
+        }
+      ],
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a/libcpufeatures.a",
+      "toolchain": "8303790342441341603"
+    },
+    "glog-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "glog",
+      "buildType": "debug",
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/src/main/jniLibs/armeabi-v7a/libglog.so",
+      "toolchain": "8303790342441341603"
+    },
+    "protobuf-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "protobuf",
+      "buildType": "debug",
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/src/main/jniLibs/armeabi-v7a/libprotobuf.a",
+      "toolchain": "8303790342441341603"
+    },
+    "thread_pool-Debug-armeabi-v7a": {
+      "abi": "armeabi-v7a",
+      "artifactName": "thread_pool",
+      "buildType": "debug",
+      "output": "/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/src/main/jniLibs/armeabi-v7a/libCAFFE2_PTHREADPOOL.a",
+      "toolchain": "8303790342441341603"
+    }
+  },
+  "toolchains": {
+    "8303790342441341603": {
+      "cCompilerExecutable": "/home/heider/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+      "cppCompilerExecutable": "/home/heider/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+    }
+  }
+}

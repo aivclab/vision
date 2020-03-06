@@ -34,13 +34,17 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [Results](#results)
-  - [Target Point Estimator](#target-point-estimator)
+  - [Segmentation](#segmentation)
 - [Contributing](#contributing)
 - [Other Components](#other-components-of-the-neodroid-platform)
 
 # Algorithms
-- [REINFORCE (PG)](agent/agents/model_free/policy_optimisation/pg_agent.py)
-- [DQN](agent/agents/model_free/q_learning/dqn_agent.py)
+- [SAGAN](vision/.py) - Generative model
+- [CVAE](vision/.py) - Generative model
+- [BVAE](vision/.py) - Generative model
+- [Vanilla-CNN](vision/.py) - Classification
+- [Vanilla-MLP](vision/.py) - Classification
+- [YOLO](vision/.py) - Segmentation
 
 # Requirements
 - pytorch
@@ -74,10 +78,9 @@ python3 procedures/test_agent.py
 
 # Results
 
-## Semntation
-Using Depth, Segmentation And RGB images to estimate the location of target point in an environment.
+## Segmentation
 
-[Code](samples/segmentation/run.py)
+[Code](samples/regression/segmentation/run.py)
 
 ### Screenshots
 ![Segmentation](.github/images/results/ori_mask_seg_recon.png)
@@ -96,6 +99,12 @@ For citation you may use the following bibtex entry:
   year = {2019},
   publisher = {GitHub},
   journal = {GitHub repository},
-  howpublished = {\url{https://github.com/sintefneodroid/Vision}},
+  howpublished = {\url{https://github.com/aivclab/vision}},
 }
 ````
+
+# Authors
+
+* **Christian Heider Nielsen** - [cnheider](https://github.com/cnheider)
+
+Here other [contributors](https://github.com/aivclab/vision/contributors) to this project are listed.
