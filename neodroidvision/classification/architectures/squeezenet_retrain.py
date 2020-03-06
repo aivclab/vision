@@ -1,9 +1,9 @@
 import torch
 import torchvision
-from torch import nn
 
-from neodroidvision.classification.architectures.retrain_utilities import (
+from draugr.torch_utilities.freezing.retrain_utilities import (
     set_all_parameter_requires_grad,
+    get_trainable_parameters,
 )
 
 
@@ -19,9 +19,4 @@ def squeezenet_retrain(
         512, num_classes, kernel_size=(1, 1), stride=(1, 1)
     )
 
-    params_to_update = []
-    for name, param in model.named_parameters():
-        if param.requires_grad == True:
-            params_to_update.append(param)
-
-    return model, params_to_update
+    return model, get_trainable_parameters(model)

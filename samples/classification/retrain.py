@@ -5,19 +5,17 @@ import os
 import time
 
 from matplotlib import pyplot
-from torch import nn
 
-from draugr import (
-    to_tensor,
-    horizontal_imshow,
-    uint_hwc_to_chw_float_batch,
-    torch_vision_normalize_chw,
-)
 from draugr import (
     TensorBoardPytorchWriter,
     ensure_directory_exist,
     generator_batch,
     global_torch_device,
+    horizontal_imshow,
+    rgb_drop_alpha_batch,
+    to_tensor,
+    torch_vision_normalize_chw,
+    uint_hwc_to_chw_float_batch,
 )
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
@@ -25,13 +23,11 @@ from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import (
     pred_target_train_model,
-    torchvision,
     squeezenet_retrain,
-    rgb_drop_alpha_batch,
+    torchvision,
 )
 
 # from warg.pooled_queue_processor import PooledQueueTask
-from neodroidvision.classification.architectures.resnet_retrain import resnet_retrain
 
 __author__ = "Christian Heider Nielsen"
 

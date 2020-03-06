@@ -57,7 +57,7 @@ class NeodroidVisionPackage:
     def packages(self):
         return find_packages(
             exclude=[
-                # 'neodroid/environment_utilities'
+                # 'neodroidvision/...'
             ]
         )
 
@@ -91,7 +91,8 @@ class NeodroidVisionPackage:
         return {
             "console_scripts": [
                 # "name_of_executable = module.with:function_to_execute"
-                "neodroidvision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
+                "neodroid-vision = neodroidvision.entry_points.cli:main",
+                "neodroid-vision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
             ]
         }
 
@@ -204,5 +205,5 @@ if __name__ == "__main__":
         tests_require=pkg.test_dependencies,
         setup_requires=pkg.setup_dependencies,
         include_package_data=True,
-        python_requires=">=3",
+        python_requires=">=3.6",
     )

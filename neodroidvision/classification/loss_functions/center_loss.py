@@ -22,7 +22,7 @@ class CenterLoss(nn.Module):
         if feat.size(1) != self.feat_dim:
             raise ValueError(
                 "Center's dim: {0} should be equal to input feature's \
-                    dim: {1}".format(
+            dim: {1}".format(
                     self.feat_dim, feat.size(1)
                 )
             )

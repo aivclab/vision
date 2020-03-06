@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from tqdm import tqdm
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask.fission_net.skip_hourglass import SkipHourglassFissionNet
-from neodroidvision.segmentation import BCEDiceLoss, bool_dice
 from pathlib import Path
-from draugr.torch_utilities import torch_seed, global_torch_device
+
 import cv2
-from matplotlib import pyplot
 import numpy
 import pandas
 import seaborn
 import torch
-from torch.utils.data import DataLoader
-
-from neodroidvision.segmentation.segmentation_utilities.masks.run_length_encoding import (
-    mask_to_run_length,
-)
+from matplotlib import pyplot
 from samples.segmentation.clouds.cloud_segmentation_utilities import (
     CloudDataset,
     post_process,
     resize_image_cv,
     visualize_with_raw,
+)
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr.torch_utilities import global_torch_device, torch_seed
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.segmentation import BCEDiceLoss, bool_dice
+from neodroidvision.segmentation.segmentation_utilities.masks.run_length_encoding import (
+    mask_to_run_length,
 )
 
 __author__ = "Christian Heider Nielsen"
@@ -300,7 +300,7 @@ def main():
 
     train_loader = DataLoader(
         CloudDataset(
-            df_path=base_path / "train.csv", resized_loc=resized_loc, subset="train",
+            df_path=base_path / "train.csv", resized_loc=resized_loc, subset="train"
         ),
         batch_size=batch_size,
         shuffle=True,
@@ -308,14 +308,14 @@ def main():
     )
     valid_loader = DataLoader(
         CloudDataset(
-            df_path=base_path / "train.csv", resized_loc=resized_loc, subset="valid",
+            df_path=base_path / "train.csv", resized_loc=resized_loc, subset="valid"
         ),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
     )
 
-    model = SkipHourglassFissionNet(
+    model = SkipHourglassFission(
         CloudDataset.predictors_shape[-1], CloudDataset.response_shape, encoding_depth=2
     )
     model.to(global_torch_device())

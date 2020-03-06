@@ -9,8 +9,8 @@ from torch.nn import functional as F
 class InverseAutoregressiveFlow(nn.Module):
     """Inverse Autoregressive Flows with LSTM-type update. One block.
 
-  Eq 11-14 of https://arxiv.org/abs/1606.04934
-  """
+Eq 11-14 of https://arxiv.org/abs/1606.04934
+"""
 
     def __init__(self, num_input, num_hidden, num_context):
         super().__init__()
@@ -67,10 +67,10 @@ class MaskedLinear(nn.Module):
 class MADE(nn.Module):
     """Implements MADE: Masked Autoencoder for Distribution Estimation.
 
-  Follows https://arxiv.org/abs/1502.03509
+Follows https://arxiv.org/abs/1502.03509
 
-  This is used to build MAF: Masked Autoregressive Flow (https://arxiv.org/abs/1705.07057).
-  """
+This is used to build MAF: Masked Autoregressive Flow (https://arxiv.org/abs/1705.07057).
+"""
 
     def __init__(self, num_input, num_output, num_hidden, num_context):
         super().__init__()
@@ -151,11 +151,11 @@ class MADE(nn.Module):
 
 class Reverse(nn.Module):
     """ An implementation of a reversing layer from
-  Density estimation using Real NVP
-  (https://arxiv.org/abs/1605.08803).
+Density estimation using Real NVP
+(https://arxiv.org/abs/1605.08803).
 
-  From https://github.com/ikostrikov/pytorch-flows/blob/master/main.py
-  """
+From https://github.com/ikostrikov/pytorch-flows/blob/master/main.py
+"""
 
     def __init__(self, num_input):
         super(Reverse, self).__init__()

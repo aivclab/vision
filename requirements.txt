@@ -16,3 +16,5 @@ tensorflow
 pycocotools
 pathlib
 albumentations
+opencv-python
+seaborn

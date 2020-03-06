@@ -6,6 +6,8 @@ from pathlib import Path
 
 import torch
 import torch.utils.data
+from neodroidvision.reconstruction import HigginsVae, VAE
+from neodroidvision.reconstruction.visualisation import plot_manifold
 from objectives import kl_divergence, reconstruction_loss
 from torch import optim
 from torch.utils.data import DataLoader
@@ -14,12 +16,10 @@ from tqdm import tqdm
 
 from draugr.writers import TensorBoardPytorchWriter, Writer
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.dataset_wrappers.vgg_face2 import VggFaces2
-from neodroidvision.reconstruction import HigginsVae, VAE
-from neodroidvision.reconstruction.visualisation import plot_manifold
+from neodroidvision.utilities.data import VggFaces2
 
 __author__ = "Christian Heider Nielsen"
-__doc__ = r""" 
+__doc__ = r"""
   Training for BetaVae's
 """
 
@@ -47,7 +47,7 @@ ENCODING_SIZE = 10
 DATASET = VggFaces2(
     Path(f"/home/heider/Data/vggface2"), split="test", resize_s=INPUT_SIZE
 )
-MODEL: VAE = HigginsVae(CHANNELS, latent_size=ENCODING_SIZE).to(get_torch_device())
+MODEL: VAE = HigginsVae(CHANNELS, latent_size=ENCODING_SIZE).to(global_torch_device())
 BETA = 4
 
 
@@ -69,7 +69,7 @@ def train_model(
     train_accum_loss = 0
     generator = tqdm(enumerate(loader))
     for batch_idx, (original, *_) in generator:
-        original = original.to(get_torch_device())
+        original = original.to(global_torch_device())
 
         optimiser.zero_grad()
         reconstruction, mean, log_var = model(original)
@@ -108,7 +108,7 @@ def run_model(
 
     with torch.no_grad():
         for i, (original, labels, *_) in enumerate(loader):
-            original = original.to(get_torch_device())
+            original = original.to(global_torch_device())
 
             reconstruction, mean, log_var = model(original)
             loss = loss_function(reconstruction, original, mean, log_var).item()
@@ -126,12 +126,12 @@ def run_model(
                         nrow=n,
                     )
                     """
-          scatter_plot_encoding_space(str(BASE_PATH /
-                                          f'encoding_space_{str(epoch_i)}.png'),
-                                      mean.to('cpu').numpy(),
-                                      log_var.to('cpu').numpy(),
-                                      labels)
-          """
+scatter_plot_encoding_space(str(BASE_PATH /
+                                f'encoding_space_{str(epoch_i)}.png'),
+                            mean.to('cpu').numpy(),
+                            log_var.to('cpu').numpy(),
+                            labels)
+"""
             break
 
     # test_loss /= len(loader.dataset)
@@ -149,13 +149,13 @@ if __name__ == "__main__":
     def main():
 
         """
-    ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
-                         train=True,
-                         download=True,
-                         transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
-                                                                          train=False,
-                                                                          transform=transforms.ToTensor())]
-                                                                          """
+ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
+                     train=True,
+                     download=True,
+                     transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
+                                                                      train=False,
+                                                                      transform=transforms.ToTensor())]
+                                                                      """
 
         dataset_loader = DataLoader(
             DATASET, batch_size=BATCH_SIZE, shuffle=True, **DL_KWARGS

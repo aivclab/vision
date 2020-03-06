@@ -3,11 +3,11 @@ import pytest
 import torch
 import torch.nn as nn
 
-from neodroidvision.regression.generative.vae.vqvae2.attention import PixelAttention
-from neodroidvision.regression.generative.vae.vqvae2.pixel_cnn import (
+from neodroidvision.regression.vae.exclude.vqvae2 import PixelAttention
+from neodroidvision.regression.vae.exclude.vqvae2 import (
+    PixelCNN,
     PixelConvA,
     PixelConvB,
-    PixelCNN,
 )
 
 TEST_IMG_WIDTH = 7

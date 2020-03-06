@@ -6,11 +6,10 @@ import os
 import time
 from pathlib import Path
 
+from draugr import global_torch_device, hwc_to_chw
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
-from neodroidvision.data.data import calculate_loss, neodroid_camera_data_iterator
-from neodroidvision.segmentation import SkipBottleNeckFissionNet
-from neodroidvision.segmentation import reverse_channel_transform
-from neodroidvision.segmentation.segmentation_utilities import plot_utilities
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.segmentation.segmentation_utilities.masks import plot_utilities
 
 __author__ = "Christian Heider Nielsen"
 
@@ -19,14 +18,18 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 from matplotlib import pyplot
-from draugr.writers import TensorBoardPytorchWriter
+from draugr.writers import TensorBoardPytorchWriter, ImageWriter
+from samples.segmentation.dmr.dmr_data import (
+    calculate_loss,
+    neodroid_camera_data_iterator,
+)
 
 
-def get_metric_str(metrics, writer, update_i):
+def get_metric_str(metrics, writer: ImageWriter, update_i):
     outputs = []
     for k, v in metrics:
         a = v.data.cpu().numpy()
-        writer.add_scalar(f"loss/{k}", a, update_i)
+        writer.scalar(f"loss/{k}", a, update_i)
         outputs.append(f"{k}:{a:2f}")
 
     return f'{", ".join(outputs)}'
@@ -37,7 +40,7 @@ def train_model(
     data_iterator,
     optimizer,
     scheduler,
-    writer,
+    writer: ImageWriter,
     interrupted_path,
     num_updates=25000,
 ):
@@ -52,7 +55,7 @@ def train_model(
                 if phase == "train":
                     scheduler.step()
                     for param_group in optimizer.param_groups:
-                        writer.add_scalar("lr", param_group["lr"], update_i)
+                        writer.scalar("lr", param_group["lr"], update_i)
 
                     model.train()
                 else:
@@ -77,23 +80,23 @@ def train_model(
                         optimizer.step()
 
                 update_loss = ret.loss.data.cpu().numpy()
-                writer.add_scalar(f"loss/accum", update_loss, update_i)
+                writer.scalar(f"loss/accum", update_loss, update_i)
 
                 if phase == "val" and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
-                    writer.add_images(f"rgb_imgs", rgb_imgs, update_i)
-                    writer.add_images(f"recon_pred", recon_pred, update_i)
-                    writer.add_images(f"seg_target", seg_target, update_i)
-                    writer.add_images(f"seg_pred", seg_pred, update_i)
-                    writer.add_images(
+                    writer.image(f"rgb_imgs", rgb_imgs, update_i)
+                    writer.image(f"recon_pred", recon_pred, update_i)
+                    writer.image(f"seg_target", seg_target, update_i)
+                    writer.image(f"seg_pred", seg_pred, update_i)
+                    writer.image(
                         f"depth_target", depth_target, update_i, dataformats="NCHW"
                     )
-                    writer.add_images(
+                    writer.image(
                         f"depth_pred", depth_pred, update_i, dataformats="NCHW"
                     )
-                    writer.add_images(f"normals_pred", normals_pred, update_i)
-                    writer.add_images(f"normals_target", normals_target, update_i)
+                    writer.image(f"normals_pred", normals_pred, update_i)
+                    writer.image(f"normals_target", normals_target, update_i)
                     sess.write(f"New best model at update {update_i}")
 
             _ = get_metric_str(ret.terms, writer, update_i)
@@ -130,14 +133,10 @@ def test_model(model, data_iterator, load_path=None):
     l = labels.cpu().numpy()
     inputs = inputs.cpu().numpy()
 
-    input_images_rgb = [reverse_channel_transform(x) for x in inputs]
-    target_masks_rgb = [
-        plot_utilities.masks_to_color_img(reverse_channel_transform(x)) for x in l
-    ]
-    pred_rgb = [
-        plot_utilities.masks_to_color_img(reverse_channel_transform(x)) for x in pred
-    ]
-    pred_recon = [reverse_channel_transform(x) for x in recon]
+    input_images_rgb = [hwc_to_chw(x) for x in inputs]
+    target_masks_rgb = [plot_utilities.masks_to_color_img(hwc_to_chw(x)) for x in l]
+    pred_rgb = [plot_utilities.masks_to_color_img(hwc_to_chw(x)) for x in pred]
+    pred_recon = [hwc_to_chw(x) for x in recon]
 
     plot_utilities.plot_side_by_side(
         [input_images_rgb, target_masks_rgb, pred_rgb, pred_recon]
@@ -171,12 +170,15 @@ def main():
     torch.manual_seed(seed)
     env.seed(seed)
 
-    device = get_torch_device()
+    device = global_torch_device()
 
-    aeu_model = SkipBottleNeckFissionNet(
-        segmentation_channels, depth=depth, start_channels=model_start_channels
+    aeu_model = SkipHourglassFission(
+        segmentation_channels,
+        (segmentation_channels,),
+        encoding_depth=depth,
+        start_channels=model_start_channels,
     )
-    aeu_model = aeu_model.to(get_torch_device())
+    aeu_model = aeu_model.to(global_torch_device())
 
     optimizer_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
 

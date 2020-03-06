@@ -1,30 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from tqdm import tqdm
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask.fission_net.skip_hourglass import SkipHourglassFissionNet
-from neodroidvision.segmentation import BCEDiceLoss, bool_dice, draw_convex_hull
 from pathlib import Path
-from draugr.torch_utilities import (
-    torch_seed,
-    global_torch_device,
-    float_chw_to_hwc_uint,
-    chw_to_hwc,
-)
-
-from matplotlib import pyplot
-import pandas
-import seaborn
-import torch
-from torch.utils.data import DataLoader
-
-from neodroidvision.segmentation import mask_to_run_length
-from cloud_segmentation_dataset import CloudSegmentationDataset
-import numpy
 
 import cv2
+import numpy
+import pandas
+import torch
+from cloud_segmentation_dataset import CloudSegmentationDataset
+from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr.torch_utilities import (
+    chw_to_hwc,
+    float_chw_to_hwc_uint,
+    global_torch_device,
+    torch_seed,
+)
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.segmentation import (
+    BCEDiceLoss,
+    bool_dice,
+    draw_convex_hull,
+    mask_to_run_length,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -35,9 +36,9 @@ __doc__ = r"""
 
 def post_process_minsize(mask, min_size):
     """
-  Post processing of each predicted mask, components with lesser number of pixels
-  than `min_size` are ignored
-  """
+Post processing of each predicted mask, components with lesser number of pixels
+than `min_size` are ignored
+"""
     num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
     predictions, num = numpy.zeros(mask.shape), 0
     for c in range(1, num_component):
@@ -50,10 +51,10 @@ def post_process_minsize(mask, min_size):
 
 def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
     """
-  This is slightly different from other kernels as we draw convex hull here itself.
-  Post processing of each predicted mask, components with lesser number of pixels
-  than `min_size` are ignored
-  """
+This is slightly different from other kernels as we draw convex hull here itself.
+Post processing of each predicted mask, components with lesser number of pixels
+than `min_size` are ignored
+"""
     mask = cv2.threshold(probability, threshold, 1, cv2.THRESH_BINARY)[1]
     mask = draw_convex_hull(mask.astype(numpy.uint8))
     num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
@@ -270,13 +271,13 @@ def main():
     torch_seed(SEED)
 
     train_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset="train",),
+        CloudSegmentationDataset(base_dataset_path, image_path, subset="train"),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
     )
     valid_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset="valid",),
+        CloudSegmentationDataset(base_dataset_path, image_path, subset="valid"),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
@@ -288,7 +289,7 @@ def main():
         num_workers=num_workers,
     )
 
-    model = SkipHourglassFissionNet(
+    model = SkipHourglassFission(
         CloudSegmentationDataset.predictor_channels,
         (CloudSegmentationDataset.response_channels,),
         encoding_depth=1,

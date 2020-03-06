@@ -3,7 +3,7 @@
 import numpy
 import torch
 
-from neodroidvision.multitask.fission_net.skip_hourglass import SkipHourglassFissionNet
+from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -14,7 +14,7 @@ __doc__ = r"""
 
 def test_skip_fission_multi_dict():
     channels = 3
-    model = SkipHourglassFissionNet(
+    model = SkipHourglassFission(
         input_channels=channels,
         output_channels={"RGB": channels, "Depth": 1},
         encoding_depth=2,
@@ -39,7 +39,7 @@ def test_skip_fission_multi_dict():
 
 def test_skip_fission_multi_int():
     channels = 3
-    model = SkipHourglassFissionNet(
+    model = SkipHourglassFission(
         input_channels=channels,
         output_channels=(channels, 1),
         encoding_depth=2,

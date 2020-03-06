@@ -2,17 +2,17 @@ import os
 import time
 from collections import defaultdict
 
-from matplotlib import pyplot
 import pandas as pd
 import seaborn as sns
 import torch
+from matplotlib import pyplot
+from neodroidvision.reconstruction import ConditionalVAE
 from objectives import loss_fn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.reconstruction import ConditionalVAE
 from warg.named_ordered_dictionary import NOD
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"
@@ -26,7 +26,7 @@ args.encoder_layer_sizes = [784, 256]
 args.decoder_layer_sizes = [256, 784]
 args.latent_size = 10
 args.print_every = 100
-DEVICE = get_torch_device()
+DEVICE = global_torch_device()
 timstamp = time.time()
 torch.manual_seed(args.seed)
 if torch.cuda.is_available():
@@ -37,7 +37,7 @@ vae = ConditionalVAE(
     latent_size=args.latent_size,
     decoder_layer_sizes=args.decoder_layer_sizes,
     num_conditions=10,
-).to(get_torch_device())
+).to(global_torch_device())
 dataset = MNIST(
     root=str(PROJECT_APP_PATH.user_data / "MNIST"),
     train=True,
@@ -66,8 +66,8 @@ def main():
         for iteration, (original, label) in enumerate(data_loader):
 
             original, label = (
-                original.to(get_torch_device()),
-                label.to(get_torch_device()),
+                original.to(global_torch_device()),
+                label.to(global_torch_device()),
             )
             reconstruction, mean, log_var, z = vae(
                 original, one_hot(label, 10, device=DEVICE)

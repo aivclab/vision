@@ -5,6 +5,7 @@ from samples.regression.vae.flow import h5_mnist_data
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
+
 import h5py
 import torch
 import torch.utils

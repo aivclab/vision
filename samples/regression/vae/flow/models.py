@@ -4,6 +4,7 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
+
 import numpy
 import samples.regression.reconstruction.vanilla_vae.vae_flow as flow
 import torch
@@ -30,8 +31,8 @@ class MLP(nn.Module):
 
 class Generator(nn.Module):
     """
-  Bernoulli model parameterized by a generative network with Gaussian latents for MNIST.
-  """
+Bernoulli model parameterized by a generative network with Gaussian latents for MNIST.
+"""
 
     def __init__(self, latent_size, data_size):
         super().__init__()
@@ -45,8 +46,8 @@ class Generator(nn.Module):
 
     def forward(self, z, x):
         """
-    Return log probability of model.
-    """
+Return log probability of model.
+"""
         log_p_z = self.log_p_z(self.p_z_loc, self.p_z_scale, z).sum(-1, keepdim=True)
         logits = self.generative_network(z)
         # unsqueeze sample dimension
@@ -57,8 +58,8 @@ class Generator(nn.Module):
 
 class VariationalMeanField(nn.Module):
     """
-  Approximate posterior parameterized by an inference network.
-  """
+Approximate posterior parameterized by an inference network.
+"""
 
     def __init__(self, latent_size, data_size):
         super().__init__()
@@ -72,8 +73,8 @@ class VariationalMeanField(nn.Module):
 
     def forward(self, x, n_samples=1):
         """
-    Return sample of latent variable and log prob.
-    """
+Return sample of latent variable and log prob.
+"""
         loc, scale_arg = torch.chunk(
             self.inference_network(x).unsqueeze(1), chunks=2, dim=-1
         )
@@ -86,8 +87,8 @@ class VariationalMeanField(nn.Module):
 
 class VariationalFlow(nn.Module):
     """
-  Approximate posterior parameterized by a flow (https://arxiv.org/abs/1606.04934).
-  """
+Approximate posterior parameterized by a flow (https://arxiv.org/abs/1606.04934).
+"""
 
     def __init__(self, latent_size, data_size, flow_depth):
         super().__init__()
@@ -116,8 +117,8 @@ class VariationalFlow(nn.Module):
 
     def forward(self, x, n_samples=1):
         """
-    Return sample of latent variable and log prob.
-    """
+Return sample of latent variable and log prob.
+"""
         loc, scale_arg, h = torch.chunk(
             self.inference_network(x).unsqueeze(1), chunks=3, dim=-1
         )

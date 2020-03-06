@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from samples.regression.reconstruction import cycle, load_binary_mnist
 from samples.regression.reconstruction import (
     Generator,
     VariationalFlow,
     VariationalMeanField,
+    cycle,
+    load_binary_mnist,
 )
 
 from warg.named_ordered_dictionary import NOD
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
-Fit a variational autoencoder to MNIST. 
+Fit a variational autoencoder to MNIST.
            """
 
 import torch
@@ -102,8 +103,8 @@ if __name__ == "__main__":
         generator.load_state_dict(checkpoint["model"])
         variational_encoder.load_state_dict(checkpoint["variational"])
 
-    generator.to(get_torch_device())
-    variational_encoder.to(get_torch_device())
+    generator.to(global_torch_device())
+    variational_encoder.to(global_torch_device())
 
     parameters = list(generator.parameters()) + list(variational_encoder.parameters())
     optimizer = torch.optim.RMSprop(parameters, lr=cfg.learning_rate, centered=True)
@@ -115,7 +116,7 @@ if __name__ == "__main__":
     num_no_improvement = 0
 
     for step, batch in enumerate(cycle(train_data)):
-        x = batch[0].to(get_torch_device())
+        x = batch[0].to(global_torch_device())
         generator.zero_grad()
         variational_encoder.zero_grad()
         z, log_q_z = variational_encoder(x, n_samples=1)

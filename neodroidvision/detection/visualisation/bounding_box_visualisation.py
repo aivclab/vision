@@ -5,14 +5,13 @@ import PIL.Image as Image
 import PIL.ImageColor as ImageColor
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
-from matplotlib import pyplot
-import numpy
 import numpy
 import six
 import tensorflow as tf
 from attr import dataclass
+from matplotlib import pyplot
 
-from warg.mixins import IterValuesMixin
+from warg.mixins.dict_mixins import IterDictValuesMixin
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""A set of functions that are used for visualization.
@@ -24,7 +23,7 @@ The functions do not return a value, instead they modify the image itself.
 
 
 @dataclass
-class BoundingBoxCoordinatesSpec(IterValuesMixin):
+class BoundingBoxCoordinatesSpec(IterDictValuesMixin):
     x_min = 0
     y_min = 0
     x_max = 0
@@ -32,10 +31,10 @@ class BoundingBoxCoordinatesSpec(IterValuesMixin):
 
     """
 def __init__(self,x_min,y_min,x_max,y_max):
-  self.x_min = x_min
-  self.y_min = y_min
-  self.x_max = x_max
-  self.y_max = y_max
+self.x_min = x_min
+self.y_min = y_min
+self.x_max = x_max
+self.y_max = y_max
 """
 
 
@@ -190,8 +189,8 @@ def save_image_array_as_png(image, output_path):
     """Saves an image (represented as a numpy array) to PNG.
 
 Args:
-  image: a numpy array with shape [height, width, 3].
-  output_path: path to which image should be written.
+image: a numpy array with shape [height, width, 3].
+output_path: path to which image should be written.
 """
     image_pil = Image.fromarray(numpy.uint8(image)).convert("RGB")
     with tf.gfile.Open(output_path, "w") as fid:
@@ -202,10 +201,10 @@ def encode_image_array_as_png_str(image):
     """Encodes a numpy array into a PNG string.
 
 Args:
-  image: a numpy array with shape [height, width, 3].
+image: a numpy array with shape [height, width, 3].
 
 Returns:
-  PNG encoded image string.
+PNG encoded image string.
 """
     image_pil = Image.fromarray(numpy.uint8(image))
     output = six.BytesIO()
@@ -234,18 +233,18 @@ Bounding box coordinates can be specified in either absolute (pixel) or
 normalized coordinates by setting the use_normalized_coordinates argument.
 
 Args:
-  image: a numpy array with shape [height, width, 3].
-  y_min: y_min of bounding box.
-  x_min: x_min of bounding box.
-  y_max: y_max of bounding box.
-  x_max: x_max of bounding box.
-  color: color to draw bounding box. Default is red.
-  thickness: line thickness. Default value is 2.
-  labels: list of strings to display in box
-                    (each to be shown on its own line).
-  use_normalized_coordinates: If True (default), treat coordinates
-    y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
-    coordinates as absolute.
+image: a numpy array with shape [height, width, 3].
+y_min: y_min of bounding box.
+x_min: x_min of bounding box.
+y_max: y_max of bounding box.
+x_max: x_max of bounding box.
+color: color to draw bounding box. Default is red.
+thickness: line thickness. Default value is 2.
+labels: list of strings to display in box
+                  (each to be shown on its own line).
+use_normalized_coordinates: If True (default), treat coordinates
+  y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
+  coordinates as absolute.
 """
     image_pil = Image.fromarray(image, mode=mode)
     draw_bounding_box_on_image(
@@ -287,23 +286,23 @@ If the top of the bounding box extends to the edge of the image, the strings
 are displayed below the bounding box.
 
 Args:
-  :param image: a PIL.Image object.
+:param image: a PIL.Image object.
 
-  :param x_min: x_min of bounding box.
-  :param y_min: y_min of bounding box.
-  :param x_max: x_max of bounding box.
-  :param y_max: y_max of bounding box.
+:param x_min: x_min of bounding box.
+:param y_min: y_min of bounding box.
+:param x_max: x_max of bounding box.
+:param y_max: y_max of bounding box.
 
-  :param line_color: color to draw bounding box. Default is red.
-  :param thickness: line thickness. Default value is 2.
-  :param labels: list of strings to display in box
-                    (each to be shown on its own line).
-  :param use_normalized_coordinates: If True (default), treat coordinates
-    y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
-    coordinates as absolute.
+:param line_color: color to draw bounding box. Default is red.
+:param thickness: line thickness. Default value is 2.
+:param labels: list of strings to display in box
+                  (each to be shown on its own line).
+:param use_normalized_coordinates: If True (default), treat coordinates
+  y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
+  coordinates as absolute.
 
-  :param label_inside:
-  :param text_color:
+:param label_inside:
+:param text_color:
 """
     draw = ImageDraw.Draw(image)
     im_width, im_height = image.size
@@ -378,19 +377,19 @@ def draw_bounding_boxes_on_image_array(
     """Draws bounding boxes on image (numpy array).
 
 Args:
-  :param image: a numpy array object.
-  :param boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
-         The coordinates are in normalized format between [0, 1].
-  :param color: color to draw bounding box. Default is red.
-  :param thickness: line thickness. Default value is 4.
-  :param labels: list of list of strings.
-                         a list of strings for each bounding box.
-                         The reason to pass a list of strings for a
-                         bounding box is that it might contain
-                         multiple labels.
-  :param mode:
+:param image: a numpy array object.
+:param boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
+       The coordinates are in normalized format between [0, 1].
+:param color: color to draw bounding box. Default is red.
+:param thickness: line thickness. Default value is 4.
+:param labels: list of list of strings.
+                       a list of strings for each bounding box.
+                       The reason to pass a list of strings for a
+                       bounding box is that it might contain
+                       multiple labels.
+:param mode:
 Raises:
-  ValueError: if boxes is not a [N, 4] array
+ValueError: if boxes is not a [N, 4] array
 """
     image_pil = Image.fromarray(image, mode=mode)
     draw_bounding_boxes_on_image(
@@ -405,19 +404,19 @@ def draw_bounding_boxes_on_image(
     """Draws bounding boxes on image.
 
 Args:
-  image: a PIL.Image object.
-  boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
-         The coordinates are in normalized format between [0, 1].
-  color: color to draw bounding box. Default is red.
-  thickness: line thickness. Default value is 4.
-  labels_iterable: list of list of strings.
-                         a list of strings for each bounding box.
-                         The reason to pass a list of strings for a
-                         bounding box is that it might contain
-                         multiple labels.
+image: a PIL.Image object.
+boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
+       The coordinates are in normalized format between [0, 1].
+color: color to draw bounding box. Default is red.
+thickness: line thickness. Default value is 4.
+labels_iterable: list of list of strings.
+                       a list of strings for each bounding box.
+                       The reason to pass a list of strings for a
+                       bounding box is that it might contain
+                       multiple labels.
 
 Raises:
-  ValueError: if boxes is not a [N, 4] array
+ValueError: if boxes is not a [N, 4] array
 """
     boxes_shape = boxes.shape
     if not boxes_shape:
@@ -504,23 +503,23 @@ def draw_bounding_boxes_on_image_tensors(
     """Draws bounding boxes, masks, and keypoints on batch of image tensors.
 
 Args:
-  :param images: A 4D uint8 image tensor of shape [N, H, W, C].
-  :param boxes: [N, max_detections, 4] float32 tensor of detection boxes.
-  :param classes: [N, max_detections] int tensor of detection classes. Note that
-    classes are 1-indexed.
-  :param scores: [N, max_detections] float32 tensor of detection scores.
-  :param category_index: a dict that maps integer ids to category dicts. e.g.
-    {1: {1: 'dog'}, 2: {2: 'cat'}, ...}
-  :param instance_masks: A 4D uint8 tensor of shape [N, max_detection, H, W] with
-    instance masks.
-  :param keypoints: A 4D float32 tensor of shape [N, max_detection, num_keypoints, 2]
-    with keypoints.
-  :param max_boxes_to_draw: Maximum number of boxes to draw on an image. Default 20.
-  :param min_score_thresh: Minimum score threshold for visualization. Default 0.2.
-  :param line_thickness:
+:param images: A 4D uint8 image tensor of shape [N, H, W, C].
+:param boxes: [N, max_detections, 4] float32 tensor of detection boxes.
+:param classes: [N, max_detections] int tensor of detection classes. Note that
+  classes are 1-indexed.
+:param scores: [N, max_detections] float32 tensor of detection scores.
+:param category_index: a dict that maps integer ids to category dicts. e.g.
+  {1: {1: 'dog'}, 2: {2: 'cat'}, ...}
+:param instance_masks: A 4D uint8 tensor of shape [N, max_detection, H, W] with
+  instance masks.
+:param keypoints: A 4D float32 tensor of shape [N, max_detection, num_keypoints, 2]
+  with keypoints.
+:param max_boxes_to_draw: Maximum number of boxes to draw on an image. Default 20.
+:param min_score_thresh: Minimum score threshold for visualization. Default 0.2.
+:param line_thickness:
 
 Returns:
-  4D image tensor of type uint8, with boxes drawn on top.
+4D image tensor of type uint8, with boxes drawn on top.
 
 
 """
@@ -583,18 +582,18 @@ def draw_keypoints_on_image_array(
     """Draws keypoints on an image (numpy array).
 
 Args:
-  image: a numpy array with shape [height, width, 3].
-  keypoints: a numpy array with shape [num_keypoints, 2].
-  color: color to draw the keypoints with. Default is red.
-  radius: keypoint radius. Default value is 2.
-  use_normalized_coordinates: if True (default), treat keypoint values as
-    relative to the image.  Otherwise treat them as absolute.
-    :param use_normalized_coordinates:
-    :param radius:
-    :param color:
-    :param keypoints:
-    :param image:
-    :param mode:
+image: a numpy array with shape [height, width, 3].
+keypoints: a numpy array with shape [num_keypoints, 2].
+color: color to draw the keypoints with. Default is red.
+radius: keypoint radius. Default value is 2.
+use_normalized_coordinates: if True (default), treat keypoint values as
+  relative to the image.  Otherwise treat them as absolute.
+  :param use_normalized_coordinates:
+  :param radius:
+  :param color:
+  :param keypoints:
+  :param image:
+  :param mode:
 """
     image_pil = Image.fromarray(image, mode=mode)
     draw_keypoints_on_image(
@@ -609,12 +608,12 @@ def draw_keypoints_on_image(
     """Draws keypoints on an image.
 
 Args:
-  image: a PIL.Image object.
-  keypoints: a numpy array with shape [num_keypoints, 2].
-  color: color to draw the keypoints with. Default is red.
-  radius: keypoint radius. Default value is 2.
-  use_normalized_coordinates: if True (default), treat keypoint values as
-    relative to the image.  Otherwise treat them as absolute.
+image: a PIL.Image object.
+keypoints: a numpy array with shape [num_keypoints, 2].
+color: color to draw the keypoints with. Default is red.
+radius: keypoint radius. Default value is 2.
+use_normalized_coordinates: if True (default), treat keypoint values as
+  relative to the image.  Otherwise treat them as absolute.
 """
     draw = ImageDraw.Draw(image)
     im_width, im_height = image.size
@@ -638,19 +637,19 @@ def draw_mask_on_image_array(image, mask, color="red", alpha=0.4, mode="RGBA"):
     """Draws mask on an image.
 
 Args:
-  image: uint8 numpy array with shape (img_height, img_height, 3)
-  mask: a uint8 numpy array of shape (img_height, img_height) with
-    values between either 0 or 1.
-  color: color to draw the keypoints with. Default is red.
-  alpha: transparency value between 0 and 1. (default: 0.4)
+image: uint8 numpy array with shape (img_height, img_height, 3)
+mask: a uint8 numpy array of shape (img_height, img_height) with
+  values between either 0 or 1.
+color: color to draw the keypoints with. Default is red.
+alpha: transparency value between 0 and 1. (default: 0.4)
 
 Raises:
-  ValueError: On incorrect data type for image or masks.
-  :param alpha:
-  :param color:
-  :param mask:
-  :param image:
-  :param mode:
+ValueError: On incorrect data type for image or masks.
+:param alpha:
+:param color:
+:param mask:
+:param image:
+:param mode:
 """
     if image.dtype != numpy.uint8:
         raise ValueError("`image` not of type numpy.uint8")
@@ -691,38 +690,38 @@ on the image. Note that this function modifies the image in place, and returns
 that same image.
 
 Args:
-  image: uint8 numpy array with shape (img_height, img_width, 3)
-  boxes: a numpy array of shape [N, 4]
-  classes: a numpy array of shape [N]. Note that class indices are 1-based,
-    and match the keys in the label map.
-  scores: a numpy array of shape [N] or None.  If scores=None, then
-    this function assumes that the boxes to be plotted are groundtruth
-    boxes and plot all boxes as black with no classes or scores.
-  category_index: a dict containing category dictionaries (each holding
-    category index `id` and category name `name`) keyed by category indices.
-  instance_masks: a numpy array of shape [N, image_height, image_width] with
-    values ranging between 0 and 1, can be None.
-  instance_boundaries: a numpy array of shape [N, image_height, image_width]
-    with values ranging between 0 and 1, can be None.
-  keypoints: a numpy array of shape [N, num_keypoints, 2], can
-    be None
-  use_normalized_coordinates: whether boxes is to be interpreted as
-    normalized coordinates or not.
-  max_boxes_to_draw: maximum number of boxes to visualize.  If None, draw
-    all boxes.
-  min_score_thresh: minimum score threshold for a box to be visualized
-  agnostic_mode: boolean (default: False) controlling whether to evaluate in
-    class-agnostic mode or not.  This mode will display scores but ignore
-    classes.
-  line_thickness: integer (default: 2) controlling line width of the boxes.
-  groundtruth_box_visualization_color: box color for visualizing groundtruth
-    boxes
-  skip_scores: whether to skip score when drawing a single detection
-  skip_labels: whether to skip label when drawing a single detection
+image: uint8 numpy array with shape (img_height, img_width, 3)
+boxes: a numpy array of shape [N, 4]
+classes: a numpy array of shape [N]. Note that class indices are 1-based,
+  and match the keys in the label map.
+scores: a numpy array of shape [N] or None.  If scores=None, then
+  this function assumes that the boxes to be plotted are groundtruth
+  boxes and plot all boxes as black with no classes or scores.
+category_index: a dict containing category dictionaries (each holding
+  category index `id` and category name `name`) keyed by category indices.
+instance_masks: a numpy array of shape [N, image_height, image_width] with
+  values ranging between 0 and 1, can be None.
+instance_boundaries: a numpy array of shape [N, image_height, image_width]
+  with values ranging between 0 and 1, can be None.
+keypoints: a numpy array of shape [N, num_keypoints, 2], can
+  be None
+use_normalized_coordinates: whether boxes is to be interpreted as
+  normalized coordinates or not.
+max_boxes_to_draw: maximum number of boxes to visualize.  If None, draw
+  all boxes.
+min_score_thresh: minimum score threshold for a box to be visualized
+agnostic_mode: boolean (default: False) controlling whether to evaluate in
+  class-agnostic mode or not.  This mode will display scores but ignore
+  classes.
+line_thickness: integer (default: 2) controlling line width of the boxes.
+groundtruth_box_visualization_color: box color for visualizing groundtruth
+  boxes
+skip_scores: whether to skip score when drawing a single detection
+skip_labels: whether to skip label when drawing a single detection
 
 Returns:
-  uint8 numpy array with shape (img_height, img_width, 3) with overlaid boxes.
-  :param bounding_boxes:
+uint8 numpy array with shape (img_height, img_width, 3) with overlaid boxes.
+:param bounding_boxes:
 """
     # Create a display string (and color) for every box location, group any boxes
     # that correspond to the same location.
@@ -769,8 +768,8 @@ Normalizes `values` such that they sum to 1, plots the cumulative distribution
 function and creates a tf image summary.
 
 Args:
-  values: a 1-D float32 tensor containing the values.
-  name: name for the image summary.
+values: a 1-D float32 tensor containing the values.
+name: name for the image summary.
 """
 
     def cdf_plot(values):
@@ -804,9 +803,9 @@ def add_hist_image_summary(values, bins, name):
 Plots the histogram of values and creates a tf image summary.
 
 Args:
-  values: a 1-D float32 tensor containing the values.
-  bins: bin edges which will be directly passed to numpy.histogram.
-  name: name for the image summary.
+values: a 1-D float32 tensor containing the values.
+bins: bin edges which will be directly passed to numpy.histogram.
+name: name for the image summary.
 """
 
     def hist_plot(values, bins):

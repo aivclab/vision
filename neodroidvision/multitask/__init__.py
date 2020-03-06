@@ -7,4 +7,4 @@ __doc__ = r"""
            Created on 28/10/2019
            """
 
-from .fission_net import *
+from .fission import *

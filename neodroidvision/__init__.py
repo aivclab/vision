@@ -6,11 +6,12 @@ import os
 from warnings import warn
 
 import pkg_resources
+
 from apppath import AppPath
 
 __project__ = "NeodroidVision"
 __author__ = "Christian Heider Nielsen"
-__version__ = "0.2.2"
+__version__ = "0.2.4"
 __doc__ = r"""
 .. module:: neodroidvision
    :platform: Unix, Windows

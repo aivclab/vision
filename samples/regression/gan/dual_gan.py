@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import io
 import time
 from typing import Iterable
 
-import matplotlib
 import numpy
 import torchvision
-from PIL import Image
-from matplotlib.figure import Figure
 from torch import nn
 
-from draugr.torch_utilities.to_tensor import to_tensor
-from neodroidvision import PROJECT_APP_PATH
 from draugr.writers import TensorBoardPytorchWriter
+from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

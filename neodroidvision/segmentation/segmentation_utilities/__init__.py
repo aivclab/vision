@@ -3,5 +3,5 @@
 
 __author__ = "Christian Heider Nielsen"
 
-from .plot_utilities import *
 from .masks import *
+from .evaluation import *

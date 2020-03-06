@@ -4,8 +4,8 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from matplotlib import pyplot
 import numpy
+from matplotlib import pyplot
 
 
 def scatter_plot_encoding_space(

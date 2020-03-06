@@ -9,3 +9,4 @@ __doc__ = r"""
 
 from .drawing import *
 from .run_length_encoding import *
+from .plot_utilities import *
