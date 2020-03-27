@@ -10,6 +10,13 @@ __doc__ = ""
 
 
 def compile_encoding_image(images, size, resize_factor=1.0):
+    """
+
+  :param images:
+  :param size:
+  :param resize_factor:
+  :return:
+  """
     h, w = images.shape[1], images.shape[2]
 
     h_ = int(h * resize_factor)
@@ -31,6 +38,13 @@ def compile_encoding_image(images, size, resize_factor=1.0):
 
 
 def sample_2d_latent_vectors(encoding_space, n_img_x, n_img_y):
+    """
+
+  :param encoding_space:
+  :param n_img_x:
+  :param n_img_y:
+  :return:
+  """
     vectors = numpy.rollaxis(
         numpy.mgrid[
             encoding_space : -encoding_space : n_img_y * 1j,
@@ -46,6 +60,17 @@ def sample_2d_latent_vectors(encoding_space, n_img_x, n_img_y):
 def plot_manifold(
     model, out_path, n_img_x=20, n_img_y=20, img_h=28, img_w=28, sample_range=1
 ):
+    """
+
+  :param model:
+  :param out_path:
+  :param n_img_x:
+  :param n_img_y:
+  :param img_h:
+  :param img_w:
+  :param sample_range:
+  :return:
+  """
     vectors = sample_2d_latent_vectors(sample_range, n_img_x, n_img_y).to("cuda")
     encodings = model._decoder(vectors).to("cpu")
     images = encodings.reshape(n_img_x * n_img_y, img_h, img_w)

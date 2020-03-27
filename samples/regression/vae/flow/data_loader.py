@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from samples.regression.vae.flow import h5_mnist_data
+
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -11,12 +11,14 @@ import torch
 import torch.utils
 import torch.utils.data
 
+from .h5_mnist_data import download_binary_mnist
+
 
 def load_binary_mnist(cfg, **kwcfg):
     fname = cfg.data_dir / "binary_mnist.h5"
     if not fname.exists():
         print("Downloading binary MNIST data...")
-        h5_mnist_data.download_binary_mnist(fname)
+        download_binary_mnist(fname)
     f = h5py.File(str(fname), "r")
     x_train = f["train"][::]
     x_val = f["valid"][::]

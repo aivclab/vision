@@ -3,13 +3,16 @@
 from typing import Tuple
 
 import numpy
-from neodroidvision.reconstruction.generative.vae.architectures.vae import VAE
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
 import torch
 import torch.nn as nn
+
+from neodroidvision.regression.vae.architectures.vae import VAE
+
+__all__ = ["HigginsVae", "BurgessVae"]
 
 
 class HigginsVae(VAE):

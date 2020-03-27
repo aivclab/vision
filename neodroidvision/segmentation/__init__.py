@@ -3,5 +3,5 @@
 
 __author__ = "Christian Heider Nielsen"
 
-from neodroidvision.segmentation.segmentation_utilities.evaluation import *
-from .segmentation_utilities import *
+from .evaluation import *
+from .masks import *

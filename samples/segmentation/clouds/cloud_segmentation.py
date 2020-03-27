@@ -7,7 +7,6 @@ import cv2
 import numpy
 import pandas
 import torch
-from cloud_segmentation_dataset import CloudSegmentationDataset
 from matplotlib import pyplot
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -22,16 +21,20 @@ from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import (
     BCEDiceLoss,
-    bool_dice,
     draw_convex_hull,
     mask_to_run_length,
 )
+from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
 
            Created on 09/10/2019
            """
+
+from neodroidvision.data.datasets.supervised.segmentation import (
+    CloudSegmentationDataset,
+)
 
 
 def post_process_minsize(mask, min_size):
@@ -122,7 +125,7 @@ def train_model(
                 valid_loss += loss.item() * data.size(
                     0
                 )  # update average validation loss
-                dice_cof = bool_dice(
+                dice_cof = intersection_over_union(
                     output.cpu().detach().numpy(), target.cpu().detach().numpy()
                 )
                 dice_score += dice_cof * data.size(0)
@@ -200,7 +203,7 @@ def threshold_grid_search(model, valid_loader, max_samples=2000):
                     if (i.sum() == 0) & (j.sum() == 0):
                         d.append(1)
                     else:
-                        d.append(bool_dice(i, j))
+                        d.append(intersection_over_union(i, j))
                 attempts.append((t, ms, numpy.mean(d)))
 
         attempts_df = pandas.DataFrame(attempts, columns=["threshold", "size", "dice"])

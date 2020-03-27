@@ -12,12 +12,15 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
-from draugr import global_torch_device
-from draugr.writers import ImageWriter, TensorBoardPytorchWriter
+from draugr.torch_utilities import (
+    ImageWriter,
+    TensorBoardPytorchWriter,
+    global_torch_device,
+    to_device_tensor_iterator_shitty,
+)
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.utilities.data import to_device_tensor_iterator
 from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.misc.torch_layers import MinMaxNorm
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
 __author__ = "Christian Heider Nielsen"
 
@@ -142,7 +145,7 @@ def main(load_earlier=False, train=True):
     data_iter = iter(
         cycle(DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True))
     )
-    data_iter = to_device_tensor_iterator(data_iter, device)
+    data_iter = to_device_tensor_iterator_shitty(data_iter, device)
 
     model = SkipHourglassFission(
         input_channels,

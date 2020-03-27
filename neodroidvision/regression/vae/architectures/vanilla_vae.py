@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from neodroidvision.reconstruction import VAE
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -8,7 +7,11 @@ __doc__ = ""
 import torch
 import torch.utils.data
 from torch import nn
-from torch.nn import functional as F
+from torch.nn.functional import binary_cross_entropy
+
+from neodroidvision.regression.vae.architectures.vae import VAE
+
+__all__ = ["VanillaVAE"]
 
 
 class Encoder(nn.Module):
@@ -50,10 +53,24 @@ class Decoder(nn.Module):
 
 
 class VanillaVAE(VAE):
+    """
+
+  """
+
     def encode(self, *x: torch.Tensor) -> torch.Tensor:
+        """
+
+    :param x:
+    :return:
+    """
         return self._encoder(*x)
 
     def decode(self, *x: torch.Tensor) -> torch.Tensor:
+        """
+
+    :param x:
+    :return:
+    """
         return self._decoder(*x)
 
     def __init__(self, input_size=784, latent_size=2):
@@ -69,7 +86,7 @@ class VanillaVAE(VAE):
 
     # Reconstruction + KL divergence losses summed over all elements and batch
     def loss_function(self, recon_x, x, mu, log_var):
-        BCE = F.binary_cross_entropy(
+        BCE = binary_cross_entropy(
             recon_x, x.view(-1, self._input_size), reduction="sum"
         )
 

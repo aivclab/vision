@@ -16,7 +16,7 @@ def test_skip_fission_multi_dict():
     channels = 3
     model = SkipHourglassFission(
         input_channels=channels,
-        output_channels={"RGB": channels, "Depth": 1},
+        output_heads={"RGB": channels, "Depth": 1},
         encoding_depth=2,
         merge_mode="concat",
     )
@@ -41,7 +41,7 @@ def test_skip_fission_multi_int():
     channels = 3
     model = SkipHourglassFission(
         input_channels=channels,
-        output_channels=(channels, 1),
+        output_heads=(channels, 1),
         encoding_depth=2,
         merge_mode="concat",
     )

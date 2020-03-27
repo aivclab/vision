@@ -1,4 +1,5 @@
 from neodroidvision.detection.single_stage.ssd.config.base_config import base_cfg
+from neodroidvision.data.datasets import COCODataset
 
 base_cfg.MODEL.update(NUM_CLASSES=81)
 base_cfg.MODEL.PRIORS.update(
@@ -15,7 +16,7 @@ base_cfg.INPUT.update(IMAGE_SIZE=300)
 base_cfg.DATASETS.update(
     TRAIN=("coco_2014_train", "coco_2014_valminusminival"), TEST=("coco_2014_minival",)
 )
-base_cfg.dataset_type = "coco"
+base_cfg.dataset_type = COCODataset
 base_cfg.SOLVER.update(
     MAX_ITER=400000, LR_STEPS=[280000, 360000], GAMMA=0.1, BATCH_SIZE=32, LR=1e-3
 )

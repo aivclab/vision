@@ -6,10 +6,15 @@ import os
 import time
 from pathlib import Path
 
-from draugr import global_torch_device, hwc_to_chw
+from draugr.torch_utilities import (
+    ImageWriter,
+    TensorBoardPytorchWriter,
+    global_torch_device,
+    hwc_to_chw,
+)
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
 from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.segmentation.segmentation_utilities.masks import plot_utilities
+from neodroidvision.segmentation.masks import plot_utilities
 
 __author__ = "Christian Heider Nielsen"
 
@@ -18,7 +23,7 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 from matplotlib import pyplot
-from draugr.writers import TensorBoardPytorchWriter, ImageWriter
+
 from samples.segmentation.dmr.dmr_data import (
     calculate_loss,
     neodroid_camera_data_iterator,

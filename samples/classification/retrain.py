@@ -6,16 +6,18 @@ import time
 
 from matplotlib import pyplot
 
-from draugr import (
+from draugr import generator_batch
+from draugr.drawers import horizontal_imshow
+from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     ensure_directory_exist,
-    generator_batch,
     global_torch_device,
-    horizontal_imshow,
-    rgb_drop_alpha_batch,
     to_tensor,
-    torch_vision_normalize_chw,
     uint_hwc_to_chw_float_batch,
+)
+from draugr.numpy_utilities.channel_transform import (
+    rgb_drop_alpha_batch_nhwc,
+    torch_vision_normalize_batch_nchw,
 )
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
@@ -120,8 +122,8 @@ def main():
         )
 
     inputs, true_label = zip(*next(train_iter))
-    rgb_imgs = torch_vision_normalize_chw(
-        uint_hwc_to_chw_float_batch(rgb_drop_alpha_batch(to_tensor(inputs)))
+    rgb_imgs = torch_vision_normalize_batch_nchw(
+        uint_hwc_to_chw_float_batch(rgb_drop_alpha_batch_nhwc(to_tensor(inputs)))
     )
 
     pred = model(rgb_imgs)

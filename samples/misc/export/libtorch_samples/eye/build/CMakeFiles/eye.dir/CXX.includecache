@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/ATen.h
+/home/heider/Applications/libtorch/include/ATen/ATen.h
 c10/core/Allocator.h
 -
 ATen/core/ATenGeneral.h
@@ -55,12 +55,10 @@ ATen/core/Reduction.h
 -
 c10/util/Exception.h
 -
-ATen/core/ATenDispatch.h
--
 ATen/core/UnsafeFromTH.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/CPUGenerator.h
+/home/heider/Applications/libtorch/include/ATen/CPUGenerator.h
 ATen/core/Generator.h
 -
 ATen/core/MT19937RNGEngine.h
@@ -70,7 +68,27 @@ ATen/core/PhiloxRNGEngine.h
 c10/util/Optional.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Context.h
+/home/heider/Applications/libtorch/include/ATen/CPUType.h
+c10/core/TensorOptions.h
+-
+c10/core/Scalar.h
+-
+c10/core/QScheme.h
+-
+c10/core/MemoryFormat.h
+-
+c10/util/ArrayRef.h
+-
+c10/util/intrusive_ptr.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+ATen/Dimname.h
+-
+ATen/core/EnableNamedTensor.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/Context.h
 ATen/core/ATenGeneral.h
 -
 ATen/Tensor.h
@@ -93,6 +111,8 @@ c10/util/Exception.h
 -
 c10/core/impl/DeviceGuardImplInterface.h
 -
+c10/core/QEngine.h
+-
 memory
 -
 mutex
@@ -100,11 +120,11 @@ mutex
 cstdint
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Device.h
+/home/heider/Applications/libtorch/include/ATen/Device.h
 c10/core/Device.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/DeviceGuard.h
+/home/heider/Applications/libtorch/include/ATen/DeviceGuard.h
 c10/core/DeviceGuard.h
 -
 ATen/core/Tensor.h
@@ -112,21 +132,15 @@ ATen/core/Tensor.h
 c10/core/ScalarType.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/DimVector.h
+/home/heider/Applications/libtorch/include/ATen/DimVector.h
 ATen/core/DimVector.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Dimname.h
-ATen/core/interned_strings.h
--
-c10/util/ArrayRef.h
--
-c10/util/Optional.h
--
-iostream
+/home/heider/Applications/libtorch/include/ATen/Dimname.h
+ATen/core/Dimname.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Dispatch.h
+/home/heider/Applications/libtorch/include/ATen/Dispatch.h
 ATen/core/Tensor.h
 -
 c10/macros/Macros.h
@@ -138,17 +152,29 @@ c10/util/Exception.h
 ATen/core/DeprecatedTypeProperties.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/DynamicLibrary.h
+/home/heider/Applications/libtorch/include/ATen/DynamicLibrary.h
 c10/macros/Export.h
 -
 ATen/Utils.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Formatting.h
+/home/heider/Applications/libtorch/include/ATen/ExpandUtils.h
+ATen/Tensor.h
+-
+c10/util/Exception.h
+-
+functional
+-
+sstream
+-
+tuple
+-
+
+/home/heider/Applications/libtorch/include/ATen/Formatting.h
 ATen/core/Formatting.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Functions.h
+/home/heider/Applications/libtorch/include/ATen/Functions.h
 c10/core/Scalar.h
 -
 ATen/Tensor.h
@@ -171,20 +197,30 @@ c10/util/Optional.h
 -
 ATen/TensorUtils.h
 -
-ATen/core/ATenDispatch.h
--
 ATen/Context.h
 -
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/NamedTensor.h
-ATen/Dimname.h
--
-c10/core/TensorImpl.h
--
-torch/csrc/utils/memory.h
+ATen/core/EnableNamedTensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/NativeFunctions.h
+/home/heider/Applications/libtorch/include/ATen/NamedTensor.h
+ATen/core/NamedTensor.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/NamedTensorUtils.h
+ATen/core/EnableNamedTensor.h
+-
+ATen/NamedTensor.h
+-
+ATen/TensorNames.h
+-
+ATen/core/Tensor.h
+-
+ATen/core/DimVector.h
+-
+functional
+-
+
+/home/heider/Applications/libtorch/include/ATen/NativeFunctions.h
 ATen/Context.h
 -
 c10/core/ScalarType.h
@@ -192,6 +228,8 @@ c10/core/ScalarType.h
 c10/core/TensorOptions.h
 -
 ATen/core/Reduction.h
+-
+ATen/core/EnableNamedTensor.h
 -
 array
 -
@@ -204,7 +242,7 @@ tuple
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Parallel.h
+/home/heider/Applications/libtorch/include/ATen/Parallel.h
 ATen/ATen.h
 -
 ATen/core/ivalue.h
@@ -216,11 +254,7 @@ ATen/ParallelNative.h
 ATen/ParallelNativeTBB.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/ParallelNative.h
-ATen/ATen.h
--
-c10/core/thread_pool.h
--
+/home/heider/Applications/libtorch/include/ATen/ParallelNative.h
 algorithm
 -
 cstddef
@@ -228,7 +262,7 @@ cstddef
 exception
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/ParallelNativeTBB.h
+/home/heider/Applications/libtorch/include/ATen/ParallelNativeTBB.h
 ATen/ATen.h
 -
 cstddef
@@ -236,9 +270,9 @@ cstddef
 exception
 -
 tbb/tbb.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/tbb/tbb.h
+/home/heider/Applications/libtorch/include/ATen/tbb/tbb.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/ParallelOpenMP.h
+/home/heider/Applications/libtorch/include/ATen/ParallelOpenMP.h
 ATen/ATen.h
 -
 cstddef
@@ -248,23 +282,73 @@ exception
 omp.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/ScalarOps.h
+/home/heider/Applications/libtorch/include/ATen/QuantizedCPUType.h
+c10/core/TensorOptions.h
+-
+c10/core/Scalar.h
+-
+c10/core/QScheme.h
+-
+c10/core/MemoryFormat.h
+-
+c10/util/ArrayRef.h
+-
+c10/util/intrusive_ptr.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+ATen/Dimname.h
+-
+ATen/core/EnableNamedTensor.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/ScalarOps.h
 c10/core/Scalar.h
 -
 ATen/Tensor.h
 -
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Tensor.h
-ATen/core/Tensor.h
+ATen/Functions.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/TensorGeometry.h
+/home/heider/Applications/libtorch/include/ATen/SparseCPUType.h
+c10/core/TensorOptions.h
+-
+c10/core/Scalar.h
+-
+c10/core/QScheme.h
+-
+c10/core/MemoryFormat.h
+-
+c10/util/ArrayRef.h
+-
+c10/util/intrusive_ptr.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+ATen/Dimname.h
+-
+ATen/core/EnableNamedTensor.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/Tensor.h
+ATen/core/TensorBody.h
+-
+ATen/core/TensorMethods.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/TensorGeometry.h
 ATen/WrapDimUtils.h
 -
 ATen/core/Tensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/TensorOperators.h
+/home/heider/Applications/libtorch/include/ATen/TensorNames.h
+ATen/core/EnableNamedTensor.h
+-
+ATen/WrapDimUtils.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/TensorOperators.h
 c10/core/Scalar.h
 -
 ATen/Tensor.h
@@ -274,7 +358,7 @@ string
 stdexcept
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/TensorUtils.h
+/home/heider/Applications/libtorch/include/ATen/TensorUtils.h
 ATen/Tensor.h
 -
 ATen/TensorGeometry.h
@@ -282,7 +366,27 @@ ATen/TensorGeometry.h
 ATen/Utils.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Utils.h
+/home/heider/Applications/libtorch/include/ATen/TypeDefault.h
+c10/core/TensorOptions.h
+-
+c10/core/Scalar.h
+-
+c10/core/QScheme.h
+-
+c10/core/MemoryFormat.h
+-
+c10/util/ArrayRef.h
+-
+c10/util/intrusive_ptr.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+ATen/Dimname.h
+-
+ATen/core/EnableNamedTensor.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/Utils.h
 ATen/core/ATenGeneral.h
 -
 ATen/core/Generator.h
@@ -310,11 +414,11 @@ numeric
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/Version.h
+/home/heider/Applications/libtorch/include/ATen/Version.h
 ATen/Context.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/WrapDimUtils.h
+/home/heider/Applications/libtorch/include/ATen/WrapDimUtils.h
 c10/core/WrapDimMinimal.h
 -
 c10/core/TensorImpl.h
@@ -322,27 +426,15 @@ c10/core/TensorImpl.h
 ATen/core/Tensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/ATenDispatch.h
-c10/core/Backend.h
--
-unordered_map
--
-c10/util/C++17.h
--
-memory
--
-mutex
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/ATenGeneral.h
+/home/heider/Applications/libtorch/include/ATen/core/ATenGeneral.h
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Array.h
+/home/heider/Applications/libtorch/include/ATen/core/Array.h
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/DeprecatedTypeProperties.h
+/home/heider/Applications/libtorch/include/ATen/core/DeprecatedTypeProperties.h
 c10/core/Backend.h
 -
 c10/core/ScalarType.h
@@ -358,43 +450,59 @@ ATen/core/DeprecatedTypePropertiesRegistry.h
 ATen/core/Generator.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/DeprecatedTypePropertiesRegistry.h
+/home/heider/Applications/libtorch/include/ATen/core/DeprecatedTypePropertiesRegistry.h
 c10/core/Backend.h
 -
 c10/core/ScalarType.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Dict.h
+/home/heider/Applications/libtorch/include/ATen/core/Dict.h
 c10/macros/Macros.h
 -
 c10/util/TypeTraits.h
 -
 c10/util/TypeList.h
 -
-c10/util/flat_hash_map.h
--
 c10/util/intrusive_ptr.h
+-
+c10/util/order_preserving_flat_hash_map.h
 -
 c10/util/Optional.h
 -
-ATen/core/Tensor.h
+ATen/core/TensorBody.h
 -
 ATen/core/Dict_inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Dict_inl.h
+/home/heider/Applications/libtorch/include/ATen/core/Dict_inl.h
 ATen/core/ivalue.h
 -
 ATen/core/jit_type.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/DimVector.h
+/home/heider/Applications/libtorch/include/ATen/core/DimVector.h
 c10/util/SmallVector.h
 -
 stdint.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Formatting.h
+/home/heider/Applications/libtorch/include/ATen/core/Dimname.h
+ATen/core/EnableNamedTensor.h
+-
+ATen/core/interned_strings.h
+-
+c10/util/ArrayRef.h
+-
+c10/util/Optional.h
+-
+ostream
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/EnableNamedTensor.h
+c10/macros/Macros.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/Formatting.h
 c10/core/Scalar.h
 -
 ATen/core/Tensor.h
@@ -402,7 +510,7 @@ ATen/core/Tensor.h
 iostream
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Generator.h
+/home/heider/Applications/libtorch/include/ATen/core/Generator.h
 stdint.h
 -
 memory
@@ -424,7 +532,7 @@ c10/util/C++17.h
 c10/core/Device.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/LegacyDeviceTypeInit.h
+/home/heider/Applications/libtorch/include/ATen/core/LegacyDeviceTypeInit.h
 c10/core/DeviceType.h
 -
 c10/macros/Macros.h
@@ -434,7 +542,7 @@ c10/util/Registry.h
 ATen/core/ScalarType.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/LegacyTypeDispatch.h
+/home/heider/Applications/libtorch/include/ATen/core/LegacyTypeDispatch.h
 c10/core/Backend.h
 -
 c10/core/ScalarType.h
@@ -443,10 +551,14 @@ c10/util/Exception.h
 -
 ATen/core/LegacyDeviceTypeInit.h
 -
+c10/core/impl/LocalTensorTypeSet.h
+-
 c10/core/TensorImpl.h
 -
+ATen/core/TensorBody.h
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/List.h
+/home/heider/Applications/libtorch/include/ATen/core/List.h
 c10/macros/Macros.h
 -
 c10/util/TypeTraits.h
@@ -464,13 +576,13 @@ vector
 ATen/core/List_inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/List_inl.h
+/home/heider/Applications/libtorch/include/ATen/core/List_inl.h
 ATen/core/ivalue.h
 -
 ATen/core/jit_type.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/MT19937RNGEngine.h
+/home/heider/Applications/libtorch/include/ATen/core/MT19937RNGEngine.h
 math.h
 -
 stdint.h
@@ -480,7 +592,21 @@ cmath
 array
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/PhiloxRNGEngine.h
+/home/heider/Applications/libtorch/include/ATen/core/Macros.h
+c10/macros/Macros.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/NamedTensor.h
+ATen/core/EnableNamedTensor.h
+-
+ATen/core/Dimname.h
+-
+c10/core/TensorImpl.h
+-
+c10/util/C++17.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/PhiloxRNGEngine.h
 math.h
 -
 stdint.h
@@ -498,17 +624,33 @@ c10/util/Half.h
 cmath
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Reduction.h
+/home/heider/Applications/libtorch/include/ATen/core/Reduction.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Scalar.h
+/home/heider/Applications/libtorch/include/ATen/core/Scalar.h
 c10/core/Scalar.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/ScalarType.h
+/home/heider/Applications/libtorch/include/ATen/core/ScalarType.h
 c10/core/ScalarType.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/Tensor.h
+/home/heider/Applications/libtorch/include/ATen/core/Tensor.h
+ATen/core/TensorBody.h
+-
+ATen/core/TensorMethods.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/TensorAccessor.h
+c10/macros/Macros.h
+-
+c10/util/Deprecated.h
+-
+stdint.h
+-
+cstddef
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/TensorBody.h
 c10/core/Device.h
 -
 c10/core/Layout.h
@@ -531,28 +673,22 @@ c10/core/UndefinedTensorImpl.h
 -
 c10/util/Exception.h
 -
+c10/util/Deprecated.h
+-
 c10/util/Optional.h
 -
 c10/util/intrusive_ptr.h
 -
-ATen/core/LegacyTypeDispatch.h
--
 ATen/core/DeprecatedTypePropertiesRegistry.h
 -
-ATen/NamedTensor.h
+ATen/core/DeprecatedTypeProperties.h
 -
-ATen/core/TensorMethods.h
+ATen/core/EnableNamedTensor.h
 -
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/TensorAccessor.h
-c10/macros/Macros.h
--
-stdint.h
--
-cstddef
+ATen/core/NamedTensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/TensorMethods.h
+/home/heider/Applications/libtorch/include/ATen/core/TensorMethods.h
 c10/core/Scalar.h
 -
 c10/core/MemoryFormat.h
@@ -567,16 +703,40 @@ c10/util/intrusive_ptr.h
 -
 ATen/core/DeprecatedTypeProperties.h
 -
-ATen/core/ATenDispatch.h
+ATen/core/dispatch/Dispatcher.h
 -
-ATen/NamedTensor.h
+ATen/core/NamedTensor.h
+-
+ATen/core/EnableNamedTensor.h
+-
+ATen/core/LegacyTypeDispatch.h
+-
+ATen/TypeDefault.h
+-
+ATen/CPUType.h
+-
+ATen/QuantizedCPUType.h
+-
+ATen/SparseCPUType.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/UnsafeFromTH.h
+/home/heider/Applications/libtorch/include/ATen/core/UnsafeFromTH.h
 ATen/core/Tensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/alias_info.h
+/home/heider/Applications/libtorch/include/ATen/core/Variadic.h
+cstdint
+-
+tuple
+-
+type_traits
+-
+utility
+-
+c10/util/ArrayRef.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/alias_info.h
 unordered_set
 -
 vector
@@ -586,9 +746,9 @@ ATen/core/interned_strings.h
 c10/util/Exception.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/aten_interned_strings.h
+/home/heider/Applications/libtorch/include/ATen/core/aten_interned_strings.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/blob.h
+/home/heider/Applications/libtorch/include/ATen/core/blob.h
 cstddef
 -
 sstream
@@ -606,7 +766,115 @@ c10/util/typeid.h
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/function_schema.h
+/home/heider/Applications/libtorch/include/ATen/core/boxing/KernelFunction.h
+ATen/core/stack.h
+-
+c10/util/TypeList.h
+-
+ATen/core/boxing/kernel_functor.h
+-
+ATen/core/boxing/kernel_function.h
+-
+ATen/core/boxing/kernel_lambda.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/boxing/kernel_function.h
+ATen/core/boxing/kernel_functor.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/boxing/kernel_functor.h
+ATen/core/op_registration/infer_schema.h
+-
+ATen/core/ivalue.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/boxing/kernel_lambda.h
+ATen/core/boxing/kernel_functor.h
+-
+c10/util/TypeTraits.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/dispatch/DispatchKeyExtractor.h
+cstdint
+-
+ATen/core/function_schema.h
+-
+ATen/core/jit_type.h
+-
+c10/core/TensorTypeSet.h
+-
+ATen/core/Variadic.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/dispatch/DispatchTable.h
+ATen/core/function_schema.h
+-
+c10/util/LeftRight.h
+-
+c10/util/Metaprogramming.h
+-
+c10/util/flat_hash_map.h
+-
+c10/util/either.h
+-
+c10/core/TensorTypeId.h
+-
+ATen/core/ivalue.h
+-
+ATen/core/boxing/KernelFunction.h
+-
+ATen/core/dispatch/DispatchKeyExtractor.h
+-
+array
+-
+atomic
+-
+iostream
+-
+mutex
+-
+type_traits
+-
+sstream
+-
+unordered_map
+-
+functional
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/dispatch/Dispatcher.h
+ATen/core/dispatch/OperatorEntry.h
+-
+ATen/core/dispatch/RegistrationHandleRAII.h
+-
+c10/util/Exception.h
+-
+mutex
+-
+list
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/dispatch/OperatorEntry.h
+ATen/core/dispatch/DispatchTable.h
+-
+ATen/core/dispatch/OperatorOptions.h
+-
+ATen/core/dispatch/RegistrationHandleRAII.h
+-
+list
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/dispatch/OperatorOptions.h
+cstdint
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/dispatch/RegistrationHandleRAII.h
+functional
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/function_schema.h
+c10/util/StringUtil.h
+-
 ATen/core/jit_type.h
 -
 ATen/core/interned_strings.h
@@ -615,24 +883,26 @@ ATen/core/ivalue.h
 -
 ATen/core/alias_info.h
 -
+ATen/core/operator_name.h
+-
 unordered_map
 -
 ATen/core/function_schema_inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/function_schema_inl.h
+/home/heider/Applications/libtorch/include/ATen/core/function_schema_inl.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/functional.h
+/home/heider/Applications/libtorch/include/ATen/core/functional.h
 vector
 -
 c10/util/ArrayRef.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/grad_mode.h
+/home/heider/Applications/libtorch/include/ATen/core/grad_mode.h
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/interned_strings.h
+/home/heider/Applications/libtorch/include/ATen/core/interned_strings.h
 vector
 -
 cstdint
@@ -648,19 +918,21 @@ c10/macros/Macros.h
 ATen/core/aten_interned_strings.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/ivalue.h
+/home/heider/Applications/libtorch/include/ATen/core/ivalue.h
+ATen/core/TensorBody.h
+-
 ATen/core/blob.h
 -
-c10/util/intrusive_ptr.h
+c10/util/C++17.h
 -
-ATen/core/Tensor.h
+c10/util/intrusive_ptr.h
 -
 torch/csrc/WindowsTorchApiMacro.h
 -
 ATen/core/ivalue_inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/ivalue_inl.h
+/home/heider/Applications/libtorch/include/ATen/core/ivalue_inl.h
 condition_variable
 -
 type_traits
@@ -680,8 +952,8 @@ ATen/core/Dict.h
 ATen/core/List.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/jit_type.h
-ATen/core/Tensor.h
+/home/heider/Applications/libtorch/include/ATen/core/jit_type.h
+ATen/core/TensorBody.h
 -
 ATen/core/functional.h
 -
@@ -701,8 +973,24 @@ memory
 -
 type_traits
 -
+array
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/qualified_name.h
+/home/heider/Applications/libtorch/include/ATen/core/op_registration/infer_schema.h
+ATen/core/function_schema.h
+-
+c10/util/C++17.h
+-
+c10/util/Metaprogramming.h
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/operator_name.h
+string
+-
+utility
+-
+
+/home/heider/Applications/libtorch/include/ATen/core/qualified_name.h
 c10/util/ArrayRef.h
 -
 c10/util/Exception.h
@@ -712,11 +1000,11 @@ c10/util/StringUtil.h
 string
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/core/stack.h
+/home/heider/Applications/libtorch/include/ATen/core/stack.h
 ATen/core/ivalue.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/detail/CUDAHooksInterface.h
+/home/heider/Applications/libtorch/include/ATen/detail/CUDAHooksInterface.h
 c10/core/Allocator.h
 -
 ATen/core/Generator.h
@@ -734,7 +1022,7 @@ functional
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/ATen/detail/HIPHooksInterface.h
+/home/heider/Applications/libtorch/include/ATen/detail/HIPHooksInterface.h
 c10/core/Allocator.h
 -
 ATen/core/Generator.h
@@ -750,7 +1038,7 @@ functional
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Allocator.h
+/home/heider/Applications/libtorch/include/c10/core/Allocator.h
 stddef.h
 -
 memory
@@ -762,27 +1050,25 @@ c10/util/UniqueVoidPtr.h
 c10/util/Exception.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Backend.h
+/home/heider/Applications/libtorch/include/c10/core/Backend.h
 c10/core/DeviceType.h
 -
 c10/core/TensorTypeId.h
--
-c10/core/TensorTypeIdRegistration.h
 -
 c10/util/Exception.h
 -
 stdexcept
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/CopyBytes.h
+/home/heider/Applications/libtorch/include/c10/core/CopyBytes.h
 c10/core/Device.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/DefaultDtype.h
+/home/heider/Applications/libtorch/include/c10/core/DefaultDtype.h
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Device.h
+/home/heider/Applications/libtorch/include/c10/core/Device.h
 c10/core/DeviceType.h
 -
 c10/macros/Macros.h
@@ -798,11 +1084,11 @@ iosfwd
 string
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/DeviceGuard.h
+/home/heider/Applications/libtorch/include/c10/core/DeviceGuard.h
 c10/core/impl/InlineDeviceGuard.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/DeviceType.h
+/home/heider/Applications/libtorch/include/c10/core/DeviceType.h
 c10/macros/Macros.h
 -
 ostream
@@ -810,7 +1096,7 @@ ostream
 functional
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Layout.h
+/home/heider/Applications/libtorch/include/c10/core/Layout.h
 c10/core/Backend.h
 -
 c10/util/Exception.h
@@ -818,7 +1104,7 @@ c10/util/Exception.h
 iostream
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/MemoryFormat.h
+/home/heider/Applications/libtorch/include/c10/core/MemoryFormat.h
 c10/core/Backend.h
 -
 c10/util/Exception.h
@@ -828,7 +1114,15 @@ c10/util/ArrayRef.h
 iostream
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/QScheme.h
+/home/heider/Applications/libtorch/include/c10/core/QEngine.h
+c10/core/DeviceType.h
+-
+c10/core/TensorTypeId.h
+-
+c10/util/Exception.h
+-
+
+/home/heider/Applications/libtorch/include/c10/core/QScheme.h
 c10/core/TensorTypeId.h
 -
 c10/core/DeviceType.h
@@ -836,7 +1130,7 @@ c10/core/DeviceType.h
 c10/util/Exception.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Scalar.h
+/home/heider/Applications/libtorch/include/c10/core/Scalar.h
 assert.h
 -
 stdint.h
@@ -854,7 +1148,7 @@ c10/macros/Macros.h
 c10/util/Half.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/ScalarType.h
+/home/heider/Applications/libtorch/include/c10/core/ScalarType.h
 c10/util/ArrayRef.h
 -
 c10/util/Half.h
@@ -870,11 +1164,11 @@ cstdint
 iostream
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Storage.h
+/home/heider/Applications/libtorch/include/c10/core/Storage.h
 c10/core/StorageImpl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/StorageImpl.h
+/home/heider/Applications/libtorch/include/c10/core/StorageImpl.h
 c10/core/Allocator.h
 -
 c10/core/ScalarType.h
@@ -882,11 +1176,11 @@ c10/core/ScalarType.h
 c10/util/intrusive_ptr.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/Stream.h
+/home/heider/Applications/libtorch/include/c10/core/Stream.h
 c10/core/Device.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/TensorImpl.h
+/home/heider/Applications/libtorch/include/c10/core/TensorImpl.h
 atomic
 -
 memory
@@ -901,9 +1195,9 @@ c10/core/Storage.h
 -
 c10/core/TensorOptions.h
 -
-c10/core/TensorTypeId.h
+c10/core/TensorTypeSet.h
 -
-c10/core/TensorTypeIdRegistration.h
+c10/core/impl/LocalTensorTypeSet.h
 -
 c10/core/CopyBytes.h
 -
@@ -918,7 +1212,7 @@ c10/util/Logging.h
 c10/util/python_stub.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/TensorOptions.h
+/home/heider/Applications/libtorch/include/c10/core/TensorOptions.h
 c10/core/DefaultDtype.h
 -
 c10/core/Backend.h
@@ -928,6 +1222,8 @@ c10/core/Layout.h
 c10/core/ScalarType.h
 -
 c10/core/Device.h
+-
+c10/core/TensorTypeSet.h
 -
 c10/util/Optional.h
 -
@@ -942,51 +1238,47 @@ iosfwd
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/TensorTypeId.h
+/home/heider/Applications/libtorch/include/c10/core/TensorTypeId.h
 iostream
 -
 string
 -
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/c10/macros/Macros.h
-c10/util/IdWrapper.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/c10/util/IdWrapper.h
+/home/heider/Applications/libtorch/include/c10/core/c10/macros/Macros.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/TensorTypeIdRegistration.h
-c10/macros/Macros.h
--
+/home/heider/Applications/libtorch/include/c10/core/TensorTypeSet.h
 c10/core/TensorTypeId.h
 -
-c10/util/flat_hash_map.h
+c10/util/llvmMathExtras.h
 -
-atomic
+c10/util/Exception.h
 -
-mutex
--
-unordered_set
+ostream
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/UndefinedTensorImpl.h
+/home/heider/Applications/libtorch/include/c10/core/UndefinedTensorImpl.h
 c10/core/TensorImpl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/WrapDimMinimal.h
+/home/heider/Applications/libtorch/include/c10/core/WrapDimMinimal.h
 c10/util/Exception.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/impl/DeviceGuardImplInterface.h
+/home/heider/Applications/libtorch/include/c10/core/impl/DeviceGuardImplInterface.h
 c10/core/Device.h
 -
 c10/core/DeviceType.h
 -
 c10/core/Stream.h
 -
+c10/util/Exception.h
+-
 c10/util/Registry.h
 -
 atomic
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/impl/InlineDeviceGuard.h
+/home/heider/Applications/libtorch/include/c10/core/impl/InlineDeviceGuard.h
 c10/core/Device.h
 -
 c10/core/impl/DeviceGuardImplInterface.h
@@ -998,41 +1290,23 @@ c10/util/Optional.h
 c10/util/C++17.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/impl/VirtualGuardImpl.h
+/home/heider/Applications/libtorch/include/c10/core/impl/LocalTensorTypeSet.h
+c10/core/TensorTypeSet.h
+-
+
+/home/heider/Applications/libtorch/include/c10/core/impl/VirtualGuardImpl.h
 c10/core/impl/DeviceGuardImplInterface.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/core/thread_pool.h
-condition_variable
--
-functional
--
-mutex
--
-queue
--
-thread
--
-utility
--
-c10/util/Optional.h
--
-c10/util/intrusive_ptr.h
--
-c10/util/numa.h
--
-c10/util/thread_name.h
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/macros/Export.h
+/home/heider/Applications/libtorch/include/c10/macros/Export.h
 c10/macros/cmake_macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/macros/c10/macros/cmake_macros.h
+/home/heider/Applications/libtorch/include/c10/macros/c10/macros/cmake_macros.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/macros/Macros.h
 c10/macros/cmake_macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/macros/c10/macros/cmake_macros.h
+/home/heider/Applications/libtorch/include/c10/macros/c10/macros/cmake_macros.h
 c10/macros/Export.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/macros/c10/macros/Export.h
+/home/heider/Applications/libtorch/include/c10/macros/c10/macros/Export.h
 sstream
 -
 string
@@ -1040,13 +1314,25 @@ string
 TargetConditionals.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/macros/cmake_macros.h
+/home/heider/Applications/libtorch/include/c10/macros/cmake_macros.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/AlignOf.h
+/home/heider/Applications/libtorch/include/c10/util/AlignOf.h
 cstddef
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/ArrayRef.h
+/home/heider/Applications/libtorch/include/c10/util/Array.h
+algorithm
+-
+c10/util/C++17.h
+-
+stdexcept
+-
+string
+-
+utility
+-
+
+/home/heider/Applications/libtorch/include/c10/util/ArrayRef.h
 c10/util/SmallVector.h
 -
 c10/util/C++17.h
@@ -1062,13 +1348,13 @@ iterator
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/BFloat16-inl.h
+/home/heider/Applications/libtorch/include/c10/util/BFloat16-inl.h
 c10/macros/Macros.h
 -
 limits
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/BFloat16.h
+/home/heider/Applications/libtorch/include/c10/util/BFloat16.h
 c10/macros/Macros.h
 -
 cmath
@@ -1078,7 +1364,7 @@ cstring
 c10/util/BFloat16-inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Backtrace.h
+/home/heider/Applications/libtorch/include/c10/util/Backtrace.h
 cstddef
 -
 string
@@ -1086,9 +1372,9 @@ string
 typeinfo
 -
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/util/c10/macros/Macros.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/C++17.h
+/home/heider/Applications/libtorch/include/c10/util/C++17.h
 type_traits
 -
 utility
@@ -1106,15 +1392,23 @@ functional
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Deprecated.h
+/home/heider/Applications/libtorch/include/c10/util/ConstexprCrc.h
+c10/util/IdWrapper.h
+-
+cstddef
+-
+cstdint
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Exception.h
+/home/heider/Applications/libtorch/include/c10/util/Deprecated.h
+
+/home/heider/Applications/libtorch/include/c10/util/Exception.h
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/util/c10/macros/Macros.h
 c10/util/StringUtil.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/StringUtil.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/StringUtil.h
 c10/util/Deprecated.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/Deprecated.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/Deprecated.h
 cstddef
 -
 exception
@@ -1128,17 +1422,17 @@ string
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Flags.h
+/home/heider/Applications/libtorch/include/c10/util/Flags.h
 string
 -
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/util/c10/macros/Macros.h
 c10/util/Registry.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/Registry.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/Registry.h
 gflags/gflags.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Half-inl.h
+/home/heider/Applications/libtorch/include/c10/util/Half-inl.h
 cstring
 -
 limits
@@ -1150,7 +1444,7 @@ cuda_fp16.h
 hip/hip_fp16.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Half.h
+/home/heider/Applications/libtorch/include/c10/util/Half.h
 c10/macros/Macros.h
 -
 c10/util/C++17.h
@@ -1190,7 +1484,7 @@ hip/hip_fp16.h
 c10/util/Half-inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/IdWrapper.h
+/home/heider/Applications/libtorch/include/c10/util/IdWrapper.h
 c10/macros/Macros.h
 -
 functional
@@ -1198,7 +1492,21 @@ functional
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Logging.h
+/home/heider/Applications/libtorch/include/c10/util/LeftRight.h
+atomic
+-
+functional
+-
+mutex
+-
+thread
+-
+array
+-
+c10/macros/Macros.h
+-
+
+/home/heider/Applications/libtorch/include/c10/util/Logging.h
 climits
 -
 exception
@@ -1210,19 +1518,33 @@ limits
 sstream
 -
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/util/c10/macros/Macros.h
 c10/util/Exception.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/Exception.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/Exception.h
 c10/util/Flags.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/Flags.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/Flags.h
 c10/util/StringUtil.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/StringUtil.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/StringUtil.h
 c10/util/logging_is_google_glog.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/logging_is_google_glog.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/logging_is_google_glog.h
 c10/util/logging_is_not_google_glog.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/logging_is_not_google_glog.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/logging_is_not_google_glog.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Optional.h
+/home/heider/Applications/libtorch/include/c10/util/Metaprogramming.h
+type_traits
+-
+array
+-
+functional
+-
+c10/util/TypeList.h
+-
+c10/util/Array.h
+-
+
+/home/heider/Applications/libtorch/include/c10/util/Optional.h
+c10/util/in_place.h
+-
 cassert
 -
 functional
@@ -1238,7 +1560,7 @@ type_traits
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Registry.h
+/home/heider/Applications/libtorch/include/c10/util/Registry.h
 algorithm
 -
 cstdio
@@ -1258,11 +1580,11 @@ unordered_map
 vector
 -
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/util/c10/macros/Macros.h
 c10/util/Type.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/Type.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/Type.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/SmallVector.h
+/home/heider/Applications/libtorch/include/c10/util/SmallVector.h
 c10/util/AlignOf.h
 -
 c10/macros/Macros.h
@@ -1290,7 +1612,7 @@ type_traits
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/StringUtil.h
+/home/heider/Applications/libtorch/include/c10/util/StringUtil.h
 c10/macros/Macros.h
 -
 c10/util/string_utils.h
@@ -1306,7 +1628,7 @@ string
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/Type.h
+/home/heider/Applications/libtorch/include/c10/util/Type.h
 cstddef
 -
 string
@@ -1314,27 +1636,49 @@ string
 typeinfo
 -
 c10/macros/Macros.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Macros.h
+/home/heider/Applications/libtorch/include/c10/util/c10/macros/Macros.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/TypeList.h
+/home/heider/Applications/libtorch/include/c10/util/TypeIndex.h
+c10/util/C++17.h
+-
+c10/util/ConstexprCrc.h
+-
+c10/util/IdWrapper.h
+-
+cinttypes
+-
+functional
+-
+
+/home/heider/Applications/libtorch/include/c10/util/TypeList.h
 c10/util/C++17.h
 -
 c10/util/TypeTraits.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/TypeTraits.h
+/home/heider/Applications/libtorch/include/c10/util/TypeTraits.h
 c10/util/C++17.h
 -
 functional
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/UniqueVoidPtr.h
+/home/heider/Applications/libtorch/include/c10/util/UniqueVoidPtr.h
 memory
 -
 c10/macros/Macros.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/flat_hash_map.h
+/home/heider/Applications/libtorch/include/c10/util/either.h
+c10/macros/Macros.h
+-
+c10/util/C++17.h
+-
+c10/util/Optional.h
+-
+iostream
+-
+
+/home/heider/Applications/libtorch/include/c10/util/flat_hash_map.h
 cstdint
 -
 cstddef
@@ -1351,8 +1695,14 @@ utility
 -
 type_traits
 -
+stdexcept
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/intrusive_ptr.h
+/home/heider/Applications/libtorch/include/c10/util/in_place.h
+cstddef
+-
+
+/home/heider/Applications/libtorch/include/c10/util/intrusive_ptr.h
 c10/util/C++17.h
 -
 c10/util/Exception.h
@@ -1362,7 +1712,25 @@ atomic
 stdexcept
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/logging_is_google_glog.h
+/home/heider/Applications/libtorch/include/c10/util/llvmMathExtras.h
+algorithm
+-
+cmath
+-
+cassert
+-
+climits
+-
+cstring
+-
+limits
+-
+type_traits
+-
+android/api-level.h
+-
+
+/home/heider/Applications/libtorch/include/c10/util/logging_is_google_glog.h
 map
 -
 set
@@ -1378,7 +1746,7 @@ glog/stl_logging.h
 glog/logging.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/logging_is_not_google_glog.h
+/home/heider/Applications/libtorch/include/c10/util/logging_is_not_google_glog.h
 chrono
 -
 climits
@@ -1400,41 +1768,51 @@ string
 vector
 -
 c10/util/Flags.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/util/Flags.h
+/home/heider/Applications/libtorch/include/c10/util/c10/util/Flags.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/numa.h
-c10/util/Logging.h
+/home/heider/Applications/libtorch/include/c10/util/order_preserving_flat_hash_map.h
+cstdint
 -
-c10/util/Optional.h
+cstddef
+-
+functional
+-
+cmath
+-
+algorithm
+-
+iterator
+-
+utility
+-
+type_traits
+-
+c10/util/C++17.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/python_stub.h
+/home/heider/Applications/libtorch/include/c10/util/python_stub.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/qint32.h
+/home/heider/Applications/libtorch/include/c10/util/qint32.h
 cstdint
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/qint8.h
+/home/heider/Applications/libtorch/include/c10/util/qint8.h
 cstdint
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/quint8.h
+/home/heider/Applications/libtorch/include/c10/util/quint8.h
 cstdint
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/string_utils.h
+/home/heider/Applications/libtorch/include/c10/util/string_utils.h
 sstream
 -
 string
 -
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/thread_name.h
-string
+cstdlib
 -
-c10/macros/Export.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/c10/macros/Export.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/c10/util/typeid.h
+/home/heider/Applications/libtorch/include/c10/util/typeid.h
 atomic
 -
 cassert
@@ -1475,6 +1853,8 @@ c10/util/IdWrapper.h
 -
 c10/util/Type.h
 -
+c10/util/TypeIndex.h
+-
 c10/util/qint32.h
 -
 c10/util/qint8.h
@@ -1483,24 +1863,54 @@ c10/util/quint8.h
 -
 c10/util/BFloat16.h
 -
+c10/util/flat_hash_map.h
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/attr.h
+/home/heider/Applications/libtorch/include/c10/util/variant.h
+cstddef
+-
+exception
+-
+functional
+-
+initializer_list
+-
+new
+-
+type_traits
+-
+utility
+-
+c10/util/in_place.h
+-
+cstddef
+-
+memory
+-
+functional
+-
+type_traits
+-
+utility
+-
+
+/home/heider/Applications/libtorch/include/pybind11/attr.h
 cast.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/cast.h
+/home/heider/Applications/libtorch/include/pybind11/cast.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/buffer_info.h
+/home/heider/Applications/libtorch/include/pybind11/buffer_info.h
 detail/common.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/common.h
+/home/heider/Applications/libtorch/include/pybind11/detail/common.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/cast.h
+/home/heider/Applications/libtorch/include/pybind11/cast.h
 pytypes.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/pytypes.h
+/home/heider/Applications/libtorch/include/pybind11/pytypes.h
 detail/typeid.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/typeid.h
+/home/heider/Applications/libtorch/include/pybind11/detail/typeid.h
 detail/descr.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/descr.h
+/home/heider/Applications/libtorch/include/pybind11/detail/descr.h
 detail/internals.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/internals.h
+/home/heider/Applications/libtorch/include/pybind11/detail/internals.h
 array
 -
 limits
@@ -1512,11 +1922,11 @@ type_traits
 string_view
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/class.h
+/home/heider/Applications/libtorch/include/pybind11/detail/class.h
 ../attr.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/attr.h
+/home/heider/Applications/libtorch/include/pybind11/attr.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/common.h
+/home/heider/Applications/libtorch/include/pybind11/detail/common.h
 Python.h
 -
 frameobject.h
@@ -1546,19 +1956,19 @@ typeindex
 type_traits
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/descr.h
+/home/heider/Applications/libtorch/include/pybind11/detail/descr.h
 common.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/common.h
+/home/heider/Applications/libtorch/include/pybind11/detail/common.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/init.h
+/home/heider/Applications/libtorch/include/pybind11/detail/init.h
 class.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/class.h
+/home/heider/Applications/libtorch/include/pybind11/detail/class.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/internals.h
+/home/heider/Applications/libtorch/include/pybind11/detail/internals.h
 ../pytypes.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/pytypes.h
+/home/heider/Applications/libtorch/include/pybind11/pytypes.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/typeid.h
+/home/heider/Applications/libtorch/include/pybind11/detail/typeid.h
 cstdio
 -
 cstdlib
@@ -1566,33 +1976,33 @@ cstdlib
 cxxabi.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/options.h
+/home/heider/Applications/libtorch/include/pybind11/options.h
 detail/common.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/common.h
+/home/heider/Applications/libtorch/include/pybind11/detail/common.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/pybind11.h
+/home/heider/Applications/libtorch/include/pybind11/pybind11.h
 attr.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/attr.h
+/home/heider/Applications/libtorch/include/pybind11/attr.h
 options.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/options.h
+/home/heider/Applications/libtorch/include/pybind11/options.h
 detail/class.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/class.h
+/home/heider/Applications/libtorch/include/pybind11/detail/class.h
 detail/init.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/init.h
+/home/heider/Applications/libtorch/include/pybind11/detail/init.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/pytypes.h
+/home/heider/Applications/libtorch/include/pybind11/pytypes.h
 detail/common.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/detail/common.h
+/home/heider/Applications/libtorch/include/pybind11/detail/common.h
 buffer_info.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/buffer_info.h
+/home/heider/Applications/libtorch/include/pybind11/buffer_info.h
 utility
 -
 type_traits
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/stl.h
+/home/heider/Applications/libtorch/include/pybind11/stl.h
 pybind11.h
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/pybind11/pybind11.h
+/home/heider/Applications/libtorch/include/pybind11/pybind11.h
 set
 -
 unordered_set
@@ -1620,7 +2030,7 @@ optional
 variant
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/Device.h
+/home/heider/Applications/libtorch/include/torch/csrc/Device.h
 torch/csrc/python_headers.h
 -
 torch/csrc/WindowsTorchApiMacro.h
@@ -1628,7 +2038,7 @@ torch/csrc/WindowsTorchApiMacro.h
 ATen/Device.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/Dtype.h
+/home/heider/Applications/libtorch/include/torch/csrc/Dtype.h
 ATen/ATen.h
 -
 torch/csrc/python_headers.h
@@ -1636,7 +2046,7 @@ torch/csrc/python_headers.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/DynamicTypes.h
+/home/heider/Applications/libtorch/include/torch/csrc/DynamicTypes.h
 torch/csrc/python_headers.h
 -
 ATen/Device.h
@@ -1650,28 +2060,42 @@ memory
 string
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/Exceptions.h
+/home/heider/Applications/libtorch/include/torch/csrc/Exceptions.h
 exception
 -
 string
+-
+memory
+-
+queue
+-
+mutex
+-
+c10/util/Exception.h
 -
 torch/csrc/THP_export.h
 -
 torch/csrc/utils/auto_gil.h
 -
+torch/csrc/jit/script/jit_exception.h
+-
 torch/csrc/WindowsTorchApiMacro.h
 -
+c10/util/StringUtil.h
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/THP_export.h
+/home/heider/Applications/libtorch/include/torch/csrc/THP_export.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/WindowsTorchApiMacro.h
+/home/heider/Applications/libtorch/include/torch/csrc/WindowsTorchApiMacro.h
 c10/macros/Export.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/all.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/all.h
 torch/cuda.h
 -
 torch/data.h
+-
+torch/enum.h
 -
 torch/jit.h
 -
@@ -1688,21 +2112,23 @@ torch/utils.h
 torch/autograd.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/arg.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/arg.h
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/autograd.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/autograd.h
+torch/csrc/autograd/autograd.h
+-
 torch/csrc/autograd/custom_function.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/cuda.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/cuda.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 cstddef
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data.h
 torch/data/dataloader.h
 -
 torch/data/datasets.h
@@ -1712,7 +2138,7 @@ torch/data/samplers.h
 torch/data/transforms.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/dataloader.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/dataloader.h
 torch/data/dataloader/stateful.h
 -
 torch/data/dataloader/stateless.h
@@ -1732,7 +2158,7 @@ type_traits
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/dataloader/base.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/dataloader/base.h
 torch/data/dataloader_options.h
 -
 torch/data/detail/data_shuttle.h
@@ -1768,7 +2194,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/dataloader/stateful.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/dataloader/stateful.h
 torch/data/dataloader/base.h
 -
 cstddef
@@ -1778,7 +2204,7 @@ thread
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/dataloader/stateless.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/dataloader/stateless.h
 torch/data/dataloader/base.h
 -
 torch/data/worker_exception.h
@@ -1794,7 +2220,7 @@ thread
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/dataloader_options.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/dataloader_options.h
 torch/arg.h
 -
 torch/types.h
@@ -1804,7 +2230,7 @@ chrono
 cstddef
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets.h
 torch/data/datasets/base.h
 -
 torch/data/datasets/chunk.h
@@ -1820,7 +2246,7 @@ torch/data/datasets/stateful.h
 torch/data/datasets/tensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/base.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/base.h
 torch/data/example.h
 -
 torch/types.h
@@ -1838,7 +2264,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/chunk.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/chunk.h
 torch/arg.h
 -
 torch/csrc/utils/memory.h
@@ -1854,7 +2280,7 @@ thread
 torch/serialize.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/map.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/map.h
 torch/data/datasets/base.h
 -
 torch/types.h
@@ -1868,7 +2294,7 @@ type_traits
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/mnist.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/mnist.h
 torch/data/datasets/base.h
 -
 torch/data/example.h
@@ -1882,7 +2308,7 @@ cstddef
 string
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/shared.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/shared.h
 torch/data/datasets/base.h
 -
 memory
@@ -1890,7 +2316,7 @@ memory
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/stateful.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/stateful.h
 torch/data/datasets/base.h
 -
 torch/data/example.h
@@ -1900,7 +2326,7 @@ cstddef
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/datasets/tensor.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/datasets/tensor.h
 torch/data/datasets/base.h
 -
 torch/data/example.h
@@ -1912,7 +2338,7 @@ cstddef
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/detail/data_shuttle.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/detail/data_shuttle.h
 torch/data/detail/queue.h
 -
 torch/types.h
@@ -1926,7 +2352,7 @@ chrono
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/detail/queue.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/detail/queue.h
 torch/types.h
 -
 c10/util/Exception.h
@@ -1942,7 +2368,7 @@ mutex
 queue
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/detail/sequencers.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/detail/sequencers.h
 torch/types.h
 -
 algorithm
@@ -1952,11 +2378,11 @@ cstddef
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/example.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/example.h
 torch/types.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/iterator.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/iterator.h
 torch/csrc/utils/variadic.h
 -
 torch/types.h
@@ -1974,7 +2400,7 @@ type_traits
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers.h
 torch/data/samplers/base.h
 -
 torch/data/samplers/custom_batch_request.h
@@ -1990,7 +2416,7 @@ torch/data/samplers/serialize.h
 torch/data/samplers/stream.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/base.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/base.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 torch/types.h
@@ -2002,13 +2428,13 @@ vector
 mutex
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/custom_batch_request.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/custom_batch_request.h
 cstddef
 -
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/distributed.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/distributed.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 torch/data/samplers/base.h
@@ -2018,19 +2444,7 @@ cstddef
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/random.h
-torch/csrc/WindowsTorchApiMacro.h
--
-torch/data/samplers/base.h
--
-torch/types.h
--
-cstddef
--
-vector
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/sequential.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/random.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 torch/data/samplers/base.h
@@ -2042,13 +2456,25 @@ cstddef
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/serialize.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/sequential.h
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/data/samplers/base.h
+-
+torch/types.h
+-
+cstddef
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/serialize.h
 torch/data/samplers/base.h
 -
 torch/serialize/archive.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/samplers/stream.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/samplers/stream.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 torch/data/samplers/base.h
@@ -2060,7 +2486,7 @@ torch/types.h
 cstddef
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/transforms.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/transforms.h
 torch/data/transforms/base.h
 -
 torch/data/transforms/collate.h
@@ -2072,7 +2498,7 @@ torch/data/transforms/stack.h
 torch/data/transforms/tensor.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/transforms/base.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/transforms/base.h
 torch/types.h
 -
 utility
@@ -2080,7 +2506,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/transforms/collate.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/transforms/collate.h
 torch/data/example.h
 -
 torch/data/transforms/lambda.h
@@ -2088,7 +2514,7 @@ torch/data/transforms/lambda.h
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/transforms/lambda.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/transforms/lambda.h
 torch/data/transforms/base.h
 -
 functional
@@ -2098,7 +2524,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/transforms/stack.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/transforms/stack.h
 torch/data/example.h
 -
 torch/data/transforms/collate.h
@@ -2110,7 +2536,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/transforms/tensor.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/transforms/tensor.h
 torch/data/example.h
 -
 torch/data/transforms/base.h
@@ -2122,7 +2548,7 @@ functional
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/data/worker_exception.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/data/worker_exception.h
 exception
 -
 string
@@ -2130,7 +2556,13 @@ string
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/detail/static.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/detail/TensorDataContainer.h
+ATen/ATen.h
+-
+initializer_list
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/detail/static.h
 torch/csrc/utils/variadic.h
 -
 torch/types.h
@@ -2140,7 +2572,19 @@ cstdint
 type_traits
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/expanding_array.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/enum.h
+string
+-
+ATen/core/Reduction.h
+-
+c10/util/Exception.h
+-
+c10/util/variant.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/expanding_array.h
 c10/util/ArrayRef.h
 -
 c10/util/Exception.h
@@ -2156,7 +2600,7 @@ initializer_list
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/jit.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/jit.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 torch/csrc/jit/script/module.h
@@ -2166,8 +2610,10 @@ string
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn.h
 torch/nn/cloneable.h
+-
+torch/nn/functional.h
 -
 torch/nn/init.h
 -
@@ -2175,10 +2621,14 @@ torch/nn/module.h
 -
 torch/nn/modules.h
 -
+torch/nn/options.h
+-
 torch/nn/pimpl.h
 -
+torch/nn/utils.h
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/cloneable.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/cloneable.h
 torch/nn/module.h
 -
 torch/types.h
@@ -2194,13 +2644,135 @@ memory
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/init.h
-torch/csrc/WindowsTorchApiMacro.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional.h
+torch/nn/functional/batchnorm.h
+-
+torch/nn/functional/conv.h
+-
+torch/nn/functional/distance.h
+-
+torch/nn/functional/dropout.h
+-
+torch/nn/functional/embedding.h
+-
+torch/nn/functional/fold.h
+-
+torch/nn/functional/linear.h
+-
+torch/nn/functional/loss.h
+-
+torch/nn/functional/normalization.h
+-
+torch/nn/functional/padding.h
+-
+torch/nn/functional/pixelshuffle.h
+-
+torch/nn/functional/pooling.h
+-
+torch/nn/functional/upsampling.h
+-
+torch/nn/functional/vision.h
+-
+torch/nn/functional/instancenorm.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/activation.h
+torch/nn/options/activation.h
 -
 torch/types.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/module.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/batchnorm.h
+torch/nn/options/batchnorm.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/conv.h
+torch/nn/options/conv.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/distance.h
+torch/nn/options/distance.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/dropout.h
+torch/nn/options/dropout.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/embedding.h
+torch/nn/options/embedding.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/fold.h
+torch/nn/options/fold.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/instancenorm.h
+torch/nn/options/instancenorm.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/linear.h
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/loss.h
+ATen/ExpandUtils.h
+-
+torch/nn/functional/activation.h
+-
+torch/nn/options/loss.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/normalization.h
+torch/nn/options/normalization.h
+-
+torch/nn/functional/padding.h
+-
+torch/nn/functional/pooling.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/padding.h
+torch/nn/options/padding.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/pixelshuffle.h
+torch/nn/options/pixelshuffle.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/pooling.h
+torch/nn/functional/activation.h
+-
+torch/nn/options/pooling.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/upsampling.h
+torch/nn/functional/pooling.h
+-
+torch/nn/options/upsampling.h
+-
+cmath
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/functional/vision.h
+torch/nn/options/vision.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/init.h
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/enum.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/module.h
 torch/nn/pimpl.h
 -
 torch/ordered_dict.h
@@ -2224,29 +2796,87 @@ string
 type_traits
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules.h
-torch/nn/modules/any.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules.h
+torch/nn/modules/container/any.h
+-
+torch/nn/modules/container/functional.h
+-
+torch/nn/modules/container/modulelist.h
+-
+torch/nn/modules/container/named_any.h
+-
+torch/nn/modules/container/sequential.h
 -
 torch/nn/modules/batchnorm.h
+-
+torch/nn/modules/instancenorm.h
 -
 torch/nn/modules/conv.h
 -
 torch/nn/modules/dropout.h
 -
+torch/nn/modules/distance.h
+-
 torch/nn/modules/embedding.h
 -
-torch/nn/modules/functional.h
+torch/nn/modules/fold.h
 -
 torch/nn/modules/linear.h
 -
-torch/nn/modules/named_any.h
+torch/nn/modules/loss.h
+-
+torch/nn/modules/padding.h
+-
+torch/nn/modules/pooling.h
 -
 torch/nn/modules/rnn.h
 -
-torch/nn/modules/sequential.h
+torch/nn/modules/pixelshuffle.h
+-
+torch/nn/modules/upsampling.h
+-
+torch/nn/modules/activation.h
+-
+torch/nn/modules/normalization.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/any.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/_functions.h
+torch/csrc/autograd/custom_function.h
+-
+torch/csrc/autograd/variable.h
+-
+torch/types.h
+-
+torch/nn/options/normalization.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/activation.h
+torch/nn/cloneable.h
+-
+torch/nn/options/activation.h
+-
+torch/nn/functional/activation.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/batchnorm.h
+torch/nn/cloneable.h
+-
+torch/nn/functional/batchnorm.h
+-
+torch/nn/options/batchnorm.h
+-
+torch/nn/init.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+cstdint
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/container/any.h
 torch/detail/static.h
 -
 torch/nn/module.h
@@ -2274,59 +2904,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/batchnorm.h
-torch/nn/cloneable.h
--
-torch/nn/pimpl.h
--
-torch/types.h
--
-cstdint
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/conv.h
-torch/expanding_array.h
--
-torch/nn/cloneable.h
--
-torch/nn/pimpl.h
--
-torch/types.h
--
-torch/csrc/WindowsTorchApiMacro.h
--
-cstddef
--
-vector
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/dropout.h
-torch/nn/cloneable.h
--
-torch/nn/pimpl.h
--
-torch/types.h
--
-torch/csrc/WindowsTorchApiMacro.h
--
-cstddef
--
-vector
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/embedding.h
-torch/nn/cloneable.h
--
-torch/nn/pimpl.h
--
-torch/types.h
--
-cstddef
--
-vector
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/functional.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/container/functional.h
 torch/csrc/utils/variadic.h
 -
 torch/nn/cloneable.h
@@ -2342,26 +2920,20 @@ functional
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/linear.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/container/modulelist.h
 torch/nn/cloneable.h
 -
 torch/nn/module.h
 -
-torch/nn/pimpl.h
--
-torch/types.h
--
-cstddef
--
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/named_any.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/container/named_any.h
 torch/detail/static.h
 -
 torch/nn/module.h
 -
-torch/nn/modules/any.h
+torch/nn/modules/container/any.h
 -
 torch/nn/pimpl.h
 -
@@ -2388,36 +2960,14 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/rnn.h
-torch/nn/cloneable.h
--
-torch/nn/modules/dropout.h
--
-torch/nn/pimpl.h
--
-torch/types.h
--
-ATen/ATen.h
--
-c10/util/Exception.h
--
-cstddef
--
-functional
--
-memory
--
-vector
--
-
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/modules/sequential.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/container/sequential.h
 torch/detail/static.h
 -
 torch/nn/cloneable.h
 -
 torch/nn/module.h
 -
-torch/nn/modules/any.h
+torch/nn/modules/container/any.h
 -
 torch/nn/pimpl.h
 -
@@ -2440,9 +2990,437 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/pimpl-inl.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/conv.h
+torch/expanding_array.h
+-
+torch/nn/cloneable.h
+-
+torch/nn/init.h
+-
+torch/nn/options/conv.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+cstddef
+-
+vector
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/nn/pimpl.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/distance.h
+torch/nn/cloneable.h
+-
+torch/nn/functional/distance.h
+-
+torch/nn/options/distance.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/dropout.h
+torch/nn/cloneable.h
+-
+torch/nn/options/dropout.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+cstddef
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/embedding.h
+torch/nn/cloneable.h
+-
+torch/nn/options/embedding.h
+-
+torch/nn/functional/embedding.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+cstddef
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/fold.h
+torch/expanding_array.h
+-
+torch/nn/cloneable.h
+-
+torch/nn/functional/fold.h
+-
+torch/nn/options/fold.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/instancenorm.h
+torch/nn/modules/batchnorm.h
+-
+torch/nn/options/instancenorm.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/linear.h
+torch/nn/cloneable.h
+-
+torch/nn/module.h
+-
+torch/nn/options/linear.h
+-
+torch/nn/pimpl.h
+-
+torch/nn/functional/linear.h
+-
+torch/types.h
+-
+cstddef
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/loss.h
+torch/expanding_array.h
+-
+torch/nn/cloneable.h
+-
+torch/nn/functional/loss.h
+-
+torch/nn/options/loss.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+cstddef
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/normalization.h
+torch/nn/cloneable.h
+-
+torch/nn/modules/_functions.h
+-
+torch/nn/functional/normalization.h
+-
+torch/nn/options/normalization.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+cstddef
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/padding.h
+torch/expanding_array.h
+-
+torch/nn/cloneable.h
+-
+torch/nn/functional/padding.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/pixelshuffle.h
+torch/nn/cloneable.h
+-
+torch/nn/functional/pixelshuffle.h
+-
+torch/nn/options/pixelshuffle.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/pooling.h
+torch/expanding_array.h
+-
+torch/nn/cloneable.h
+-
+torch/nn/options/pooling.h
+-
+torch/nn/functional/pooling.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/rnn.h
+torch/nn/cloneable.h
+-
+torch/nn/options/rnn.h
+-
+torch/nn/modules/dropout.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+ATen/ATen.h
+-
+c10/util/Exception.h
+-
+cstddef
+-
+functional
+-
+memory
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/modules/upsampling.h
+torch/nn/cloneable.h
+-
+torch/nn/functional/upsampling.h
+-
+torch/nn/options/upsampling.h
+-
+torch/nn/pimpl.h
+-
+torch/types.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+cstddef
+-
+ostream
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options.h
+torch/nn/options/batchnorm.h
+-
+torch/nn/options/conv.h
+-
+torch/nn/options/dropout.h
+-
+torch/nn/options/fold.h
+-
+torch/nn/options/linear.h
+-
+torch/nn/options/loss.h
+-
+torch/nn/options/normalization.h
+-
+torch/nn/options/padding.h
+-
+torch/nn/options/pooling.h
+-
+torch/nn/options/vision.h
+-
+torch/nn/options/rnn.h
+-
+torch/nn/options/pixelshuffle.h
+-
+torch/nn/options/upsampling.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/activation.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/batchnorm.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/common.h
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/conv.h
+torch/arg.h
+-
+torch/enum.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/expanding_array.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/distance.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/dropout.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/embedding.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/types.h
+-
+torch/enum.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/fold.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/expanding_array.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/instancenorm.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/batchnorm.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/linear.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/loss.h
+torch/arg.h
+-
+torch/enum.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/normalization.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/padding.h
+c10/util/variant.h
+-
+torch/arg.h
+-
+torch/enum.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/expanding_array.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/pixelshuffle.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/pooling.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/expanding_array.h
+-
+torch/nn/options/common.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/rnn.h
+torch/arg.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/upsampling.h
+c10/util/variant.h
+-
+torch/arg.h
+-
+torch/enum.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/expanding_array.h
+-
+torch/types.h
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/options/vision.h
+torch/arg.h
+-
+torch/enum.h
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/pimpl-inl.h
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/pimpl.h
 torch/arg.h
 -
 torch/detail/static.h
@@ -2462,7 +3440,23 @@ utility
 torch/csrc/api/include/torch/nn/pimpl-inl.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/utils.h
+torch/nn/utils/clip_grad.h
+-
+torch/nn/utils/convert_parameters.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/utils/clip_grad.h
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/nn/utils/convert_parameters.h
+torch/csrc/WindowsTorchApiMacro.h
+-
+torch/types.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim.h
 torch/optim/adagrad.h
 -
 torch/optim/adam.h
@@ -2476,7 +3470,7 @@ torch/optim/rmsprop.h
 torch/optim/sgd.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/adagrad.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/adagrad.h
 torch/nn/pimpl.h
 -
 torch/optim/optimizer.h
@@ -2490,7 +3484,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/adam.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/adam.h
 torch/arg.h
 -
 torch/nn/module.h
@@ -2504,7 +3498,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/lbfgs.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/lbfgs.h
 torch/arg.h
 -
 torch/nn/module.h
@@ -2524,7 +3518,7 @@ memory
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/optimizer.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/optimizer.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 algorithm
@@ -2540,7 +3534,7 @@ string
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/rmsprop.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/rmsprop.h
 torch/arg.h
 -
 torch/nn/module.h
@@ -2560,7 +3554,7 @@ string
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/serialize.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/serialize.h
 torch/serialize/archive.h
 -
 torch/types.h
@@ -2576,7 +3570,7 @@ string
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/optim/sgd.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/optim/sgd.h
 torch/arg.h
 -
 torch/nn/module.h
@@ -2592,7 +3586,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/ordered_dict.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/ordered_dict.h
 cstdint
 -
 initializer_list
@@ -2606,7 +3600,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/python.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/python.h
 torch/detail/static.h
 -
 torch/nn/module.h
@@ -2636,21 +3630,23 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/serialize.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/serialize.h
 torch/serialize/archive.h
 -
 torch/serialize/tensor.h
 -
+torch/csrc/WindowsTorchApiMacro.h
+-
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/serialize/archive.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/serialize/archive.h
 torch/serialize/input-archive.h
 -
 torch/serialize/output-archive.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/serialize/input-archive.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/serialize/input-archive.h
 c10/util/Optional.h
 -
 c10/core/Device.h
@@ -2670,7 +3666,7 @@ string
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/serialize/output-archive.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/serialize/output-archive.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 torch/csrc/jit/script/module.h
@@ -2684,19 +3680,19 @@ string
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/serialize/tensor.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/serialize/tensor.h
 torch/serialize/archive.h
 -
 torch/types.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/torch.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/torch.h
 torch/all.h
 -
 torch/extension.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/types.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/types.h
 ATen/ATen.h
 -
 c10/util/Optional.h
@@ -2706,7 +3702,7 @@ torch/csrc/autograd/generated/variable_factories.h
 torch/csrc/autograd/variable.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/api/include/torch/utils.h
+/home/heider/Applications/libtorch/include/torch/csrc/api/include/torch/utils.h
 ATen/Parallel.h
 -
 torch/csrc/autograd/grad_mode.h
@@ -2714,11 +3710,17 @@ torch/csrc/autograd/grad_mode.h
 cstdint
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/anomaly_mode.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/anomaly_mode.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/cpp_hook.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/autograd.h
+torch/csrc/autograd/variable.h
+-
+ATen/ATen.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/cpp_hook.h
 torch/csrc/autograd/function_hook.h
 -
 functional
@@ -2726,7 +3728,7 @@ functional
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/custom_function.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/custom_function.h
 torch/csrc/autograd/function.h
 -
 torch/csrc/autograd/variable.h
@@ -2738,7 +3740,7 @@ c10/util/flat_hash_map.h
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/edge.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/edge.h
 cstdint
 -
 functional
@@ -2748,7 +3750,7 @@ memory
 torch/csrc/utils/hash.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/function.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/function.h
 torch/csrc/autograd/edge.h
 -
 torch/csrc/autograd/grad_mode.h
@@ -2766,6 +3768,8 @@ torch/csrc/autograd/variable.h
 torch/csrc/utils/python_stub.h
 -
 torch/csrc/utils/variadic.h
+-
+ATen/core/EnableNamedTensor.h
 -
 ATen/ATen.h
 -
@@ -2786,18 +3790,26 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/function_hook.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/function_hook.h
 vector
 -
 torch/csrc/WindowsTorchApiMacro.h
 -
+ATen/Tensor.h
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/generated/variable_factories.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/generated/variable_factories.h
 ATen/ATen.h
+-
+ATen/core/grad_mode.h
 -
 c10/util/ArrayRef.h
 -
 c10/core/MemoryFormat.h
+-
+ATen/core/EnableNamedTensor.h
+-
+torch/csrc/api/include/torch/detail/TensorDataContainer.h
 -
 torch/csrc/autograd/variable.h
 -
@@ -2812,19 +3824,27 @@ initializer_list
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/grad_mode.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/grad_mode.h
 ATen/core/grad_mode.h
 -
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/input_metadata.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/input_metadata.h
 ATen/ATen.h
 -
+c10/core/Device.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/c10/core/Device.h
+c10/core/DeviceType.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/c10/core/DeviceType.h
+c10/core/Stream.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/c10/core/Stream.h
+c10/core/impl/DeviceGuardImplInterface.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/c10/core/impl/DeviceGuardImplInterface.h
 cstdint
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/profiler.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/profiler.h
 iostream
 -
 mutex
@@ -2854,7 +3874,7 @@ torch/csrc/autograd/record_function.h
 sys/time.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/python_variable.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/python_variable.h
 torch/csrc/python_headers.h
 -
 memory
@@ -2866,7 +3886,7 @@ torch/csrc/autograd/variable.h
 torch/csrc/THP_export.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/record_function.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/record_function.h
 ATen/core/ivalue.h
 -
 c10/util/SmallVector.h
@@ -2874,7 +3894,7 @@ c10/util/SmallVector.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/saved_variable.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/saved_variable.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 ATen/ATen.h
@@ -2884,7 +3904,7 @@ cstdint
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/autograd/variable.h
+/home/heider/Applications/libtorch/include/torch/csrc/autograd/variable.h
 torch/csrc/utils/python_stub.h
 -
 torch/csrc/WindowsTorchApiMacro.h
@@ -2896,6 +3916,8 @@ torch/csrc/autograd/function_hook.h
 torch/csrc/autograd/cpp_hook.h
 -
 ATen/ATen.h
+-
+ATen/NamedTensorUtils.h
 -
 c10/util/Exception.h
 -
@@ -2912,7 +3934,7 @@ utility
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/argument_spec.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/argument_spec.h
 ATen/core/jit_type.h
 -
 ATen/core/stack.h
@@ -2932,7 +3954,7 @@ vector
 torch/csrc/utils/hash.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/attributes.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/attributes.h
 ATen/ATen.h
 -
 string
@@ -2944,7 +3966,7 @@ ATen/core/interned_strings.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/constants.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/constants.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 ATen/core/ivalue.h
@@ -2956,15 +3978,21 @@ torch/csrc/jit/scope.h
 torch/csrc/jit/source_range.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/function.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/function.h
 torch/csrc/jit/graph_executor.h
 -
 torch/csrc/jit/ir.h
 -
 torch/csrc/utils/memory.h
 -
+mutex
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/graph_executor.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/graph_executor.h
+atomic
+-
+memory
+-
 torch/csrc/jit/argument_spec.h
 -
 torch/csrc/jit/interpreter.h
@@ -2973,14 +4001,14 @@ torch/csrc/jit/ir.h
 -
 torch/csrc/jit/variable_tensor_list.h
 -
-memory
+torch/csrc/jit/update_graph_executor_opt.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/graph_node_list.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/graph_node_list.h
 c10/util/Exception.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/interpreter.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/interpreter.h
 c10/util/Optional.h
 -
 memory
@@ -2992,12 +4020,14 @@ ATen/core/ivalue.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/ir.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/ir.h
 torch/csrc/jit/attributes.h
 -
 torch/csrc/jit/graph_node_list.h
 -
 torch/csrc/jit/named_value.h
+-
+torch/csrc/jit/operator.h
 -
 torch/csrc/jit/scope.h
 -
@@ -3032,7 +4062,7 @@ unordered_set
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/named_value.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/named_value.h
 ATen/ATen.h
 -
 ATen/core/ivalue.h
@@ -3044,21 +4074,67 @@ torch/csrc/jit/source_range.h
 torch/csrc/utils/variadic.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/passes/shape_analysis.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/operator.h
+ATen/core/stack.h
+-
+c10/util/Exception.h
+-
+torch/csrc/jit/script/function_schema_parser.h
+-
+torch/csrc/jit/operator_options.h
+-
+ATen/core/stack.h
+-
+ATen/core/dispatch/Dispatcher.h
+-
+ATen/core/dispatch/OperatorOptions.h
+-
+ATen/ATen.h
+-
+ATen/core/function_schema.h
+-
+ATen/core/interned_strings.h
+-
+functional
+-
+initializer_list
+-
+memory
+-
+string
+-
+unordered_map
+-
+utility
+-
+vector
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/jit/operator_options.h
+ATen/core/dispatch/OperatorOptions.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/jit/passes/shape_analysis.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/scope.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/scope.h
 ATen/core/interned_strings.h
+-
+c10/util/Optional.h
 -
 c10/util/intrusive_ptr.h
 -
 torch/csrc/WindowsTorchApiMacro.h
 -
+torch/csrc/jit/source_range.h
+-
+unordered_map
+-
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/script/compilation_unit.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/script/compilation_unit.h
 c10/util/Exception.h
 -
 torch/csrc/jit/function.h
@@ -3096,7 +4172,31 @@ unordered_map
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/script/module.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/script/function_schema_parser.h
+ATen/core/function_schema.h
+-
+ATen/core/Macros.h
+-
+c10/util/either.h
+-
+string
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/jit/script/jit_exception.h
+stdexcept
+-
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/jit/script/method.h
+ATen/core/ivalue.h
+-
+ATen/core/stack.h
+-
+torch/csrc/jit/function.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/jit/script/module.h
 c10/util/Exception.h
 -
 torch/csrc/autograd/variable.h
@@ -3111,7 +4211,7 @@ torch/csrc/jit/named_value.h
 -
 torch/csrc/jit/passes/shape_analysis.h
 -
-torch/csrc/jit/script/slot.h
+torch/csrc/jit/script/object.h
 -
 torch/csrc/jit/source_range.h
 -
@@ -3146,17 +4246,13 @@ unordered_map
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/script/slot.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/script/object.h
 ATen/core/ivalue.h
 -
-ATen/core/jit_type.h
--
-torch/csrc/WindowsTorchApiMacro.h
--
-torch/csrc/utils/hash.h
+torch/csrc/jit/script/method.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/source_range.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/source_range.h
 c10/util/Exception.h
 -
 c10/util/Optional.h
@@ -3168,7 +4264,7 @@ iostream
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/tracer.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/tracer.h
 ATen/core/stack.h
 -
 c10/util/Exception.h
@@ -3176,6 +4272,10 @@ c10/util/Exception.h
 torch/csrc/WindowsTorchApiMacro.h
 -
 ATen/core/jit_type.h
+-
+ATen/core/Dimname.h
+-
+ATen/core/EnableNamedTensor.h
 -
 torch/csrc/utils/variadic.h
 -
@@ -3192,39 +4292,43 @@ unordered_map
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/jit/variable_tensor_list.h
+/home/heider/Applications/libtorch/include/torch/csrc/jit/update_graph_executor_opt.h
+torch/csrc/WindowsTorchApiMacro.h
+-
+
+/home/heider/Applications/libtorch/include/torch/csrc/jit/variable_tensor_list.h
 ATen/ATen.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/python_headers.h
+/home/heider/Applications/libtorch/include/torch/csrc/python_headers.h
 Python.h
 -
 structseq.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/auto_gil.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/auto_gil.h
 torch/csrc/python_headers.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/disallow_copy.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/disallow_copy.h
 ATen/Utils.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/hash.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/hash.h
 functional
 -
 vector
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/memory.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/memory.h
 memory
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/object_ptr.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/object_ptr.h
 torch/csrc/python_headers.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/pybind.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/pybind.h
 torch/csrc/python_headers.h
 -
 ATen/ATen.h
@@ -3246,7 +4350,7 @@ stdexcept
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/python_numbers.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/python_numbers.h
 torch/csrc/Exceptions.h
 -
 torch/csrc/jit/tracer.h
@@ -3262,9 +4366,9 @@ cstdint
 stdexcept
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/python_stub.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/python_stub.h
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/python_tuples.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/python_tuples.h
 torch/csrc/python_headers.h
 -
 torch/csrc/Exceptions.h
@@ -3274,16 +4378,18 @@ torch/csrc/utils/object_ptr.h
 torch/csrc/utils/python_numbers.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/tensor_numpy.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/tensor_numpy.h
 torch/csrc/python_headers.h
 -
 ATen/ATen.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/csrc/utils/variadic.h
+/home/heider/Applications/libtorch/include/torch/csrc/utils/variadic.h
 ATen/ATen.h
 -
 torch/csrc/autograd/variable.h
+-
+ATen/core/Variadic.h
 -
 cstdint
 -
@@ -3294,13 +4400,13 @@ type_traits
 utility
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch/include/torch/extension.h
+/home/heider/Applications/libtorch/include/torch/extension.h
 torch/all.h
 -
 torch/python.h
 -
 
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/eye/eye.cpp
+/home/heider/Projects/Alexandra/Python/vision/samples/misc/export/libtorch_samples/eye/eye.cpp
 torch/torch.h
 -
 iostream

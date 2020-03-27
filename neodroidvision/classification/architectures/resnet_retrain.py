@@ -3,7 +3,6 @@
 import torch
 import torchvision
 
-
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
 

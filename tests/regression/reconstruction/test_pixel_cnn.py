@@ -2,9 +2,8 @@ import numpy
 import pytest
 import torch
 import torch.nn as nn
-
-from neodroidvision.regression.vae.exclude.vqvae2 import PixelAttention
 from neodroidvision.regression.vae.exclude.vqvae2 import (
+    PixelAttention,
     PixelCNN,
     PixelConvA,
     PixelConvB,
