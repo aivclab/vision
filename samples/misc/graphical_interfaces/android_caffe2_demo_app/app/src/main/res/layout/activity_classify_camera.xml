@@ -13,7 +13,7 @@
       android:layout_width="96dp"
       android:layout_height="48dp"
       android:contentDescription="@string/app_name"
-      android:src="@drawable/ic_vestas"
+      android:src="@drawable/ic_v"
       app:layout_constraintRight_toRightOf="parent"
       app:layout_constraintTop_toTopOf="parent"/>
 

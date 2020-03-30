@@ -49,7 +49,6 @@ num_updates = 6000
 lr_cycles = 1
 flatt_size = 224 * 224 * 3
 
-# real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'val'
 
 normalise = torchvision.transforms.Normalize(
     [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
@@ -143,7 +142,7 @@ def main():
     model.eval()
     example = torch.rand(1, 3, 256, 256)
     traced_script_module = torch.jit.trace(model.to("cpu"), example)
-    traced_script_module.save("resnet18_vestas.model")
+    traced_script_module.save("resnet18_v.model")
 
 
 if __name__ == "__main__":

@@ -17,8 +17,10 @@ from neodroidvision.detection.single_stage.ssd.metrics import (
     write_metrics_recursive,
 )
 from neodroidvision.detection.single_stage.ssd.multi_box_loss import MultiBoxLoss
+from neodroidvision.detection.single_stage.ssd.object_detection_dataloader import (
+    object_detection_data_loaders,
+)
 from neodroidvision.utilities import MetricLogger
-from neodroidvision.data import object_detection_data_loaders
 from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
