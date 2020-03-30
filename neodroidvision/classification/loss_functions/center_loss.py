@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.autograd.function import Function
 
-from draugr import global_torch_device
+from draugr.torch_utilities import global_torch_device
 
 
 class CenterLoss(nn.Module):
@@ -21,10 +21,8 @@ class CenterLoss(nn.Module):
         # To check the dim of centers and features
         if feat.size(1) != self.feat_dim:
             raise ValueError(
-                "Center's dim: {0} should be equal to input feature's \
-            dim: {1}".format(
-                    self.feat_dim, feat.size(1)
-                )
+                f"Center's dim: {self.feat_dim} should be equal to input feature's \
+    dim: {feat.size(1)}"
             )
         batch_size_tensor = feat.new_empty(1).fill_(
             batch_size if self.size_average else 1

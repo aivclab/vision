@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from samples.regression.reconstruction import (
-    Generator,
-    VariationalFlow,
-    VariationalMeanField,
-    cycle,
-    load_binary_mnist,
-)
-
+from draugr.torch_utilities import global_torch_device
 from warg.named_ordered_dictionary import NOD
+from .architectures import Generator, VariationalFlow, VariationalMeanField
+from .data_loader import load_binary_mnist
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

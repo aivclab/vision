@@ -7,7 +7,7 @@ import numpy
 import torchvision
 from torch import nn
 
-from draugr.writers import TensorBoardPytorchWriter
+from draugr.torch_utilities import TensorBoardPytorchWriter
 from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"

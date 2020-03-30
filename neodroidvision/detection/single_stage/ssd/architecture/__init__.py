@@ -7,4 +7,6 @@ __doc__ = r"""
            Created on 04/03/2020
            """
 
-from .ssd import *
+from .single_shot_dectection import *
+from .backbones import *
+from .box_heads import *

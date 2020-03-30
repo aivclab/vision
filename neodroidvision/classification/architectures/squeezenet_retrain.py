@@ -2,8 +2,8 @@ import torch
 import torchvision
 
 from draugr.torch_utilities.freezing.retrain_utilities import (
-    set_all_parameter_requires_grad,
     get_trainable_parameters,
+    set_all_parameter_requires_grad,
 )
 
 

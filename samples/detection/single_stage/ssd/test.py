@@ -5,80 +5,61 @@ import os
 import torch
 import torch.utils.data
 
+from draugr.torch_utilities import global_torch_device
+from draugr.torch_utilities.sessions import TorchCacheSession
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.detection.single_stage.ssd.config.base_config import base_cfg
-from neodroidvision.detection.single_stage.ssd.engine.inference import do_evaluation
-from neodroidvision.detection.single_stage.ssd.ssd_utilities import (
-    setup_logger,
-    synchronize,
-    CheckPointer,
+from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDectection
+from neodroidvision.detection.single_stage.ssd.evaluation import do_ssd_evaluation
+from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
+from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
+    global_distribution_rank,
+    set_benchmark_device_dist,
+    setup_distributed_logger,
 )
-from neodroidvision.utilities.misc.exclude import dist_util
-
-
-def evaluation(cfg, ckpt, distributed):
-    logger = logging.getLogger("SSD.inference")
-
-    model = cfg.MODEL.META_ARCHITECTURE(cfg)
-    checkpointer = CheckPointer(
-        model, save_dir=PROJECT_APP_PATH.user_data / "results", logger=logger
-    )
-    device = torch.device(cfg.MODEL.DEVICE)
-    model.to(device)
-    checkpointer.load(ckpt, use_latest=ckpt is None)
-    do_evaluation(cfg, model, distributed)
 
 
 def main():
+    from configs.vgg_ssd300_coco_trainval35k import base_cfg
+
     parser = argparse.ArgumentParser(
         description="SSD Evaluation on VOC and COCO dataset."
-    )
-    parser.add_argument(
-        "--config-file",
-        default="",
-        metavar="FILE",
-        help="path to config file",
-        type=str,
     )
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument(
         "--ckpt",
         help="The path to the checkpoint for test, default is the latest checkpoint.",
-        default=None,
+        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage/ssd/exclude"
+        "/models/vgg_ssd300_coco_trainval35k.pth",
         type=str,
     )
 
-    parser.add_argument(
-        "opts",
-        help="Modify config options using the command-line",
-        default=None,
-        nargs=argparse.REMAINDER,
-    )
     args = parser.parse_args()
 
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     distributed = num_gpus > 1
 
-    if torch.cuda.is_available():
-        # This flag allows you to enable the inbuilt cudnn auto-tuner to
-        # find the best algorithm to use for your hardware.
-        torch.backends.cudnn.benchmark = True
-    if distributed:
-        torch.cuda.set_device(args.local_rank)
-        torch.distributed.init_process_group(backend="nccl", init_method="env://")
-        synchronize()
+    set_benchmark_device_dist(distributed, args.local_rank)
 
-    base_cfg.merge_from_file(args.config_file)
-    base_cfg.merge_from_list(args.opts)
-    base_cfg.freeze()
-
-    logger = setup_logger(
-        "SSD", dist_util.get_rank(), PROJECT_APP_PATH.user_data / "results"
+    logger = setup_distributed_logger(
+        "SSD", global_distribution_rank(), PROJECT_APP_PATH.user_data / "results"
     )
     logger.info(f"Using {num_gpus} GPUs")
     logger.info(args)
 
-    evaluation(base_cfg, ckpt=args.ckpt, distributed=distributed)
+    device = torch.device(base_cfg.MODEL.DEVICE)
+    global_torch_device(override=device)
+
+    with TorchCacheSession():
+        model = SingleShotDectection(base_cfg)
+        checkpointer = CheckPointer(
+            model,
+            save_dir=PROJECT_APP_PATH.user_data / "results",
+            logger=logging.getLogger("SSD.inference"),
+        )
+        checkpointer.load(args.ckpt, use_latest=args.ckpt is None)
+        do_ssd_evaluation(
+            base_cfg, model.to(torch.device(base_cfg.MODEL.DEVICE)), distributed
+        )
 
 
 if __name__ == "__main__":

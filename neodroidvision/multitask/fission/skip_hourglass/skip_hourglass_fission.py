@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 
-from draugr import to_tensor
+from draugr.torch_utilities import to_tensor
 from neodroidvision.multitask.fission.skip_hourglass.factory import (
     fcn_decoder,
     fcn_encoder,
@@ -26,11 +26,11 @@ Modifications to the original paper:
 (2) merging outputs does not require cropping due to (1)
 (3) residual connections can be used by specifying UNet(merge_mode='add')
 (4) if non-parametric upsampling is used in the decoder
-  pathway (specified by upmode='upsample'), then an
-  additional 1x1 2d convolution occurs after upsampling
-  to reduce channel dimensionality by a factor of 2.
-  This channel halving happens with the convolution in
-  the tranpose convolution (specified by upmode='fractional')
+pathway (specified by upmode='upsample'), then an
+additional 1x1 2d convolution occurs after upsampling
+to reduce channel dimensionality by a factor of 2.
+This channel halving happens with the convolution in
+the tranpose convolution (specified by upmode='fractional')
 """
 
     def parse_arguments(self, up_mode: UpscaleMode, merge_mode: MergeMode):
@@ -59,9 +59,9 @@ Modifications to the original paper:
 
     def __init__(
         self,
-        input_channels: int,
-        output_channels: Union[Dict, Iterable],
         *,
+        input_channels: int,
+        output_heads: Union[Dict, Iterable],
         encoding_depth: int = 5,
         start_channels: int = 32,
         up_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
@@ -69,14 +69,14 @@ Modifications to the original paper:
     ):
         """
 :type input_channels: int
-:type output_channels: Sized
+:type output_heads: Sized
 :type encoding_depth: int
 :type start_channels: int
 :type up_mode: str
 :type merge_mode: str
 
 :param input_channels: number of channels in the input tensor. E.g. 3 for RGB images.
-:param output_channels:
+:param output_heads:
 :param encoding_depth: number of MaxPools in the U-Net.
 :param start_channels: number of convolutional filters for the first convolution.
 :param up_mode: string, type of upconvolution. Choices: 'fractional' for transpose convolution or
@@ -98,22 +98,27 @@ Modifications to the original paper:
 
         self.default_prefix = "fork"
         self._dict_output = False
-        if isinstance(output_channels, Dict):
-            self.forks = output_channels
+        if isinstance(output_heads, Dict):
+            self.forks = output_heads
             self._dict_output = True
         else:
             self.forks = {
-                f"{self.default_prefix}{i}": s for i, s in enumerate(output_channels)
+                f"{self.default_prefix}{i}": s for i, s in enumerate(output_heads)
             }
 
         for iden, channel_size in self.forks.items():
             up_convolutions_ae, ae_prev_layer_channels = fcn_decoder(
                 encoding_channels, self.network_depth, self.up_mode, self.merge_mode
             )
-            out = nn.Conv2d(
-                ae_prev_layer_channels, channel_size, kernel_size=1, groups=1, stride=1
+            up_convolutions_ae.append(
+                nn.Conv2d(
+                    ae_prev_layer_channels,
+                    channel_size,
+                    kernel_size=1,
+                    groups=1,
+                    stride=1,
+                )
             )
-            up_convolutions_ae.append(out)
             setattr(self, iden, nn.ModuleList(up_convolutions_ae))
 
         self.reset_params()
@@ -167,7 +172,7 @@ if __name__ == "__main__":
     channels = 3
     model = SkipHourglassFission(
         input_channels=channels,
-        output_channels=(channels, 1),
+        output_heads=(channels, 1),
         encoding_depth=2,
         merge_mode=MergeMode.Concat,
     )

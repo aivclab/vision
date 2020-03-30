@@ -8,22 +8,23 @@ from matplotlib import pyplot
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
-from draugr import (
+from draugr.drawers import plot_confusion_matrix
+from draugr.torch_utilities import (
     global_torch_device,
     to_tensor,
-    torch_vision_normalize_chw,
     uint_hwc_to_chw_float_batch,
-    plot_confusion_matrix,
+)
+from draugr.numpy_utilities.channel_transform import (
+    rgb_drop_alpha_batch_nhwc,
+    torch_vision_normalize_batch_nchw,
 )
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
-from neodroidvision.utilities.data.neodroid_environments.classification import (
-    a_retransform,
-)
+from neodroidvision.data.neodroid_environments.classification.data import a_retransform
 from warg.named_ordered_dictionary import NOD
 
 
-def test_model(model, data_iterator, latest_model_path, num_columns=2):
+def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
     model = model.eval().to(global_torch_device())
 
     inputs, labels = next(data_iterator)
@@ -73,6 +74,7 @@ def test_model(model, data_iterator, latest_model_path, num_columns=2):
             prediction=class_names[b],
             truth=class_names[c],
             outcome=outcome,
+            explanation=None,
         )
 
         predictions[i // num_columns][i % num_columns] = gd
@@ -138,9 +140,9 @@ def pred_target_train_model(
 
                         input, true_label = zip(*next(train_iterator))
 
-                        rgb_imgs = torch_vision_normalize_chw(
+                        rgb_imgs = torch_vision_normalize_batch_nchw(
                             uint_hwc_to_chw_float_batch(
-                                rgb_drop_alpha_batch(to_tensor(input))
+                                rgb_drop_alpha_batch_nhwc(to_tensor(input))
                             )
                         )
                         true_label = to_tensor(true_label, dtype=torch.long)
@@ -167,9 +169,9 @@ def pred_target_train_model(
                         # model.eval()
 
                         test_rgb_imgs, test_true_label = zip(*next(train_iterator))
-                        test_rgb_imgs = torch_vision_normalize_chw(
+                        test_rgb_imgs = torch_vision_normalize_batch_nchw(
                             uint_hwc_to_chw_float_batch(
-                                rgb_drop_alpha_batch(to_tensor(test_rgb_imgs))
+                                rgb_drop_alpha_batch_nhwc(to_tensor(test_rgb_imgs))
                             )
                         )
 

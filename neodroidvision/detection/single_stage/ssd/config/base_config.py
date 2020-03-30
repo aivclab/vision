@@ -1,26 +1,24 @@
+from pathlib import Path
+
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.detection.single_stage.ssd.architecture import SSD
-from neodroidvision.detection.single_stage.ssd.architecture.backbone.vgg import vgg
-from neodroidvision.detection.single_stage.ssd.architecture.box_head.box_head import (
-    SSDBoxHead,
-)
-from neodroidvision.detection.single_stage.ssd.architecture.box_head.box_predictor import (
-    SSDBoxPredictor,
-)
+from neodroidvision.detection.single_stage.ssd.architecture.backbones import vgg_factory
 from warg import NOD
 
 base_cfg = NOD()
 
+base_cfg.DATA_DIR = Path.home() / "Data" / "Datasets"
 base_cfg.OUTPUT_DIR = PROJECT_APP_PATH.user_data / "results"
 
 base_cfg.MODEL = NOD()
-base_cfg.MODEL.META_ARCHITECTURE = SSD
 base_cfg.MODEL.DEVICE = "cuda"
-# match default boxes to any ground truth with jaccard overlap higher than a threshold (0.5)
-base_cfg.MODEL.THRESHOLD = 0.5
+
+base_cfg.MODEL.THRESHOLD = (
+    0.5
+)  # match default boxes to any ground truth with jaccard overlap higher than a
+# threshold (0.5)
 base_cfg.MODEL.NUM_CLASSES = 21
-# Hard negative mining
-base_cfg.MODEL.NEG_POS_RATIO = 3
+
+base_cfg.MODEL.NEG_POS_RATIO = 3  # Hard negative mining
 base_cfg.MODEL.CENTER_VARIANCE = 0.1
 base_cfg.MODEL.SIZE_VARIANCE = 0.2
 
@@ -28,7 +26,7 @@ base_cfg.MODEL.SIZE_VARIANCE = 0.2
 # Backbone
 # ---------------------------------------------------------------------------- #
 base_cfg.MODEL.BACKBONE = NOD()
-base_cfg.MODEL.BACKBONE.NAME = vgg
+base_cfg.MODEL.BACKBONE.NAME = vgg_factory
 base_cfg.MODEL.BACKBONE.OUT_CHANNELS = (512, 1024, 512, 256, 256, 256)
 base_cfg.MODEL.BACKBONE.PRETRAINED = True
 
@@ -54,44 +52,35 @@ base_cfg.MODEL.PRIORS.BOXES_PER_LOCATION = [
 base_cfg.MODEL.PRIORS.CLIP = True
 
 # -----------------------------------------------------------------------------
-# Box Head
-# -----------------------------------------------------------------------------
-base_cfg.MODEL.BOX_HEAD = NOD()
-base_cfg.MODEL.BOX_HEAD.HEAD = SSDBoxHead
-base_cfg.MODEL.BOX_HEAD.PREDICTOR = SSDBoxPredictor
-
-# -----------------------------------------------------------------------------
 # INPUT
 # -----------------------------------------------------------------------------
 base_cfg.INPUT = NOD()
-# Image size
-base_cfg.INPUT.IMAGE_SIZE = 300
-# Values to be used for image normalization, RGB layout
-base_cfg.INPUT.PIXEL_MEAN = [123, 117, 104]
+base_cfg.INPUT.IMAGE_SIZE = 300  # Image size
+base_cfg.INPUT.PIXEL_MEAN = (
+    123,
+    117,
+    104,
+)  # Values to be used for image normalization, RGB layout
 
 # -----------------------------------------------------------------------------
 # Dataset
 # -----------------------------------------------------------------------------
 base_cfg.DATASETS = NOD()
-# List of the dataset names for training, as present in paths_catalog.py
-base_cfg.DATASETS.TRAIN = ()
-# List of the dataset names for testing, as present in paths_catalog.py
-base_cfg.DATASETS.TEST = ()
-base_cfg.dataset_type = ""
+base_cfg.DATASETS.TRAIN = ()  # List of the dataset names for training, as present in paths_catalog.py
+base_cfg.DATASETS.TEST = ()  # List of the dataset names for testing, as present in paths_catalog.py
+base_cfg.dataset_type = None
 
 # -----------------------------------------------------------------------------
 # DataLoader
 # -----------------------------------------------------------------------------
 base_cfg.DATA_LOADER = NOD()
-# Number of data loading threads
-base_cfg.DATA_LOADER.NUM_WORKERS = 8
+base_cfg.DATA_LOADER.NUM_WORKERS = 8  # Number of data loading threads
 base_cfg.DATA_LOADER.PIN_MEMORY = True
 
 # ---------------------------------------------------------------------------- #
 # Solver
 # ---------------------------------------------------------------------------- #
 base_cfg.SOLVER = NOD()
-# train configs
 base_cfg.SOLVER.MAX_ITER = 120000
 base_cfg.SOLVER.LR_STEPS = [80000, 100000]
 base_cfg.SOLVER.GAMMA = 0.1
@@ -105,6 +94,7 @@ base_cfg.SOLVER.WARMUP_ITERS = 500
 # ---------------------------------------------------------------------------- #
 # Specific test options
 # ---------------------------------------------------------------------------- #
+
 base_cfg.TEST = NOD()
 base_cfg.TEST.NMS_THRESHOLD = 0.45
 base_cfg.TEST.CONFIDENCE_THRESHOLD = 0.01

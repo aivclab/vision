@@ -15,10 +15,8 @@ from kivy.uix.popup import Popup
 
 from draugr import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.utilities.data.datasets.supervised.classification.vgg_face2 import (
-    VggFaces2,
-)
 from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
+from neodroidvision.data.datasets.supervised.classification.vgg_face2 import VggFaces2
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""

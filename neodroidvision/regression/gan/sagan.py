@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.init import xavier_uniform_
 
-from neodroidvision.utilities.mechanims.attention.self_attention import (
+from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     SelfAttentionModule,
     init_weights,
     spectral_norm_conv2d,
@@ -129,9 +129,9 @@ class Generator(nn.Module):
         return act6
 
 
-class DiscOptBlock(nn.Module):
+class DiscriminatorOptBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
-        super(DiscOptBlock, self).__init__()
+        super().__init__()
         self.spectral_norm_conv2d1 = spectral_norm_conv2d(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -171,9 +171,9 @@ class DiscOptBlock(nn.Module):
         return out
 
 
-class DiscBlock(nn.Module):
+class DiscriminatorBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
-        super(DiscBlock, self).__init__()
+        super().__init__()
         self.relu = nn.ReLU(inplace=True)
         self.spectral_norm_conv2d1 = spectral_norm_conv2d(
             in_channels=in_channels,
@@ -226,13 +226,13 @@ class Discriminator(nn.Module):
     def __init__(self, d_conv_dim, num_classes):
         super(Discriminator, self).__init__()
         self.d_conv_dim = d_conv_dim
-        self.opt_block1 = DiscOptBlock(3, d_conv_dim)
-        self.block1 = DiscBlock(d_conv_dim, d_conv_dim * 2)
+        self.opt_block1 = DiscriminatorOptBlock(3, d_conv_dim)
+        self.block1 = DiscriminatorBlock(d_conv_dim, d_conv_dim * 2)
         self.self_attn = SelfAttentionModule(d_conv_dim * 2)
-        self.block2 = DiscBlock(d_conv_dim * 2, d_conv_dim * 4)
-        self.block3 = DiscBlock(d_conv_dim * 4, d_conv_dim * 8)
-        self.block4 = DiscBlock(d_conv_dim * 8, d_conv_dim * 16)
-        self.block5 = DiscBlock(d_conv_dim * 16, d_conv_dim * 16)
+        self.block2 = DiscriminatorBlock(d_conv_dim * 2, d_conv_dim * 4)
+        self.block3 = DiscriminatorBlock(d_conv_dim * 4, d_conv_dim * 8)
+        self.block4 = DiscriminatorBlock(d_conv_dim * 8, d_conv_dim * 16)
+        self.block5 = DiscriminatorBlock(d_conv_dim * 16, d_conv_dim * 16)
         self.relu = nn.ReLU(inplace=True)
         self.snlinear1 = spectral_norm_linear(
             in_features=d_conv_dim * 16, out_features=1

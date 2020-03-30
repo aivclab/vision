@@ -16,8 +16,21 @@ A ReLU activation follows each convolution.
         out_channels: int,
         mode: UpscaleMode = UpscaleMode.FractionalTranspose,
         factor: int = 2,
-    ):
-        if mode == "fractional":
+    ) -> nn.Module:
+        """
+
+    :param in_channels:
+    :type in_channels:
+    :param out_channels:
+    :type out_channels:
+    :param mode:
+    :type mode:
+    :param factor:
+    :type factor:
+    :return:
+    :rtype:
+    """
+        if mode == UpscaleMode.FractionalTranspose:
             return nn.ConvTranspose2d(
                 in_channels, out_channels, kernel_size=2, stride=factor
             )

@@ -11,6 +11,17 @@ from matplotlib import pyplot
 def scatter_plot_encoding_space(
     out_path, mean, log_var, labels, encoding_space_range=1, min_size_constant=2, N=10
 ):
+    """
+
+  :param out_path:
+  :param mean:
+  :param log_var:
+  :param labels:
+  :param encoding_space_range:
+  :param min_size_constant:
+  :param N:
+  :return:
+  """
     sizes = numpy.abs(log_var.mean(-1)) + min_size_constant
 
     pyplot.figure(figsize=(8, 6))

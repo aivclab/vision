@@ -7,6 +7,8 @@ __doc__ = r"""
            Created on 29/10/2019
            """
 
+from typing import List, Tuple
+
 from neodroidvision.multitask.fission.skip_hourglass.compress import Compress
 from neodroidvision.multitask.fission.skip_hourglass.decompress import Decompress
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
@@ -14,7 +16,18 @@ from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, Ups
 __all__ = ["fcn_decoder", "fcn_encoder"]
 
 
-def fcn_encoder(in_channels: int, depth: int, start_channels: int):
+def fcn_encoder(in_channels: int, depth: int, start_channels: int) -> Tuple[List, int]:
+    """
+
+  :param in_channels:
+  :type in_channels:
+  :param depth:
+  :type depth:
+  :param start_channels:
+  :type start_channels:
+  :return:
+  :rtype:
+  """
     down_convolutions = []
     new_layer_channels = start_channels
     prev_layer_channels = in_channels
@@ -30,7 +43,20 @@ def fcn_encoder(in_channels: int, depth: int, start_channels: int):
 
 def fcn_decoder(
     in_channels: int, depth: int, up_mode: UpscaleMode, merge_mode: MergeMode
-):
+) -> Tuple[List, int]:
+    """
+
+  :param in_channels:
+  :type in_channels:
+  :param depth:
+  :type depth:
+  :param up_mode:
+  :type up_mode:
+  :param merge_mode:
+  :type merge_mode:
+  :return:
+  :rtype:
+  """
     up_convolutions_ae = []
     ae_prev_layer_channels = in_channels
     for i in range(depth - 1):

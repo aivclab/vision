@@ -6,11 +6,13 @@ import torch
 from torch import nn
 from torch.nn.init import kaiming_normal_
 
-from neodroidagent.utilities import to_tensor
-
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
+
+from draugr.torch_utilities import to_tensor
+
+__all__ = ["VAE"]
 
 
 class VAE(torch.nn.Module):
@@ -50,6 +52,15 @@ class VAE(torch.nn.Module):
         raise NotImplementedError
 
     def sample(self, *x, num=1) -> torch.Tensor:
+        """
+
+    :param x:
+    :type x:
+    :param num:
+    :type num:
+    :return:
+    :rtype:
+    """
         z = torch.randn(num, self._latent_size).to(
             device=next(self.parameters()).device
         )
@@ -58,6 +69,15 @@ class VAE(torch.nn.Module):
 
     @staticmethod
     def reparameterise(mean, log_var) -> torch.Tensor:
+        """
+
+    :param mean:
+    :type mean:
+    :param log_var:
+    :type log_var:
+    :return:
+    :rtype:
+    """
         std = torch.exp(0.5 * log_var)  # e^(1/2 * log(std^2))
         eps = torch.randn_like(std)  # random ~ N(0, 1)
         z = eps.mul(std).add_(mean)  # Reparameterise distribution

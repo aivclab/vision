@@ -6,14 +6,15 @@ import pandas as pd
 import seaborn as sns
 import torch
 from matplotlib import pyplot
-from neodroidvision.reconstruction import ConditionalVAE
-from objectives import loss_fn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 
+from draugr.torch_utilities import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
 from warg.named_ordered_dictionary import NOD
+from .objectives import loss_fn
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"
 

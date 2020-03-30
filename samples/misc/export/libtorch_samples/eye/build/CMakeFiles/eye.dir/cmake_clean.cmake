@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/eye.dir/eye.cpp.o"
-  "eye.pdb"
   "eye"
+  "eye.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

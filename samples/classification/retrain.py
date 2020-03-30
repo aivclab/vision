@@ -6,16 +6,18 @@ import time
 
 from matplotlib import pyplot
 
-from draugr import (
+from draugr import generator_batch
+from draugr.drawers import horizontal_imshow
+from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     ensure_directory_exist,
-    generator_batch,
     global_torch_device,
-    horizontal_imshow,
-    rgb_drop_alpha_batch,
     to_tensor,
-    torch_vision_normalize_chw,
     uint_hwc_to_chw_float_batch,
+)
+from draugr.numpy_utilities.channel_transform import (
+    rgb_drop_alpha_batch_nhwc,
+    torch_vision_normalize_batch_nchw,
 )
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
@@ -47,7 +49,6 @@ num_updates = 6000
 lr_cycles = 1
 flatt_size = 224 * 224 * 3
 
-# real_data_path = Path.home() / 'Data' / 'Datasets' / 'Classification' / 'vestas' / 'real' / 'val'
 
 normalise = torchvision.transforms.Normalize(
     [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
@@ -120,8 +121,8 @@ def main():
         )
 
     inputs, true_label = zip(*next(train_iter))
-    rgb_imgs = torch_vision_normalize_chw(
-        uint_hwc_to_chw_float_batch(rgb_drop_alpha_batch(to_tensor(inputs)))
+    rgb_imgs = torch_vision_normalize_batch_nchw(
+        uint_hwc_to_chw_float_batch(rgb_drop_alpha_batch_nhwc(to_tensor(inputs)))
     )
 
     pred = model(rgb_imgs)
@@ -141,7 +142,7 @@ def main():
     model.eval()
     example = torch.rand(1, 3, 256, 256)
     traced_script_module = torch.jit.trace(model.to("cpu"), example)
-    traced_script_module.save("resnet18_vestas.model")
+    traced_script_module.save("resnet18_v.model")
 
 
 if __name__ == "__main__":
