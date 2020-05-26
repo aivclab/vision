@@ -1,2 +1,2 @@
-from .coco import *
-from .voc import *
+# from .coco import *
+# from .voc import *

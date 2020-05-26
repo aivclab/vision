@@ -6,13 +6,14 @@ import os
 import time
 from pathlib import Path
 
+from draugr import hwc_to_chw
 from draugr.torch_utilities import (
     ImageWriter,
     TensorBoardPytorchWriter,
     global_torch_device,
-    hwc_to_chw,
 )
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
+from neodroidvision.data.datasets import Split
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities
 
@@ -56,8 +57,8 @@ def train_model(
     try:
         sess = tqdm(range(num_updates), leave=False)
         for update_i in sess:
-            for phase in ["train", "val"]:
-                if phase == "train":
+            for phase in [Split.Training, Split.Validation]:
+                if phase == Split.Training:
                     scheduler.step()
                     for param_group in optimizer.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
@@ -71,7 +72,7 @@ def train_model(
                 )
 
                 optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == "train"):
+                with torch.set_grad_enabled(phase == Split.Training):
                     seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
                     ret = calculate_loss(
                         (seg_pred, seg_target),
@@ -80,14 +81,14 @@ def train_model(
                         (normals_pred, normals_target),
                     )
 
-                    if phase == "train":
+                    if phase == Split.Training:
                         ret.loss.backward()
                         optimizer.step()
 
                 update_loss = ret.loss.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == "val" and update_loss < best_loss:
+                if phase == Split.Validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     writer.image(f"rgb_imgs", rgb_imgs, update_i)

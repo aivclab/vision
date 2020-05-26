@@ -7,5 +7,7 @@ __doc__ = r"""
            Created on 05/03/2020
            """
 
-from .box_head import *
 from .box_predictor import *
+from .ssd_box_head import *
+from .ssd_box_predictor import *
+from .ssd_lite_box_predictor import *

@@ -13,15 +13,15 @@ def scatter_plot_encoding_space(
 ):
     """
 
-  :param out_path:
-  :param mean:
-  :param log_var:
-  :param labels:
-  :param encoding_space_range:
-  :param min_size_constant:
-  :param N:
-  :return:
-  """
+:param out_path:
+:param mean:
+:param log_var:
+:param labels:
+:param encoding_space_range:
+:param min_size_constant:
+:param N:
+:return:
+"""
     sizes = numpy.abs(log_var.mean(-1)) + min_size_constant
 
     pyplot.figure(figsize=(8, 6))

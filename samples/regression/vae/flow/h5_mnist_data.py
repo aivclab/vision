@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
 """Get the binarized MNIST dataset and convert to hdf5.
 From https://github.com/yburda/iwae/blob/master/datasets.py
 """

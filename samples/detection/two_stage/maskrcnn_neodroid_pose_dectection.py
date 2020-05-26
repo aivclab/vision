@@ -3,6 +3,7 @@
 import math
 import time
 
+import cv2
 import numpy
 import torch
 from PIL import Image, ImageDraw

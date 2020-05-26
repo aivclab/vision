@@ -55,22 +55,22 @@ class Decoder(nn.Module):
 class VanillaVAE(VAE):
     """
 
-  """
+"""
 
     def encode(self, *x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :return:
-    """
+:param x:
+:return:
+"""
         return self._encoder(*x)
 
     def decode(self, *x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :return:
-    """
+:param x:
+:return:
+"""
         return self._decoder(*x)
 
     def __init__(self, input_size=784, latent_size=2):

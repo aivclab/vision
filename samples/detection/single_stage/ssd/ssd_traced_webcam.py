@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
+import argparse
+from pathlib import Path
+from typing import List
+
+import cv2
+import numpy
+
+from PIL import ImageFont
+from tqdm import tqdm
+
+from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
+from draugr.torch_utilities import (
+    TorchCudaSession,
+    TorchEvalSession,
+    global_torch_device,
+)
+from neodroidvision.data.datasets.supervised.splitting import Split
+from neodroidvision.detection import SSDOut
+from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
+    SSDTransform,
+)
+from warg import NOD
+import torch
+
+
+@torch.no_grad()
+def run_traced_webcam_demo(
+    input_cfg: NOD,
+    categories: List,
+    score_threshold: float = 0.7,
+    window_name: str = "SSD",
+    onnx_exported: bool = False,
+):
+    """
+
+  :param categories:
+  :type categories:
+  :param cfg:
+  :type cfg:
+  :param model_ckpt:
+  :type model_ckpt:
+  :param score_threshold:
+  :type score_threshold:
+  :param window_name:
+  :type window_name:
+  :return:
+  :rtype:
+  """
+
+    pass
+    import torch
+
+    cpu_device = torch.device("cpu")
+    transforms = SSDTransform(
+        input_cfg.image_size, input_cfg.pixel_mean, split=Split.Testing
+    )
+    model = None
+
+    if onnx_exported:
+        import onnx
+
+        onnx_model = onnx.load("torch_model.onnx")
+        onnx.checker.check_model(onnx_model)
+
+        import onnxruntime
+
+        ort_session = onnxruntime.InferenceSession("torch_model.onnx")
+
+        def to_numpy(tensor):
+            return (
+                tensor.detach().cpu().numpy()
+                if tensor.requires_grad
+                else tensor.cpu().numpy()
+            )
+
+        x = None
+
+        # compute onnxruntime output prediction
+        ort_inputs = {ort_session.get_inputs()[0].name: to_numpy(x)}
+        ort_outs = ort_session.run(None, ort_inputs)
+    else:
+        import torch
+        import io
+
+        torch.jit.load("torch_model.traced")
+
+        with open(
+            "torch_model.traced", "rb"
+        ) as f:  # Load ScriptModule from io.BytesIO object
+            buffer = io.BytesIO(f.read())
+
+        model = torch.jit.load(buffer)  # Load all tensors to the original device
+
+        """
+
+    buffer.seek(0)
+    torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
+
+
+    buffer.seek(0)
+    model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
+
+    # Load with extra files.
+    extra_files = torch._C.ExtraFilesMap()
+    extra_files['foo.txt'] = 'bar'
+    torch.jit.load('torch_model.traced', _extra_files=extra_files)
+    print(extra_files['foo.txt'])
+    #exit(0)
+    """
+
+    with TorchCudaSession(model):
+        with TorchEvalSession(model):
+            for image in tqdm(frame_generator(cv2.VideoCapture(0))):
+                result = SSDOut(
+                    *model(transforms(image)[0].unsqueeze(0).to(global_torch_device()))
+                )
+                height, width, *_ = image.shape
+
+                result.boxes[:, 0::2] *= width / result.img_width.cpu().item()
+                result.boxes[:, 1::2] *= height / result.img_height.cpu().item()
+                (boxes, labels, scores) = (
+                    result.boxes.to(cpu_device).numpy(),
+                    result.labels.to(cpu_device).numpy(),
+                    result.scores.to(cpu_device).numpy(),
+                )
+
+                indices = scores > score_threshold
+
+                cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+                cv2.imshow(
+                    window_name,
+                    draw_bouding_boxes(
+                        image,
+                        boxes[indices],
+                        labels=labels[indices],
+                        scores=scores[indices],
+                        categories=categories,
+                        score_font=ImageFont.truetype(
+                            "/home/heider/Projects/Alexandra/Python/vision/neodroidvision/utilities/Lato-Regular"
+                            ".ttf",
+                            24,
+                        ),
+                    ).astype(numpy.uint8),
+                )
+                if cv2.waitKey(1) == 27:
+                    break  # esc to quit
+
+
+def main():
+    from configs.vgg_ssd300_coco_trainval35k import base_cfg
+
+    parser = argparse.ArgumentParser(description="SSD Demo.")
+    parser.add_argument(
+        "--ckpt",
+        type=str,
+        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
+        "/ssd/exclude"
+        "/models/vgg_ssd300_coco_trainval35k.pth",
+        help="Use weights from path",
+    )
+    parser.add_argument("--score_threshold", type=float, default=0.7)
+    args = parser.parse_args()
+
+    run_traced_webcam_demo(
+        input_cfg=base_cfg.input,
+        categories=base_cfg.dataset_type.categories,
+        score_threshold=args.score_threshold,
+    )
+
+
+if __name__ == "__main__":
+    main()

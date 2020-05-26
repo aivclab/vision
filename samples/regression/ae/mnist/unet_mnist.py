@@ -19,6 +19,7 @@ from draugr.torch_utilities import (
     to_device_tensor_iterator_shitty,
 )
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.datasets import Split
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
@@ -49,8 +50,8 @@ def training(
     try:
         sess = tqdm(range(num_updates), leave=False, disable=False)
         for update_i in sess:
-            for phase in ["train", "val"]:
-                if phase == "train":
+            for phase in [Split.Training, Split.Validation]:
+                if phase == Split.Training:
 
                     for param_group in optimizer.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
@@ -62,11 +63,11 @@ def training(
                 rgb_imgs, *_ = next(data_iterator)
 
                 optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == "train"):
+                with torch.set_grad_enabled(phase == Split.Training):
                     recon_pred, *_ = model(rgb_imgs)
                     ret = criterion(recon_pred, rgb_imgs)
 
-                    if phase == "train":
+                    if phase == Split.Training:
                         ret.backward()
                         optimizer.step()
                         scheduler.step()
@@ -74,7 +75,7 @@ def training(
                 update_loss = ret.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == "val" and update_loss < best_loss:
+                if phase == Split.Validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     _format = "NCHW"

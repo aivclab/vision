@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy
 import torch
-from PIL import Image
+from PIL import Image, ImageFont
 
 from apppath import ensure_existence
 from draugr.opencv_utilities import draw_bouding_boxes
@@ -38,7 +38,7 @@ def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_d
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(
-        cfg.INPUT.IMAGE_SIZE, cfg.INPUT.PIXEL_MEAN, split=Split.Testing
+        cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
     )
     model.eval()
 
@@ -55,12 +55,12 @@ def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_d
         result = model(images.to(global_torch_device()))[0]
         inference_time = time.time() - start
 
-        result["boxes"][:, 0::2] *= width / result["img_width"]
-        result["boxes"][:, 1::2] *= height / result["img_height"]
+        result.boxes[:, 0::2] *= width / result.img_width
+        result.boxes[:, 1::2] *= height / result.img_height
         (boxes, labels, scores) = (
-            result["boxes"].to(cpu_device).numpy(),
-            result["labels"].to(cpu_device).numpy(),
-            result["scores"].to(cpu_device).numpy(),
+            result.boxes.to(cpu_device).numpy(),
+            result.labels.to(cpu_device).numpy(),
+            result.scores.to(cpu_device).numpy(),
         )
 
         indices = scores > score_threshold
@@ -76,7 +76,16 @@ def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_d
         print(f"({i + 1:04d}/{len(image_paths):04d}) {image_name}: {meters}")
 
         drawn_image = draw_bouding_boxes(
-            image, boxes, labels, scores, class_names
+            image,
+            boxes,
+            labels,
+            scores,
+            class_names,
+            score_font=ImageFont.truetype(
+                "/home/heider/Projects/Alexandra/Python/vision/neodroidvision/utilities/Lato-Regular"
+                ".ttf",
+                24,
+            ),
         ).astype(numpy.uint8)
         Image.fromarray(drawn_image).save(os.path.join(output_dir, image_name))
 

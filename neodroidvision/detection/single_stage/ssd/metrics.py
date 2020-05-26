@@ -17,7 +17,9 @@ from neodroidvision.utilities import global_world_size
 __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 
 
-def write_metrics_recursive(eval_result, prefix, summary_writer, global_step) -> None:
+def write_metrics_recursive(
+    eval_result, prefix: str, summary_writer, global_step: int
+) -> None:
     for key in eval_result:
         value = eval_result[key]
         tag = f"{prefix}/{key}"

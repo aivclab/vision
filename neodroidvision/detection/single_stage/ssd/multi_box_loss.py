@@ -13,7 +13,9 @@ import torch
 from torch import nn as nn
 from torch.nn import functional as F
 
-from neodroidvision.detection.single_stage.ssd.bounding_boxes import conversion
+from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
+    hard_negative_mining,
+)
 
 __all__ = ["MultiBoxLoss"]
 
@@ -22,33 +24,37 @@ class MultiBoxLoss(nn.Module):
     def __init__(self, neg_pos_ratio: float):
         """Implement SSD MultiBox Loss.
 
-Basically, MultiBox loss combines classification loss
- and Smooth L1 regression loss.
-"""
+    Basically, MultiBox loss combines classification loss
+    and Smooth L1 regression loss.
+    """
         super().__init__()
         self._neg_pos_ratio = neg_pos_ratio
 
     def forward(
-        self, confidence, predicted_locations, labels, gt_locations
+        self,
+        confidence: torch.Tensor,
+        predicted_locations: torch.Tensor,
+        labels: torch.Tensor,
+        gt_locations: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute classification loss and smooth l1 loss.
 
-Args:
-    confidence (batch_size, num_priors, num_classes): class predictions.
+    Args:
+    confidence (batch_size, num_priors, num_categories): class predictions.
     predicted_locations (batch_size, num_priors, 4): predicted locations.
     labels (batch_size, num_priors): real labels of all the priors.
     gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors.
-"""
-        num_classes = confidence.size(2)
+    """
+        num_categories = confidence.size(2)
 
         with torch.no_grad():
             # derived from cross_entropy=sum(log(p))
             loss = -F.log_softmax(confidence, dim=2)[:, :, 0]
-            mask = conversion.hard_negative_mining(loss, labels, self._neg_pos_ratio)
+            mask = hard_negative_mining(loss, labels, self._neg_pos_ratio)
 
         confidence_masked = confidence[mask, :]
         classification_loss = F.cross_entropy(
-            confidence_masked.view(-1, num_classes), labels[mask], reduction="sum"
+            confidence_masked.view(-1, num_categories), labels[mask], reduction="sum"
         )
 
         pos_mask = labels > 0

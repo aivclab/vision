@@ -48,7 +48,7 @@ def run_webcam_demo(
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(
-        cfg.INPUT.IMAGE_SIZE, cfg.INPUT.PIXEL_MEAN, split=Split.Testing
+        cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
     )
     model = SingleShotDectection(cfg)
 

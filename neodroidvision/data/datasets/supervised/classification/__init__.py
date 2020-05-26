@@ -6,4 +6,5 @@ __doc__ = r"""
 
            Created on 04/03/2020
            """
+
 from .vgg_face2 import *

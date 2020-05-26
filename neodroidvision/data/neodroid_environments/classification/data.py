@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 
 import neodroid
-from draugr import global_torch_device
+from draugr.torch_utilities import global_torch_device
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
 
 __author__ = "Christian Heider Nielsen"

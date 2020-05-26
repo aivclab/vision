@@ -1,12 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
 import copy
-import os
+from collections import namedtuple
+from enum import Enum
 from pathlib import Path
+from typing import Any, List, Mapping, Sequence, Tuple, Union
 
 import torch
 import torch.utils.data
 import torchvision
+from numpy.core.multiarray import ndarray
 from pycocotools import mask as coco_mask
 from pycocotools.coco import COCO
+from torch.utils.data import Dataset
 from torchvision.transforms import Compose
 
 __all__ = [
@@ -17,30 +30,77 @@ __all__ = [
     "convert_to_coco_api",
     "get_coco_api_from_dataset",
     "CocoDetection",
-    "get_coco",
+    "get_coco_ins",
     "get_coco_kp",
+    "CocoMask",
+    "CocoPolyAnnotation",
+    "CocoModeEnum",
 ]
+
+from draugr.torch_utilities.tensors.tensor_container import TensorTuple
+from neodroidvision.data.datasets.supervised.splitting import Split
+
+
+class CocoModeEnum(Enum):
+    instances = "instances"
+    person_keypoints = "person_keypoints"
+
+
+CocoPolyAnnotation = namedtuple(
+    "CocoPolyAno",
+    (
+        "image_id",
+        "bbox",
+        "category_id",
+        "area",
+        "iscrowd",
+        "id",
+        "segmentation",
+        "keypoints",
+        "num_keypoints",
+    ),
+)
+CocoMask = namedtuple(
+    "CocoMask", ("boxes", "labels", "masks", "image_id", "area", "iscrowd", "keypoints")
+)
 
 
 class FilterAndRemapCocoCategories(object):
-    def __init__(self, categories, remap=True):
-        self.categories = categories
-        self.remap = remap
+    """
 
-    def __call__(self, image, target):
+    """
+
+    def __init__(self, categories: List[str], remap: bool = True):
+        self._categories = categories
+        self._remap = remap
+
+    def __call__(self, image, target: Mapping[str, Any]) -> Tuple:
         anno = target["annotations"]
-        anno = [obj for obj in anno if obj["category_id"] in self.categories]
-        if not self.remap:
+        anno = [obj for obj in anno if obj["category_id"] in self._categories]
+        if not self._remap:
             target["annotations"] = anno
             return image, target
         anno = copy.deepcopy(anno)
         for obj in anno:
-            obj["category_id"] = self.categories.index(obj["category_id"])
+            obj["category_id"] = self._categories.index(obj["category_id"])
         target["annotations"] = anno
         return image, target
 
 
-def convert_coco_poly_to_mask(segmentations, height, width):
+def convert_coco_poly_to_mask(
+    segmentations: Sequence, height: int, width: int
+) -> TensorTuple:
+    """
+
+    :param segmentations:
+    :type segmentations:
+    :param height:
+    :type height:
+    :param width:
+    :type width:
+    :return:
+    :rtype:
+    """
     masks = []
     for polygons in segmentations:
         rles = coco_mask.frPyObjects(polygons, height, width)
@@ -54,73 +114,66 @@ def convert_coco_poly_to_mask(segmentations, height, width):
         masks = torch.stack(masks, dim=0)
     else:
         masks = torch.zeros((0, height, width), dtype=torch.uint8)
-    return masks
+    return TensorTuple(masks=masks)
 
 
 class ConvertCocoPolysToMask(object):
-    def __call__(self, image, target):
+    def __call__(self, image: ndarray, target: Mapping[str, Any]) -> Tuple:
         w, h = image.size
 
-        image_id = target["image_id"]
-        image_id = torch.tensor([image_id])
+        image_id = torch.tensor([target["image_id"]])
 
-        anno = target["annotations"]
+        anno = [obj for obj in target["annotations"] if obj.iscrowd == 0]
+        boxes = [obj.bbox for obj in anno]
 
-        anno = [obj for obj in anno if obj["iscrowd"] == 0]
-
-        boxes = [obj["bbox"] for obj in anno]
         # guard against no boxes via resizing
         boxes = torch.as_tensor(boxes, dtype=torch.float32).reshape(-1, 4)
         boxes[:, 2:] += boxes[:, :2]
         boxes[:, 0::2].clamp_(min=0, max=w)
         boxes[:, 1::2].clamp_(min=0, max=h)
 
-        classes = [obj["category_id"] for obj in anno]
-        classes = torch.tensor(classes, dtype=torch.int64)
+        classes = torch.tensor([obj.category_id for obj in anno], dtype=torch.int64)
 
-        segmentations = [obj["segmentation"] for obj in anno]
-        masks = convert_coco_poly_to_mask(segmentations, h, w)
+        masks = convert_coco_poly_to_mask([obj.segmentation for obj in anno], h, w)
 
         keypoints = None
-        if anno and "keypoints" in anno[0]:
-            keypoints = [obj["keypoints"] for obj in anno]
+        if anno and anno[0].keypoints is not None:
+            keypoints = [obj.keypoints for obj in anno]
             keypoints = torch.as_tensor(keypoints, dtype=torch.float32)
             num_keypoints = keypoints.shape[0]
             if num_keypoints:
                 keypoints = keypoints.view(num_keypoints, -1, 3)
 
         keep = (boxes[:, 3] > boxes[:, 1]) & (boxes[:, 2] > boxes[:, 0])
-        boxes = boxes[keep]
-        classes = classes[keep]
-        masks = masks[keep]
-        if keypoints is not None:
-            keypoints = keypoints[keep]
 
-        target = {
-            "boxes": boxes,
-            "labels": classes,
-            "masks": masks,
-            "image_id": image_id,
-            "area": torch.tensor([obj["area"] for obj in anno]),
-            "iscrowd": torch.tensor([obj["iscrowd"] for obj in anno]),
-        }
+        target = CocoMask(
+            boxes=boxes[keep],
+            labels=classes[keep],
+            masks=masks[keep],
+            image_id=image_id,
+            area=torch.tensor([obj.area for obj in anno]),
+            iscrowd=torch.tensor([obj.iscrowd for obj in anno]),
+            keypoints=None,
+        )
 
         if keypoints is not None:
-            target["keypoints"] = keypoints
+            target.keypoints = keypoints[keep]
 
         return image, target
 
 
-def _coco_remove_images_without_annotations(dataset, cat_list=None):
-    def _has_only_empty_bbox(anno):
-        return all(any(o <= 1 for o in obj["bbox"][2:]) for obj in anno)
+def _coco_remove_images_without_annotations(
+    dataset: Dataset,
+    category_list: Sequence[CocoPolyAnnotation] = None,
+    min_keypoints_per_image: int = 10,
+) -> Dataset:
+    def _has_only_empty_bbox(anno: List[CocoPolyAnnotation]) -> bool:
+        return all(any(o <= 1 for o in obj.bbox[2:]) for obj in anno)
 
-    def _count_visible_keypoints(anno):
-        return sum(sum(1 for v in ann["keypoints"][2::3] if v > 0) for ann in anno)
+    def _count_visible_keypoints(anno: List[CocoPolyAnnotation]) -> int:
+        return sum(sum(1 for v in ann.keypoints[2::3] if v > 0) for ann in anno)
 
-    min_keypoints_per_image = 10
-
-    def _has_valid_annotation(anno):
+    def _has_valid_annotation(anno: List[CocoPolyAnnotation]) -> bool:
         # if it's empty, there is no annotation
         if len(anno) == 0:
             return False
@@ -129,7 +182,7 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
             return False
         # keypoints task have a slight different critera for considering
         # if an annotation is valid
-        if "keypoints" not in anno[0]:
+        if anno[0].keypoints is None:
             return True
         # for keypoint detection tasks, only consider valid images those
         # containing at least min_keypoints_per_image
@@ -142,8 +195,8 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
     for ds_idx, img_id in enumerate(dataset.ids):
         ann_ids = dataset.coco.getAnnIds(imgIds=img_id, iscrowd=None)
         anno = dataset.coco.loadAnns(ann_ids)
-        if cat_list:
-            anno = [obj for obj in anno if obj["category_id"] in cat_list]
+        if category_list:
+            anno = [obj for obj in anno if obj.category_id in category_list]
         if _has_valid_annotation(anno):
             ids.append(ds_idx)
 
@@ -152,6 +205,13 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
 
 
 def convert_to_coco_api(ds):
+    """
+
+    :param ds:
+    :type ds:
+    :return:
+    :rtype:
+    """
     coco_ds = COCO()
     ann_id = 0
     dataset = {"images": [], "categories": [], "annotations": []}
@@ -179,20 +239,23 @@ def convert_to_coco_api(ds):
             keypoints = keypoints.reshape(keypoints.shape[0], -1).tolist()
         num_objs = len(bboxes)
         for i in range(num_objs):
-            ann = {
-                "image_id": image_id,
-                "bbox": bboxes[i],
-                "category_id": labels[i],
-                "area": areas[i],
-                "iscrowd": iscrowd[i],
-                "id": ann_id,
-            }
+            ann = CocoPolyAnnotation(
+                image_id=image_id,
+                bbox=bboxes[i],
+                category_id=labels[i],
+                area=areas[i],
+                iscrowd=iscrowd[i],
+                id=ann_id,
+                segmentation=None,
+                keypoints=None,
+                num_keypoints=None,
+            )
             categories.add(labels[i])
             if "masks" in targets:
-                ann["segmentation"] = coco_mask.encode(masks[i].numpy())
+                ann.segmentation = coco_mask.encode(masks[i].numpy())
             if "keypoints" in targets:
-                ann["keypoints"] = keypoints[i]
-                ann["num_keypoints"] = sum(k != 0 for k in keypoints[i][2::3])
+                ann.keypoints = keypoints[i]
+                ann.num_keypoints = sum(k != 0 for k in keypoints[i][2::3])
             dataset["annotations"].append(ann)
             ann_id += 1
     dataset["categories"] = [{"id": i} for i in sorted(categories)]
@@ -201,7 +264,16 @@ def convert_to_coco_api(ds):
     return coco_ds
 
 
-def get_coco_api_from_dataset(dataset):
+def get_coco_api_from_dataset(
+    dataset: Union[torch.utils.data.Subset, torchvision.datasets.CocoDetection]
+) -> COCO:
+    """
+
+    :param dataset:
+    :type dataset:
+    :return:
+    :rtype:
+    """
     for i in range(10):
         if isinstance(dataset, torchvision.datasets.CocoDetection):
             break
@@ -213,23 +285,49 @@ def get_coco_api_from_dataset(dataset):
 
 
 class CocoDetection(torchvision.datasets.CocoDetection):
+    """
+
+    """
+
     def __init__(self, img_folder, ann_file, transforms):
         super(CocoDetection, self).__init__(img_folder, ann_file)
         self._transforms = transforms
 
     def __getitem__(self, idx):
-        img, target = super(CocoDetection, self).__getitem__(idx)
+        img, target = super().__getitem__(idx)
         image_id = self.ids[idx]
-        target = dict(image_id=image_id, annotations=target)
+        target = TensorTuple(image_id=image_id, annotations=target)
         if self._transforms is not None:
             img, target = self._transforms(img, target)
         return img, target
 
 
-def get_coco(root, image_set, transforms, mode="instances"):
+def get_coco_ins(
+    root_path: Path,
+    image_set: Split,
+    transforms,
+    mode: CocoModeEnum = CocoModeEnum.instances,
+):
+    """
+
+  :param root_path:
+  :type root_path:
+  :param image_set:
+  :type image_set:
+  :param transforms:
+  :type transforms:
+  :param mode:
+  :type mode:
+  :return:
+  :rtype:
+  """
+    assert image_set in Split
+    assert image_set != Split.Testing
+
+    annotations_path = Path("annotations")
     PATHS = {
-        "train": ("train2017", Path("annotations") / f"{mode}_{'train'}2017.json"),
-        "val": ("val2017", Path("annotations") / f"{mode}_{'val'}2017.json"),
+        Split.Training: ("train2017", annotations_path / f"{mode}_{'train'}2017.json"),
+        Split.Validation: ("val2017", annotations_path / f"{mode}_{'val'}2017.json"),
     }
 
     t = [ConvertCocoPolysToMask()]
@@ -239,12 +337,12 @@ def get_coco(root, image_set, transforms, mode="instances"):
     transforms = Compose(t)
 
     img_folder, ann_file = PATHS[image_set]
-    img_folder = os.path.join(root, img_folder)
-    ann_file = os.path.join(root, ann_file)
 
-    dataset = CocoDetection(img_folder, ann_file, transforms=transforms)
+    dataset = CocoDetection(
+        root_path / img_folder, root_path / ann_file, transforms=transforms
+    )
 
-    if image_set == "train":
+    if image_set == Split.Training:
         dataset = _coco_remove_images_without_annotations(dataset)
 
     # dataset = torch.utils.data.Subset(dataset, [i for i in range(500)])
@@ -253,4 +351,15 @@ def get_coco(root, image_set, transforms, mode="instances"):
 
 
 def get_coco_kp(root, image_set, transforms):
-    return get_coco(root, image_set, transforms, mode="person_keypoints")
+    """
+
+    :param root:
+    :type root:
+    :param image_set:
+    :type image_set:
+    :param transforms:
+    :type transforms:
+    :return:
+    :rtype:
+    """
+    return get_coco_ins(root, image_set, transforms, mode=CocoModeEnum.person_keypoints)

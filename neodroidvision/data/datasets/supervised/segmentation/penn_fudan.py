@@ -1,6 +1,13 @@
-# Sample code from the TorchVision 0.3 Object Detection Finetuning Tutorial
-# http://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
+from enum import Enum
 from pathlib import Path
 from typing import Tuple, Union
 
@@ -12,11 +19,10 @@ from torchvision.transforms import Compose, Resize, ToTensor
 
 from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
-    to_tensor,
-    global_torch_device,
-    uint_hwc_to_chw_float_tensor,
     float_chw_to_hwc_uint_tensor,
-    hwc_to_chw_tensor,
+    global_torch_device,
+    to_tensor,
+    uint_hwc_to_chw_float_tensor,
 )
 from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.data.datasets.supervised.supervised_dataset import SupervisedDataset
@@ -30,7 +36,21 @@ from neodroidvision.utilities import (
 )
 
 
+class ReturnVariant(Enum):
+    """
+
+"""
+
+    binary = "binary"
+    instanced = "instanced"
+    all = "all"
+
+
 class PennFudanDataset(SupervisedDataset):
+    """
+
+"""
+
     predictor_channels = 3  # RGB input
     response_channels = 2  # our dataset has two classes only - background and person
     response_channels_binary = 1
@@ -38,16 +58,42 @@ class PennFudanDataset(SupervisedDataset):
     image_size = (256, 256)
     image_size_T = image_size[::-1]
 
+    categories = ("void", "person")
+
     @property
     def response_shape(self) -> Tuple[int, ...]:
-        return (*self.image_size_T, self.response_channels_binary)
+        """
+
+:return:
+:rtype:
+"""
+        if self._return_variant == ReturnVariant.binary:
+            return (*self.image_size_T, self.response_channels_binary)
+        elif (
+            self._return_variant == ReturnVariant.instanced
+            or self._return_variant == ReturnVariant.all
+        ):
+            return (*self.image_size_T, self.response_channels)
+        raise NotImplementedError
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
+        """
+
+:return:
+:rtype:
+"""
         return (*self.image_size_T, self.predictor_channels)
 
     @staticmethod
     def get_transforms(split: Split):
+        """
+
+:param split:
+:type split:
+:return:
+:rtype:
+"""
         transforms = [Resize(PennFudanDataset.image_size_T), ToTensor()]
 
         # if split == Split.Training:
@@ -57,6 +103,13 @@ class PennFudanDataset(SupervisedDataset):
 
     @staticmethod
     def get_tuple_transforms(split: Split):
+        """
+
+:param split:
+:type split:
+:return:
+:rtype:
+"""
         transforms = [
             # Resize(PennFudanDataset.image_size_T),
             TupleToTensor()
@@ -67,19 +120,39 @@ class PennFudanDataset(SupervisedDataset):
 
         return TupleCompose(transforms)
 
-    def __init__(self, root: Union[str, Path], split: Split = Split.Training):
+    def __init__(
+        self,
+        root: Union[str, Path],
+        split: Split = Split.Training,
+        return_variant: ReturnVariant = ReturnVariant.binary,
+    ):
         """
 
-    :param root:
-    :type root:
-    :param split:
-    :type split:
-    """
+:param root:
+:type root:
+:param split:
+:type split:
+"""
         super().__init__()
         if not isinstance(root, Path):
             root = Path(root)
         self._root_data_path = root
-        self._transforms = self.get_transforms(split)
+        self._return_variant = return_variant
+
+        if self._return_variant != ReturnVariant.all:
+            self._transforms = self.get_transforms(split)
+        else:
+            self._transforms = self.get_tuple_transforms(split)
+
+        if self._return_variant == ReturnVariant.binary:
+            self._getter = self.get_binary
+        elif self._return_variant == ReturnVariant.instanced:
+            self._getter = self.get_instanced
+        elif self._return_variant == ReturnVariant.all:
+            self._getter = self.get_all
+        else:
+            raise NotImplementedError
+
         self._img_path = root / "PNGImages"
         self._ped_path = root / "PedMasks"
         self.imgs = list(
@@ -92,15 +165,21 @@ class PennFudanDataset(SupervisedDataset):
     def __getitem__(self, idx: int):
         """
 
-    :param idx:
-    :type idx:
-    :return:
-    :rtype:
-    """
-        # return self.get_instanced(idx)
-        return self.get_binary(idx)
+:param idx:
+:type idx:
+:return:
+:rtype:
+"""
+        return self._getter(idx)
 
     def get_binary(self, idx):
+        """
+
+:param idx:
+:type idx:
+:return:
+:rtype:
+"""
         img = numpy.array(Image.open(self._img_path / self.imgs[idx]).convert("RGB"))
         mask = numpy.array(Image.open(self._ped_path / self.masks[idx]))
 
@@ -115,6 +194,13 @@ class PennFudanDataset(SupervisedDataset):
         )
 
     def get_instanced(self, idx):
+        """
+
+:param idx:
+:type idx:
+:return:
+:rtype:
+"""
         img = to_tensor(Image.open(self._img_path / self.imgs[idx]).convert("RGB"))
         mask = to_tensor(Image.open(self._ped_path / self.masks[idx]))
 
@@ -128,6 +214,13 @@ class PennFudanDataset(SupervisedDataset):
         return img, masks
 
     def get_all(self, idx):
+        """
+
+:param idx:
+:type idx:
+:return:
+:rtype:
+"""
         mask = torch.as_tensor(
             numpy.array(Image.open(self._ped_path / self.masks[idx]))
         )

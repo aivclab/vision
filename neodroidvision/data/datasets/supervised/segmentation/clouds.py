@@ -167,7 +167,7 @@ Create mask based on df, image name and shape.
             masks = augmented["mask"]
         img_o = uint_hwc_to_chw_float(img_o)
         masks = hwc_to_chw(masks)
-        if self.subset == "test":
+        if self.subset == Split.Testing:
             return img_o, masks, self.no_info_mask(img)
         return img_o, masks
 

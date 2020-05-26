@@ -14,6 +14,15 @@ __author__ = "Christian Heider Nielsen"
 
 
 def neodroid_camera_data_iterator(env, device, batch_size=12):
+    """
+
+    :param env:
+    :type env:
+    :param device:
+    :type device:
+    :param batch_size:
+    :type batch_size:
+    """
     while True:
         rgb = []
         mask_responses = []
@@ -60,6 +69,19 @@ def neodroid_camera_data_iterator(env, device, batch_size=12):
 
 
 def calculate_loss(seg, recon, depth, normals):
+    """
+
+    :param seg:
+    :type seg:
+    :param recon:
+    :type recon:
+    :param depth:
+    :type depth:
+    :param normals:
+    :type normals:
+    :return:
+    :rtype:
+    """
     (
         (seg_pred, seg_target),
         (recon_pred, recon_target),

@@ -14,7 +14,7 @@ def squeezenet_retrain(
     if train_only_last_layer:
         set_all_parameter_requires_grad(model)
 
-    model.num_classes = num_classes
+    model.num_categories = num_classes
     model.classifier[1] = torch.nn.Conv2d(
         512, num_classes, kernel_size=(1, 1), stride=(1, 1)
     )

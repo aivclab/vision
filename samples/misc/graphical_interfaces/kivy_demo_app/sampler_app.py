@@ -13,7 +13,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
-from draugr import global_torch_device
+from draugr.torch_utilities import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
 from neodroidvision.data.datasets.supervised.classification.vgg_face2 import VggFaces2

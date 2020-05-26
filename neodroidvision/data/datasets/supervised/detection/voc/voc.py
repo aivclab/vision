@@ -1,16 +1,33 @@
-import xml.etree.ElementTree as ET
-from pathlib import Path
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-import numpy as np
-import torch.utils.data
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
+from pathlib import Path
+from typing import Tuple
+from xml.etree import ElementTree
+
+import numpy
 from PIL import Image
 
 __all__ = ["VOCDataset"]
 
+from draugr.torch_utilities.tensors.tensor_container import TensorTuple
+from neodroidvision.data.datasets.supervised.detection.object_detection_dataset import (
+    ObjectDetectionDataset,
+)
 from neodroidvision.data.datasets.supervised.splitting import Split
 
 
-class VOCDataset(torch.utils.data.Dataset):
+class VOCDataset(ObjectDetectionDataset):
+    """
+
+  """
+
     categories = (
         "__background__",
         "aeroplane",
@@ -62,34 +79,37 @@ class VOCDataset(torch.utils.data.Dataset):
         data_root: Path,
         dataset_name: str,
         split: Split,
-        transform: callable = None,
-        target_transform: callable = None,
+        img_transform: callable = None,
+        annotation_transform: callable = None,
     ):
         """
 
-    Dataset for VOC data.
+Dataset for VOC data.
 
-    data_root: the root of the VOC2007 or VOC2012 dataset, the directory contains the following
+data_root: the root of the VOC2007 or VOC2012 dataset, the directory contains the following
 
-    Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
+Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
 
-    :param data_root:
-    :type data_root:
-    :param dataset_name:
-    :type dataset_name:
-    :param split:
-    :type split:
-    :param transform:
-    :type transform:
-    :param target_transform:
-    :type target_transform:
-    :param keep_difficult:
-    :type keep_difficult:
-    """
+:param data_root:
+:type data_root:
+:param dataset_name:
+:type dataset_name:
+:param split:
+:type split:
+:param img_transform:
+:type img_transform:
+:param annotation_transform:
+:type annotation_transform:
+:param keep_difficult:
+:type keep_difficult:
+"""
 
+        super().__init__(
+            data_root, dataset_name, split, img_transform, annotation_transform
+        )
         self._data_dir = data_root / self.data_dirs[dataset_name]
-        self._img_transforms = transform
-        self._target_transform = target_transform
+        self._img_transforms = img_transform
+        self._target_transforms = annotation_transform
 
         self._ids = VOCDataset._read_image_ids(
             self._data_dir / "ImageSets" / "Main" / f"{self.splits[dataset_name]}.txt"
@@ -100,6 +120,13 @@ class VOCDataset(torch.utils.data.Dataset):
             class_name: i for i, class_name in enumerate(self.categories)
         }
 
+    @property
+    def predictor_shape(self) -> Tuple[int, ...]:
+        """
+
+  """
+        pass
+
     def __getitem__(self, index):
         image_id = self._ids[index]
         boxes, labels, is_difficult = self._get_annotation(image_id)
@@ -109,12 +136,19 @@ class VOCDataset(torch.utils.data.Dataset):
         image = self._read_image(image_id)
         if self._img_transforms:
             image, boxes, labels = self._img_transforms(image, boxes, labels)
-        if self._target_transform:
-            boxes, labels = self._target_transform(boxes, labels)
-        targets = dict(boxes=boxes, labels=labels)
+        if self._target_transforms:
+            boxes, labels = self._target_transforms(boxes, labels)
+        targets = TensorTuple(boxes=boxes, labels=labels)
         return image, targets, index
 
     def get_annotation(self, index):
+        """
+
+    :param index:
+    :type index:
+    :return:
+    :rtype:
+    """
         image_id = self._ids[index]
         return image_id, self._get_annotation(image_id)
 
@@ -132,7 +166,7 @@ class VOCDataset(torch.utils.data.Dataset):
     def _get_annotation(self, image_id):
         annotation_file = self._data_dir / "Annotations" / f"{image_id}.xml"
 
-        objects = ET.parse(annotation_file).findall("object")
+        objects = ElementTree.parse(str(annotation_file)).findall("object")
         boxes = []
         labels = []
         is_difficult = []
@@ -150,21 +184,30 @@ class VOCDataset(torch.utils.data.Dataset):
             is_difficult.append(int(is_difficult_str) if is_difficult_str else 0)
 
         return (
-            np.array(boxes, dtype=np.float32),
-            np.array(labels, dtype=np.int64),
-            np.array(is_difficult, dtype=np.uint8),
+            numpy.array(boxes, dtype=numpy.float32),
+            numpy.array(labels, dtype=numpy.int64),
+            numpy.array(is_difficult, dtype=numpy.uint8),
         )
 
     def get_img_info(self, index):
+        """
+
+    :param index:
+    :type index:
+    :return:
+    :rtype:
+    """
         img_id = self._ids[index]
         annotation_file = self._data_dir / "Annotations" / f"{img_id}.xml"
-        anno = ET.parse(annotation_file).getroot()
+        anno = ElementTree.parse(annotation_file).getroot()
         size = anno.find("size")
-        im_info = tuple(map(int, (size.find("height").text, size.find("width").text)))
-        return {"height": im_info[0], "width": im_info[1]}
+        height, width = tuple(
+            map(int, (size.find("height").text, size.find("width").text))
+        )
+        return height, width
 
     def _read_image(self, image_id):
         image_file = self._data_dir / "JPEGImages" / f"{image_id}.jpg"
         image = Image.open(image_file).convert("RGB")
-        image = np.array(image)
+        image = numpy.array(image)
         return image

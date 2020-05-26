@@ -15,7 +15,7 @@ __all__ = ["L2Norm"]
 
 
 class L2Norm(nn.Module):
-    def __init__(self, n_channels, scale):
+    def __init__(self, n_channels: int, scale: float):
         super(L2Norm, self).__init__()
         self.n_channels = n_channels
         self.gamma = scale or None
@@ -26,8 +26,7 @@ class L2Norm(nn.Module):
     def reset_parameters(self):
         init.constant_(self.weight, self.gamma)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         norm = x.pow(2).sum(dim=1, keepdim=True).sqrt() + self.eps
         x = torch.div(x, norm)
-        out = self.weight.unsqueeze(0).unsqueeze(2).unsqueeze(3).expand_as(x) * x
-        return out
+        return self.weight.unsqueeze(0).unsqueeze(2).unsqueeze(3).expand_as(x) * x

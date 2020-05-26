@@ -1,6 +1,7 @@
 import copy
 import string
 import time
+from pathlib import Path
 
 import numpy
 import torch
@@ -8,18 +9,21 @@ from matplotlib import pyplot
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
 
-from draugr.drawers import plot_confusion_matrix
+from draugr import plot_confusion_matrix
+from draugr.numpy_utilities.torch_channel_transform import (
+    rgb_drop_alpha_batch_nhwc,
+    torch_vision_normalize_batch_nchw,
+)
 from draugr.torch_utilities import (
+    TorchEvalSession,
+    TorchTrainSession,
     global_torch_device,
     to_tensor,
     uint_hwc_to_chw_float_batch,
 )
-from draugr.numpy_utilities.channel_transform import (
-    rgb_drop_alpha_batch_nhwc,
-    torch_vision_normalize_batch_nchw,
-)
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
+from neodroidvision.data.datasets import Split
 from neodroidvision.data.neodroid_environments.classification.data import a_retransform
 from warg.named_ordered_dictionary import NOD
 
@@ -100,10 +104,10 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
     bundle = NOD.nod_of(title, model_name, confusion_matrix, metrics, predictions)
 
-    file_name = title.lower().replace(" ", "_")
+    file_name = Path(title.lower().replace(" ", "_"))
 
-    generate_html(file_name, **bundle)
-    generate_pdf(file_name)
+    generate_html(file_name.with_suffix(".html"), **bundle)
+    generate_pdf(file_name.with_suffix(".html"), file_name.with_suffix(".pdf"))
 
     # plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, pred)
     # pyplot.show()
@@ -118,7 +122,7 @@ def pred_target_train_model(
     writer,
     interrupted_path,
     test_data_iterator=None,
-    num_updates=250000,
+    num_updates: int = 250000,
     early_stop=None,
 ):
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -134,73 +138,76 @@ def pred_target_train_model(
         last_out = None
         with torch.autograd.detect_anomaly():
             for update_i in sess:
-                for phase in ["train", "val"]:
-                    if phase == "train":
-                        # model.train()
+                for phase in [Split.Training, Split.Validation]:
+                    if phase == Split.Training:
+                        with TorchTrainSession(model):
 
-                        input, true_label = zip(*next(train_iterator))
+                            input, true_label = zip(*next(train_iterator))
 
-                        rgb_imgs = torch_vision_normalize_batch_nchw(
-                            uint_hwc_to_chw_float_batch(
-                                rgb_drop_alpha_batch_nhwc(to_tensor(input))
+                            rgb_imgs = torch_vision_normalize_batch_nchw(
+                                uint_hwc_to_chw_float_batch(
+                                    rgb_drop_alpha_batch_nhwc(to_tensor(input))
+                                )
                             )
-                        )
-                        true_label = to_tensor(true_label, dtype=torch.long)
-                        optimizer.zero_grad()
+                            true_label = to_tensor(true_label, dtype=torch.long)
+                            optimizer.zero_grad()
 
-                        pred = model(rgb_imgs)
-                        loss = criterion(pred, true_label)
-                        loss.backward()
-                        optimizer.step()
+                            pred = model(rgb_imgs)
+                            loss = criterion(pred, true_label)
+                            loss.backward()
+                            optimizer.step()
 
-                        if last_out is None:
-                            last_out = pred
-                        else:
-                            if not torch.dist(last_out, pred) > 0:
-                                print(f"Same output{last_out},{pred}")
-                            last_out = pred
+                            if last_out is None:
+                                last_out = pred
+                            else:
+                                if not torch.dist(last_out, pred) > 0:
+                                    print(f"Same output{last_out},{pred}")
+                                last_out = pred
 
-                        update_loss = loss.data.cpu().numpy()
-                        writer.scalar(f"loss/train", update_loss, update_i)
+                            update_loss = loss.data.cpu().numpy()
+                            writer.scalar(f"loss/train", update_loss, update_i)
 
-                        if scheduler:
-                            scheduler.step()
+                            if scheduler:
+                                scheduler.step()
                     elif test_data_iterator:
-                        # model.eval()
-
-                        test_rgb_imgs, test_true_label = zip(*next(train_iterator))
-                        test_rgb_imgs = torch_vision_normalize_batch_nchw(
-                            uint_hwc_to_chw_float_batch(
-                                rgb_drop_alpha_batch_nhwc(to_tensor(test_rgb_imgs))
+                        with TorchEvalSession(model):
+                            test_rgb_imgs, test_true_label = zip(*next(train_iterator))
+                            test_rgb_imgs = torch_vision_normalize_batch_nchw(
+                                uint_hwc_to_chw_float_batch(
+                                    rgb_drop_alpha_batch_nhwc(to_tensor(test_rgb_imgs))
+                                )
                             )
-                        )
 
-                        test_true_label = to_tensor(test_true_label, dtype=torch.long)
-
-                        with torch.no_grad():
-                            val_pred = model(test_rgb_imgs)
-                            val_loss = criterion(val_pred, test_true_label)
-
-                        _, cat = torch.max(val_pred, -1)
-                        val_acc = torch.sum(cat == test_true_label) / float(cat.size(0))
-                        writer.scalar(f"loss/acc", val_acc, update_i)
-                        writer.scalar(f"loss/val", val_loss, update_i)
-
-                        if last_val is None:
-                            last_val = cat
-                        else:
-                            if all(last_val == cat):
-                                print(f"Same val{last_val},{cat}")
-                            last_val = cat
-
-                        if val_loss < best_val_loss:
-                            best_val_loss = val_loss
-
-                            best_model_wts = copy.deepcopy(model.state_dict())
-                            sess.write(
-                                f"New best validation model at update {update_i} with test_loss {best_val_loss}"
+                            test_true_label = to_tensor(
+                                test_true_label, dtype=torch.long
                             )
-                            torch.save(model.state_dict(), interrupted_path)
+
+                            with torch.no_grad():
+                                val_pred = model(test_rgb_imgs)
+                                val_loss = criterion(val_pred, test_true_label)
+
+                            _, cat = torch.max(val_pred, -1)
+                            val_acc = torch.sum(cat == test_true_label) / float(
+                                cat.size(0)
+                            )
+                            writer.scalar(f"loss/acc", val_acc, update_i)
+                            writer.scalar(f"loss/val", val_loss, update_i)
+
+                            if last_val is None:
+                                last_val = cat
+                            else:
+                                if all(last_val == cat):
+                                    print(f"Same val{last_val},{cat}")
+                                last_val = cat
+
+                            if val_loss < best_val_loss:
+                                best_val_loss = val_loss
+
+                                best_model_wts = copy.deepcopy(model.state_dict())
+                                sess.write(
+                                    f"New best validation model at update {update_i} with test_loss {best_val_loss}"
+                                )
+                                torch.save(model.state_dict(), interrupted_path)
 
                         if early_stop is not None and val_pred < early_stop:
                             break

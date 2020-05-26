@@ -25,7 +25,7 @@ def efficientnet(
             "batch_norm_momentum",
             "batch_norm_epsilon",
             "dropout_rate",
-            "num_classes",
+            "num_categories",
             "width_coefficient",
             "depth_coefficient",
             "depth_divisor",
@@ -105,11 +105,11 @@ def efficientnet(
         @staticmethod
         def decode(string_list):
             """
-  Decodes a list of string notations to specify blocks inside the network.
+Decodes a list of string notations to specify blocks inside the network.
 
-  :param string_list: a list of strings, each string is a notation of block
-  :return: a list of BlockArgs namedtuples of block args
-  """
+:param string_list: a list of strings, each string is a notation of block
+:return: a list of BlockArgs namedtuples of block args
+"""
             assert isinstance(string_list, list)
             blocks_args = []
             for block_string in string_list:
@@ -119,11 +119,11 @@ def efficientnet(
         @staticmethod
         def encode(blocks_args):
             """
-  Encodes a list of BlockArgs to a list of strings.
+Encodes a list of BlockArgs to a list of strings.
 
-  :param blocks_args: a list of BlockArgs namedtuples of block args
-  :return: a list of strings, each string is a notation of block
-  """
+:param blocks_args: a list of BlockArgs namedtuples of block args
+:return: a list of strings, each string is a notation of block
+"""
             block_strings = []
             for block in blocks_args:
                 block_strings.append(BlockDecoder._encode_block_string(block))
@@ -146,7 +146,7 @@ def efficientnet(
         dropout_rate=dropout_rate,
         drop_connect_rate=drop_connect_rate,
         # data_format='channels_last',  # removed, this is always true in PyTorch
-        num_classes=1000,
+        num_categories=1000,
         width_coefficient=width_coefficient,
         depth_coefficient=depth_coefficient,
         depth_divisor=8,

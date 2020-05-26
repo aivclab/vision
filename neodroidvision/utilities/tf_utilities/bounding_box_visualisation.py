@@ -241,7 +241,7 @@ x_max: x_max of bounding box.
 color: color to draw bounding box. Default is red.
 thickness: line thickness. Default value is 2.
 labels: list of strings to display in box
-                (each to be shown on its own line).
+              (each to be shown on its own line).
 use_normalized_coordinates: If True (default), treat coordinates
 y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
 coordinates as absolute.
@@ -296,7 +296,7 @@ Args:
 :param line_color: color to draw bounding box. Default is red.
 :param thickness: line thickness. Default value is 2.
 :param labels: list of strings to display in box
-                (each to be shown on its own line).
+              (each to be shown on its own line).
 :param use_normalized_coordinates: If True (default), treat coordinates
 y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
 coordinates as absolute.
@@ -379,14 +379,14 @@ def draw_bounding_boxes_on_image_array(
 Args:
 :param image: a numpy array object.
 :param boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
-     The coordinates are in normalized format between [0, 1].
+   The coordinates are in normalized format between [0, 1].
 :param color: color to draw bounding box. Default is red.
 :param thickness: line thickness. Default value is 4.
 :param labels: list of list of strings.
-                     a list of strings for each bounding box.
-                     The reason to pass a list of strings for a
-                     bounding box is that it might contain
-                     multiple labels.
+                   a list of strings for each bounding box.
+                   The reason to pass a list of strings for a
+                   bounding box is that it might contain
+                   multiple labels.
 :param mode:
 Raises:
 ValueError: if boxes is not a [N, 4] array
@@ -406,14 +406,14 @@ def draw_bounding_boxes_on_image(
 Args:
 image: a PIL.Image object.
 boxes: a 2 dimensional numpy array of [N, 4]: (y_min, x_min, y_max, x_max).
-     The coordinates are in normalized format between [0, 1].
+   The coordinates are in normalized format between [0, 1].
 color: color to draw bounding box. Default is red.
 thickness: line thickness. Default value is 4.
 labels_iterable: list of list of strings.
-                     a list of strings for each bounding box.
-                     The reason to pass a list of strings for a
-                     bounding box is that it might contain
-                     multiple labels.
+                   a list of strings for each bounding box.
+                   The reason to pass a list of strings for a
+                   bounding box is that it might contain
+                   multiple labels.
 
 Raises:
 ValueError: if boxes is not a [N, 4] array

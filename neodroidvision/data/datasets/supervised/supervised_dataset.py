@@ -15,21 +15,41 @@ from torch.utils.data import Dataset
 __all__ = ["SupervisedDataset"]
 
 from neodroidvision.data.datasets.supervised.splitting import SplitByPercentage
+from warg import drop_unused_kws
 
 
 class SupervisedDataset(Dataset):
+    """
+
+  """
+
+    @drop_unused_kws
+    def __init__(self):
+        pass
+
     @property
     def split_names(self) -> Tuple[str, str, str]:
+        """
+
+    :return:
+    :rtype:
+    """
         return SplitByPercentage.default_split_names
 
     @property
     @abstractmethod
     def response_shape(self) -> Tuple[int, ...]:
+        """
+
+    """
         raise NotImplementedError
 
     @property
     @abstractmethod
     def predictor_shape(self) -> Tuple[int, ...]:
+        """
+
+    """
         raise NotImplementedError
 
 

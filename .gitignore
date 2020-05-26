@@ -14,6 +14,7 @@ venv/
 *.db
 *.pb
 *.onnx
+*.traced
 
 classification_report.pdf
 classification_report.html

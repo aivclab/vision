@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from typing import Tuple
+
 import torch
 
 __author__ = "Christian Heider Nielsen"
@@ -19,13 +21,12 @@ class MinMaxNorm(Module):
         self.min_value = min_value
         self.max_value = max_value
 
-    def __call__(self, tensor):
+    def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
         min_tensor = tensor.min()
-        tensor = tensor - min_tensor
+        tensor -= min_tensor
         max_tensor = tensor.max()
-        tensor = tensor / max_tensor
-        tensor = tensor * (self.max_value - self.min_value) + self.min_value
-        return tensor
+        tensor /= max_tensor
+        return tensor * (self.max_value - self.min_value) + self.min_value
 
 
 class Reshape(Module):
@@ -33,9 +34,9 @@ class Reshape(Module):
 Reshaping Layer
 """
 
-    def __init__(self, new_size):
+    def __init__(self, new_size: Tuple[int, ...]):
         super().__init__()
         self.new_size = new_size
 
-    def __call__(self, img):
+    def __call__(self, img: torch.Tensor) -> torch.Tensor:
         return torch.reshape(img, self.new_size)

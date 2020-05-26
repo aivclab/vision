@@ -15,7 +15,7 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_batch,
 )
-from draugr.numpy_utilities.channel_transform import (
+from draugr.numpy_utilities.torch_channel_transform import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
@@ -81,10 +81,10 @@ def main():
     env = MixedObservationWrapper()
     env.seed(seed)
     train_iter = generator_batch(iter(env), batch_size)
-    num_classes = env.sensor("Class").space.discrete_steps
+    num_categories = env.sensor("Class").space.discrete_steps
     test_iter = train_iter
 
-    model, params_to_update = squeezenet_retrain(num_classes)
+    model, params_to_update = squeezenet_retrain(num_categories)
     print(params_to_update)
 
     model = model.to(global_torch_device())

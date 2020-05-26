@@ -15,12 +15,20 @@ __all__ = ["Split", "SplitByPercentage"]
 
 
 class Split(Enum):
+    """
+
+  """
+
     Training = 0
     Validation = 1
     Testing = 2
 
 
 class SplitByPercentage:
+    """
+
+  """
+
     default_split_names = ("training", "validation", "testing")
 
     def __init__(self, dataset_length: int, training=0.7, validation=0.2, testing=0.1):
@@ -35,6 +43,15 @@ class SplitByPercentage:
         )
 
     def unnormalised(self, num: int, floored: bool = True) -> numpy.ndarray:
+        """
+
+    :param num:
+    :type num:
+    :param floored:
+    :type floored:
+    :return:
+    :rtype:
+    """
         unnorm = self.normalised_split * num
         if floored:
             unnorm = numpy.floor(unnorm)

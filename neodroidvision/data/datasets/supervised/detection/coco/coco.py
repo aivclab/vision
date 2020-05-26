@@ -1,17 +1,36 @@
-from pathlib import Path
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-import numpy as np
-import torch.utils.data
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
+from pathlib import Path
+from typing import Tuple
+
+import numpy
 from PIL import Image
 
 from draugr.opencv_utilities import xywh_to_minmax
 
 __all__ = ["COCODataset"]
 
+from draugr.torch_utilities.tensors.tensor_container import TensorTuple
+
+from neodroidvision.data.datasets.supervised.detection.object_detection_dataset import (
+    ObjectDetectionDataset,
+)
+
 from neodroidvision.data.datasets.supervised.splitting import Split
 
 
-class COCODataset(torch.utils.data.Dataset):
+class COCODataset(ObjectDetectionDataset):
+    """
+
+    """
+
     categories = (
         "__background__",
         "person",
@@ -96,11 +115,11 @@ class COCODataset(torch.utils.data.Dataset):
         "toothbrush",
     )
 
-    data_dirs = {
-        "coco_2014_valminusminival": "val2014",
-        "coco_2014_minival": "val2014",
-        "coco_2014_train": "train2014",
-        "coco_2014_val": "val2014",
+    image_dirs = {
+        "coco_2014_valminusminival": "images/val2014",
+        "coco_2014_minival": "images/val2014",
+        "coco_2014_train": "images/train2014",
+        "coco_2014_val": "images/val2014",
     }
 
     splits = {
@@ -110,13 +129,20 @@ class COCODataset(torch.utils.data.Dataset):
         "coco_2014_val": "annotations/instances_val2014.json",
     }
 
+    @property
+    def predictor_shape(self) -> Tuple[int, ...]:
+        """
+
+        """
+        pass
+
     def __init__(
         self,
         data_root: Path,
         dataset_name: str,
         split: Split,
-        transform: callable = None,
-        target_transform: callable = None,
+        img_transform: callable = None,
+        annotation_transform: callable = None,
     ):
         """
 
@@ -126,19 +152,22 @@ class COCODataset(torch.utils.data.Dataset):
     :type dataset_name:
     :param split:
     :type split:
-    :param transform:
-    :type transform:
-    :param target_transform:
-    :type target_transform:
+    :param img_transform:
+    :type img_transform:
+    :param annotation_transform:
+    :type annotation_transform:
     :param remove_empty:
     :type remove_empty:
     """
+        super().__init__(
+            data_root, dataset_name, split, img_transform, annotation_transform
+        )
         from pycocotools.coco import COCO
 
         self._coco_source = COCO(str(data_root / self.splits[dataset_name]))
-        self._data_dir = data_root / self.data_dirs[dataset_name]
-        self._img_transform = transform
-        self._target_transform = target_transform
+        self._image_dir = data_root / self.image_dirs[dataset_name]
+        self._img_transforms = img_transform
+        self._annotation_transforms = annotation_transform
         self._remove_empty = split == Split.Training
         if self._remove_empty:
             self._ids = list(
@@ -160,14 +189,20 @@ class COCODataset(torch.utils.data.Dataset):
         image_id = self._ids[index]
         boxes, labels = self._get_annotation(image_id)
         image = self._read_image(image_id)
-        if self._img_transform:
-            image, boxes, labels = self._img_transform(image, boxes, labels)
-        if self._target_transform:
-            boxes, labels = self._target_transform(boxes, labels)
-        targets = dict(boxes=boxes, labels=labels)
-        return image, targets, index
+        if self._img_transforms:
+            image, boxes, labels = self._img_transforms(image, boxes, labels)
+        if self._annotation_transforms:
+            boxes, labels = self._annotation_transforms(boxes, labels)
+        return image, TensorTuple(boxes=boxes, labels=labels), index
 
     def get_annotation(self, index):
+        """
+
+        :param index:
+        :type index:
+        :return:
+        :rtype:
+        """
         image_id = self._ids[index]
         return image_id, self._get_annotation(image_id)
 
@@ -182,12 +217,12 @@ class COCODataset(torch.utils.data.Dataset):
             )
             if obj["iscrowd"] == 0
         ]  # filter crowd annotations
-        boxes = np.array(
-            [xywh_to_minmax(obj["bbox"]) for obj in ann], np.float32
+        boxes = numpy.array(
+            [xywh_to_minmax(obj["bbox"]) for obj in ann], numpy.float32
         ).reshape((-1, 4))
-        labels = np.array(
+        labels = numpy.array(
             [self._coco_id_to_contiguous_id[obj["category_id"]] for obj in ann],
-            np.int64,
+            numpy.int64,
         ).reshape((-1,))
 
         keep = (boxes[:, 3] > boxes[:, 1]) & (
@@ -196,13 +231,18 @@ class COCODataset(torch.utils.data.Dataset):
         return boxes[keep], labels[keep]
 
     def get_img_info(self, index):
-        image_id = self._ids[index]
-        img_data = self._coco_source.imgs[image_id]
-        return img_data
+        """
+
+        :param index:
+        :type index:
+        :return:
+        :rtype:
+        """
+        return self._coco_source.imgs[self._ids[index]]
 
     def _read_image(self, image_id):
-        file_name = self._coco_source.loadImgs(image_id)[0]["file_name"]
-        image_file = self._data_dir / file_name
-        image = Image.open(image_file).convert("RGB")
-        image = np.array(image)
-        return image
+        return numpy.array(
+            Image.open(
+                self._image_dir / self._coco_source.loadImgs(image_id)[0]["file_name"]
+            ).convert("RGB")
+        )

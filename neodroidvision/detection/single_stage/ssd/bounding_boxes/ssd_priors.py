@@ -11,50 +11,55 @@ from itertools import product
 from math import sqrt
 from typing import Tuple
 
+import numpy
 import torch
 
-from .conversion import iou_of_tensors
+from warg import drop_unused_kws
+from .tensor_metrics import iou_of_tensors
 
-__all__ = ["init_prior_box", "assign_priors"]
+__all__ = ["build_priors", "ssd_assign_priors"]
 
 
-def init_prior_box(image_size, prior_config):
+@drop_unused_kws
+def build_priors(
+    *,
+    image_size: numpy.ndarray,
+    feature_maps: torch.Tensor,
+    min_sizes: torch.Tensor,
+    max_sizes: torch.Tensor,
+    strides: torch.Tensor,
+    aspect_ratios: torch.Tensor,
+    clip: bool = True
+) -> torch.Tensor:
     """Generate SSD Prior Boxes.
 It returns the center, height and width of the priors. The values are relative to the image size
 Returns:
-  priors (num_priors, 4): The prior boxes represented as [[center_x, center_y, w, h]]. All the
-  values
-      are relative to the image size.
+priors (num_priors, 4): The prior boxes represented as [[center_x, center_y, w, h]]. All the
+values
+    are relative to the image size.
 """
-
-    feature_maps = prior_config.FEATURE_MAPS
-    min_sizes = prior_config.MIN_SIZES
-    max_sizes = prior_config.MAX_SIZES
-    strides = prior_config.STRIDES
-    aspect_ratios = prior_config.ASPECT_RATIOS
-    clip = prior_config.CLIP
 
     priors = []
     for k, f in enumerate(feature_maps):
         scale = image_size / strides[k]
-        for i, j in product(range(f), repeat=2):
+        small_hw = min_sizes[k] / image_size
+        big_hw = sqrt(min_sizes[k] * max_sizes[k]) / image_size
+
+        for i, j in product(range(f), repeat=2):  # all pair combinations
             # unit center x,y
             cx = (j + 0.5) / scale
             cy = (i + 0.5) / scale
 
             # small sized square box
-            size = min_sizes[k]
-            h = w = size / image_size
+            h = w = small_hw
             priors.append([cx, cy, w, h])
 
             # big sized square box
-            size = sqrt(min_sizes[k] * max_sizes[k])
-            h = w = size / image_size
+            h = w = big_hw
             priors.append([cx, cy, w, h])
 
             # change h/w ratio of the small sized box
-            size = min_sizes[k]
-            h = w = size / image_size
+            h = w = small_hw
             for ratio in aspect_ratios[k]:
                 ratio_sq = sqrt(ratio)
                 priors.append([cx, cy, w * ratio_sq, h / ratio_sq])
@@ -63,23 +68,35 @@ Returns:
     priors_t = torch.tensor(priors)
 
     if clip:
-        priors_t.clamp_(max=1, min=0)
+        priors_t.clamp_(min=0, max=1)
 
     return priors_t
 
 
-def assign_priors(
-    gt_boxes, gt_labels, corner_form_priors, iou_threshold
+def ssd_assign_priors(
+    *,
+    gt_boxes: torch.Tensor,
+    gt_labels: torch.Tensor,
+    corner_form_priors: torch.Tensor,
+    iou_threshold: torch.Tensor
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     """Assign ground truth boxes and targets to priors.
 
 Args:
-    gt_boxes (num_targets, 4): ground truth boxes.
-    gt_labels (num_targets): labels of targets.
-    priors (num_priors, 4): corner form priors
+  gt_boxes (num_targets, 4): ground truth boxes.
+  gt_labels (num_targets): labels of targets.
+  priors (num_priors, 4): corner form priors
 Returns:
-    boxes (num_priors, 4): real values for priors.
-    labels (num_priros): labels for priors.
+  boxes (num_priors, 4): real values for priors.
+  labels (num_priros): labels for priors.
+  :param gt_boxes:
+  :type gt_boxes:
+  :param gt_labels:
+  :type gt_labels:
+  :param corner_form_priors:
+  :type corner_form_priors:
+  :param iou_threshold:
+  :type iou_threshold:
 """
     # size: num_priors x num_targets
     ious = iou_of_tensors(gt_boxes.unsqueeze(0), corner_form_priors.unsqueeze(1))
@@ -95,5 +112,4 @@ Returns:
     # size: num_priors
     labels = gt_labels[best_target_per_prior_index]
     labels[best_target_per_prior < iou_threshold] = 0  # the backgournd id
-    boxes = gt_boxes[best_target_per_prior_index]
-    return boxes, labels
+    return gt_boxes[best_target_per_prior_index], labels

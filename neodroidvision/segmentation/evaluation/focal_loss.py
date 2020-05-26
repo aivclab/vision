@@ -15,18 +15,18 @@ class FocalLoss(nn.Module):
 This criterion is a implementation of Focal Loss, which is proposed in
 Focal Loss for Dense Object Detection.
 
-    Loss(x, class) = - \alpha (1-softmax(x)[class])^gamma \log(softmax(x)[class])
+  Loss(x, class) = - \alpha (1-softmax(x)[class])^gamma \log(softmax(x)[class])
 
 The loss_functions are averaged across observations for each mini batch.
 Args:
-    alpha(1D Tensor, Variable) : the scalar factor for this criterion
-    gamma(float, double) : gamma > 0; reduces the relative loss for well-classified examples (p > .5),
-                           putting more focus on hard, misclassified examples
-    size_average(bool): size_average(bool): By default, the loss_functions are averaged over
-    observations for
-    each mini batch.
-                        However, if the field size_average is set to False, the loss_functions are
-                        instead summed for each mini batch.
+  alpha(1D Tensor, Variable) : the scalar factor for this criterion
+  gamma(float, double) : gamma > 0; reduces the relative loss for well-classified examples (p > .5),
+                         putting more focus on hard, misclassified examples
+  size_average(bool): size_average(bool): By default, the loss_functions are averaged over
+  observations for
+  each mini batch.
+                      However, if the field size_average is set to False, the loss_functions are
+                      instead summed for each mini batch.
 """
 
     def __init__(

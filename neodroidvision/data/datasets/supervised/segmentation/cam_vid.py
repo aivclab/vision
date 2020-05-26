@@ -7,10 +7,30 @@ __doc__ = r"""
            Created on 29/03/2020
            """
 
+from typing import Tuple
+
 from neodroidvision.data.datasets import SupervisedDataset
 
 
 class CamVid(SupervisedDataset):
+    """
+
+  """
+
+    @property
+    def predictor_shape(self) -> Tuple[int, ...]:
+        """
+
+  """
+        raise NotImplementedError
+
+    @property
+    def response_shape(self) -> Tuple[int, ...]:
+        """
+
+  """
+        raise NotImplementedError
+
     predictor_channels = 3  # RGB input
     colors_dict = {
         "64 128 64": "Animal",

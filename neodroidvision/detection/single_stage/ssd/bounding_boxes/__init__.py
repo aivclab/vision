@@ -8,3 +8,6 @@ __doc__ = r"""
            """
 
 from .conversion import *
+from .ssd_priors import *
+from .ssd_transforms import *
+from .tensor_metrics import *

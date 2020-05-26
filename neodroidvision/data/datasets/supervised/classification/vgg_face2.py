@@ -9,19 +9,33 @@ from matplotlib import pyplot
 from torch.utils import data
 from torchvision import transforms
 
-from neodroidvision.data.datasets.supervised.supervised_dataset import SupervisedDataset
 from neodroidvision.data.datasets.supervised.splitting import Split
+from neodroidvision.data.datasets.supervised.supervised_dataset import SupervisedDataset
 
 __all__ = ["VggFaces2"]
 
 
 class VggFaces2(SupervisedDataset):
+    """
+
+"""
+
     @property
     def response_shape(self) -> Tuple[int, ...]:
+        """
+
+:return:
+:rtype:
+"""
         return (0,)
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
+        """
+
+:return:
+:rtype:
+"""
         return self._resize_shape
 
     # mean = numpy.array([0.485, 0.456, 0.406])
@@ -36,6 +50,13 @@ class VggFaces2(SupervisedDataset):
 
     @staticmethod
     def get_id_label_map(meta_file):
+        """
+
+:param meta_file:
+:type meta_file:
+:return:
+:rtype:
+"""
         import pandas
 
         N_IDENTITY = 9131  # total number of identities in VGG Face2
@@ -55,7 +76,12 @@ class VggFaces2(SupervisedDataset):
 
     @property
     def split_names(self) -> Tuple[str, str, str]:
-        return ("train", "validation", "test")
+        """
+
+:return:
+:rtype:
+"""
+        return "train", "validation", "test"
 
     def __init__(
         self,
@@ -77,9 +103,9 @@ class VggFaces2(SupervisedDataset):
         self._dataset_path = dataset_path / split
         image_list_file_path = dataset_path / f"{split}_list.txt"
         assert (
-            image_list_file_path.exists(),
-            f"image_list_file: {image_list_file_path} not found.",
-        )
+            image_list_file_path.exists()
+        ), f"image_list_file: {image_list_file_path} not found."
+
         self._image_list_file_path = image_list_file_path
         meta_id_path = dataset_path / "identity_meta.csv"
         assert meta_id_path.exists(), f"meta id path {meta_id_path} does not exists"

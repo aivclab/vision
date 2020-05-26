@@ -1,6 +1,9 @@
+from typing import List, Tuple
+
+import torch
 from torch import nn
 
-from neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net_utilities import (
+from neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.efficient_net_utilities import (
     Conv2dSamePadding,
     MobileInvertedResidualBottleneckConvBlock,
     efficientnet,
@@ -21,16 +24,23 @@ class EfficientNet(SSDBackbone):
 An EfficientNet model. Most easily loaded with the .from_name or .from_pretrained methods
 
 Args:
-    blocks_args (list): A list of BlockArgs to construct blocks
-    global_params (namedtuple): A set of GlobalParams shared between blocks
+  blocks_args (list): A list of BlockArgs to construct blocks
+  global_params (namedtuple): A set of GlobalParams shared between blocks
 
 Example:
-    model = EfficientNet.from_pretrained('efficientnet-b0')
+  model = EfficientNet.from_pretrained('efficientnet-b0')
 
 """
 
     @staticmethod
     def add_extras(cfgs):
+        """
+
+    :param cfgs:
+    :type cfgs:
+    :return:
+    :rtype:
+    """
         extras = nn.ModuleList()
         for cfg in cfgs:
             extra = []
@@ -112,7 +122,7 @@ Example:
                 )
         self.reset_parameters()
 
-    def extract_features(self, inputs):
+    def extract_features(self, inputs: torch.Tensor) -> Tuple:
         """ Returns output of the final convolution layer """
 
         # Stem
@@ -131,7 +141,7 @@ Example:
 
         return x, features
 
-    def forward(self, inputs):
+    def forward(self, inputs: torch.Tensor) -> List[torch.Tensor]:
         """ Calls extract_features to extract features, applies final linear layer, and returns logits. """
 
         # Convolution layers
@@ -141,10 +151,10 @@ Example:
             x = layer(x)
             features.append(x)
 
-        return tuple(features)
+        return features
 
     @staticmethod
-    def efficientnet_params(model_name):
+    def efficientnet_params(model_name: str) -> Tuple[float, float, int, float]:
         """ Map EfficientNet model name to parameter coefficients. """
         params_dict = {
             # Coefficients:   width,depth,res,dropout
@@ -177,6 +187,15 @@ Example:
 
     @classmethod
     def from_name(cls, model_name, override_params=None):
+        """
+
+    :param model_name:
+    :type model_name:
+    :param override_params:
+    :type override_params:
+    :return:
+    :rtype:
+    """
         cls._check_model_name_is_valid(model_name)
         blocks_args, global_params = EfficientNet.get_model_params(
             model_name, override_params
@@ -186,13 +205,13 @@ Example:
     @classmethod
     def from_pretrained(cls, model_name):
         """
-    Loads pretrained weights, and downloads if loading for the first time.
+Loads pretrained weights, and downloads if loading for the first time.
 
-    :param model_name:
-    :type model_name:
-    :return:
-    :rtype:
-    """
+:param model_name:
+:type model_name:
+:return:
+:rtype:
+"""
 
         model = EfficientNet.from_name(model_name)
 
@@ -213,8 +232,15 @@ Example:
 
     @classmethod
     def get_image_size(cls, model_name):
+        """
+
+    :param model_name:
+    :type model_name:
+    :return:
+    :rtype:
+    """
         cls._check_model_name_is_valid(model_name)
-        _, _, res, _ = EfficientNet.efficientnet_params(model_name)
+        *_, res, _ = EfficientNet.efficientnet_params(model_name)
         return res
 
     @classmethod
@@ -222,6 +248,6 @@ Example:
         """ Validates model name. None that pretrained weights are only available for
 the first four models (efficientnet-b{i} for i in 0,1,2,3) at the moment. """
         num_models = 4 if also_need_pretrained_weights else 8
-        valid_models = ["efficientnet_b" + str(i) for i in range(num_models)]
+        valid_models = [f"efficientnet_b{str(i)}" for i in range(num_models)]
         if model_name.replace("-", "_") not in valid_models:
             raise ValueError(f"model_name should be one of: {', '.join(valid_models)}")

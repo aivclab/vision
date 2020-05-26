@@ -1,103 +1,96 @@
 from abc import abstractmethod
+from typing import Tuple
 
 import torch
 from torch import nn
 
-from neodroidvision.utilities.torch_utilities import SeparableConv2d
-
-__all__ = ["BoxPredictor", "SSDBoxPredictor", "SSDLiteBoxPredictor"]
+__all__ = ["BoxPredictor"]
 
 
 class BoxPredictor(nn.Module):
-    def __init__(self, boxes_per_location, out_channels, num_classes):
+    """
+
+  """
+
+    def __init__(self, boxes_per_location, out_channels, num_categories):
         super().__init__()
 
-        self.num_classes = num_classes
+        self.num_categories = num_categories
         self.out_channels = out_channels
 
         self.cls_headers = nn.ModuleList()
         self.reg_headers = nn.ModuleList()
 
-        for (level, (boxes_per_location, out_channels)) in enumerate(
+        for (level_i, (num_boxes, num_channels)) in enumerate(
             zip(boxes_per_location, self.out_channels)
         ):
             self.cls_headers.append(
-                self.cls_block(level, out_channels, boxes_per_location)
+                self.category_block(level_i, num_channels, num_boxes)
             )
             self.reg_headers.append(
-                self.reg_block(level, out_channels, boxes_per_location)
+                self.location_block(level_i, num_channels, num_boxes)
             )
 
         self.reset_parameters()
 
     @abstractmethod
-    def cls_block(self, level, out_channels, boxes_per_location):
+    def category_block(self, level: int, out_channels: int, boxes_per_location: int):
+        """
+
+    :param level:
+    :type level:
+    :param out_channels:
+    :type out_channels:
+    :param boxes_per_location:
+    :type boxes_per_location:
+    """
         raise NotImplementedError
 
     @abstractmethod
-    def reg_block(self, level, out_channels, boxes_per_location):
+    def location_block(self, level: int, out_channels: int, boxes_per_location: int):
+        """
+
+    :param level:
+    :type level:
+    :param out_channels:
+    :type out_channels:
+    :param boxes_per_location:
+    :type boxes_per_location:
+    """
         raise NotImplementedError
 
-    def reset_parameters(self):
+    def reset_parameters(self) -> None:
+        """
+
+    """
         for module in self.modules():
             if isinstance(module, nn.Conv2d):
                 nn.init.xavier_uniform_(module.weight)
                 nn.init.zeros_(module.bias)
 
-    def forward(self, features):
+    def forward(self, features: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+
+    :param features:
+    :type features:
+    :return:
+    :rtype:
+    """
         cls_logits = []
         bbox_pred = []
-        for feature, cls_header, reg_header in zip(
+        for feature, cat_fun, loc_fun in zip(
             features, self.cls_headers, self.reg_headers
         ):
-            cls_logits.append(cls_header(feature).permute(0, 2, 3, 1).contiguous())
-            bbox_pred.append(reg_header(feature).permute(0, 2, 3, 1).contiguous())
+            cls_logits.append(cat_fun(feature).permute(0, 2, 3, 1).contiguous())
+            bbox_pred.append(loc_fun(feature).permute(0, 2, 3, 1).contiguous())
 
         batch_size = features[0].shape[0]
-        cls_logits = torch.cat(
-            [c.view(c.shape[0], -1) for c in cls_logits], dim=1
-        ).view(batch_size, -1, self.num_classes)
-        bbox_pred = torch.cat([l.view(l.shape[0], -1) for l in bbox_pred], dim=1).view(
-            batch_size, -1, 4
-        )
 
-        return cls_logits, bbox_pred
-
-
-class SSDBoxPredictor(BoxPredictor):
-    def cls_block(self, level, out_channels, boxes_per_location):
-        return nn.Conv2d(
-            out_channels,
-            boxes_per_location * self.num_classes,
-            kernel_size=3,
-            stride=1,
-            padding=1,
-        )
-
-    def reg_block(self, level, out_channels, boxes_per_location):
-        return nn.Conv2d(
-            out_channels, boxes_per_location * 4, kernel_size=3, stride=1, padding=1
-        )
-
-
-class SSDLiteBoxPredictor(BoxPredictor):
-    def cls_block(self, level, out_channels, boxes_per_location):
-        if level == len(self.out_channels) - 1:
-            return nn.Conv2d(
-                out_channels, boxes_per_location * self.num_classes, kernel_size=1
-            )
-
-        return SeparableConv2d(
-            out_channels,
-            boxes_per_location * self.num_classes,
-            kernel_size=3,
-            stride=1,
-            padding=1,
-        )
-
-    def reg_block(self, level, out_channels, boxes_per_location):
-        if level == len(self.out_channels) - 1:
-            return nn.Conv2d(out_channels, boxes_per_location * 4, kernel_size=1)
-        return SeparableConv2d(
-            out_channels, boxes_per_location * 4, kernel_size=3, stride=1, padding=1
+        return (
+            torch.cat([c.view(c.shape[0], -1) for c in cls_logits], dim=1).view(
+                batch_size, -1, self.num_categories
+            ),
+            torch.cat([l.view(l.shape[0], -1) for l in bbox_pred], dim=1).view(
+                batch_size, -1, 4
+            ),
         )

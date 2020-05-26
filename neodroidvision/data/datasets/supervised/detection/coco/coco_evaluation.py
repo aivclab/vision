@@ -1,16 +1,36 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
 import copy
 import json
 import logging
 import os
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from datetime import datetime
+from enum import Enum
+from typing import Dict, Iterable, Sequence
 
 import numpy
 import pycocotools.mask
 import torch
 import torch._six
-from pycocotools.coco import COCO
+import torchvision
+from pycocotools.coco import COCO  # Version 2.0 REQUIRES numpy 1.17
 from pycocotools.cocoeval import COCOeval
+
+from draugr.python_utilities.exceptions import IncompatiblePackageVersions
+
+if pycocotools.coco.__version__ == "2.0" and "1.18" in numpy.__version__:
+    print("Hint: downgrade numpy to 1.17.x")
+    raise IncompatiblePackageVersions(
+        numpy, "pycocotools", pycocotools=pycocotools.coco.__version__
+    )
 
 from draugr.torch_utilities import minmax_to_xywh_torch
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
@@ -22,14 +42,29 @@ __all__ = [
     "merge",
     "create_common_coco_eval",
     "createIndex",
-    "loadRes",
+    "load_results",
     "evaluate",
     "coco_evaluation",
+    "get_iou_types",
 ]
+
+BboxPredTuple = namedtuple("BboxPredTuple", ("boxes", "scores", "labels"))
+SegmPredTuple = namedtuple("SegmPredTuple", ("masks", "scores", "labels"))
+KeypointsPredTuple = namedtuple("KeypointsPredTuple", ("keypoints", "scores", "labels"))
+
+
+class IouType(Enum):
+    bbox = "bbox"
+    segm = "segm"
+    keypoints = "keypoints"
 
 
 class CocoEvaluator(object):
-    def __init__(self, coco_gt, iou_types):
+    """
+
+"""
+
+    def __init__(self, coco_gt, iou_types: Iterable[str]):
         assert isinstance(iou_types, (list, tuple))
         coco_gt = copy.deepcopy(coco_gt)
         self.coco_gt = coco_gt
@@ -37,18 +72,24 @@ class CocoEvaluator(object):
         self.iou_types = iou_types
         self.coco_eval = {}
         for iou_type in iou_types:
+            assert iou_type in ("segm", "bbox", "keypoints")
             self.coco_eval[iou_type] = COCOeval(coco_gt, iouType=iou_type)
 
         self.img_ids = []
         self.eval_imgs = {k: [] for k in iou_types}
 
-    def update(self, predictions):
+    def update(self, predictions: Dict):
+        """
+
+:param predictions:
+:type predictions:
+"""
         img_ids = list(numpy.unique(list(predictions.keys())))
         self.img_ids.extend(img_ids)
 
         for iou_type in self.iou_types:
-            results = self.prepare(predictions, iou_type)
-            coco_dt = loadRes(self.coco_gt, results) if results else COCO()
+            results = self.prepare_data(predictions, iou_type)
+            coco_dt = load_results(self.coco_gt, results) if results else COCO()
             coco_eval = self.coco_eval[iou_type]
 
             coco_eval.cocoDt = coco_dt
@@ -58,6 +99,9 @@ class CocoEvaluator(object):
             self.eval_imgs[iou_type].append(eval_imgs)
 
     def synchronize_between_processes_aaa(self):
+        """
+
+"""
         for iou_type in self.iou_types:
             self.eval_imgs[iou_type] = numpy.concatenate(self.eval_imgs[iou_type], 2)
             create_common_coco_eval(
@@ -65,25 +109,47 @@ class CocoEvaluator(object):
             )
 
     def accumulate(self):
+        """
+
+"""
         for coco_eval in self.coco_eval.values():
             coco_eval.accumulate()
 
     def summarize(self):
+        """
+
+"""
         for iou_type, coco_eval in self.coco_eval.items():
-            print("IoU metric: {}".format(iou_type))
+            print(f"IoU metric: {iou_type}")
             coco_eval.summarize()
 
-    def prepare(self, predictions, iou_type):
-        if iou_type == "bbox":
+    def prepare_data(self, predictions: Sequence, iou_type: IouType):
+        """
+
+:param predictions:
+:type predictions:
+:param iou_type:
+:type iou_type:
+:return:
+:rtype:
+"""
+        if iou_type == iou_type.bbox:
             return self.prepare_for_coco_detection(predictions)
-        elif iou_type == "segm":
+        elif iou_type == iou_type.segm:
             return self.prepare_for_coco_segmentation(predictions)
-        elif iou_type == "keypoints":
+        elif iou_type == iou_type.keypoints:
             return self.prepare_for_coco_keypoint(predictions)
         else:
-            raise ValueError("Unknown iou type {}".format(iou_type))
+            raise ValueError(f"Unknown iou type {iou_type}")
 
-    def prepare_for_coco_detection(self, predictions):
+    def prepare_for_coco_detection(self, predictions: Sequence[BboxPredTuple]):
+        """
+
+:param predictions:
+:type predictions:
+:return:
+:rtype:
+"""
         coco_results = []
         for original_id, prediction in predictions.items():
             if len(prediction) == 0:
@@ -107,7 +173,14 @@ class CocoEvaluator(object):
             )
         return coco_results
 
-    def prepare_for_coco_segmentation(self, predictions):
+    def prepare_for_coco_segmentation(self, predictions: Sequence[SegmPredTuple]):
+        """
+
+:param predictions:
+:type predictions:
+:return:
+:rtype:
+"""
         coco_results = []
         for original_id, prediction in predictions.items():
             if len(prediction) == 0:
@@ -144,14 +217,19 @@ class CocoEvaluator(object):
             )
         return coco_results
 
-    def prepare_for_coco_keypoint(self, predictions):
+    def prepare_for_coco_keypoint(self, predictions: Sequence[KeypointsPredTuple]):
+        """
+
+:param predictions:
+:type predictions:
+:return:
+:rtype:
+"""
         coco_results = []
         for original_id, prediction in predictions.items():
             if len(prediction) == 0:
                 continue
 
-            boxes = prediction["boxes"]
-            boxes = minmax_to_xywh_torch(boxes).tolist()
             scores = prediction["scores"].tolist()
             labels = prediction["labels"].tolist()
             keypoints = prediction["keypoints"]
@@ -172,6 +250,15 @@ class CocoEvaluator(object):
 
 
 def merge(img_ids, eval_imgs):
+    """
+
+:param img_ids:
+:type img_ids:
+:param eval_imgs:
+:type eval_imgs:
+:return:
+:rtype:
+"""
     all_img_ids = all_gather(img_ids)
     all_eval_imgs = all_gather(eval_imgs)
 
@@ -194,6 +281,15 @@ def merge(img_ids, eval_imgs):
 
 
 def create_common_coco_eval(coco_eval, img_ids, eval_imgs):
+    """
+
+:param coco_eval:
+:type coco_eval:
+:param img_ids:
+:type img_ids:
+:param eval_imgs:
+:type eval_imgs:
+"""
     img_ids, eval_imgs = merge(img_ids, eval_imgs)
     img_ids = list(img_ids)
     eval_imgs = list(eval_imgs.flatten())
@@ -213,6 +309,11 @@ def create_common_coco_eval(coco_eval, img_ids, eval_imgs):
 
 
 def createIndex(self):
+    """
+
+:param self:
+:type self:
+"""
     # create index
     # print('creating index...')
     anns, cats, imgs = {}, {}, {}
@@ -244,7 +345,7 @@ def createIndex(self):
     self.cats = cats
 
 
-def loadRes(self, resFile):
+def load_results(self, resFile) -> COCO:
     """
 Load result file and return a result api object.
 :param   resFile (str)     : file name of result file
@@ -367,6 +468,19 @@ Run per image evaluation on given images and store results (a list of dict) in s
 # end of straight copy from pycocotools, just removing the prints
 #################################################################
 def coco_evaluation(dataset, predictions, output_dir, iteration=None):
+    """
+
+:param dataset:
+:type dataset:
+:param predictions:
+:type predictions:
+:param output_dir:
+:type output_dir:
+:param iteration:
+:type iteration:
+:return:
+:rtype:
+"""
     coco_results = []
     for i, prediction in enumerate(predictions):
         img_info = dataset.get_img_info(i)
@@ -407,10 +521,9 @@ def coco_evaluation(dataset, predictions, output_dir, iteration=None):
     logger.info(f"Writing results to {json_result_file}...")
     with open(json_result_file, "w") as f:
         json.dump(coco_results, f)
-    from pycocotools.cocoeval import COCOeval
 
     coco_gt = dataset.coco
-    coco_dt = coco_gt.loadRes(json_result_file)
+    coco_dt = coco_gt.load_results(json_result_file)
     coco_eval = COCOeval(coco_gt, coco_dt, iou_type)
     coco_eval.evaluate()
     coco_eval.accumulate()
@@ -434,3 +547,22 @@ def coco_evaluation(dataset, predictions, output_dir, iteration=None):
         f.write("\n".join(result_strings))
 
     return dict(metrics=metrics)
+
+
+def get_iou_types(model):
+    """
+
+:param model:
+:type model:
+:return:
+:rtype:
+"""
+    model_without_ddp = model
+    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+        model_without_ddp = model.module
+    iou_types = ["bbox"]
+    if isinstance(model_without_ddp, torchvision.models.detection.MaskRCNN):
+        iou_types.append("segm")
+    if isinstance(model_without_ddp, torchvision.models.detection.KeypointRCNN):
+        iou_types.append("keypoints")
+    return iou_types
