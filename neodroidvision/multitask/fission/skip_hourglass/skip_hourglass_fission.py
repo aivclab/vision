@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, Sized, Union
+from typing import Dict, Iterable, List, Sequence, Sized, Tuple, Union
 
 import numpy
 import torch
@@ -124,18 +124,18 @@ the tranpose convolution (specified by upmode='fractional')
         self.reset_params()
 
     @staticmethod
-    def weight_init(m: nn.Module):
+    def weight_init(m: nn.Module) -> None:
         if isinstance(m, nn.Conv2d):
             init.xavier_normal_(m.weight)
             init.constant_(m.bias, 0)
 
-    def reset_params(self):
+    def reset_params(self) -> None:
         for i, m in enumerate(self.modules()):
             self.weight_init(m)
 
     def forward(
         self, x_enc: torch.Tensor
-    ):  # -> Union[List[torch.Tensor],Dict[torch.Tensor]]:
+    ) -> Union[Tuple[torch.Tensor], Dict[str, torch.Tensor]]:
         encoder_skips = []
 
         for i, module in enumerate(
@@ -155,9 +155,9 @@ the tranpose convolution (specified by upmode='fractional')
 
         if self._dict_output:
             return out
-        return out.values()
+        return (*out.values(),)
 
-    def trim(self, idx):  #: Sized[Union[str, int]]):
+    def trim(self, idx: Sequence[Union[str, int]]) -> None:
         if not isinstance(idx, Sized):
             idx = list(idx)
         for a in idx:

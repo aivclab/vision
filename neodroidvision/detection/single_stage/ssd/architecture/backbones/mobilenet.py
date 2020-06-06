@@ -117,8 +117,8 @@ class MobileNetV2(SSDBackbone):
             )
         )
         # make it nn.Sequential
-        self.feature_extractor = nn.Sequential(*feature_extractor)
-        self.extra_funcs = nn.ModuleList(
+        self.features = nn.Sequential(*feature_extractor)
+        self.extras = nn.ModuleList(
             [
                 MobileNetV2.InvertedResidual(1280, 512, 2, 0.2),
                 MobileNetV2.InvertedResidual(512, 256, 2, 0.25),
@@ -152,15 +152,15 @@ weight initialization
     def forward(self, x: Tensor) -> List[Tensor]:
         features = []
         for i in range(14):
-            x = self.feature_extractor[i](x)
+            x = self.features[i](x)
         features.append(x)
 
-        for i in range(14, len(self.feature_extractor)):
-            x = self.feature_extractor[i](x)
+        for i in range(14, len(self.features)):
+            x = self.features[i](x)
         features.append(x)
 
-        for i in range(len(self.extra_funcs)):
-            x = self.extra_funcs[i](x)
+        for i in range(len(self.extras)):
+            x = self.extras[i](x)
             features.append(x)
 
         return features

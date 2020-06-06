@@ -23,6 +23,7 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     global_torch_device,
 )
+from draugr.torch_utilities.sessions.device_sessions import TorchDeviceSession
 from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection import SSDOut
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
@@ -117,7 +118,9 @@ def run_traced_webcam_demo(
     #exit(0)
     """
 
-    with TorchCudaSession(model):
+    with TorchDeviceSession(
+        device=global_torch_device(cuda_if_available=False), model=model
+    ):
         with TorchEvalSession(model):
             for image in tqdm(frame_generator(cv2.VideoCapture(0))):
                 result = SSDOut(
@@ -156,7 +159,13 @@ def run_traced_webcam_demo(
 
 
 def main():
-    from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
+
+    # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
+    # from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    # from .configs.vgg_ssd512_coco_trainval35k import base_cfg
+
+    global_torch_device(override=global_torch_device(cuda_if_available=False))
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
     parser.add_argument(
@@ -164,7 +173,7 @@ def main():
         type=str,
         default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
         "/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        "/models/mobilenet_v2_ssd320_voc0712.pth",
         help="Use weights from path",
     )
     parser.add_argument("--score_threshold", type=float, default=0.7)

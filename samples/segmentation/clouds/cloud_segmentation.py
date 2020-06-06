@@ -11,11 +11,10 @@ from matplotlib import pyplot
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from draugr import chw_to_hwc, float_chw_to_hwc_uint
 from draugr.torch_utilities import (
     TorchEvalSession,
     TorchTrainSession,
-    chw_to_hwc,
-    float_chw_to_hwc_uint,
     global_torch_device,
     torch_seed,
 )

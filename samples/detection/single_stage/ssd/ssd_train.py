@@ -231,8 +231,8 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
         cfg,
         model,
         object_detection_data_loaders(
-            data_root,
-            cfg,
+            data_root=data_root,
+            cfg=cfg,
             split=Split.Training,
             distributed=kws.distributed,
             max_iter=solver_cfg.max_iter // kws.num_gpus,

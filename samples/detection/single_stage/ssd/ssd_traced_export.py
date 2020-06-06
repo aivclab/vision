@@ -90,7 +90,7 @@ def export_detection_model(
                 traced_script_module = torch.jit.trace(
                     model,
                     example_input,
-                    strict=strict_jit,
+                    # strict=strict_jit,
                     check_inputs=(
                         transforms(next(frame_g))[0]
                         .unsqueeze(0)
@@ -102,6 +102,9 @@ def export_detection_model(
                 )
                 exp_path = model_export_path.with_suffix(".traced")
                 traced_script_module.save(str(exp_path))
+                print(
+                    f"Traced Ops used {torch.jit.export_opnames(traced_script_module)}"
+                )
                 sprint(
                     f"Successfully exported JIT Traced model at {exp_path}",
                     color="green",
@@ -113,7 +116,13 @@ def export_detection_model(
 
 
 def main():
-    from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
+
+    # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
+    # from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    # from .configs.vgg_ssd512_coco_trainval35k import base_cfg
+
+    global_torch_device(override=global_torch_device(cuda_if_available=False))
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
     parser.add_argument(
@@ -121,7 +130,11 @@ def main():
         type=str,
         default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
         "/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        "/models/mobilenet_v2_ssd320_voc0712.pth"
+        # "/models/mobilenet_v2_ssd320_voc0712.pth"
+        # "/models/vgg_ssd300_coco_trainval35k.pth"
+        # "/models/vgg_ssd512_coco_trainval35k.pth"
+        ,
         help="Trained " "weights.",
     )
     args = parser.parse_args()
