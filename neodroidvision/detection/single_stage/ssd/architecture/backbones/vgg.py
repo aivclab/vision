@@ -87,7 +87,7 @@ class VGG(SSDBackbone):
         return layers
 
     @staticmethod
-    def add_extra_funcs(cfg, start_in_c_num: Union[str, int], vgg_size: VggSize = 300):
+    def add_extras(cfg, start_in_c_num: Union[str, int], vgg_size: VggSize = 300):
         """
 Extra layers added to VGG for feature scaling
 
@@ -137,7 +137,7 @@ Extra layers added to VGG for feature scaling
 
         self.vgg = nn.ModuleList(self.add_vgg(vgg_config))
         self.extras = nn.ModuleList(
-            self.add_extra_funcs(extras_config, start_in_c_num=1024, vgg_size=vgg_size)
+            self.add_extras(extras_config, start_in_c_num=1024, vgg_size=vgg_size)
         )
         self.l2_norm = L2Norm(512, scale=20)
         self.reset_parameters()
