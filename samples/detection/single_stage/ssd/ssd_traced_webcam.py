@@ -8,29 +8,26 @@ __doc__ = r"""
            """
 
 import argparse
-from pathlib import Path
 from typing import List
 
 import cv2
 import numpy
-
+import torch
 from PIL import ImageFont
 from tqdm import tqdm
 
 from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
 from draugr.torch_utilities import (
-    TorchCudaSession,
+    Split,
+    TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
 )
-from draugr.torch_utilities.sessions.device_sessions import TorchDeviceSession
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection import SSDOut
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from warg import NOD
-import torch
 
 
 @torch.no_grad()
@@ -43,19 +40,19 @@ def run_traced_webcam_demo(
 ):
     """
 
-  :param categories:
-  :type categories:
-  :param cfg:
-  :type cfg:
-  :param model_ckpt:
-  :type model_ckpt:
-  :param score_threshold:
-  :type score_threshold:
-  :param window_name:
-  :type window_name:
-  :return:
-  :rtype:
-  """
+  :param onnx_exported:
+  :type onnx_exported:
+  :param input_cfg:
+  :type input_cfg:
+:param categories:
+:type categories:
+:param score_threshold:
+:type score_threshold:
+:param window_name:
+:type window_name:
+:return:
+:rtype:
+"""
 
     pass
     import torch
@@ -103,20 +100,20 @@ def run_traced_webcam_demo(
 
         """
 
-    buffer.seek(0)
-    torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
+buffer.seek(0)
+torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
 
 
-    buffer.seek(0)
-    model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
+buffer.seek(0)
+model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
 
-    # Load with extra files.
-    extra_files = torch._C.ExtraFilesMap()
-    extra_files['foo.txt'] = 'bar'
-    torch.jit.load('torch_model.traced', _extra_files=extra_files)
-    print(extra_files['foo.txt'])
-    #exit(0)
-    """
+# Load with extra files.
+extra_files = torch._C.ExtraFilesMap()
+extra_files['foo.txt'] = 'bar'
+torch.jit.load('torch_model.traced', _extra_files=extra_files)
+print(extra_files['foo.txt'])
+#exit(0)
+"""
 
     with TorchDeviceSession(
         device=global_torch_device(cuda_if_available=False), model=model
@@ -181,7 +178,7 @@ def main():
 
     run_traced_webcam_demo(
         input_cfg=base_cfg.input,
-        categories=base_cfg.dataset_type.categories,
+        categories=base_cfg.dataset_type.category_sizes,
         score_threshold=args.score_threshold,
     )
 

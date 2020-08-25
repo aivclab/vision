@@ -19,13 +19,13 @@ Implements, via FFT, the following convolution:
 
 .. math::
 
-  f_1(t) = \int dt'\, K(t-t') f_0(t')
+f_1(t) = \int dt'\, K(t-t') f_0(t')
 
 .. math::
 
-  \tilde{f}_1(\omega) = \tilde{K}(\omega) \tilde{f}_0(\omega)
+\tilde{f}_1(\omega) = \tilde{K}(\omega) \tilde{f}_0(\omega)
 
-  # keep_fraction - Define the fraction of coefficients (in each direction) we keep
+# keep_fraction - Define the fraction of coefficients (in each direction) we keep
 
 Compute the 2d FFT of the input image
 Filter in FFT

@@ -35,12 +35,12 @@ The default value of `model_dir` is ``$TORCH_HOME/models`` where
 ``$TORCH_HOME`` defaults to ``~/.torch``. The default directory can be
 overridden with the ``$TORCH_MODEL_ZOO`` environment variable.
 Args:
-  url (string): URL of the object to download
-  model_dir (string, optional): directory in which to save the object
-  progress (bool, optional): whether or not to display a progress bar to stderr
+url (string): URL of the object to download
+model_dir (string, optional): directory in which to save the object
+progress (bool, optional): whether or not to display a progress bar to stderr
 Example:
-  >>> cached_file = maskrcnn_benchmark.utils.model_zoo.custom_cache_url(
-  'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth')
+>>> cached_file = maskrcnn_benchmark.utils.model_zoo.custom_cache_url(
+'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth')
 """
     if model_dir is None:
         model_dir = os.getenv(

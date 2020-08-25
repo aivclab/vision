@@ -8,5 +8,6 @@ __doc__ = r"""
            """
 
 from .backbones import *
-from .box_heads import *
+from .nms_box_heads import *
 from .single_shot_dectection import *
+from .single_shot_dectection_nms import *

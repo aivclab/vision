@@ -14,11 +14,9 @@ from draugr.torch_utilities import (
     global_torch_device,
     warmup_lr_scheduler,
 )
-from neodroidvision.data.datasets.supervised import (
+from neodroidvision.data.detection.coco import (
     CocoEvaluator,
     get_coco_api_from_dataset,
-)
-from neodroidvision.data.datasets.supervised.detection.coco.coco_evaluation import (
     get_iou_types,
 )
 from neodroidvision.utilities import MetricLogger, SmoothedValue, reduce_dict

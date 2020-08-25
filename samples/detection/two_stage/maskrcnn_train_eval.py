@@ -23,7 +23,7 @@ from neodroidvision.data.datasets.supervised.segmentation import PennFudanDatase
 from neodroidvision.data.datasets.supervised.segmentation.penn_fudan import (
     ReturnVariant,
 )
-from neodroidvision.data.datasets.supervised.splitting import Split, SplitByPercentage
+from draugr.torch_utilities import Split, SplitByPercentage
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )

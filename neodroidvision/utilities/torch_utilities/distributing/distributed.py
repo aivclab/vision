@@ -18,12 +18,12 @@ It is especially useful in conjunction with
 process can pass a DistributedSampler instance as a DataLoader sampler,
 and load a subset of the original dataset that is exclusive to it.
 .. note::
-  Dataset is assumed to be of constant size.
+Dataset is assumed to be of constant size.
 Arguments:
-  dataset: Dataset used for sampling.
-  num_replicas (optional): Number of processes participating in
-      distributed training.
-  rank (optional): Rank of the current process within num_replicas.
+dataset: Dataset used for sampling.
+num_replicas (optional): Number of processes participating in
+    distributed training.
+rank (optional): Rank of the current process within num_replicas.
 """
 
     def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):

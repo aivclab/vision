@@ -5,7 +5,7 @@ from torch.utils.data.sampler import BatchSampler
 
 __all__ = ["LimitedBatchResampler", "BatchCollator"]
 
-from draugr.torch_utilities.tensors.tensor_container import TensorTuple
+from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 
 
 class LimitedBatchResampler(BatchSampler):
@@ -52,7 +52,7 @@ class BatchCollator:
                 key: default_collate([d[key] for d in list_targets])
                 for key in list_targets[0]
             }
-            targets = TensorTuple(**targets)
+            targets = NamedTensorTuple(**targets)
 
         else:
             targets = None

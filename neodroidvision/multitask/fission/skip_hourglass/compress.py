@@ -3,6 +3,8 @@ from typing import Tuple
 import torch
 import torch.nn as nn
 
+__all__ = ["Compress"]
+
 
 class Compress(nn.Module):
     """

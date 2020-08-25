@@ -75,9 +75,7 @@ if __name__ == "__main__":
             latent_size=cfg.latent_size, data_size=cfg.data_size
         )
     else:
-        raise ValueError(
-            "Variational distribution not implemented: %s" % cfg.variational
-        )
+        raise ValueError(f"Variational distribution not implemented: {cfg.variational}")
 
     if (cfg.train_dir / "best_state_dict").exists():
         checkpoint = torch.load(cfg.train_dir / "best_state_dict")

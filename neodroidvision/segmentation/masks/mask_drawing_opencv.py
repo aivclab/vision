@@ -19,9 +19,9 @@ def draw_masks(img2: numpy.ndarray, img_mask_list) -> numpy.ndarray:
         temp_mask = numpy.ones([img2.shape[0], img2.shape[1]]) * 127.0 / 255.0
         temp_mask[img_mask_list[ii] == 0] = 0
         if ii < 3:  # use different color for each mask
-            color_mask[:, :, ii] = temp_mask
+            color_mask[..., ii] = temp_mask
         else:
-            (color_mask[:, :, 0], color_mask[:, :, 1], color_mask[:, :, 2]) = (
+            (color_mask[..., 0], color_mask[..., 1], color_mask[..., 2]) = (
                 temp_mask,
                 temp_mask,
                 temp_mask,

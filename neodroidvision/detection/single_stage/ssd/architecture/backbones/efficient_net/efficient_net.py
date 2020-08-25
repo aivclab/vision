@@ -24,11 +24,11 @@ class EfficientNet(SSDBackbone):
 An EfficientNet model. Most easily loaded with the .from_name or .from_pretrained methods
 
 Args:
-  blocks_args (list): A list of BlockArgs to construct blocks
-  global_params (namedtuple): A set of GlobalParams shared between blocks
+blocks_args (list): A list of BlockArgs to construct blocks
+global_params (namedtuple): A set of GlobalParams shared between blocks
 
 Example:
-  model = EfficientNet.from_pretrained('efficientnet-b0')
+model = EfficientNet.from_pretrained('efficientnet-b0')
 
 """
 
@@ -36,11 +36,11 @@ Example:
     def add_extras(cfgs):
         """
 
-    :param cfgs:
-    :type cfgs:
-    :return:
-    :rtype:
-    """
+:param cfgs:
+:type cfgs:
+:return:
+:rtype:
+"""
         extras = nn.ModuleList()
         for cfg in cfgs:
             extra = []
@@ -189,13 +189,13 @@ Example:
     def from_name(cls, model_name, override_params=None):
         """
 
-    :param model_name:
-    :type model_name:
-    :param override_params:
-    :type override_params:
-    :return:
-    :rtype:
-    """
+:param model_name:
+:type model_name:
+:param override_params:
+:type override_params:
+:return:
+:rtype:
+"""
         cls._check_model_name_is_valid(model_name)
         blocks_args, global_params = EfficientNet.get_model_params(
             model_name, override_params
@@ -234,11 +234,11 @@ Loads pretrained weights, and downloads if loading for the first time.
     def get_image_size(cls, model_name):
         """
 
-    :param model_name:
-    :type model_name:
-    :return:
-    :rtype:
-    """
+:param model_name:
+:type model_name:
+:return:
+:rtype:
+"""
         cls._check_model_name_is_valid(model_name)
         *_, res, _ = EfficientNet.efficientnet_params(model_name)
         return res

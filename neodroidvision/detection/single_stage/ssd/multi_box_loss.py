@@ -24,9 +24,9 @@ class MultiBoxLoss(nn.Module):
     def __init__(self, neg_pos_ratio: float):
         """Implement SSD MultiBox Loss.
 
-    Basically, MultiBox loss combines classification loss
-    and Smooth L1 regression loss.
-    """
+Basically, MultiBox loss combines classification loss
+and Smooth L1 regression loss.
+"""
         super().__init__()
         self._neg_pos_ratio = neg_pos_ratio
 
@@ -39,17 +39,19 @@ class MultiBoxLoss(nn.Module):
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute classification loss and smooth l1 loss.
 
-    Args:
-    confidence (batch_size, num_priors, num_categories): class predictions.
-    predicted_locations (batch_size, num_priors, 4): predicted locations.
-    labels (batch_size, num_priors): real labels of all the priors.
-    gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors.
-    """
+Args:
+confidence (batch_size, num_priors, num_categories): class predictions.
+predicted_locations (batch_size, num_priors, 4): predicted locations.
+labels (batch_size, num_priors): real labels of all the priors.
+gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors.
+"""
         num_categories = confidence.size(2)
 
         with torch.no_grad():
             # derived from cross_entropy=sum(log(p))
-            loss = -F.log_softmax(confidence, dim=2)[:, :, 0]
+            loss = -F.log_softmax(confidence, dim=2)[
+                ..., 0
+            ]  # Check dim maybe it should be 1
             mask = hard_negative_mining(loss, labels, self._neg_pos_ratio)
 
         confidence_masked = confidence[mask, :]

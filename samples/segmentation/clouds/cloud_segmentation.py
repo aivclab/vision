@@ -19,7 +19,7 @@ from draugr.torch_utilities import (
     torch_seed,
 )
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets import Split
+from draugr.torch_utilities import Split
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import (
     BCEDiceLoss,
@@ -344,9 +344,9 @@ def main():
 
         pr_mask = numpy.zeros(CloudSegmentationDataset.response_shape)
         for j in range(len(CloudSegmentationDataset.categories)):
-            probability_ = output[:, :, j]
+            probability_ = output[..., j]
             thr, min_size = class_parameters[j][0], class_parameters[j][1]
-            pr_mask[:, :, j], _ = threshold_mask(probability_, thr, min_size)
+            pr_mask[..., j], _ = threshold_mask(probability_, thr, min_size)
         CloudSegmentationDataset.visualise_prediction(
             image_vis,
             pr_mask,

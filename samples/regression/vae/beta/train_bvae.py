@@ -19,7 +19,7 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import Writer
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets import Split
+from draugr.torch_utilities import Split
 from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.regression.visualisation.encoder_utilities import plot_manifold
@@ -37,7 +37,7 @@ import multiprocessing
 
 core_count = min(8, multiprocessing.cpu_count() - 1)
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DL_KWARGS = (
     {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
 )

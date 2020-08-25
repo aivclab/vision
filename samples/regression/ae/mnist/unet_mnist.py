@@ -7,23 +7,28 @@ from itertools import cycle
 from pathlib import Path
 from typing import Iterator
 
+from matplotlib import pyplot
 from torch.nn.modules.module import Module
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
-from torchvision.transforms import transforms
+from torchvision import transforms
 
 from draugr.torch_utilities import (
-    ImageWriter,
     TensorBoardPytorchWriter,
+    TorchEvalSession,
     global_torch_device,
     to_device_tensor_iterator_shitty,
 )
+from draugr.writers import ImageWriterMixin, Writer
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets import Split
+from draugr.torch_utilities import Split
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
 __author__ = "Christian Heider Nielsen"
+
+__doc__ = r"""Denoising Example
+"""
 
 import torch
 from torch import optim
@@ -38,14 +43,38 @@ def training(
     data_iterator: Iterator,
     optimizer: Optimizer,
     scheduler,
-    writer: ImageWriter,
+    writer: Writer,
     interrupted_path: Path,
+    *,
     num_updates=2500000,
     early_stop_threshold=1e-9,
+    denoise: bool = True,
 ) -> Module:
+    """
+
+  :param model:
+  :type model:
+  :param data_iterator:
+  :type data_iterator:
+  :param optimizer:
+  :type optimizer:
+  :param scheduler:
+  :type scheduler:
+  :param writer:
+  :type writer:
+  :param interrupted_path:
+  :type interrupted_path:
+  :param num_updates:
+  :type num_updates:
+  :param early_stop_threshold:
+  :type early_stop_threshold:
+  :return:
+  :rtype:
+  """
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
     since = time.time()
+    # reraser =RandomErasing()
 
     try:
         sess = tqdm(range(num_updates), leave=False, disable=False)
@@ -64,7 +93,18 @@ def training(
 
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(phase == Split.Training):
-                    recon_pred, *_ = model(rgb_imgs)
+                    if denoise:  # =='denoise':
+                        model_input = rgb_imgs + torch.normal(
+                            mean=0.0,
+                            std=0.1,
+                            size=rgb_imgs.shape,
+                            device=global_torch_device(),
+                        )
+                    # elif recover_type=='missing':
+                    #  model_input = rgb_imgs
+                    else:
+                        model_input = rgb_imgs
+                    recon_pred, *_ = model(torch.clamp(model_input, 0.0, 1.0))
                     ret = criterion(recon_pred, rgb_imgs)
 
                     if phase == Split.Training:
@@ -79,10 +119,13 @@ def training(
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     _format = "NCHW"
-                    writer.image(f"rgb_imgs", rgb_imgs, update_i, dataformats=_format)
-                    writer.image(
-                        f"recon_pred", recon_pred, update_i, dataformats=_format
-                    )
+                    if isinstance(writer, ImageWriterMixin):
+                        writer.image(
+                            f"rgb_imgs", rgb_imgs, update_i, dataformats=_format
+                        )
+                        writer.image(
+                            f"recon_pred", recon_pred, update_i, dataformats=_format
+                        )
                     sess.write(f"New best model at update {update_i}")
 
             sess.set_description_str(
@@ -104,13 +147,43 @@ def training(
     return model
 
 
-def inference(model: Module, data_iterator: Iterator):
-    model.eval()
-    inputs, *_ = next(data_iterator)
-    pred, *_ = model(inputs)
+def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
+    """
+
+  :param model:
+  :type model:
+  :param data_iterator:
+  :type data_iterator:
+  """
+    with torch.no_grad():
+        with TorchEvalSession(model):
+            img, target = next(data_iterator)
+            if denoise:
+                model_input = img + torch.normal(
+                    mean=0.0, std=0.1, size=img.shape, device=global_torch_device()
+                )
+            else:
+                model_input = img
+            pred, *_ = model(torch.clamp(model_input, 0.0, 1.0))
+            for i, (s, j) in enumerate(
+                zip(pred.cpu().numpy(), model_input.cpu().numpy())
+            ):
+                pyplot.imshow(j[0])
+                pyplot.show()
+                pyplot.imshow(s[0])
+                pyplot.title(i)
+                pyplot.show()
+                break
 
 
-def main(load_earlier=False, train=True):
+def train_mnist(load_earlier=False, train=True, denoise: bool = True):
+    """
+
+  :param load_earlier:
+  :type load_earlier:
+  :param train:
+  :type train:
+  """
     seed = 2554215
     batch_size = 32
 
@@ -138,6 +211,7 @@ def main(load_earlier=False, train=True):
             transforms.ToTensor(),
             MinMaxNorm(),
             transforms.Lambda(lambda tensor: torch.round(tensor)),
+            # transforms.RandomErasing()
         ]
     )
     dataset = MNIST(
@@ -149,8 +223,8 @@ def main(load_earlier=False, train=True):
     data_iter = to_device_tensor_iterator_shitty(data_iter, device)
 
     model = SkipHourglassFission(
-        input_channels,
-        output_channels,
+        input_channels=input_channels,
+        output_heads=output_channels,
         encoding_depth=unet_depth,
         start_channels=unet_start_channels,
     ).to(global_torch_device())
@@ -166,7 +240,8 @@ def main(load_earlier=False, train=True):
         lastest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {lastest_model_path}")
         if lastest_model_path is not None:
-            model.load_state_dict(torch.load(lastest_model_path))
+            s = torch.load(lastest_model_path)
+            model.load_state_dict(s.state_dict())
 
     if train:
         with TensorBoardPytorchWriter(home_path.user_log / str(time.time())) as writer:
@@ -177,15 +252,16 @@ def main(load_earlier=False, train=True):
                 exp_lr_scheduler,
                 writer,
                 interrupted_path,
+                denoise=denoise,
             )
             torch.save(
                 model, PROJECT_APP_PATH.user_data / f"fission_net{model_file_ending}"
             )
-
-    inference(model, data_iter)
+    else:
+        inference(model, data_iter, denoise=denoise)
 
     torch.cuda.empty_cache()
 
 
 if __name__ == "__main__":
-    main()
+    train_mnist(load_earlier=True, train=False)

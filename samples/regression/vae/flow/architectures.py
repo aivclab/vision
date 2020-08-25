@@ -158,7 +158,7 @@ class NormalLogProb(nn.Module):
         :return:
         :rtype:
         """
-        var = torch.pow(scale, 2)
+        var = scale ** 2
         return -0.5 * torch.log(2 * numpy.pi * var) - torch.pow(z - loc, 2) / (2 * var)
 
 

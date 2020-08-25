@@ -6,6 +6,7 @@ import os
 import time
 from pathlib import Path
 
+import draugr.visualisation.matplotlib_utilities
 from draugr import hwc_to_chw
 from draugr.torch_utilities import (
     ImageWriter,
@@ -13,7 +14,7 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
-from neodroidvision.data.datasets import Split
+from draugr.torch_utilities import Split
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities
 
@@ -144,7 +145,7 @@ def test_model(model, data_iterator, load_path=None):
     pred_rgb = [plot_utilities.masks_to_color_img(hwc_to_chw(x)) for x in pred]
     pred_recon = [hwc_to_chw(x) for x in recon]
 
-    plot_utilities.plot_side_by_side(
+    draugr.visualisation.matplotlib_utilities.plot_side_by_side(
         [input_images_rgb, target_masks_rgb, pred_rgb, pred_recon]
     )
     pyplot.show()

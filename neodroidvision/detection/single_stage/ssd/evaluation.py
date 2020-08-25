@@ -4,11 +4,6 @@ from typing import List
 
 import torch
 import torch.utils.data
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.datasets.supervised.detection.coco import (
     COCODataset,
     coco_evaluation,
@@ -17,7 +12,12 @@ from neodroidvision.data.datasets.supervised.detection.voc import (
     VOCDataset,
     voc_evaluation,
 )
-from neodroidvision.data.datasets.supervised.splitting import Split
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr.torch_utilities import Split
+from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.object_detection_dataloader import (
     object_detection_data_loaders,
 )
@@ -74,12 +74,12 @@ def accumulate_predictions_from_multiple_gpus(predictions_per_gpu) -> list:
 def evaluate_dataset(dataset, predictions, output_dir, **kwargs) -> dict:
     """evaluate dataset using different methods based on dataset type.
 Args:
-  dataset: Dataset object
-  predictions(list[(boxes, labels, scores)]): Each item in the list represents the
-      prediction results for one image. And the index should match the dataset index.
-  output_dir: output folder, to save evaluation files or results.
+dataset: Dataset object
+predictions(list[(boxes, labels, scores)]): Each item in the list represents the
+    prediction results for one image. And the index should match the dataset index.
+output_dir: output folder, to save evaluation files or results.
 Returns:
-  evaluation result
+evaluation result
 """
     kws = dict(
         dataset=dataset, predictions=predictions, output_dir=output_dir, **kwargs

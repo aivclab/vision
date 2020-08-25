@@ -30,19 +30,19 @@ def neodroid_camera_data_iterator(env, device, batch_size=12):
         normals_responses = []
         while len(rgb) < batch_size:
             env.update()
-            rgb_arr = env.sensor("RGB")
-            seg_arr = env.sensor("Layer")
-            depth_arr = env.sensor("CompressedDepth")
-            normal_arr = env.sensor("Normal")
+            rgb_arr = env._sensor("RGB")
+            seg_arr = env._sensor("Layer")
+            depth_arr = env._sensor("CompressedDepth")
+            normal_arr = env._sensor("Normal")
 
             red_mask = numpy.zeros(seg_arr.shape[:-1])
             green_mask = numpy.zeros(seg_arr.shape[:-1])
             blue_mask = numpy.zeros(seg_arr.shape[:-1])
             # alpha_mask = numpy.ones(seg_arr.shape[:-1])
 
-            reddish = seg_arr[:, :, 0] > 50
-            greenish = seg_arr[:, :, 1] > 50
-            blueish = seg_arr[:, :, 2] > 50
+            reddish = seg_arr[..., 0] > 50
+            greenish = seg_arr[..., 1] > 50
+            blueish = seg_arr[..., 2] > 50
 
             red_mask[reddish] = 1
             green_mask[greenish] = 1

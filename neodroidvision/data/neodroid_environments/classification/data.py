@@ -32,9 +32,9 @@ def NeodroidEnvClassificationGenerator(env, batch_size=64):
         class_responses = []
         while len(predictors) < batch_size:
             state = env.update()
-            rgb_arr = state.sensor("RGB").value
+            rgb_arr = state._sensor("RGB").value
             rgb_arr = Image.open(rgb_arr).convert("RGB")
-            a_class = state.sensor("Class").value
+            a_class = state._sensor("Class").value
 
             predictors.append(a_transform(rgb_arr))
             class_responses.append(int(a_class))
@@ -59,9 +59,9 @@ def PooledNeodroidEnvClassificationGenerator(env, device, batch_size=64):
 
             while len(predictors) < self.batch_size:
                 state = self.env.update()
-                rgb_arr = state.sensor("RGB").value
+                rgb_arr = state._sensor("RGB").value
                 rgb_arr = Image.open(rgb_arr).convert("RGB")
-                a_class = state.sensor("Class").value
+                a_class = state._sensor("Class").value
 
                 predictors.append(a_transform(rgb_arr))
                 class_responses.append(int(a_class))

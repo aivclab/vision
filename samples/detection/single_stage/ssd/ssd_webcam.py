@@ -21,8 +21,8 @@ from apppath import ensure_existence
 from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
-from neodroidvision.detection import SingleShotDectection
+from draugr.torch_utilities import Split
+from neodroidvision.detection import SingleShotDectection, SingleShotDectectionNms
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
@@ -59,7 +59,7 @@ def run_webcam_demo(
     transforms = SSDTransform(
         input_cfg.image_size, input_cfg.pixel_mean, split=Split.Testing
     )
-    model = SingleShotDectection(cfg)
+    model = SingleShotDectectionNms(cfg)
 
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
@@ -125,7 +125,7 @@ def main():
     run_webcam_demo(
         cfg=base_cfg,
         input_cfg=base_cfg.input,
-        categories=base_cfg.dataset_type.categories,
+        categories=base_cfg.dataset_type.category_sizes,
         model_ckpt=Path(args.ckpt),
         score_threshold=args.score_threshold,
     )

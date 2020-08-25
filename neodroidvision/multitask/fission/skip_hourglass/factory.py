@@ -32,9 +32,12 @@ def fcn_encoder(in_channels: int, depth: int, start_channels: int) -> Tuple[List
     new_layer_channels = start_channels
     prev_layer_channels = in_channels
     for i in range(depth):
-        pooling = True if i < depth - 1 else False
-        new_layer_channels = new_layer_channels * 2
-        down_conv = Compress(prev_layer_channels, new_layer_channels, pooling=pooling)
+        new_layer_channels *= 2
+        down_conv = Compress(
+            prev_layer_channels,
+            new_layer_channels,
+            pooling=True if i < depth - 1 else False,
+        )
         prev_layer_channels = new_layer_channels
         down_convolutions.append(down_conv)
 

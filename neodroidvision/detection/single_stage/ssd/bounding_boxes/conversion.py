@@ -18,18 +18,18 @@ def locations_to_boxes(
     """Convert regressional location results of SSD into boxes in the form of (center_x, center_y, h, w).
 
 The conversion:
-  $$predicted\_center * center_variance = \frac {real\_center - prior\_center} {prior\_hw}$$
-  $$exp(predicted\_hw * size_variance) = \frac {real\_hw} {prior\_hw}$$
+$$predicted\_center * center_variance = \frac {real\_center - prior\_center} {prior\_hw}$$
+$$exp(predicted\_hw * size_variance) = \frac {real\_hw} {prior\_hw}$$
 We do it in the inverse direction here.
 Args:
-  locations (batch_size, num_priors, 4): the regression output of SSD. It will contain the outputs as
-  well.
-  priors (num_priors, 4) or (batch_size/1, num_priors, 4): prior boxes.
-  center_variance: a float used to change the scale of center.
-  size_variance: a float used to change of scale of size.
+locations (batch_size, num_priors, 4): the regression output of SSD. It will contain the outputs as
+well.
+priors (num_priors, 4) or (batch_size/1, num_priors, 4): prior boxes.
+center_variance: a float used to change the scale of center.
+size_variance: a float used to change of scale of size.
 Returns:
-  boxes:  priors: [[center_x, center_y, w, h]]. All the values
-      are relative to the image size.
+boxes:  priors: [[center_x, center_y, w, h]]. All the values
+    are relative to the image size.
 """
     # priors can have one dimension less.
     if priors.dim() + 1 == locations.dim():

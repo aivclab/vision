@@ -3,6 +3,8 @@ import torch.nn as nn
 
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 
+__all__ = ["Decompress"]
+
 
 class Decompress(nn.Module):
     """
@@ -104,6 +106,4 @@ from_up: upconv'd tensor from the decoder pathway
         else:
             x = from_up + from_down
 
-        x = torch.relu(self.conv1(x))
-        x = torch.relu(self.conv2(x))
-        return x
+        return torch.relu(self.conv2(torch.relu(self.conv1(x))))

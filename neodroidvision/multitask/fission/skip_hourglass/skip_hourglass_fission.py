@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, List, Sequence, Sized, Tuple, Union
+from typing import Dict, Iterable, Sequence, Tuple, Union
 
 import numpy
 import torch
@@ -11,6 +11,8 @@ from neodroidvision.multitask.fission.skip_hourglass.factory import (
     fcn_encoder,
 )
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
+
+__all__ = ["SkipHourglassFission"]
 
 
 class SkipHourglassFission(nn.Module):
@@ -69,7 +71,7 @@ the tranpose convolution (specified by upmode='fractional')
     ):
         """
 :type input_channels: int
-:type output_heads: Sized
+:type output_heads: Union[Dict, Iterable]
 :type encoding_depth: int
 :type start_channels: int
 :type up_mode: str
@@ -140,7 +142,7 @@ the tranpose convolution (specified by upmode='fractional')
 
         for i, module in enumerate(
             self.down_convolutions
-        ):  # encoder pathway, save outputs for merging
+        ):  # encoder pathway, keep outputs for merging
             x_enc, before_pool = module(x_enc)
             encoder_skips.append(before_pool)
 
@@ -158,7 +160,7 @@ the tranpose convolution (specified by upmode='fractional')
         return (*out.values(),)
 
     def trim(self, idx: Sequence[Union[str, int]]) -> None:
-        if not isinstance(idx, Sized):
+        if not isinstance(idx, Sequence):
             idx = list(idx)
         for a in idx:
             if not isinstance(a, str):

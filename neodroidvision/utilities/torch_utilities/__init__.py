@@ -5,5 +5,5 @@ from .distributing import *
 from .layers import *
 from .mechanims import *
 from .non_maximum_suppression import *
-from .tuple_transforms import *
 from .output_activation import *
+from .tuple_transforms import *

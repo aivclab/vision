@@ -35,7 +35,7 @@ window or the global series average.
 
     def synchronise_between_processes_torch(self):
         """
-  Warning: does not synchronize the deque!
+Warning: does not synchronize the deque!
 """
         if not is_distribution_available_and_initialized():
             return

@@ -3,15 +3,14 @@ from pathlib import Path
 
 import cv2
 import torch
-from torch import onnx
+from torch import onnx, quantization
 from tqdm import tqdm
 
 from apppath import ensure_existence
 from draugr import sprint
 from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import global_torch_device
+from draugr.torch_utilities import Split, global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
@@ -58,7 +57,24 @@ def export_detection_model(
     transforms = SSDTransform(
         cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
     )
-    model.eval()
+    model.eval()  # Important!
+
+    fuse_quantize_model = False
+    if fuse_quantize_model:
+        modules_to_fuse = [
+            ["conv", "bn", "relu"]
+        ]  # Names of modules to fuse, maybe supply directly for architecture class/declaration
+        model = torch.quantization.fuse_modules(
+            model, modules_to_fuse=modules_to_fuse, inplace=False
+        )
+
+    pre_quantize_model = False
+    if pre_quantize_model:  # Accuracy may drop!
+        if True:
+            model = quantization.quantize_dynamic(model, dtype=torch.qint8)
+        else:
+            pass
+            # model = quantization.quantize(model)
 
     frame_g = frame_generator(cv2.VideoCapture(0))
     for image in tqdm(frame_g):
@@ -113,6 +129,17 @@ def export_detection_model(
                 sprint(f"Torch JIT Trace export does not work!, {e_i}", color="red")
 
         break
+
+    """
+  post_quantize_model = False
+  if post_quantize_model: # Accuracy may drop!
+    traced_model = model
+    if True:
+      q_model=quantization.prepare_script(traced_model)
+      ... qmodel.forward(...) .. training
+      q_model=quantization.convert_script(traced_model)
+      q_model.save('model.qtraced')
+  """
 
 
 def main():

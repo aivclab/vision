@@ -16,7 +16,7 @@ __doc__ = r"""
 class NeodroidCameraObservationDataset(Dataset):
     """
 
-  """
+"""
 
     # mean = numpy.array([0.485, 0.456, 0.406])
     # std = numpy.array([0.229, 0.224, 0.225])
@@ -69,8 +69,8 @@ class NeodroidCameraObservationDataset(Dataset):
 
         state = next(self.env_iter)
         state = state[list(state.keys())[0]]
-        img = state.sensor("RGB").value
-        label = state.sensor("Class").value
+        img = state._sensor("RGB").value
+        label = state._sensor("Class").value
 
         img = self.trans(Image.fromarray(img, "RGBA"))
 

@@ -83,9 +83,9 @@ def all_gather(data) -> List[bytes]:
     """
 Run all_gather on arbitrary picklable data (not necessarily tensors)
 Args:
-  data: any picklable object
+data: any picklable object
 Returns:
-  list[data]: list of data gathered from each rank
+list[data]: list of data gathered from each rank
 """
     world_size = global_world_size()
     if world_size == 1:
@@ -127,8 +127,8 @@ Returns:
 def reduce_dict(input_dict: dict, average: bool = True) -> dict:
     """
 Args:
-  input_dict (dict): all the values will be reduced
-  average (bool): whether to do average or sum
+input_dict (dict): all the values will be reduced
+average (bool): whether to do average or sum
 Reduce the values in the dictionary from all processes so that all processes
 have the averaged results. Returns a dict with the same fields as
 input_dict, after reduction.
@@ -181,8 +181,8 @@ def init_distributed_mode(args) -> None:
 
 def synchronise_torch_barrier() -> None:
     """
-   Helper function to synchronize (barrier) among all processes when
-   using distributed training
+ Helper function to synchronize (barrier) among all processes when
+ using distributed training
 """
     if not distributed.is_available():
         return

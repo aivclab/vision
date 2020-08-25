@@ -13,7 +13,7 @@ from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroid.environments.droid_environment import UnityEnvironment
 from neodroid.utilities import extract_all_cameras
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
+from draugr.torch_utilities import Split
 from neodroidvision.detection import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
@@ -67,7 +67,7 @@ def run_webcam_demo(
         for infos in tqdm(UnityEnvironment(connect_to_running=True)):
             info = next(iter(infos.values()))
             new_images = extract_all_cameras(info)
-            image = next(iter(new_images.values()))[:, :, :3][:, :, ::-1]
+            image = next(iter(new_images.values()))[..., :3][..., ::-1]
             image = gamma_correct_float_to_byte(image)
             result = model(transforms(image)[0].unsqueeze(0).to(global_torch_device()))[
                 0
@@ -112,7 +112,7 @@ def main():
 
     run_webcam_demo(
         cfg=base_cfg,
-        categories=base_cfg.dataset_type.categories,
+        categories=base_cfg.dataset_type.category_sizes,
         model_ckpt=Path(args.ckpt),
         score_threshold=args.score_threshold,
     )

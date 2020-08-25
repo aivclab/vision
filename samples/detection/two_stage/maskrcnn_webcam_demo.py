@@ -19,7 +19,7 @@ from draugr.torch_utilities import (
     to_tensor_generator,
 )
 from neodroidvision.data.datasets.supervised.segmentation import PennFudanDataset
-from neodroidvision.data.datasets.supervised.splitting import Split
+from draugr.torch_utilities import Split
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )

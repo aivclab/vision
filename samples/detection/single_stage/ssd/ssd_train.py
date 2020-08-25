@@ -17,10 +17,10 @@ from draugr.torch_utilities import (
     WarmupMultiStepLR,
 )
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
+from draugr.torch_utilities import Split
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
-    SingleShotDectection,
+    SingleShotDectectionNms,
     do_ssd_evaluation,
     object_detection_data_loaders,
     reduce_loss_dict,
@@ -190,7 +190,7 @@ def inner_train_ssd(
 
 def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
     logger = logging.getLogger("SSD.trainer")
-    model = SingleShotDectection(cfg)
+    model = SingleShotDectectionNms(cfg)
     device = torch.device(cfg.model.device)
 
     if kws.distributed:

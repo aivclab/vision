@@ -151,8 +151,8 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
     ## Grid Search for best Threshold
     class_params = {}
 
-    for class_id in CloudDataset.classes.keys():
-        print(CloudDataset.classes[class_id])
+    for class_id in CloudDataset._categories.keys():
+        print(CloudDataset._categories[class_id])
         attempts = []
         for t in range(0, 100, 5):
             t /= 100
@@ -199,8 +199,8 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
         mask = mask.astype("uint8").transpose(1, 2, 0)
         pr_mask = numpy.zeros((350, 525, 4))
         for j in range(4):
-            probability_ = resize_image_cv(output[:, :, j])
-            pr_mask[:, :, j], _ = post_process(
+            probability_ = resize_image_cv(output[..., j])
+            pr_mask[..., j], _ = post_process(
                 probability_, class_params[j][0], class_params[j][1]
             )
         visualize_with_raw(

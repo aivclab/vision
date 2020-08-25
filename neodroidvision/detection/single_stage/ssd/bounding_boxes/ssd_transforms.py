@@ -24,7 +24,7 @@ from draugr.opencv_utilities import (
     ConvertFromInts,
     SubtractMeans,
 )
-from neodroidvision.data.datasets.supervised.splitting import Split
+from draugr.torch_utilities import Split
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
     ssd_assign_priors,
@@ -42,18 +42,18 @@ __all__ = ["SSDTransform", "SSDAnnotationTransform"]
 class SSDTransform(torch.nn.Module):
     """
 
-  """
+"""
 
     def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: Split):
         """
 
-    :param image_size:
-    :type image_size:
-    :param pixel_mean:
-    :type pixel_mean:
-    :param split:
-    :type split:
-    """
+:param image_size:
+:type image_size:
+:param pixel_mean:
+:type pixel_mean:
+:param split:
+:type split:
+"""
         super().__init__()
 
         transform_list = []
@@ -79,18 +79,18 @@ class SSDTransform(torch.nn.Module):
     def __call__(self, *x):
         """
 
-    :param x:
-    :type x:
-    :return:
-    :rtype:
-    """
+:param x:
+:type x:
+:return:
+:rtype:
+"""
         return self.transforms(*x)
 
 
 class SSDAnnotationTransform(torch.nn.Module):
     """
 
-  """
+"""
 
     def __init__(
         self,
@@ -103,17 +103,17 @@ class SSDAnnotationTransform(torch.nn.Module):
     ):
         """
 
-    :param image_size:
-    :type image_size:
-    :param priors_cfg:
-    :type priors_cfg:
-    :param center_variance:
-    :type center_variance:
-    :param size_variance:
-    :type size_variance:
-    :param iou_threshold:
-    :type iou_threshold:
-    """
+:param image_size:
+:type image_size:
+:param priors_cfg:
+:type priors_cfg:
+:param center_variance:
+:type center_variance:
+:param size_variance:
+:type size_variance:
+:param iou_threshold:
+:type iou_threshold:
+"""
         super().__init__()
         self.center_form_priors = build_priors(image_size=image_size, **priors_cfg)
         self.corner_form_priors = center_to_corner_form(self.center_form_priors)
@@ -124,13 +124,13 @@ class SSDAnnotationTransform(torch.nn.Module):
     def __call__(self, gt_boxes: Any, gt_labels: Any) -> Tuple:
         """
 
-    :param gt_boxes:
-    :type gt_boxes:
-    :param gt_labels:
-    :type gt_labels:
-    :return:
-    :rtype:
-    """
+:param gt_boxes:
+:type gt_boxes:
+:param gt_labels:
+:type gt_labels:
+:return:
+:rtype:
+"""
         if type(gt_boxes) is numpy.ndarray:
             gt_boxes = torch.from_numpy(gt_boxes)
 
