@@ -1,6 +1,6 @@
 from typing import Any
 
-import torch.nn as nn
+from torch import nn
 
 
 class SSDBackbone(nn.Module):

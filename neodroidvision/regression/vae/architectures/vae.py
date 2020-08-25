@@ -22,7 +22,7 @@ class VAE(torch.nn.Module):
             self.size = size
 
         def forward(self, tensor):
-            return tensor.view(self.size)
+            return tensor.reshape(self.size)
 
     @staticmethod
     def kaiming_init(m):

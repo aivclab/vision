@@ -8,28 +8,26 @@ __doc__ = r"""
            """
 
 import argparse
-from pathlib import Path
 from typing import List
 
 import cv2
 import numpy
-
+import torch
 from PIL import ImageFont
-from tqdm import tqdm
-
-from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
-from draugr.torch_utilities import (
-    TorchCudaSession,
-    TorchEvalSession,
-    global_torch_device,
-)
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection import SSDOut
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
+from tqdm import tqdm
 from warg import NOD
-import torch
+
+from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
+from draugr.torch_utilities import (
+    Split,
+    TorchDeviceSession,
+    TorchEvalSession,
+    global_torch_device,
+)
 
 
 @torch.no_grad()
@@ -42,19 +40,19 @@ def run_traced_webcam_demo(
 ):
     """
 
-  :param categories:
-  :type categories:
-  :param cfg:
-  :type cfg:
-  :param model_ckpt:
-  :type model_ckpt:
-  :param score_threshold:
-  :type score_threshold:
-  :param window_name:
-  :type window_name:
-  :return:
-  :rtype:
-  """
+:param onnx_exported:
+:type onnx_exported:
+:param input_cfg:
+:type input_cfg:
+:param categories:
+:type categories:
+:param score_threshold:
+:type score_threshold:
+:param window_name:
+:type window_name:
+:return:
+:rtype:
+"""
 
     pass
     import torch
@@ -102,22 +100,24 @@ def run_traced_webcam_demo(
 
         """
 
-    buffer.seek(0)
-    torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
+buffer.seek(0)
+torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
 
 
-    buffer.seek(0)
-    model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
+buffer.seek(0)
+model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
 
-    # Load with extra files.
-    extra_files = torch._C.ExtraFilesMap()
-    extra_files['foo.txt'] = 'bar'
-    torch.jit.load('torch_model.traced', _extra_files=extra_files)
-    print(extra_files['foo.txt'])
-    #exit(0)
-    """
+# Load with extra files.
+extra_files = torch._C.ExtraFilesMap()
+extra_files['foo.txt'] = 'bar'
+torch.jit.load('torch_model.traced', _extra_files=extra_files)
+print(extra_files['foo.txt'])
+#exit(0)
+"""
 
-    with TorchCudaSession(model):
+    with TorchDeviceSession(
+        device=global_torch_device(cuda_if_available=False), model=model
+    ):
         with TorchEvalSession(model):
             for image in tqdm(frame_generator(cv2.VideoCapture(0))):
                 result = SSDOut(
@@ -156,7 +156,13 @@ def run_traced_webcam_demo(
 
 
 def main():
-    from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
+
+    # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
+    # from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    # from .configs.vgg_ssd512_coco_trainval35k import base_cfg
+
+    global_torch_device(override=global_torch_device(cuda_if_available=False))
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
     parser.add_argument(
@@ -164,7 +170,7 @@ def main():
         type=str,
         default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
         "/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        "/models/mobilenet_v2_ssd320_voc0712.pth",
         help="Use weights from path",
     )
     parser.add_argument("--score_threshold", type=float, default=0.7)
@@ -172,7 +178,7 @@ def main():
 
     run_traced_webcam_demo(
         input_cfg=base_cfg.input,
-        categories=base_cfg.dataset_type.categories,
+        categories=base_cfg.dataset_type.category_sizes,
         score_threshold=args.score_threshold,
     )
 

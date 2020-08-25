@@ -23,7 +23,7 @@ from neodroidvision.data.datasets.supervised.segmentation import PennFudanDatase
 from neodroidvision.data.datasets.supervised.segmentation.penn_fudan import (
     ReturnVariant,
 )
-from neodroidvision.data.datasets.supervised.splitting import Split, SplitByPercentage
+from draugr.torch_utilities import Split, SplitByPercentage
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )
@@ -52,23 +52,25 @@ if __name__ == "__main__":
     dataset = PennFudanDataset(
         dataset_root / "PennFudanPed", Split.Training, return_variant=ReturnVariant.all
     )
-    dataset_test = PennFudanDataset(
-        dataset_root / "PennFudanPed", Split.Testing, return_variant=ReturnVariant.all
+    dataset_validation = PennFudanDataset(
+        dataset_root / "PennFudanPed",
+        Split.Validation,
+        return_variant=ReturnVariant.all,
     )
-    split = SplitByPercentage(len(dataset))
+    split = SplitByPercentage(len(dataset), validation=0.3, testing=0)
 
     split_indices = torch.randperm(split.total_num).tolist()
 
     data_loader = DataLoader(
-        Subset(dataset, split_indices[: -split.testing_num]),
+        Subset(dataset, split_indices[: -split.validation_num]),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
         collate_fn=collate_batch_fn,
     )
 
-    data_loader_test = DataLoader(
-        Subset(dataset_test, split_indices[-split.testing_num]),
+    data_loader_val = DataLoader(
+        Subset(dataset_validation, split_indices[-split.validation_num :]),
         batch_size=1,
         shuffle=False,
         num_workers=num_workers,
@@ -84,10 +86,12 @@ if __name__ == "__main__":
             # train for one epoch, printing every 10 iterations
             train_single_epoch(model, optimizer, data_loader, epoch_i, log_frequency=10)
             lr_scheduler.step()  # update the learning rate
-            maskrcnn_evaluate(model, data_loader_test)  # evaluate on the test dataset
+            maskrcnn_evaluate(
+                model, data_loader_val
+            )  # evaluate on the validation dataset
 
     with TorchEvalSession(model):  # put the model in evaluation mode
-        img, _ = dataset_test[0]  # pick one image from the test set
+        img, _ = dataset_validation[0]  # pick one image from the test set
 
         with torch.no_grad():
             prediction = model([img.to(global_torch_device())])

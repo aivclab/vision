@@ -11,16 +11,16 @@ from pathlib import Path
 from typing import List, Union
 
 import torch
-from torch.utils.data import ConcatDataset, DataLoader
-
 from neodroidvision.data.datasets.supervised.detection.multi_dataset import MultiDataset
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.utilities import (
     BatchCollator,
     DistributedSampler,
     LimitedBatchResampler,
 )
+from torch.utils.data import ConcatDataset, DataLoader
 from warg import NOD
+
+from draugr.torch_utilities import Split
 
 __all__ = ["object_detection_data_loaders"]
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from draugr.torch_utilities import global_torch_device
 from warg.named_ordered_dictionary import NOD
+
+from draugr.torch_utilities import global_torch_device
 from .architectures import Generator, VariationalFlow, VariationalMeanField
 from .data_loader import load_binary_mnist
 
@@ -75,9 +76,7 @@ if __name__ == "__main__":
             latent_size=cfg.latent_size, data_size=cfg.data_size
         )
     else:
-        raise ValueError(
-            "Variational distribution not implemented: %s" % cfg.variational
-        )
+        raise ValueError(f"Variational distribution not implemented: {cfg.variational}")
 
     if (cfg.train_dir / "best_state_dict").exists():
         checkpoint = torch.load(cfg.train_dir / "best_state_dict")

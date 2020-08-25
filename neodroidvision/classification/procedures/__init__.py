@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 __author__ = "Christian Heider Nielsen"
 
-from .procedures import *
+from .classification_procedures import *

@@ -20,11 +20,11 @@ class MobileInvertedResidualBottleneckConvBlock(nn.Module):
 Mobile Inverted Residual Bottleneck Block
 
 Args:
-  block_args (namedtuple): BlockArgs, see above
-  global_params (namedtuple): GlobalParam, see above
+block_args (namedtuple): BlockArgs, see above
+global_params (namedtuple): GlobalParam, see above
 
 Attributes:
-  has_se (bool): Whether the block contains a Squeeze and Excitation layer.
+has_se (bool): Whether the block contains a Squeeze and Excitation layer.
 """
 
     def __init__(self, block_args, global_params):

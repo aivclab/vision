@@ -1,13 +1,13 @@
 import numpy
 import pytest
 import torch
-import torch.nn as nn
 from neodroidvision.regression.vae.exclude.vqvae2 import (
     PixelAttention,
     PixelCNN,
     PixelConvA,
     PixelConvB,
 )
+from torch import nn
 
 TEST_IMG_WIDTH = 7
 TEST_IMG_HEIGHT = 11

@@ -1,6 +1,6 @@
 import sys
 import warnings
-from typing import Any
+
 import torch
 import torchvision
 
@@ -28,11 +28,11 @@ def non_maximum_suppression(boxes, scores, iou_threshold: float) -> torch.Tensor
     """ Performs non-maximum suppression, run on GPU or CPU according to
 boxes's device.
 Args:
-    boxes(Tensor[N, 4]): boxes in (x1, y1, x2, y2) format, use absolute coordinates(or relative coordinates)
-    scores(Tensor[N]): scores
-    nms_thresh(float): thresh
+boxes(Tensor[N, 4]): boxes in (x1, y1, x2, y2) format, use absolute coordinates(or relative coordinates)
+scores(Tensor[N]): scores
+nms_thresh(float): thresh
 Returns:
-    indices kept.
+indices kept.
 """
     return nms_support(boxes, scores, iou_threshold)
 
@@ -40,17 +40,17 @@ Returns:
 def my_batched_nms(boxes, scores, idxs, iou_threshold) -> torch.Tensor:
     """
 
-  :param boxes:
-  :type boxes:
-  :param scores:
-  :type scores:
-  :param idxs:
-  :type idxs:
-  :param iou_threshold:
-  :type iou_threshold:
-  :return:
-  :rtype:
-  """
+:param boxes:
+:type boxes:
+:param scores:
+:type scores:
+:param idxs:
+:type idxs:
+:param iou_threshold:
+:type iou_threshold:
+:return:
+:rtype:
+"""
     if boxes.numel() == 0:
         return torch.empty((0,), dtype=torch.int64, device=boxes.device)
         # strategy: in order to perform NMS independently per class.
@@ -77,21 +77,21 @@ will not be applied between elements of different categories.
 Parameters
 ----------
 boxes : Tensor[N, 4]
-    boxes where NMS will be performed. They
-    are expected to be in (x1, y1, x2, y2) format
+boxes where NMS will be performed. They
+are expected to be in (x1, y1, x2, y2) format
 scores : Tensor[N]
-    scores for each one of the boxes
+scores for each one of the boxes
 idxs : Tensor[N]
-    indices of the categories for each one of the boxes.
+indices of the categories for each one of the boxes.
 iou_threshold : float
-    discards all overlapping boxes
-    with IoU < iou_threshold
+discards all overlapping boxes
+with IoU < iou_threshold
 
 Returns
 -------
 keep : Tensor
-    int64 tensor with the indices of
-    the elements that have been kept by NMS, sorted
-    in decreasing order of scores
+int64 tensor with the indices of
+the elements that have been kept by NMS, sorted
+in decreasing order of scores
 """
     return batched_support(boxes, scores, idxs, iou_threshold)

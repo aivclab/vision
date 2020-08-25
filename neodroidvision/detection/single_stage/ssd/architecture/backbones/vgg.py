@@ -3,12 +3,11 @@ from typing import List, Union
 
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor
-
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
 from neodroidvision.utilities.torch_utilities import L2Norm
+from torch import Tensor
 
 
 class VGG(SSDBackbone):
@@ -87,7 +86,7 @@ class VGG(SSDBackbone):
         return layers
 
     @staticmethod
-    def add_extra_funcs(cfg, start_in_c_num: Union[str, int], vgg_size: VggSize = 300):
+    def add_extras(cfg, start_in_c_num: Union[str, int], vgg_size: VggSize = 300):
         """
 Extra layers added to VGG for feature scaling
 
@@ -137,7 +136,7 @@ Extra layers added to VGG for feature scaling
 
         self.vgg = nn.ModuleList(self.add_vgg(vgg_config))
         self.extras = nn.ModuleList(
-            self.add_extra_funcs(extras_config, start_in_c_num=1024, vgg_size=vgg_size)
+            self.add_extras(extras_config, start_in_c_num=1024, vgg_size=vgg_size)
         )
         self.l2_norm = L2Norm(512, scale=20)
         self.reset_parameters()

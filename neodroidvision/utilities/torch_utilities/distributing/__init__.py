@@ -9,3 +9,5 @@ __doc__ = r"""
 
 from .distributed import *
 from .distributing_utilities import *
+from .metrics import *
+from .serialisation import *

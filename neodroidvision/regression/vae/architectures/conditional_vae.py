@@ -25,7 +25,7 @@ class Encoder(nn.Module):
         self.linear_log_var = nn.Linear(layer_sizes[-1], latent_size)
 
     def forward(self, x, condition):
-        x = torch.cat((x.view(-1, self.input_size), condition), dim=-1)
+        x = torch.cat((x.reshape(-1, self.input_size), condition), dim=-1)
 
         x = self.multi_layer_perceptron(x)
 

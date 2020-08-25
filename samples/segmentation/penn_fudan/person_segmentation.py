@@ -5,21 +5,23 @@ from pathlib import Path
 import numpy
 import torch
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from draugr.opencv_utilities import cv2_resize
+# from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
+    Split,
     TorchCacheSession,
+    TorchDeviceSession,
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
     torch_seed,
 )
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
-from neodroidvision.segmentation import BCEDiceLoss
-from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -27,12 +29,9 @@ __doc__ = r"""
            Created on 09/10/2019
            """
 
-from neodroidvision.data.datasets.supervised.segmentation import PennFudanDataset
-from neodroidvision.data.datasets.supervised import Split
 
-
-def reschedule(model, epoch, scheduler):
-    "This can be improved its just a hacky way to write SGDWR "
+def reschedule_learning_rate(model, epoch, scheduler):
+    r"""This may be improved its just a hacky way to write SGDWR"""
     if epoch == 7:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
         current_lr = next(iter(optimizer.param_groups))["lr"]
@@ -61,7 +60,7 @@ def reschedule(model, epoch, scheduler):
     return model, scheduler
 
 
-def train_segmenter(
+def train_person_segmenter(
     model,
     train_loader,
     valid_loader,
@@ -100,18 +99,19 @@ def train_segmenter(
         valid_loss = 0.0
         dice_score = 0.0
 
-        for data, target in tqdm(train_loader):
-            data, target = (
-                data.to(global_torch_device()),
-                target.to(global_torch_device()),
-            )
-            optimizer.zero_grad()
-            output, *_ = model(data)
-            output = torch.sigmoid(output)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-            train_loss += loss.item() * data.size(0)
+        with TorchTrainSession(model):
+            for data, target in tqdm(train_loader):
+                data, target = (
+                    data.to(global_torch_device()),
+                    target.to(global_torch_device()),
+                )
+                optimizer.zero_grad()
+                output, *_ = model(data)
+                output = torch.sigmoid(output)
+                loss = criterion(output, target)
+                loss.backward()
+                optimizer.step()
+                train_loss += loss.item() * data.size(0)
 
         with TorchEvalSession(model):
             with torch.no_grad():
@@ -155,7 +155,7 @@ def train_segmenter(
             valid_loss_min = valid_loss
 
         scheduler.step()
-        model, scheduler = reschedule(model, epoch, scheduler)
+        model, scheduler = reschedule_learning_rate(model, epoch, scheduler)
 
     return model
 
@@ -163,7 +163,9 @@ def train_segmenter(
 def main():
     pyplot.style.use("bmh")
 
-    base_path = Path.home() / "Data" / "Datasets" / "PennFudanPed"
+    # base_path = Path.home() / "Data" / "Datasets" / "PennFudanPed"
+    # base_path = Path('/media/heider/2F8901B64D76E552/Datasets/Vision/Segmentation/PennFudanPed')
+    base_path = Path.home() / "/Data" / "PennFudanPed"
 
     save_model_path = PROJECT_APP_PATH.user_data / "penn_fudan_ped_seg.model"
     train_a = False
@@ -199,17 +201,17 @@ def main():
 
         with TorchTrainSession(model):
             criterion = BCEDiceLoss(eps=1.0)
-            optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+            optimiser = torch.optim.SGD(model.parameters(), lr=learning_rate)
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-                optimizer, 7, eta_min=learning_rate / 100, last_epoch=-1
+                optimiser, T_max=7, eta_min=learning_rate / 100, last_epoch=-1
             )
 
-            model = train_segmenter(
+            model = train_person_segmenter(
                 model,
                 train_loader,
                 valid_loader,
                 criterion,
-                optimizer,
+                optimiser,
                 scheduler,
                 save_model_path,
             )
@@ -219,36 +221,46 @@ def main():
             model.load_state_dict(torch.load(str(save_model_path)))
             print("loading saved model")
 
-        with torch.no_grad():
-            with TorchCacheSession():
-                with TorchEvalSession(model):
-                    valid_masks = []
-                    a = (350, 525)
-                    tr = min(len(valid_loader.dataset) * 4, 2000)
-                    probabilities = numpy.zeros((tr, *a), dtype=numpy.float32)
-                    for sample_i, (data, target) in enumerate(tqdm(valid_loader)):
-                        data = data.to(global_torch_device())
-                        target = target.cpu().detach().numpy()
-                        outpu, *_ = model(data)
-                        outpu = torch.sigmoid(outpu).cpu().detach().numpy()
-                        for p in range(data.shape[0]):
-                            output, mask = outpu[p], target[p]
-                            for m in mask:
-                                valid_masks.append(cv2_resize(m, a))
-                            for probability in output:
-                                probabilities[sample_i, :, :] = cv2_resize(
-                                    probability, a
-                                )
-                                sample_i += 1
+        with TorchDeviceSession(global_torch_device(cuda_if_available=False), model):
+            with torch.no_grad():
+                with TorchCacheSession():
+                    with TorchEvalSession(model):
+                        valid_masks = []
+                        a = (350, 525)
+                        tr = min(len(valid_loader.dataset) * 4, 2000)
+                        probabilities = numpy.zeros((tr, *a), dtype=numpy.float32)
+                        for sample_i, (data, target) in enumerate(tqdm(valid_loader)):
+                            data = data.to(global_torch_device())
+                            target = target.cpu().detach().numpy()
+                            outpu, *_ = model(data)
+                            outpu = torch.sigmoid(outpu).cpu().detach().numpy()
+                            for p in range(data.shape[0]):
+                                output, mask = outpu[p], target[p]
+                                """
+for m in mask:
+  valid_masks.append(cv2_resize(m, a))
+for probability in output:
+  probabilities[sample_i, :, :] = cv2_resize(probability, a)
+  sample_i += 1
+"""
+                                if sample_i >= tr - 1:
+                                    break
                             if sample_i >= tr - 1:
                                 break
-                        if sample_i >= tr - 1:
-                            break
 
-                    pyplot.imshow(probabilities[0])
-                    pyplot.show()
-                    pyplot.imshow(valid_masks[0])
-                    pyplot.show()
+                        f, ax = pyplot.subplots(3, 3, figsize=(24, 12))
+
+                        for i in range(3):
+                            ax[0, i].imshow(valid_masks[i], vmin=0, vmax=1)
+                            ax[0, i].set_title("Original", fontsize=14)
+
+                            ax[1, i].imshow(valid_masks[i], vmin=0, vmax=1)
+                            ax[1, i].set_title("Target", fontsize=14)
+
+                            ax[2, i].imshow(probabilities[i], vmin=0, vmax=1)
+                            ax[2, i].set_title("Prediction", fontsize=14)
+
+                        pyplot.show()
 
 
 if __name__ == "__main__":

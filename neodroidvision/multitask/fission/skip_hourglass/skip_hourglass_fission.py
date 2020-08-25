@@ -1,16 +1,18 @@
-from typing import Dict, Iterable, Sized, Union
+from typing import Dict, Iterable, Sequence, Tuple, Union
 
 import numpy
 import torch
-import torch.nn as nn
-from torch.nn import init
-
-from draugr.torch_utilities import to_tensor
 from neodroidvision.multitask.fission.skip_hourglass.factory import (
     fcn_decoder,
     fcn_encoder,
 )
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
+from torch import nn
+from torch.nn import init
+
+from draugr.torch_utilities import to_tensor
+
+__all__ = ["SkipHourglassFission"]
 
 
 class SkipHourglassFission(nn.Module):
@@ -69,7 +71,7 @@ the tranpose convolution (specified by upmode='fractional')
     ):
         """
 :type input_channels: int
-:type output_heads: Sized
+:type output_heads: Union[Dict, Iterable]
 :type encoding_depth: int
 :type start_channels: int
 :type up_mode: str
@@ -124,23 +126,23 @@ the tranpose convolution (specified by upmode='fractional')
         self.reset_params()
 
     @staticmethod
-    def weight_init(m: nn.Module):
+    def weight_init(m: nn.Module) -> None:
         if isinstance(m, nn.Conv2d):
             init.xavier_normal_(m.weight)
             init.constant_(m.bias, 0)
 
-    def reset_params(self):
+    def reset_params(self) -> None:
         for i, m in enumerate(self.modules()):
             self.weight_init(m)
 
     def forward(
         self, x_enc: torch.Tensor
-    ):  # -> Union[List[torch.Tensor],Dict[torch.Tensor]]:
+    ) -> Union[Tuple[torch.Tensor], Dict[str, torch.Tensor]]:
         encoder_skips = []
 
         for i, module in enumerate(
             self.down_convolutions
-        ):  # encoder pathway, save outputs for merging
+        ):  # encoder pathway, keep outputs for merging
             x_enc, before_pool = module(x_enc)
             encoder_skips.append(before_pool)
 
@@ -155,10 +157,10 @@ the tranpose convolution (specified by upmode='fractional')
 
         if self._dict_output:
             return out
-        return out.values()
+        return (*out.values(),)
 
-    def trim(self, idx):  #: Sized[Union[str, int]]):
-        if not isinstance(idx, Sized):
+    def trim(self, idx: Sequence[Union[str, int]]) -> None:
+        if not isinstance(idx, Sequence):
             idx = list(idx)
         for a in idx:
             if not isinstance(a, str):

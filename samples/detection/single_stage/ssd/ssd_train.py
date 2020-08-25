@@ -6,21 +6,10 @@ import time
 from pathlib import Path
 
 import torch
-from torch.nn import Module
-from torch.optim import Optimizer
-from torch.utils.data import DataLoader
-
-from draugr.torch_utilities import (
-    TorchCacheSession,
-    TorchEvalSession,
-    TorchTrainSession,
-    WarmupMultiStepLR,
-)
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
-    SingleShotDectection,
+    SingleShotDectectionNms,
     do_ssd_evaluation,
     object_detection_data_loaders,
     reduce_loss_dict,
@@ -33,8 +22,19 @@ from neodroidvision.utilities import (
     set_benchmark_device_dist,
     setup_distributed_logger,
 )
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
 from warg import NOD
 from warg.arguments import str2bool
+
+from draugr.torch_utilities import (
+    Split,
+    TorchCacheSession,
+    TorchEvalSession,
+    TorchTrainSession,
+    WarmupMultiStepLR,
+)
 
 
 def inner_train_ssd(
@@ -190,7 +190,7 @@ def inner_train_ssd(
 
 def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
     logger = logging.getLogger("SSD.trainer")
-    model = SingleShotDectection(cfg)
+    model = SingleShotDectectionNms(cfg)
     device = torch.device(cfg.model.device)
 
     if kws.distributed:
@@ -231,8 +231,8 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
         cfg,
         model,
         object_detection_data_loaders(
-            data_root,
-            cfg,
+            data_root=data_root,
+            cfg=cfg,
             split=Split.Training,
             distributed=kws.distributed,
             max_iter=solver_cfg.max_iter // kws.num_gpus,

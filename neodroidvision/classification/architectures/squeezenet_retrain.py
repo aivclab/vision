@@ -1,10 +1,12 @@
 import torch
 import torchvision
 
-from draugr.torch_utilities.freezing.retrain_utilities import (
-    get_trainable_parameters,
+from draugr.torch_utilities import (
     set_all_parameter_requires_grad,
+    trainable_parameters,
 )
+
+__all__ = ["squeezenet_retrain"]
 
 
 def squeezenet_retrain(
@@ -15,8 +17,8 @@ def squeezenet_retrain(
         set_all_parameter_requires_grad(model)
 
     model.num_categories = num_classes
-    model.classifier[1] = torch.nn.Conv2d(
+    model._action_classifier[1] = torch.nn.Conv2d(
         512, num_classes, kernel_size=(1, 1), stride=(1, 1)
     )
 
-    return model, get_trainable_parameters(model)
+    return model, trainable_parameters(model)

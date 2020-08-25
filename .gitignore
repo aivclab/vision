@@ -1,6 +1,7 @@
 docs/build/
 dist/
 .vscode
+*~refs
 .installed.cfg
 develop-eggs
 downloads
@@ -15,6 +16,8 @@ venv/
 *.pb
 *.onnx
 *.traced
+*.pth
+*.pt
 
 classification_report.pdf
 classification_report.html

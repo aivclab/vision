@@ -3,7 +3,6 @@ from neodroidvision.detection.single_stage.ssd.config.ssd_config import base_cfg
 
 base_cfg.data_dir = base_cfg.data_dir / "PASCAL" / "Train"
 
-
 base_cfg.model.backbone.update(out_channels=(512, 1024, 512, 256, 256, 256, 256))
 base_cfg.model.box_head.priors.update(
     feature_maps=(64, 32, 16, 8, 4, 2, 1),

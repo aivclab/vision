@@ -8,10 +8,10 @@ __doc__ = r"""
            """
 
 import fire
+from neodroidvision import get_version
 from pyfiglet import Figlet
 
 import draugr
-from neodroidvision import get_version
 
 sponsors = "SINTEF Ocean, Alexandra Institute, Norges Forskningsråd"
 margin_percentage = 0 / 6

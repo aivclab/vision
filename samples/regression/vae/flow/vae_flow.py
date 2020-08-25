@@ -174,12 +174,12 @@ From https://github.com/ikostrikov/pytorch-flows/blob/master/main.py
     def forward(self, inputs, context=None, mode="forward"):
         if mode == "forward":
             return (
-                inputs[:, :, self.perm],
+                inputs[..., self.perm],
                 torch.zeros_like(inputs, device=inputs.device),
             )
         elif mode == "inverse":
             return (
-                inputs[:, :, self.inv_perm],
+                inputs[..., self.inv_perm],
                 torch.zeros_like(inputs, device=inputs.device),
             )
         else:

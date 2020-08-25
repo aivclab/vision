@@ -9,20 +9,23 @@ __doc__ = r"""
 
 import logging
 import os
-import pickle
 import sys
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 import torch
 import torch.utils.data
+from neodroidvision.utilities.torch_utilities.distributing.serialisation import (
+    deserialise_byte_tensor,
+    to_byte_tensor,
+)
 from torch import distributed
 
 __all__ = [
-    "all_gather",
+    "all_gather_cuda",
     "reduce_dict",
     "setup_for_distributed",
-    "is_distribution_available_and_initialized",
+    "is_distribution_ready",
     "is_main_process",
     "init_distributed_mode",
     "save_on_master",
@@ -34,7 +37,11 @@ __all__ = [
 ]
 
 
-def is_distribution_available_and_initialized() -> bool:
+def is_distribution_ready() -> bool:
+    """
+
+  :return:
+  """
     if not distributed.is_available():
         return False
     if not distributed.is_initialized():
@@ -43,22 +50,40 @@ def is_distribution_available_and_initialized() -> bool:
 
 
 def global_world_size() -> int:
-    if not is_distribution_available_and_initialized():
+    """
+
+  :return:
+  """
+    if not is_distribution_ready():
         return 1
     return distributed.get_world_size()
 
 
 def global_distribution_rank() -> int:
-    if not is_distribution_available_and_initialized():
+    """
+
+  :return:
+  """
+    if not is_distribution_ready():
         return 0
     return distributed.get_rank()
 
 
 def is_main_process() -> bool:
+    """
+
+  :return:
+  """
     return global_distribution_rank() == 0
 
 
 def save_on_master(*args, **kwargs) -> None:
+    """
+
+  :param args:
+  :param kwargs:
+  :return:
+  """
     if is_main_process():
         torch.save(*args, **kwargs)
 
@@ -79,22 +104,19 @@ This function disables printing when not in master process
     __builtin__.print = print
 
 
-def all_gather(data) -> List[bytes]:
+def all_gather_cuda(data: Any) -> List[bytes]:
     """
 Run all_gather on arbitrary picklable data (not necessarily tensors)
 Args:
-  data: any picklable object
+data: any picklable object
 Returns:
-  list[data]: list of data gathered from each rank
+list[data]: list of data gathered from each rank
 """
     world_size = global_world_size()
     if world_size == 1:
         return [data]
 
-    # serialized to a Tensor
-    buffer = pickle.dumps(data)
-    storage = torch.ByteStorage.from_buffer(buffer)
-    tensor = torch.ByteTensor(storage).to("cuda")
+    tensor = to_byte_tensor(data, device="cuda")
 
     # obtain Tensor size of each rank
     local_size = torch.tensor([tensor.numel()], device="cuda")
@@ -116,19 +138,14 @@ Returns:
         tensor = torch.cat((tensor, padding), dim=0)
     distributed.all_gather(tensor_list, tensor)
 
-    data_list = []
-    for size, tensor in zip(size_list, tensor_list):
-        buffer = tensor.cpu().numpy().tobytes()[:size]
-        data_list.append(pickle.loads(buffer))
-
-    return data_list
+    return deserialise_byte_tensor(size_list, tensor_list)
 
 
 def reduce_dict(input_dict: dict, average: bool = True) -> dict:
     """
 Args:
-  input_dict (dict): all the values will be reduced
-  average (bool): whether to do average or sum
+input_dict (dict): all the values will be reduced
+average (bool): whether to do average or sum
 Reduce the values in the dictionary from all processes so that all processes
 have the averaged results. Returns a dict with the same fields as
 input_dict, after reduction.
@@ -151,7 +168,7 @@ input_dict, after reduction.
     return reduced_dict
 
 
-def init_distributed_mode(args) -> None:
+def init_distributed_mode(args: Any) -> None:
     if "RANK" in os.environ and "WORLD_SIZE" in os.environ:
         args.rank = int(os.environ["RANK"])
         args.world_size = int(os.environ["WORLD_SIZE"])
@@ -165,9 +182,9 @@ def init_distributed_mode(args) -> None:
         return
 
     args.distributed = True
-
     torch.cuda.set_device(args.gpu)
     args.dist_backend = "nccl"
+
     print(f"| distributed init (rank {args.rank}): {args.dist_url}", flush=True)
     torch.distributed.init_process_group(
         backend=args.dist_backend,
@@ -181,12 +198,10 @@ def init_distributed_mode(args) -> None:
 
 def synchronise_torch_barrier() -> None:
     """
-   Helper function to synchronize (barrier) among all processes when
-   using distributed training
+ Helper function to synchronize (barrier) among all processes when
+ using distributed training
 """
-    if not distributed.is_available():
-        return
-    if not distributed.is_initialized():
+    if not is_distribution_ready():
         return
     world_size = distributed.get_world_size()
     if world_size == 1:
@@ -194,23 +209,16 @@ def synchronise_torch_barrier() -> None:
     distributed.barrier()
 
 
-def torch_byte_tensor_encode(encoded_data, data) -> None:
-    # gets a byte representation for the data
-    encoded_bytes = pickle.dumps(data)
-    # convert this byte string into a byte tensor
-    storage = torch.ByteStorage.from_buffer(encoded_bytes)
-    tensor = torch.ByteTensor(storage).to("cuda")
-    # encoding: first byte is the size and then rest is the data
-    s = tensor.numel()
-    assert s <= 255, "Can't encode data greater than 255 bytes"
-    # put the encoded data in encoded_data
-    encoded_data[0] = s
-    encoded_data[1 : (s + 1)] = tensor
-
-
 def setup_distributed_logger(
     name: str, distributed_rank: int, save_dir: Path = None
 ) -> logging.Logger:
+    """
+
+  :param name:
+  :param distributed_rank:
+  :param save_dir:
+  :return:
+  """
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     # don't log results for the non-master process
@@ -230,10 +238,17 @@ def setup_distributed_logger(
 
 
 def set_benchmark_device_dist(distributed: bool, local_rank: int) -> None:
+    """
+
+  :param distributed:
+  :param local_rank:
+  :return:
+  """
     if torch.cuda.is_available():
         # This flag allows you to enable the inbuilt cudnn auto-tuner to
         # find the best algorithm to use for your hardware.
         torch.backends.cudnn.benchmark = True
+
     if distributed:
         torch.cuda.set_device(local_rank)
         torch.distributed.init_process_group(backend="nccl", init_method="env://")

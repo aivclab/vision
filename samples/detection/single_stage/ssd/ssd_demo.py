@@ -6,17 +6,16 @@ from pathlib import Path
 import numpy
 import torch
 from PIL import Image, ImageFont
-
 from apppath import ensure_existence
-from draugr.opencv_utilities import draw_bouding_boxes
-from draugr.torch_utilities import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
+
+from draugr.opencv_utilities import draw_bouding_boxes
+from draugr.torch_utilities import Split, global_torch_device
 
 
 @torch.no_grad()
@@ -113,7 +112,7 @@ def main():
 
     run_demo(
         cfg=base_cfg,
-        class_names=base_cfg.dataset_type.categories,
+        class_names=base_cfg.dataset_type.category_sizes,
         model_ckpt=args.ckpt,
         score_threshold=args.score_threshold,
         images_dir=Path(args.images_dir),

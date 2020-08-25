@@ -12,6 +12,5 @@ from .bounding_boxes import *
 
 # from .config import *
 from .evaluation import *
-from .metrics import *
 from .multi_box_loss import *
 from .object_detection_dataloader import *

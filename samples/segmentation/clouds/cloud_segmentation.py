@@ -8,19 +8,7 @@ import numpy
 import pandas
 import torch
 from matplotlib import pyplot
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr.torch_utilities import (
-    TorchEvalSession,
-    TorchTrainSession,
-    chw_to_hwc,
-    float_chw_to_hwc_uint,
-    global_torch_device,
-    torch_seed,
-)
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets import Split
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import (
     BCEDiceLoss,
@@ -28,6 +16,17 @@ from neodroidvision.segmentation import (
     mask_to_run_length,
 )
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr import chw_to_hwc, float_chw_to_hwc_uint
+from draugr.torch_utilities import (
+    Split,
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+    torch_seed,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -345,9 +344,9 @@ def main():
 
         pr_mask = numpy.zeros(CloudSegmentationDataset.response_shape)
         for j in range(len(CloudSegmentationDataset.categories)):
-            probability_ = output[:, :, j]
+            probability_ = output[..., j]
             thr, min_size = class_parameters[j][0], class_parameters[j][1]
-            pr_mask[:, :, j], _ = threshold_mask(probability_, thr, min_size)
+            pr_mask[..., j], _ = threshold_mask(probability_, thr, min_size)
         CloudSegmentationDataset.visualise_prediction(
             image_vis,
             pr_mask,

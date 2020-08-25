@@ -7,6 +7,8 @@ __doc__ = r"""
            Created on 19/10/2019
            """
 
+__all__ = ["no_gradient_fusion", "late_gradient_fusion", "early_gradient_fusion"]
+
 
 def no_gradient_fusion():
     """ calculate gradient per individual loss function and optimisers and pass on gradient updates

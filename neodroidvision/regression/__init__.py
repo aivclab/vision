@@ -3,3 +3,9 @@
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
+
+from .denoise import *
+from .flow import *
+from .generative import *
+from .metric import *
+from .vae import *

@@ -7,10 +7,9 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from neodroidvision.detection import efficient_net_b3_factory
-
-from neodroidvision.detection.single_stage.ssd.config.ssd_config import base_cfg
 from neodroidvision.data.datasets.supervised.detection.voc import VOCDataset
+from neodroidvision.detection import efficient_net_b3_factory
+from neodroidvision.detection.single_stage.ssd.config.ssd_config import base_cfg
 
 base_cfg.data_dir = base_cfg.data_dir / "PASCAL" / "Train"
 

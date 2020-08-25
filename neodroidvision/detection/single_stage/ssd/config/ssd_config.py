@@ -11,7 +11,6 @@ base_cfg.data_dir = Path("/media/heider/2F8901B64D76E552/Datasets/Vision/Detecti
 # base_cfg.DATA_DIR = Path.home() / "Data" / "Datasets"
 base_cfg.output_dir = PROJECT_APP_PATH.user_data / "results"
 
-
 # ---------------------------------------------------------------------------- #
 # Model
 # ---------------------------------------------------------------------------- #
@@ -27,7 +26,6 @@ base_cfg.model.backbone.name = vgg_factory
 base_cfg.model.backbone.out_channels = (512, 1024, 512, 256, 256, 256)
 base_cfg.model.backbone.pretrained = True
 base_cfg.model.backbone.predictor_type = SSDBoxPredictor
-
 
 # ---------------------------------------------------------------------------- #
 # Head
@@ -74,7 +72,6 @@ base_cfg.model.box_head.priors.boxes_per_location = (
     4,
 )  # number of boxes per feature map location
 base_cfg.model.box_head.priors.clip = True
-
 
 # -----------------------------------------------------------------------------
 # Input

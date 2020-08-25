@@ -3,21 +3,20 @@ from pathlib import Path
 
 import cv2
 import torch
-from torch import onnx
-from tqdm import tqdm
-
 from apppath import ensure_existence
-from draugr import sprint
-from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
+from torch import onnx, quantization
+from tqdm import tqdm
 from warg import NOD
+
+from draugr import sprint
+from draugr.opencv_utilities import frame_generator
+from draugr.torch_utilities import Split, global_torch_device
 
 
 @torch.no_grad()
@@ -58,7 +57,24 @@ def export_detection_model(
     transforms = SSDTransform(
         cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
     )
-    model.eval()
+    model.eval()  # Important!
+
+    fuse_quantize_model = False
+    if fuse_quantize_model:
+        modules_to_fuse = [
+            ["conv", "bn", "relu"]
+        ]  # Names of modules to fuse, maybe supply directly for architecture class/declaration
+        model = torch.quantization.fuse_modules(
+            model, modules_to_fuse=modules_to_fuse, inplace=False
+        )
+
+    pre_quantize_model = False
+    if pre_quantize_model:  # Accuracy may drop!
+        if True:
+            model = quantization.quantize_dynamic(model, dtype=torch.qint8)
+        else:
+            pass
+            # model = quantization.quantize(model)
 
     frame_g = frame_generator(cv2.VideoCapture(0))
     for image in tqdm(frame_g):
@@ -90,7 +106,7 @@ def export_detection_model(
                 traced_script_module = torch.jit.trace(
                     model,
                     example_input,
-                    strict=strict_jit,
+                    # strict=strict_jit,
                     check_inputs=(
                         transforms(next(frame_g))[0]
                         .unsqueeze(0)
@@ -102,6 +118,9 @@ def export_detection_model(
                 )
                 exp_path = model_export_path.with_suffix(".traced")
                 traced_script_module.save(str(exp_path))
+                print(
+                    f"Traced Ops used {torch.jit.export_opnames(traced_script_module)}"
+                )
                 sprint(
                     f"Successfully exported JIT Traced model at {exp_path}",
                     color="green",
@@ -111,9 +130,26 @@ def export_detection_model(
 
         break
 
+    """
+post_quantize_model = False
+if post_quantize_model: # Accuracy may drop!
+  traced_model = model
+  if True:
+    q_model=quantization.prepare_script(traced_model)
+    ... qmodel.forward(...) .. training
+    q_model=quantization.convert_script(traced_model)
+    q_model.save('model.qtraced')
+"""
+
 
 def main():
-    from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
+
+    # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
+    # from configs.vgg_ssd300_coco_trainval35k import base_cfg
+    # from .configs.vgg_ssd512_coco_trainval35k import base_cfg
+
+    global_torch_device(override=global_torch_device(cuda_if_available=False))
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
     parser.add_argument(
@@ -121,7 +157,11 @@ def main():
         type=str,
         default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
         "/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        "/models/mobilenet_v2_ssd320_voc0712.pth"
+        # "/models/mobilenet_v2_ssd320_voc0712.pth"
+        # "/models/vgg_ssd300_coco_trainval35k.pth"
+        # "/models/vgg_ssd512_coco_trainval35k.pth"
+        ,
         help="Trained " "weights.",
     )
     args = parser.parse_args()

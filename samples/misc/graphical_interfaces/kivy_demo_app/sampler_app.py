@@ -12,11 +12,11 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
+from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
 
 from draugr.torch_utilities import global_torch_device
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
-from neodroidvision.data.datasets.supervised.classification.vgg_face2 import VggFaces2
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -29,13 +29,13 @@ Window.clearcolor = (0.9, 0.9, 0.9, 1)
 CHANNELS = 3
 MIN = -1
 MAX = 1
-DEVICE = torch.device("cpu")
+GLOBAL_DEVICE = torch.device("cpu")
 ENCODING_SIZE = 10
 
 DS = VggFaces2
 MODEL = BurgessVae(CHANNELS, ENCODING_SIZE).to(global_torch_device())
 CHECKPOINT = torch.load(
-    PROJECT_APP_PATH.user_data / "bvae" / "best_state_dict", map_location=DEVICE
+    PROJECT_APP_PATH.user_data / "bvae" / "best_state_dict", map_location=GLOBAL_DEVICE
 )
 MODEL.load_state_dict(CHECKPOINT)
 
@@ -143,7 +143,7 @@ class MainLayout(BoxLayout):
                 self.ids.slider9.value,
                 self.ids.slider10.value,
             ],
-            device=DEVICE,
+            device=GLOBAL_DEVICE,
         )
         rgb: torch.Tensor = rgb
         rgb = DS.inverse_transform(rgb)

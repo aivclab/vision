@@ -3,3 +3,4 @@
 __author__ = "Christian Heider Nielsen"
 
 from .center_loss import *
+from .ranking import *

@@ -13,8 +13,8 @@ from typing import Tuple
 
 import numpy
 import torch
-
 from warg import drop_unused_kws
+
 from .tensor_metrics import iou_of_tensors
 
 __all__ = ["build_priors", "ssd_assign_priors"]
@@ -36,7 +36,7 @@ It returns the center, height and width of the priors. The values are relative t
 Returns:
 priors (num_priors, 4): The prior boxes represented as [[center_x, center_y, w, h]]. All the
 values
-    are relative to the image size.
+are relative to the image size.
 """
 
     priors = []
@@ -83,20 +83,20 @@ def ssd_assign_priors(
     """Assign ground truth boxes and targets to priors.
 
 Args:
-  gt_boxes (num_targets, 4): ground truth boxes.
-  gt_labels (num_targets): labels of targets.
-  priors (num_priors, 4): corner form priors
+gt_boxes (num_targets, 4): ground truth boxes.
+gt_labels (num_targets): labels of targets.
+priors (num_priors, 4): corner form priors
 Returns:
-  boxes (num_priors, 4): real values for priors.
-  labels (num_priros): labels for priors.
-  :param gt_boxes:
-  :type gt_boxes:
-  :param gt_labels:
-  :type gt_labels:
-  :param corner_form_priors:
-  :type corner_form_priors:
-  :param iou_threshold:
-  :type iou_threshold:
+boxes (num_priors, 4): real values for priors.
+labels (num_priros): labels for priors.
+:param gt_boxes:
+:type gt_boxes:
+:param gt_labels:
+:type gt_labels:
+:param corner_form_priors:
+:type corner_form_priors:
+:param iou_threshold:
+:type iou_threshold:
 """
     # size: num_priors x num_targets
     ious = iou_of_tensors(gt_boxes.unsqueeze(0), corner_form_priors.unsqueeze(1))

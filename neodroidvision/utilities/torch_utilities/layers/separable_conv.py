@@ -4,6 +4,10 @@ __all__ = ["SeparableConv2d"]
 
 
 class SeparableConv2d(nn.Module):
+    """
+
+  """
+
     def __init__(
         self,
         in_channels,
@@ -13,6 +17,15 @@ class SeparableConv2d(nn.Module):
         padding=0,
         onnx_compatible=False,
     ):
+        """
+
+    :param in_channels:
+    :param out_channels:
+    :param kernel_size:
+    :param stride:
+    :param padding:
+    :param onnx_compatible:
+    """
         super().__init__()
         ReLU = nn.ReLU if onnx_compatible else nn.ReLU6
         self.conv = nn.Sequential(
