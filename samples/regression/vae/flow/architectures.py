@@ -19,7 +19,7 @@ from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 class MLP(nn.Module):
     """
 
-    """
+  """
 
     def __init__(self, input_size, output_size, hidden_size):
         super().__init__()
@@ -35,11 +35,11 @@ class MLP(nn.Module):
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """
 
-        :param input:
-        :type input:
-        :return:
-        :rtype:
-        """
+    :param input:
+    :type input:
+    :return:
+    :rtype:
+    """
         return self.net(input)
 
 
@@ -149,15 +149,15 @@ class NormalLogProb(nn.Module):
     def forward(self, loc, scale, z):
         """
 
-        :param loc:
-        :type loc:
-        :param scale:
-        :type scale:
-        :param z:
-        :type z:
-        :return:
-        :rtype:
-        """
+    :param loc:
+    :type loc:
+    :param scale:
+    :type scale:
+    :param z:
+    :type z:
+    :return:
+    :rtype:
+    """
         var = scale ** 2
         return -0.5 * torch.log(2 * numpy.pi * var) - torch.pow(z - loc, 2) / (2 * var)
 
@@ -165,7 +165,7 @@ class NormalLogProb(nn.Module):
 class BernoulliLogProb(nn.Module):
     """
 
-    """
+  """
 
     def __init__(self):
         super().__init__()

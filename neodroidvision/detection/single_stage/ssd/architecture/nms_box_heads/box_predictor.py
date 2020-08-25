@@ -87,10 +87,10 @@ class BoxPredictor(nn.Module):
         batch_size = features[0].shape[0]
 
         return (
-            torch.cat([c.view(c.shape[0], -1) for c in cls_logits], dim=1).view(
+            torch.cat([c.reshape(c.shape[0], -1) for c in cls_logits], dim=1).reshape(
                 batch_size, -1, self.num_categories
             ),
-            torch.cat([l.view(l.shape[0], -1) for l in bbox_pred], dim=1).view(
+            torch.cat([l.reshape(l.shape[0], -1) for l in bbox_pred], dim=1).reshape(
                 batch_size, -1, 4
             ),
         )

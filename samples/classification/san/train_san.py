@@ -14,14 +14,10 @@ import torch.nn.parallel
 import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import torch.utils.data
-from tensorboardX import SummaryWriter
-
-from draugr.metrics.meters import AverageMeter
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
 )
-from draugr.torch_utilities import Split
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,
@@ -29,14 +25,18 @@ from san_utilities import (
     mixup_loss,
     smooth_loss,
 )
+from tensorboardX import SummaryWriter
+
+from draugr.metrics.meters import AverageMeter
+from draugr.torch_utilities import Split
 
 
 def find_unclaimed_port():
     """
-  # NOTE: there is still a chance the port could be taken by other processes.
-  :return:
-  :rtype:
-  """
+# NOTE: there is still a chance the port could be taken by other processes.
+:return:
+:rtype:
+"""
     import socket
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -191,9 +191,14 @@ def main_worker(gpu, ngpus_per_node, config):
     for epoch in range(CONFIG.start_epoch, CONFIG.epochs):
         if CONFIG.distributed:
             train_sampler.set_epoch(epoch)
-        loss_train, mIoU_train, mAcc_train, allAcc_train, top1_train, top5_train = train(
-            train_loader, model, criterion, optimizer, epoch
-        )
+        (
+            loss_train,
+            mIoU_train,
+            mAcc_train,
+            allAcc_train,
+            top1_train,
+            top5_train,
+        ) = train(train_loader, model, criterion, optimizer, epoch)
         loss_val, mIoU_val, mAcc_val, allAcc_val, top1_val, top5_val = validate(
             val_loader, model, criterion
         )

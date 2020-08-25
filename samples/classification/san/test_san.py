@@ -10,14 +10,14 @@ import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 from matplotlib import pyplot
-
-from draugr.metrics.meters import AverageMeter
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
 )
-from draugr.torch_utilities import Split
 from san_utilities import cal_accuracy, intersection_and_union_gpu
+
+from draugr.metrics.meters import AverageMeter
+from draugr.torch_utilities import Split
 
 if __name__ == "__main__":
 

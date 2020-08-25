@@ -6,10 +6,10 @@ from pathlib import Path
 import cv2
 import numpy
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
 from pynput import keyboard
 
 from draugr.opencv_utilities.opencv_drawing_utilities import draw_cube
-from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -138,10 +138,10 @@ with keyboard.Listener(
 
         """
 new_camera_mtx, roi = cv2.getOptimalNewCameraMatrix(camera_mtx,
-                                            dist_coef,
-                                            shape_,
-                                            1,
-                                            shape_)
+                                        dist_coef,
+                                        shape_,
+                                        1,
+                                        shape_)
 
 # This is the shortest path. Just call the function and use ROI obtained above to crop the result.
 dst = cv2.undistort(img, camera_mtx, dist_coef, None, new_camera_mtx)
@@ -160,13 +160,13 @@ pyplot.show()
 tot_error = 0
 for i in range(len(object_points)):
 point_projections, _ = cv2.projectPoints(object_points[i],
-                                   rot_vecs[i],
-                                   trans_vecs[i],
-                                   camera_mtx,
-                                   dist_coef)
+                               rot_vecs[i],
+                               trans_vecs[i],
+                               camera_mtx,
+                               dist_coef)
 error = cv2.norm(img_points[i],
-           point_projections,
-           cv2.NORM_L2) / len(point_projections)
+       point_projections,
+       cv2.NORM_L2) / len(point_projections)
 tot_error += error
 
 print(f"total error:{tot_error / len(object_points)}")

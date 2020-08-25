@@ -1,8 +1,6 @@
 from typing import List, Tuple
 
 import torch
-from torch import nn
-
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.efficient_net_utilities import (
     Conv2dSamePadding,
     MobileInvertedResidualBottleneckConvBlock,
@@ -17,6 +15,7 @@ from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbo
 from neodroidvision.utilities.torch_utilities.custom_model_caching import (
     load_state_dict_from_url,
 )
+from torch import nn
 
 
 class EfficientNet(SSDBackbone):

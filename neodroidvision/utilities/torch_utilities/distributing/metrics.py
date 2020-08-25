@@ -10,9 +10,10 @@ __doc__ = r"""
 import typing
 
 import torch
+from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
+    global_world_size,
+)
 from torch import distributed as dist
-
-from neodroidvision.utilities import global_world_size
 
 __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 

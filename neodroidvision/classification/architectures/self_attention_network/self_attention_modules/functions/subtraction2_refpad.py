@@ -127,23 +127,23 @@ class Subtraction2Refpad(Function):
     ) -> torch.Tensor:
         """
 
-    :param ctx:
-    :type ctx:
-    :param input1:
-    :type input1:
-    :param input2:
-    :type input2:
-    :param kernel_size:
-    :type kernel_size:
-    :param stride:
-    :type stride:
-    :param padding:
-    :type padding:
-    :param dilation:
-    :type dilation:
-    :return:
-    :rtype:
-    """
+:param ctx:
+:type ctx:
+:param input1:
+:type input1:
+:param input2:
+:type input2:
+:param kernel_size:
+:type kernel_size:
+:param stride:
+:type stride:
+:param padding:
+:type padding:
+:param dilation:
+:type dilation:
+:return:
+:rtype:
+"""
         kernel_size, stride, padding, dilation = (
             _pair(kernel_size),
             _pair(stride),
@@ -209,13 +209,13 @@ class Subtraction2Refpad(Function):
     def backward(ctx, grad_output) -> Tuple:
         """
 
-    :param ctx:
-    :type ctx:
-    :param grad_output:
-    :type grad_output:
-    :return:
-    :rtype:
-    """
+:param ctx:
+:type ctx:
+:param grad_output:
+:type grad_output:
+:return:
+:rtype:
+"""
         kernel_size, stride, padding, dilation = (
             ctx.kernel_size,
             ctx.stride,
@@ -317,21 +317,21 @@ class Subtraction2Refpad(Function):
 def subtraction2_refpad(input1, input2, kernel_size=3, stride=1, padding=0, dilation=1):
     """
 
-  :param input1:
-  :type input1:
-  :param input2:
-  :type input2:
-  :param kernel_size:
-  :type kernel_size:
-  :param stride:
-  :type stride:
-  :param padding:
-  :type padding:
-  :param dilation:
-  :type dilation:
-  :return:
-  :rtype:
-  """
+:param input1:
+:type input1:
+:param input2:
+:type input2:
+:param kernel_size:
+:type kernel_size:
+:param stride:
+:type stride:
+:param padding:
+:type padding:
+:param dilation:
+:type dilation:
+:return:
+:rtype:
+"""
     assert input1.dim() == 4
     if input1.is_cuda:
         out = Subtraction2Refpad.apply(

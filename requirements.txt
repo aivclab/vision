@@ -15,4 +15,5 @@ pycocotools
 albumentations
 opencv-python
 seaborn
+munin
 PyWavelets

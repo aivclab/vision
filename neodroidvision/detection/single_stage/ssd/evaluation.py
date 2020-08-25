@@ -1,23 +1,12 @@
 import logging
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 import torch
 import torch.utils.data
-from neodroidvision.data.datasets.supervised.detection.coco import (
-    COCODataset,
-    coco_evaluation,
-)
-from neodroidvision.data.datasets.supervised.detection.voc import (
-    VOCDataset,
-    voc_evaluation,
-)
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr.torch_utilities import Split
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.detection.coco import COCODataset, coco_evaluation
+from neodroidvision.data.detection.voc import VOCDataset, voc_evaluation
 from neodroidvision.detection.single_stage.ssd.object_detection_dataloader import (
     object_detection_data_loaders,
 )
@@ -26,16 +15,23 @@ from neodroidvision.utilities import (
     is_main_process,
     synchronise_torch_barrier,
 )
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 from warg import NOD
 
 __all__ = ["do_ssd_evaluation"]
 
+from draugr.torch_utilities import Split
+
 
 def compute_on_dataset(
-    model: Module, data_loader: DataLoader, device: torch.device
+    model: Module,
+    data_loader: DataLoader,
+    device: torch.device,
+    cpu_device=torch.device("cpu"),
 ) -> dict:
     results_dict = {}
-    cpu_device = torch.device("cpu")
     for batch in tqdm(data_loader):
         images, targets, image_ids = batch
         with torch.no_grad():
@@ -50,16 +46,23 @@ def compute_on_dataset(
     return results_dict
 
 
-def accumulate_predictions_from_multiple_gpus(predictions_per_gpu) -> list:
-    all_predictions = distributing_utilities.all_gather(predictions_per_gpu)
+def accumulate_predictions_from_cuda_devices(predictions_per_gpu: Any) -> list:
+    """
+
+  :param predictions_per_gpu:
+  :return:
+  """
+    all_predictions = distributing_utilities.all_gather_cuda(predictions_per_gpu)
     if not distributing_utilities.is_main_process():
         return
-    # merge the list of dicts
+
     predictions = {}
-    for p in all_predictions:
+    for p in all_predictions:  # merge the list of dicts
         predictions.update(p)
-    # convert a dict where the key is the index in a list
-    image_ids = list(sorted(predictions.keys()))
+
+    image_ids = list(
+        sorted(predictions.keys())
+    )  # convert a dict where the key is the index in a list
     if len(image_ids) != image_ids[-1] + 1:
         logger = logging.getLogger("SSD.inference")
         logger.warning(
@@ -102,6 +105,17 @@ def inference_ssd(
     use_cached: bool = False,
     **kwargs,
 ) -> dict:
+    """
+
+  :param model:
+  :param data_loader:
+  :param dataset_name:
+  :param device:
+  :param output_folder:
+  :param use_cached:
+  :param kwargs:
+  :return:
+  """
     dataset = data_loader.dataset
     logger = logging.getLogger("SSD.inference")
     logger.info(f"Evaluating {dataset_name} dataset({len(dataset)} images):")
@@ -113,7 +127,7 @@ def inference_ssd(
     else:
         predictions = compute_on_dataset(model, data_loader, device)
         synchronise_torch_barrier()
-        predictions = accumulate_predictions_from_multiple_gpus(predictions)
+        predictions = accumulate_predictions_from_cuda_devices(predictions)
 
     if not is_main_process():
         return
@@ -130,6 +144,15 @@ def inference_ssd(
 def do_ssd_evaluation(
     data_root: Path, cfg: NOD, model: Module, distributed: bool, **kwargs
 ) -> List:
+    """
+
+  :param data_root:
+  :param cfg:
+  :param model:
+  :param distributed:
+  :param kwargs:
+  :return:
+  """
     if isinstance(model, torch.nn.parallel.DistributedDataParallel):
         model = model.module
 

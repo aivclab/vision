@@ -8,16 +8,15 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageEnhance
-from tqdm import tqdm
-
 from samples.misc.synthesis.mask_json_utilities import MaskJsonUtils
+from tqdm import tqdm
 
 
 class ImageComposition:
     """ Composes images together in random ways, applying transformations to the foreground to create a
-  synthetic
-      combined image.
-  """
+synthetic
+    combined image.
+"""
 
     def __init__(self):
         self.allowed_output_types = [".png", ".jpg", ".jpeg"]
@@ -222,17 +221,15 @@ class ImageComposition:
 
             # Save composite image to the images sub-directory
             composite_filename = (
-                f"{save_filename}{self.output_type}"
-            )  # e.g. 00000023.jpg
+                f"{save_filename}{self.output_type}"  # e.g. 00000023.jpg
+            )
             composite_path = self.output_dir / "images" / composite_filename  # e.g.
             # my_output_dir/images/00000023.jpg
             composite = composite.convert("RGB")  # remove alpha
             composite.save(composite_path)
 
             # Save the mask image to the masks sub-directory
-            mask_filename = (
-                f"{save_filename}.png"
-            )  # masks are always png to avoid lossy compression
+            mask_filename = f"{save_filename}.png"  # masks are always png to avoid lossy compression
             mask_path = (
                 self.output_dir / "masks" / mask_filename
             )  # e.g. my_output_dir/masks/00000023.png
@@ -443,11 +440,11 @@ if __name__ == "__main__":
         help="The input directory. \
                         This contains a 'backgrounds' directory of pngs or jpgs, and a 'foregrounds' "
         "directory which \
-                        contains supercategory directories (e.g. 'animal', 'vehicle'), each of which "
+                           contains supercategory directories (e.g. 'animal', 'vehicle'), each of which "
         "contain category \
-                        directories (e.g. 'horse', 'bear'). Each category directory contains png images of "
+                           directories (e.g. 'horse', 'bear'). Each category directory contains png images of "
         "that item on a \
-                        transparent background (e.g. a grizzly bear on a transparent background).",
+                           transparent background (e.g. a grizzly bear on a transparent background).",
     )
     parser.add_argument(
         "--output_dir",
@@ -456,7 +453,7 @@ if __name__ == "__main__":
         required=True,
         help="The directory where "
         "images, masks, \
-                        and json files will be placed",
+                           and json files will be placed",
     )
     parser.add_argument(
         "--count",

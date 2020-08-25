@@ -68,7 +68,7 @@ CocoMask = namedtuple(
 class FilterAndRemapCocoCategories(object):
     """
 
-  """
+"""
 
     def __init__(self, categories: List[str], remap: bool = True):
         self._categories = categories
@@ -92,15 +92,15 @@ def convert_coco_poly_to_mask(
 ) -> NamedTensorTuple:
     """
 
-  :param segmentations:
-  :type segmentations:
-  :param height:
-  :type height:
-  :param width:
-  :type width:
-  :return:
-  :rtype:
-  """
+:param segmentations:
+:type segmentations:
+:param height:
+:type height:
+:param width:
+:type width:
+:return:
+:rtype:
+"""
     masks = []
     for polygons in segmentations:
         rles = coco_mask.frPyObjects(polygons, height, width)
@@ -207,11 +207,11 @@ def _coco_remove_images_without_annotations(
 def convert_to_coco_api(ds):
     """
 
-  :param ds:
-  :type ds:
-  :return:
-  :rtype:
-  """
+:param ds:
+:type ds:
+:return:
+:rtype:
+"""
     coco_ds = COCO()
     ann_id = 0
     dataset = {"images": [], "categories": [], "annotations": []}
@@ -269,11 +269,11 @@ def get_coco_api_from_dataset(
 ) -> COCO:
     """
 
-  :param dataset:
-  :type dataset:
-  :return:
-  :rtype:
-  """
+:param dataset:
+:type dataset:
+:return:
+:rtype:
+"""
     for i in range(10):
         if isinstance(dataset, torchvision.datasets.CocoDetection):
             break
@@ -287,7 +287,7 @@ def get_coco_api_from_dataset(
 class CocoDetection(torchvision.datasets.CocoDetection):
     """
 
-  """
+"""
 
     def __init__(self, img_folder, ann_file, transforms):
         super(CocoDetection, self).__init__(img_folder, ann_file)
@@ -353,13 +353,13 @@ def get_coco_ins(
 def get_coco_kp(root, image_set, transforms):
     """
 
-  :param root:
-  :type root:
-  :param image_set:
-  :type image_set:
-  :param transforms:
-  :type transforms:
-  :return:
-  :rtype:
-  """
+:param root:
+:type root:
+:param image_set:
+:type image_set:
+:param transforms:
+:type transforms:
+:return:
+:rtype:
+"""
     return get_coco_ins(root, image_set, transforms, mode=CocoModeEnum.person_keypoints)

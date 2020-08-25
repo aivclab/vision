@@ -15,8 +15,7 @@ import torch
 from numpy import product
 from torch import nn
 
-from draugr.torch_utilities import conv2d_hw_shape
-from draugr.torch_utilities.operations.sizes.pad2d import pad2d_hw_shape
+from draugr.torch_utilities import conv2d_hw_shape, pad2d_hw_shape
 
 
 class PairRankingSiamese(nn.Module):

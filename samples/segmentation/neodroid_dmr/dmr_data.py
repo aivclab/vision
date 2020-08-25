@@ -4,11 +4,11 @@
 import numpy
 import torch
 import torch.utils.data
+from neodroidvision.segmentation import dice_loss, jaccard_loss
+from warg.named_ordered_dictionary import NOD
 
 from draugr.torch_utilities import channel_transform
 from draugr.torch_utilities.tensors.to_tensor import to_tensor
-from neodroidvision.segmentation import dice_loss, jaccard_loss
-from warg.named_ordered_dictionary import NOD
 
 __author__ = "Christian Heider Nielsen"
 
@@ -16,13 +16,13 @@ __author__ = "Christian Heider Nielsen"
 def neodroid_camera_data_iterator(env, device, batch_size=12):
     """
 
-    :param env:
-    :type env:
-    :param device:
-    :type device:
-    :param batch_size:
-    :type batch_size:
-    """
+  :param env:
+  :type env:
+  :param device:
+  :type device:
+  :param batch_size:
+  :type batch_size:
+  """
     while True:
         rgb = []
         mask_responses = []
@@ -71,17 +71,17 @@ def neodroid_camera_data_iterator(env, device, batch_size=12):
 def calculate_loss(seg, recon, depth, normals):
     """
 
-    :param seg:
-    :type seg:
-    :param recon:
-    :type recon:
-    :param depth:
-    :type depth:
-    :param normals:
-    :type normals:
-    :return:
-    :rtype:
-    """
+  :param seg:
+  :type seg:
+  :param recon:
+  :type recon:
+  :param depth:
+  :type depth:
+  :param normals:
+  :type normals:
+  :return:
+  :rtype:
+  """
     (
         (seg_pred, seg_target),
         (recon_pred, recon_target),

@@ -6,18 +6,7 @@ import time
 from pathlib import Path
 
 import torch
-from torch.nn import Module
-from torch.optim import Optimizer
-from torch.utils.data import DataLoader
-
-from draugr.torch_utilities import (
-    TorchCacheSession,
-    TorchEvalSession,
-    TorchTrainSession,
-    WarmupMultiStepLR,
-)
 from neodroidvision import PROJECT_APP_PATH
-from draugr.torch_utilities import Split
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
     SingleShotDectectionNms,
@@ -33,8 +22,19 @@ from neodroidvision.utilities import (
     set_benchmark_device_dist,
     setup_distributed_logger,
 )
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
 from warg import NOD
 from warg.arguments import str2bool
+
+from draugr.torch_utilities import (
+    Split,
+    TorchCacheSession,
+    TorchEvalSession,
+    TorchTrainSession,
+    WarmupMultiStepLR,
+)
 
 
 def inner_train_ssd(

@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 11/05/2020
            """
 
-from torch import nn
-
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
+from torch import nn
 
 __all__ = ["SSDBoxPredictor"]
 

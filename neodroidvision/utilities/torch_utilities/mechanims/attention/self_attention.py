@@ -103,21 +103,21 @@ attention: B X N X N (N is Width*Height)
         _, ch, h, w = x.size()
         # Theta path
         theta = self.spectral_norm_conv1x1_theta(x)
-        theta = theta.view(-1, ch // 8, h * w)
+        theta = theta.reshape(-1, ch // 8, h * w)
         # Phi path
         phi = self.spectral_norm_conv1x1_phi(x)
         phi = self.maxpool(phi)
-        phi = phi.view(-1, ch // 8, h * w // 4)
+        phi = phi.reshape(-1, ch // 8, h * w // 4)
         # Attn map
         attn = torch.bmm(theta.permute(0, 2, 1), phi)
         attn = self.softmax(attn)
         # g path
         g = self.spectral_norm_conv1x1_g(x)
         g = self.maxpool(g)
-        g = g.view(-1, ch // 2, h * w // 4)
+        g = g.reshape(-1, ch // 2, h * w // 4)
         # Attn_g
         attn_g = torch.bmm(g, attn.permute(0, 2, 1))
-        attn_g = attn_g.view(-1, ch // 2, h, w)
+        attn_g = attn_g.reshape(-1, ch // 2, h, w)
         attn_g = self.spectral_norm_conv1x1_attn(attn_g)
         # Out
         out = x + self.sigma * attn_g

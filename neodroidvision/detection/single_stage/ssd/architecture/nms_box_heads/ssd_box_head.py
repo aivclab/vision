@@ -2,10 +2,6 @@ from collections import namedtuple
 from typing import Any, Tuple
 
 import torch
-from torch import nn
-from torch.nn import Parameter, functional
-
-from draugr.torch_utilities import to_tensor
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
@@ -13,6 +9,10 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes import conversion
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
 )
+from torch import nn
+from torch.nn import Parameter, functional
+
+from draugr.torch_utilities import to_tensor
 
 __all__ = ["SSDNmsBoxHead", "SSDOut"]
 
@@ -131,10 +131,10 @@ Only keep detections above the confidence threshold
         ):
             # (N, #CLS) (N, 4)
             num_boxes, num_categories, *_ = scores.shape
-            boxes = boxes.view(num_boxes, 1, 4).expand(num_boxes, num_categories, 4)
+            boxes = boxes.reshape(num_boxes, 1, 4).expand(num_boxes, num_categories, 4)
             labels = (
                 torch.arange(num_categories, device=scores.device)
-                .view(1, num_categories)
+                .reshape(1, num_categories)
                 .expand_as(scores)
             )
 
@@ -146,9 +146,9 @@ Only keep detections above the confidence threshold
 
             """ WILL NOT WORK FOR TRACED MODELS!
 scores, boxes, labels = self.keep_above(scores,
-                                        boxes,
-                                        labels,
-                                        threshold=self.confidence_threshold)
+                                  boxes,
+                                  labels,
+                                  threshold=self.confidence_threshold)
 """
             scores, boxes, labels = self.sort_keep_top_k(
                 scores, boxes, labels, k=self.max_candidates

@@ -15,8 +15,8 @@ __all__ = ["CocoFilter"]
 
 class CocoFilter:
     """
-   Filtering the COCO dataset
-  """
+ Filtering the COCO dataset
+"""
 
     def _process_info(self):
         self.info = self.coco["info"]
@@ -67,9 +67,9 @@ class CocoFilter:
 
     def _filter_categories(self):
         """ Find category ids matching args
-        Create mapping from original category id to new category id
-        Create new collection of categories
-    """
+    Create mapping from original category id to new category id
+    Create new collection of categories
+"""
         missing_categories = set(self.filter_categories) - self.category_set
         if len(missing_categories) > 0:
             print(f"Did not find categories: {missing_categories}")
@@ -93,8 +93,8 @@ class CocoFilter:
 
     def _filter_annotations(self):
         """ Create new collection of annotations matching category ids
-        Keep track of image ids matching annotations
-    """
+    Keep track of image ids matching annotations
+"""
         self.new_segmentations = []
         self.new_image_ids = set()
         for image_id, segmentation_list in self.segmentations.items():
@@ -110,7 +110,7 @@ class CocoFilter:
 
     def _filter_images(self):
         """ Create new collection of images
-    """
+"""
         self.new_images = []
         for image_id in self.new_image_ids:
             self.new_images.append(self.images[image_id])

@@ -2,6 +2,8 @@ from pathlib import Path
 
 import cv2
 import torch
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities import OutputActivationModule
 from torchvision import transforms
 from tqdm import tqdm
 
@@ -13,9 +15,6 @@ from draugr.torch_utilities import (
     global_torch_device,
     torch_seed,
 )
-
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities import OutputActivationModule
 
 
 @torch.no_grad()

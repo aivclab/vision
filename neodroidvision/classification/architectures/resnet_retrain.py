@@ -15,6 +15,8 @@ from draugr.torch_utilities import (
     trainable_parameters,
 )
 
+__all__ = ["resnet_retrain"]
+
 
 def resnet_retrain(
     num_classes: int,

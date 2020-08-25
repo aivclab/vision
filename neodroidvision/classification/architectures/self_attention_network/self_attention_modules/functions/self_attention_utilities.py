@@ -31,11 +31,11 @@ CUDA_NUM_THREADS = 1024
 def GET_BLOCKS(N: int) -> int:
     """
 
-  :param N:
-  :type N:
-  :return:
-  :rtype:
-  """
+:param N:
+:type N:
+:return:
+:rtype:
+"""
     return (N + CUDA_NUM_THREADS - 1) // CUDA_NUM_THREADS
 
 

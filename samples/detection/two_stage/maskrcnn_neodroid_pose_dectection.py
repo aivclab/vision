@@ -8,14 +8,13 @@ import numpy
 import torch
 from PIL import Image, ImageDraw
 from matplotlib import animation, pyplot
-from torchvision.models.detection import keypointrcnn_resnet50_fpn
-from torchvision.transforms.functional import to_tensor
-
 from neodroid.environments.droid_environment import UnityEnvironment
 from neodroid.environments.droid_environment.deprecated.batched_unity_environments import (
     VectorWrapper,
 )
 from neodroid.utilities import extract_all_cameras
+from torchvision.models.detection import keypointrcnn_resnet50_fpn
+from torchvision.transforms.functional import to_tensor
 from warg.named_ordered_dictionary import NOD
 
 cudnn = torch.backends.cudnn
@@ -48,8 +47,8 @@ model.eval()
 
 def get_preds(img_t: torch.Tensor, threshold=0.7):
     """
-  Make `img` a tensor, transfer to GPU and run inference.
-  Returns bounding boxes and keypoints for each person.
+Make `img` a tensor, transfer to GPU and run inference.
+Returns bounding boxes and keypoints for each person.
 """
     with torch.no_grad():
         if next(model.parameters()).is_cuda:
@@ -68,7 +67,7 @@ def get_preds(img_t: torch.Tensor, threshold=0.7):
 
 def show_preds(img, pred):
     """
-  Draw bounding boxes and keypoints.
+Draw bounding boxes and keypoints.
 """
     draw = ImageDraw.Draw(img)
     drawdot = lambda x, y, r=3, fill="red": draw.ellipse(
@@ -84,7 +83,7 @@ def show_preds(img, pred):
 
 def to_dict_detections(preds):
     """
-  Return predictions
+Return predictions
 """
     names = [
         "nose",

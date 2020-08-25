@@ -5,21 +5,20 @@ from typing import Sequence
 import cv2
 import numpy
 import torch
-from tqdm import tqdm
-
 from apppath import ensure_existence
-from draugr.opencv_utilities import draw_bouding_boxes, gamma_correct_float_to_byte
-from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroid.environments.droid_environment import UnityEnvironment
 from neodroid.utilities import extract_all_cameras
 from neodroidvision import PROJECT_APP_PATH
-from draugr.torch_utilities import Split
 from neodroidvision.detection import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
+from tqdm import tqdm
 from warg import NOD
+
+from draugr.opencv_utilities import draw_bouding_boxes, gamma_correct_float_to_byte
+from draugr.torch_utilities import Split, TorchEvalSession, global_torch_device
 
 
 @torch.no_grad()
@@ -32,19 +31,19 @@ def run_webcam_demo(
 ):
     """
 
-  :param categories:
-  :type categories:
-  :param cfg:
-  :type cfg:
-  :param model_ckpt:
-  :type model_ckpt:
-  :param score_threshold:
-  :type score_threshold:
-  :param window_name:
-  :type window_name:
-  :return:
-  :rtype:
-  """
+:param categories:
+:type categories:
+:param cfg:
+:type cfg:
+:param model_ckpt:
+:type model_ckpt:
+:param score_threshold:
+:type score_threshold:
+:param window_name:
+:type window_name:
+:return:
+:rtype:
+"""
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(

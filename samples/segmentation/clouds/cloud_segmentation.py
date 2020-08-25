@@ -8,18 +8,7 @@ import numpy
 import pandas
 import torch
 from matplotlib import pyplot
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr import chw_to_hwc, float_chw_to_hwc_uint
-from draugr.torch_utilities import (
-    TorchEvalSession,
-    TorchTrainSession,
-    global_torch_device,
-    torch_seed,
-)
 from neodroidvision import PROJECT_APP_PATH
-from draugr.torch_utilities import Split
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import (
     BCEDiceLoss,
@@ -27,6 +16,17 @@ from neodroidvision.segmentation import (
     mask_to_run_length,
 )
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr import chw_to_hwc, float_chw_to_hwc_uint
+from draugr.torch_utilities import (
+    Split,
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+    torch_seed,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

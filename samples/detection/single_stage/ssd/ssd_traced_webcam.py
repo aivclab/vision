@@ -14,7 +14,12 @@ import cv2
 import numpy
 import torch
 from PIL import ImageFont
+from neodroidvision.detection import SSDOut
+from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
+    SSDTransform,
+)
 from tqdm import tqdm
+from warg import NOD
 
 from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
 from draugr.torch_utilities import (
@@ -23,11 +28,6 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     global_torch_device,
 )
-from neodroidvision.detection import SSDOut
-from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
-    SSDTransform,
-)
-from warg import NOD
 
 
 @torch.no_grad()
@@ -40,10 +40,10 @@ def run_traced_webcam_demo(
 ):
     """
 
-  :param onnx_exported:
-  :type onnx_exported:
-  :param input_cfg:
-  :type input_cfg:
+:param onnx_exported:
+:type onnx_exported:
+:param input_cfg:
+:type input_cfg:
 :param categories:
 :type categories:
 :param score_threshold:

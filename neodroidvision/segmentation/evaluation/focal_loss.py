@@ -21,12 +21,12 @@ The loss_functions are averaged across observations for each mini batch.
 Args:
 alpha(1D Tensor, Variable) : the scalar factor for this criterion
 gamma(float, double) : gamma > 0; reduces the relative loss for well-classified examples (p > .5),
-                       putting more focus on hard, misclassified examples
+                     putting more focus on hard, misclassified examples
 size_average(bool): size_average(bool): By default, the loss_functions are averaged over
 observations for
 each mini batch.
-                    However, if the field size_average is set to False, the loss_functions are
-                    instead summed for each mini batch.
+                  However, if the field size_average is set to False, the loss_functions are
+                  instead summed for each mini batch.
 """
 
     def __init__(
@@ -53,14 +53,14 @@ each mini batch.
 
         class_mask = inputs.data.new(N, C).fill_(0)
         class_mask = Variable(class_mask)
-        ids = targets.view(-1, 1)
+        ids = targets.reshape(-1, 1)
         class_mask.scatter_(1, ids.data, 1.0)
 
         if inputs.is_cuda and not self.alpha.is_cuda:
             self.alpha = self.alpha.cuda()
         alpha = self.alpha[ids.data.view(-1)]
 
-        probs = (P * class_mask).sum(1).view(-1, 1)
+        probs = (P * class_mask).sum(1).reshape(-1, 1)
 
         log_p = probs.log()
 

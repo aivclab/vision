@@ -1,11 +1,18 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 23/03/2020
+           """
+
 import os
 import sys
 from pathlib import Path
 
 import torch
-
-from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
+from Alexandra.vision.neodroidvision.utilities import (
     is_main_process,
     synchronise_torch_barrier,
 )

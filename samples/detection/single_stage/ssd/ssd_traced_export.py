@@ -3,20 +3,20 @@ from pathlib import Path
 
 import cv2
 import torch
-from torch import onnx, quantization
-from tqdm import tqdm
-
 from apppath import ensure_existence
-from draugr import sprint
-from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import Split, global_torch_device
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
+from torch import onnx, quantization
+from tqdm import tqdm
 from warg import NOD
+
+from draugr import sprint
+from draugr.opencv_utilities import frame_generator
+from draugr.torch_utilities import Split, global_torch_device
 
 
 @torch.no_grad()
@@ -131,15 +131,15 @@ def export_detection_model(
         break
 
     """
-  post_quantize_model = False
-  if post_quantize_model: # Accuracy may drop!
-    traced_model = model
-    if True:
-      q_model=quantization.prepare_script(traced_model)
-      ... qmodel.forward(...) .. training
-      q_model=quantization.convert_script(traced_model)
-      q_model.save('model.qtraced')
-  """
+post_quantize_model = False
+if post_quantize_model: # Accuracy may drop!
+  traced_model = model
+  if True:
+    q_model=quantization.prepare_script(traced_model)
+    ... qmodel.forward(...) .. training
+    q_model=quantization.convert_script(traced_model)
+    q_model.save('model.qtraced')
+"""
 
 
 def main():

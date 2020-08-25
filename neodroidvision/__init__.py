@@ -6,7 +6,6 @@ import os
 from warnings import warn
 
 import pkg_resources
-
 from apppath import AppPath
 
 __project__ = "NeodroidVision"
@@ -23,7 +22,6 @@ Created on 27/04/2019
 
 @author: cnheider
 """
-
 
 # __all__ = ['PROJECT_APP_PATH', 'PROJECT_NAME', 'PROJECT_VERSION', 'get_version']
 

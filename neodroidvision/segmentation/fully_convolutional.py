@@ -10,10 +10,9 @@ __doc__ = r"""
 import math
 
 import torch
+from neodroidvision.segmentation import dice_loss
 from torch import nn
 from torch.optim import Adam
-
-from neodroidvision.segmentation import dice_loss
 
 __all__ = ["FullyConvolutional", "FCN"]
 
@@ -22,13 +21,13 @@ class FullyConvolutional(nn.Module):
     @staticmethod
     def _pad(kernel_size: int, stride: int, dilation: int = 1) -> int:
         """
-    if length % stride == 0:
-      out_length = length // stride
-    else:
-      out_length = length // stride + 1
+if length % stride == 0:
+  out_length = length // stride
+else:
+  out_length = length // stride + 1
 
-    return math.ceil((out_length * stride + kernel_size - length - stride) / 2)
-    """
+return math.ceil((out_length * stride + kernel_size - length - stride) / 2)
+"""
         return math.ceil((1 - stride + dilation * (kernel_size - 1)) / 2)
 
     @staticmethod
@@ -68,13 +67,13 @@ class FullyConvolutional(nn.Module):
 
     def __init__(self, in_channels, num_cats, *, final_act, base=4, t=8):
         """
-    FCN8
+FCN8
 
-    :param num_cats:
-    :type num_cats:
-    :param base:
-    :type base:
-    """
+:param num_cats:
+:type num_cats:
+:param base:
+:type base:
+"""
 
         super().__init__()
         i_c = in_channels

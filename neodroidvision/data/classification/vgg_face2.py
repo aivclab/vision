@@ -19,7 +19,7 @@ from torchvision import transforms
 
 __all__ = ["VggFaces2"]
 
-from draugr.torch_utilities.datasets.supervised import Split, SupervisedDataset
+from draugr.torch_utilities import Split, SupervisedDataset
 
 
 class VggFaces2(SupervisedDataset):

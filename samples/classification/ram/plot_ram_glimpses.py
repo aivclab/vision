@@ -5,8 +5,8 @@ from pathlib import Path
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-
 from samples.classification.ram.ram_params import get_ram_config
+
 from draugr.visualisation.matplotlib_utilities import (
     denormalise_minusoneone,
     matplotlib_bounding_box,

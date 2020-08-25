@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from PIL import Image
+from neodroid.environments.droid_environment import connect
 from torch.utils.data import Dataset
 from torchvision.transforms import transforms
-
-from neodroid.environments.droid_environment import connect
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

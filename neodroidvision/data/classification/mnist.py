@@ -9,13 +9,13 @@ from torchvision import datasets, transforms
 
 __all__ = ["MNIST"]
 
-from draugr.torch_utilities.datasets.supervised import Split, SupervisedDataset
+from draugr.torch_utilities import Split, SupervisedDataset
 
 
 class MNIST(SupervisedDataset):
     """
 
-  """
+"""
 
     trans = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
@@ -42,18 +42,18 @@ class MNIST(SupervisedDataset):
     def predictor_shape(self) -> Tuple[int, ...]:
         """
 
-    :return:
-    :rtype:
-    """
+:return:
+:rtype:
+"""
         return 1, 28, 28
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
         """
 
-    :return:
-    :rtype:
-    """
+:return:
+:rtype:
+"""
         return (10,)
 
     @staticmethod
@@ -70,37 +70,37 @@ class MNIST(SupervisedDataset):
     ) -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
         """Train and validation data loaders.
 
-    If using CUDA, num_workers should be set to 1 and pin_memory to True.
+If using CUDA, num_workers should be set to 1 and pin_memory to True.
 
-    Args:
-        data_dir: path directory to the dataset.
-        batch_size: how many samples per batch to load.
-        random_seed: fix seed for reproducibility.
-        valid_size: percentage split of the training set used for
-            the validation set. Should be a float in the range [0, 1].
-            In the paper, this number is set to 0.1.
-        shuffle: whether to shuffle the train/validation indices.
-        show_sample: plot 9x9 sample grid of the dataset.
-        num_workers: number of subprocesses to use when loading the dataset.
-        pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
-            True if using GPU.
-            :param data_dir:
-            :type data_dir:
-            :param batch_size:
-            :type batch_size:
-            :param random_seed:
-            :type random_seed:
-            :param valid_size:
-            :type valid_size:
-            :param shuffle:
-            :type shuffle:
-            :param num_workers:
-            :type num_workers:
-            :param pin_memory:
-            :type pin_memory:
-            :param using_cuda:
-            :type using_cuda:
-    """
+Args:
+    data_dir: path directory to the dataset.
+    batch_size: how many samples per batch to load.
+    random_seed: fix seed for reproducibility.
+    valid_size: percentage split of the training set used for
+        the validation set. Should be a float in the range [0, 1].
+        In the paper, this number is set to 0.1.
+    shuffle: whether to shuffle the train/validation indices.
+    show_sample: plot 9x9 sample grid of the dataset.
+    num_workers: number of subprocesses to use when loading the dataset.
+    pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
+        True if using GPU.
+        :param data_dir:
+        :type data_dir:
+        :param batch_size:
+        :type batch_size:
+        :param random_seed:
+        :type random_seed:
+        :param valid_size:
+        :type valid_size:
+        :param shuffle:
+        :type shuffle:
+        :param num_workers:
+        :type num_workers:
+        :param pin_memory:
+        :type pin_memory:
+        :param using_cuda:
+        :type using_cuda:
+"""
         error_msg = "[!] valid_size should be in the range [0, 1]."
         assert (valid_size >= 0) and (valid_size <= 1), error_msg
 
@@ -151,25 +151,25 @@ class MNIST(SupervisedDataset):
     ) -> torch.utils.data.DataLoader:
         """Test datalaoder.
 
-    If using CUDA, num_workers should be set to 1 and pin_memory to True.
+If using CUDA, num_workers should be set to 1 and pin_memory to True.
 
-    Args:
-        data_dir: path directory to the dataset.
-        batch_size: how many samples per batch to load.
-        num_workers: number of subprocesses to use when loading the dataset.
-        pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
-            True if using GPU.
-        :param data_dir:
-        :type data_dir:
-        :param batch_size:
-        :type batch_size:
-        :param num_workers:
-        :type num_workers:
-        :param pin_memory:
-        :type pin_memory:
-        :param using_cuda:
-        :type using_cuda:
-    """
+Args:
+    data_dir: path directory to the dataset.
+    batch_size: how many samples per batch to load.
+    num_workers: number of subprocesses to use when loading the dataset.
+    pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
+        True if using GPU.
+    :param data_dir:
+    :type data_dir:
+    :param batch_size:
+    :type batch_size:
+    :param num_workers:
+    :type num_workers:
+    :param pin_memory:
+    :type pin_memory:
+    :param using_cuda:
+    :type using_cuda:
+"""
         # define transforms
 
         if using_cuda:
@@ -191,7 +191,7 @@ class MNIST(SupervisedDataset):
     def sample(self) -> None:
         """
 
-    """
+"""
         images, labels = next(
             iter(
                 torch.utils.data.DataLoader(
@@ -207,11 +207,11 @@ class MNIST(SupervisedDataset):
     def plot_images(images: numpy.ndarray, label: Sequence) -> None:
         """
 
-    :param images:
-    :type images:
-    :param label:
-    :type label:
-    """
+:param images:
+:type images:
+:param label:
+:type label:
+"""
         images = images.squeeze()
         assert len(images) == len(label) == 9
 

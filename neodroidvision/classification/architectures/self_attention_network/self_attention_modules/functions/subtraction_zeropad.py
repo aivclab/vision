@@ -165,7 +165,7 @@ class SubtractionZeropad(Function):
             ctx.padding,
             ctx.dilation,
         )
-        input, = ctx.saved_tensors
+        (input,) = ctx.saved_tensors
         assert grad_output.is_cuda
         if not grad_output.is_contiguous():
             grad_output = grad_output.contiguous()

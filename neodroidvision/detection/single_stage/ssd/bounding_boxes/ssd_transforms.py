@@ -11,6 +11,11 @@ from typing import Any, Tuple
 
 import numpy
 import torch
+from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
+    build_priors,
+    ssd_assign_priors,
+)
+from warg import NOD
 
 from draugr.opencv_utilities import (
     CV2Compose,
@@ -25,11 +30,6 @@ from draugr.opencv_utilities import (
     SubtractMeans,
 )
 from draugr.torch_utilities import Split
-from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
-    build_priors,
-    ssd_assign_priors,
-)
-from warg import NOD
 from .conversion import (
     center_to_corner_form,
     convert_boxes_to_locations,

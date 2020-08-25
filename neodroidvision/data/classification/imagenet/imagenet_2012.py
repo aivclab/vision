@@ -126,13 +126,13 @@ class ImageNet2012(SupervisedDataset):
 
     def __getitem__(self, index) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-    return image and category
+return image and category
 
-    :param index:
-    :type index:
-    :return:
-    :rtype:
-    """
+:param index:
+:type index:
+:return:
+:rtype:
+"""
         return self._image_folder[index]
 
 

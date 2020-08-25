@@ -3,15 +3,8 @@ from pathlib import Path
 
 import cv2
 import torch
-from torch import onnx, quantization
-from tqdm import tqdm
-
 from apppath import ensure_existence
-from draugr import sprint
-from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from draugr.torch_utilities import Split
 from neodroidvision.detection.single_stage.ssd.architecture import (
     SingleShotDectectionNms,
 )
@@ -19,7 +12,13 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
     SSDTransform,
 )
 from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
+from torch import quantization
+from tqdm import tqdm
 from warg import NOD
+
+from draugr import sprint
+from draugr.opencv_utilities import frame_generator
+from draugr.torch_utilities import Split, global_torch_device
 
 
 @torch.no_grad()

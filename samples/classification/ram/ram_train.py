@@ -4,33 +4,33 @@ import shutil
 import time
 
 import torch
+from apppath import ensure_existence
+from neodroidvision.data.classification import MNIST
+from samples.classification.ram.architecture.ram import RecurrentAttention
+from samples.classification.ram.ram_params import get_ram_config
 from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
-from apppath import ensure_existence
 from draugr.metrics.meters import AverageMeter
-from neodroidvision.data.classification import MNIST
-from samples.classification.ram.architecture.ram import RecurrentAttention
-from samples.classification.ram.ram_params import get_ram_config
 
 
 class Trainer:
     """A Recurrent Attention Model trainer.
 
-  All hyperparameters are provided by the user in the
-  config file.
-  """
+All hyperparameters are provided by the user in the
+config file.
+"""
 
     def __init__(self, config, data_loader):
         """
-    Construct a new Trainer instance.
+Construct a new Trainer instance.
 
-    Args:
-        config: object containing command line arguments.
-        data_loader: A data iterator.
-    """
+Args:
+    config: object containing command line arguments.
+    data_loader: A data iterator.
+"""
         self.config = config
 
         if config.use_gpu and torch.cuda.is_available():
@@ -133,10 +133,10 @@ class Trainer:
     def train(self):
         """Train the model on the training set.
 
-    A checkpoint of the model is saved after each epoch
-    and if the validation accuracy is improved upon,
-    a separate ckpt is created for use on the test set.
-    """
+A checkpoint of the model is saved after each epoch
+and if the validation accuracy is improved upon,
+a separate ckpt is created for use on the test set.
+"""
         # load the most recent checkpoint
         if self.resume:
             self.load_checkpoint(best=False)
@@ -191,13 +191,13 @@ class Trainer:
 
     def train_one_epoch(self, epoch):
         """
-    Train the model for 1 epoch of the training set.
+Train the model for 1 epoch of the training set.
 
-    An epoch corresponds to one full pass through the entire
-    training set in successive mini-batches.
+An epoch corresponds to one full pass through the entire
+training set in successive mini-batches.
 
-    This is used by train() and should not be called manually.
-    """
+This is used by train() and should not be called manually.
+"""
         self.model.train()
         batch_time = AverageMeter()
         losses = AverageMeter()
@@ -308,7 +308,7 @@ class Trainer:
     @torch.no_grad()
     def validate(self, epoch):
         """Evaluate the RAM model on the validation set.
-    """
+"""
         losses = AverageMeter()
         accs = AverageMeter()
 
@@ -389,9 +389,9 @@ class Trainer:
     def test(self):
         """Test the RAM model.
 
-    This function should only be called at the very
-    end once the model has finished training.
-    """
+This function should only be called at the very
+end once the model has finished training.
+"""
         correct = 0
 
         # load the best checkpoint
@@ -428,9 +428,9 @@ class Trainer:
     def save_checkpoint(self, state, is_best):
         """Saves a checkpoint of the model.
 
-    If this model has reached the best validation accuracy thus
-    far, a seperate file with the suffix `best` is created.
-    """
+If this model has reached the best validation accuracy thus
+far, a seperate file with the suffix `best` is created.
+"""
         ckpt_path = os.path.join(self.ckpt_dir, f"{self.model_name}_ckpt.pth.tar")
         torch.save(state, ckpt_path)
         if is_best:
@@ -442,17 +442,17 @@ class Trainer:
     def load_checkpoint(self, best=False):
         """Load the best copy of a model.
 
-    This is useful for 2 cases:
-    - Resuming training with the most recent model checkpoint.
-    - Loading the best validation model to evaluate on the test data.
+This is useful for 2 cases:
+- Resuming training with the most recent model checkpoint.
+- Loading the best validation model to evaluate on the test data.
 
-    Args:
-        best: if set to True, loads the best model.
-            Use this if you want to evaluate your model
-            on the test data. Else, set to False in which
-            case the most recent version of the checkpoint
-            is used.
-    """
+Args:
+    best: if set to True, loads the best model.
+        Use this if you want to evaluate your model
+        on the test data. Else, set to False in which
+        case the most recent version of the checkpoint
+        is used.
+"""
         print(f"[*] Loading model from {self.ckpt_dir}")
 
         filename = f"{self.model_name}_ckpt.pth.tar"

@@ -15,7 +15,7 @@ from torch.utils.data import ConcatDataset
 
 __all__ = ["MultiDataset"]
 
-from draugr.torch_utilities.datasets.supervised import Split, SupervisedDataset
+from draugr.torch_utilities import Split, SupervisedDataset
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
     SSDAnnotationTransform,

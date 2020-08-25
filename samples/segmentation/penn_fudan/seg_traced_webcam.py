@@ -14,8 +14,11 @@ from torchvision import transforms
 from tqdm import tqdm
 
 from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import TorchEvalSession, global_torch_device
-from draugr.torch_utilities.sessions.device_sessions import TorchDeviceSession
+from draugr.torch_utilities import (
+    TorchDeviceSession,
+    TorchEvalSession,
+    global_torch_device,
+)
 
 
 @torch.no_grad()

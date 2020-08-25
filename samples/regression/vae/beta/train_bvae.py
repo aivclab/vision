@@ -6,24 +6,24 @@ from pathlib import Path
 
 import torch
 import torch.utils.data
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
+from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
+from neodroidvision.regression.vae.architectures.vae import VAE
+from neodroidvision.regression.visualisation.encoder_utilities import plot_manifold
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from tqdm import tqdm
 
 from draugr.torch_utilities import (
+    Split,
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
 )
 from draugr.writers import Writer
-from neodroidvision import PROJECT_APP_PATH
-from draugr.torch_utilities import Split
-from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
-from neodroidvision.regression.vae.architectures.vae import VAE
-from neodroidvision.regression.visualisation.encoder_utilities import plot_manifold
-from neodroidvision.data.datasets.supervised.classification.vgg_face2 import VggFaces2
 from .objectives import kl_divergence, reconstruction_loss
 
 __author__ = "Christian Heider Nielsen"
@@ -134,12 +134,12 @@ def test_model(
                             nrow=n,
                         )
                         """
-  scatter_plot_encoding_space(str(BASE_PATH /
-                        f'encoding_space_{str(epoch_i)}.png'),
-                    mean.to('cpu').numpy(),
-                    log_var.to('cpu').numpy(),
-                    labels)
-  """
+scatter_plot_encoding_space(str(BASE_PATH /
+            f'encoding_space_{str(epoch_i)}.png'),
+        mean.to('cpu').numpy(),
+        log_var.to('cpu').numpy(),
+        labels)
+"""
                 break
 
         # test_loss /= len(loader.dataset)
@@ -160,12 +160,12 @@ if __name__ == "__main__":
 
         """
 ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
-                 train=True,
-                 download=True,
-                 transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
-                                                                  train=False,
-                                                                  transform=transforms.ToTensor())]
-                                                                  """
+             train=True,
+             download=True,
+             transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
+                                                              train=False,
+                                                              transform=transforms.ToTensor())]
+                                                              """
 
         dataset_loader = DataLoader(
             DATASET, batch_size=BATCH_SIZE, shuffle=True, **DL_KWARGS

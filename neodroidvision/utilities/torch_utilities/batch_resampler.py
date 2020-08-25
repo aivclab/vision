@@ -3,9 +3,9 @@ from typing import Iterable, Tuple
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data.sampler import BatchSampler
 
-__all__ = ["LimitedBatchResampler", "BatchCollator"]
-
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
+
+__all__ = ["LimitedBatchResampler", "BatchCollator"]
 
 
 class LimitedBatchResampler(BatchSampler):

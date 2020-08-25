@@ -1,19 +1,19 @@
 import sys
 
-from samples.classification.ram.ram_params import get_ram_config
 from samples.classification.ram.architecture.ram_modules import (
     Actor,
-    SignalBaseline,
     CoreRNN,
     GlimpseSensor,
     Locator,
+    SignalBaseline,
 )
+from samples.classification.ram.ram_params import get_ram_config
+
 from draugr.visualisation.pillow_utilities import pil_img_to_np_array
 
 sys.path.append("..")
 
 import torch
-
 
 if __name__ == "__main__":
     config = get_ram_config()

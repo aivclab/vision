@@ -6,9 +6,12 @@ from pathlib import Path
 import numpy
 import torch
 from matplotlib import pyplot
-from draugr.torch_utilities import Split
+from munin.generate_report import ReportEntry, generate_html, generate_pdf
+from munin.utilities import img_html_embed_placeholder, math_markdown_embed
+from neodroidvision.data.neodroid_environments.classification.data import a_retransform
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from tqdm import tqdm
+from warg.named_ordered_dictionary import NOD
 
 from draugr import plot_confusion_matrix
 from draugr.python_utilities.torch_channel_transform import (
@@ -16,16 +19,13 @@ from draugr.python_utilities.torch_channel_transform import (
     torch_vision_normalize_batch_nchw,
 )
 from draugr.torch_utilities import (
+    Split,
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
 )
-from munin.generate_report import ReportEntry, generate_html, generate_pdf
-from munin.utilities import img_html_embed_placeholder, math_markdown_embed
-from neodroidvision.data.neodroid_environments.classification.data import a_retransform
-from warg.named_ordered_dictionary import NOD
 
 __all__ = ["test_model", "pred_target_train_model"]
 

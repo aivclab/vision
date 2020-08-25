@@ -22,7 +22,7 @@ __all__ = ["NLetConvNet"]
 class NLetConvNet(nn.Module):
     """
 
-  """
+"""
 
     def __init__(self, in_size=None, output_size: int = 2):
         super().__init__()
@@ -68,11 +68,11 @@ class NLetConvNet(nn.Module):
     def forward(self, *n_let) -> List[torch.Tensor]:
         """
 
-    :param input1:
-    :type input1:
-    :param input2:
-    :type input2:
-    :return:
-    :rtype:
-    """
+:param input1:
+:type input1:
+:param input2:
+:type input2:
+:return:
+:rtype:
+"""
         return [self.convolutions(x) for x in n_let]

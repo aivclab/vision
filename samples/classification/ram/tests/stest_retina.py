@@ -3,9 +3,9 @@ from functools import reduce
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-
 from samples.classification.ram.architecture.ram_modules import GlimpseSensor
 from samples.classification.ram.ram_params import get_ram_config
+
 from draugr.visualisation.pillow_utilities import (
     np_array_to_pil_img,
     pil_img_to_np_array,

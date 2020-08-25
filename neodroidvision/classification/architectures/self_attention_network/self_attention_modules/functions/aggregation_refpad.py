@@ -135,23 +135,23 @@ class AggregationRefpad(Function):
     def forward(ctx, input, weight, kernel_size, stride, padding, dilation):
         """
 
-    :param ctx:
-    :type ctx:
-    :param input:
-    :type input:
-    :param weight:
-    :type weight:
-    :param kernel_size:
-    :type kernel_size:
-    :param stride:
-    :type stride:
-    :param padding:
-    :type padding:
-    :param dilation:
-    :type dilation:
-    :return:
-    :rtype:
-    """
+:param ctx:
+:type ctx:
+:param input:
+:type input:
+:param weight:
+:type weight:
+:param kernel_size:
+:type kernel_size:
+:param stride:
+:type stride:
+:param padding:
+:type padding:
+:param dilation:
+:type dilation:
+:return:
+:rtype:
+"""
         kernel_size, stride, padding, dilation = (
             _pair(kernel_size),
             _pair(stride),
@@ -215,13 +215,13 @@ class AggregationRefpad(Function):
     def backward(ctx, grad_output):
         """
 
-    :param ctx:
-    :type ctx:
-    :param grad_output:
-    :type grad_output:
-    :return:
-    :rtype:
-    """
+:param ctx:
+:type ctx:
+:param grad_output:
+:type grad_output:
+:return:
+:rtype:
+"""
         kernel_size, stride, padding, dilation = (
             ctx.kernel_size,
             ctx.stride,
@@ -324,21 +324,21 @@ class AggregationRefpad(Function):
 def aggregation_refpad(input, weight, kernel_size=3, stride=1, padding=0, dilation=1):
     """
 
-  :param input:
-  :type input:
-  :param weight:
-  :type weight:
-  :param kernel_size:
-  :type kernel_size:
-  :param stride:
-  :type stride:
-  :param padding:
-  :type padding:
-  :param dilation:
-  :type dilation:
-  :return:
-  :rtype:
-  """
+:param input:
+:type input:
+:param weight:
+:type weight:
+:param kernel_size:
+:type kernel_size:
+:param stride:
+:type stride:
+:param padding:
+:type padding:
+:param dilation:
+:type dilation:
+:return:
+:rtype:
+"""
     assert input.shape[0] == weight.shape[0] and (input.shape[1] % weight.shape[1] == 0)
     if input.is_cuda:
         out = AggregationRefpad.apply(

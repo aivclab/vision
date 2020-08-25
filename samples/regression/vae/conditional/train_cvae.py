@@ -6,6 +6,7 @@ __doc__ = r"""
 
            Created on 22/03/2020
            """
+
 import os
 import time
 from collections import defaultdict
@@ -14,14 +15,14 @@ import pandas as pd
 import seaborn as sns
 import torch
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
+from warg.named_ordered_dictionary import NOD
 
 from draugr.torch_utilities import global_torch_device
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
-from warg.named_ordered_dictionary import NOD
 from .objectives import loss_fn
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"

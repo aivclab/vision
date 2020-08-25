@@ -12,10 +12,8 @@ __all__ = ["jaccard_similarity_score", "jaccard_loss"]
 def jaccard_similarity_score(
     pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
-    pred_flat = pred.contiguous().view(
-        -1
-    )  # have to use contiguous since they may from a torch.view op
-    target_flat = target.contiguous().view(-1)
+    pred_flat = pred.reshape(-1)
+    target_flat = target.reshape(-1)
 
     intersection = (pred_flat * target_flat).sum() + epsilon
     union = (target_flat ** 2).sum() + (pred_flat ** 2).sum() + epsilon

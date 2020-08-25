@@ -3,15 +3,12 @@ import time
 from collections import defaultdict, deque
 
 import torch
-import torch.distributed as dist
 import torch.utils.data
-import torch.utils.data
-
-from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
-    is_distribution_available_and_initialized,
-)
+from torch import distributed
 
 __all__ = ["SmoothedValue", "MetricLogger"]
+
+from neodroidvision.utilities import is_distribution_ready
 
 
 class SmoothedValue(object):
@@ -37,11 +34,11 @@ window or the global series average.
         """
 Warning: does not synchronize the deque!
 """
-        if not is_distribution_available_and_initialized():
+        if not is_distribution_ready():
             return
         t = torch.tensor([self.count, self.total], dtype=torch.float64, device="cuda")
-        dist.barrier()
-        dist.all_reduce(t)
+        distributed.barrier()
+        distributed.all_reduce(t)
         t = t.tolist()
         self.count = int(t[0])
         self.total = t[1]
@@ -122,7 +119,7 @@ class MetricLogger(object):
         end = time.time()
         iter_time = SmoothedValue(fmt="{avg:.4f}")
         data_time = SmoothedValue(fmt="{avg:.4f}")
-        space_fmt = ":" + str(len(str(len(iterable)))) + "d"
+        space_fmt = f":{str(len(str(len(iterable))))}d"
         log_msg = self.delimiter.join(
             [
                 header,

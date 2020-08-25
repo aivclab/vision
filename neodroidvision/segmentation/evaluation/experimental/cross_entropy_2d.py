@@ -16,12 +16,13 @@ def cross_entropy2d(input, target, weight=None, size_average=True):
     if h != ht and w != wt:  # upsample labels
         input = interpolate(input, size=(ht, wt), mode="bilinear", align_corners=True)
 
-    input = input.transpose(1, 2).transpose(2, 3).contiguous().view(-1, c)
-    target = target.view(-1)
-    loss = cross_entropy(
-        input, target, weight=weight, size_average=size_average, ignore_index=250
+    return cross_entropy(
+        input.transpose(1, 2).transpose(2, 3).reshape(-1, c),
+        target.reshape(-1),
+        weight=weight,
+        size_average=size_average,
+        ignore_index=250,
     )
-    return loss
 
 
 def multi_scale_cross_entropy2d(
@@ -49,17 +50,15 @@ def multi_scale_cross_entropy2d(
     return loss
 
 
-def bootstrapped_cross_entropy2d(input, target, K, weight=None, size_average=True):
+def bootstrapped_cross_entropy2d(input, target, K: int, weight=None, size_average=True):
     batch_size = input.size()[0]
 
     def _bootstrap_xentropy_single(input, target, K, weight=None, size_average=True):
 
         n, c, h, w = input.size()
-        input = input.transpose(1, 2).transpose(2, 3).contiguous().view(-1, c)
-        target = target.view(-1)
         loss = cross_entropy(
-            input,
-            target,
+            input.transpose(1, 2).transpose(2, 3).reshape(-1, c),
+            target.reshape(-1),
             weight=weight,
             reduce=False,
             size_average=False,

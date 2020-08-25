@@ -8,22 +8,21 @@ from pathlib import Path
 from typing import Iterator
 
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 from torch.nn.modules.module import Module
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from draugr.torch_utilities import (
+    Split,
     TensorBoardPytorchWriter,
-    TorchEvalSession,
     global_torch_device,
-    to_device_tensor_iterator_shitty,
+    to_device_tensor_iterator,
 )
-from draugr.writers import ImageWriterMixin, Writer
-from neodroidvision import PROJECT_APP_PATH
-from draugr.torch_utilities import Split
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
+from draugr.writers import Writer
 
 __author__ = "Christian Heider Nielsen"
 
@@ -52,25 +51,25 @@ def training(
 ) -> Module:
     """
 
-  :param model:
-  :type model:
-  :param data_iterator:
-  :type data_iterator:
-  :param optimizer:
-  :type optimizer:
-  :param scheduler:
-  :type scheduler:
-  :param writer:
-  :type writer:
-  :param interrupted_path:
-  :type interrupted_path:
-  :param num_updates:
-  :type num_updates:
-  :param early_stop_threshold:
-  :type early_stop_threshold:
-  :return:
-  :rtype:
-  """
+:param model:
+:type model:
+:param data_iterator:
+:type data_iterator:
+:param optimizer:
+:type optimizer:
+:param scheduler:
+:type scheduler:
+:param writer:
+:type writer:
+:param interrupted_path:
+:type interrupted_path:
+:param num_updates:
+:type num_updates:
+:param early_stop_threshold:
+:type early_stop_threshold:
+:return:
+:rtype:
+"""
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
     since = time.time()
@@ -119,13 +118,10 @@ def training(
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     _format = "NCHW"
-                    if isinstance(writer, ImageWriterMixin):
-                        writer.image(
-                            f"rgb_imgs", rgb_imgs, update_i, dataformats=_format
-                        )
-                        writer.image(
-                            f"recon_pred", recon_pred, update_i, dataformats=_format
-                        )
+                    writer.image(f"rgb_imgs", rgb_imgs, update_i, data_formats=_format)
+                    writer.image(
+                        f"recon_pred", recon_pred, update_i, data_formats=_format
+                    )
                     sess.write(f"New best model at update {update_i}")
 
             sess.set_description_str(
@@ -150,11 +146,11 @@ def training(
 def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
     """
 
-  :param model:
-  :type model:
-  :param data_iterator:
-  :type data_iterator:
-  """
+:param model:
+:type model:
+:param data_iterator:
+:type data_iterator:
+"""
     with torch.no_grad():
         with TorchEvalSession(model):
             img, target = next(data_iterator)
@@ -179,11 +175,11 @@ def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
 def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     """
 
-  :param load_earlier:
-  :type load_earlier:
-  :param train:
-  :type train:
-  """
+:param load_earlier:
+:type load_earlier:
+:param train:
+:type train:
+"""
     seed = 2554215
     batch_size = 32
 
@@ -220,7 +216,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     data_iter = iter(
         cycle(DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True))
     )
-    data_iter = to_device_tensor_iterator_shitty(data_iter, device)
+    data_iter = to_device_tensor_iterator(data_iter, device)
 
     model = SkipHourglassFission(
         input_channels=input_channels,
@@ -237,11 +233,10 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
 
     if load_earlier:
         _list_of_files = PROJECT_APP_PATH.user_data.glob("*.model")
-        lastest_model_path = str(max(_list_of_files, key=os.path.getctime))
-        print(f"loading previous model: {lastest_model_path}")
-        if lastest_model_path is not None:
-            s = torch.load(lastest_model_path)
-            model.load_state_dict(s.state_dict())
+        latest_model_path = str(max(_list_of_files, key=os.path.getctime))
+        print(f"loading previous model: {latest_model_path}")
+        if latest_model_path is not None:
+            model.load_state_dict(torch.load(latest_model_path))
 
     if train:
         with TensorBoardPytorchWriter(home_path.user_log / str(time.time())) as writer:

@@ -13,8 +13,8 @@ from typing import Tuple
 
 import numpy
 import torch
-
 from warg import drop_unused_kws
+
 from .tensor_metrics import iou_of_tensors
 
 __all__ = ["build_priors", "ssd_assign_priors"]
@@ -36,7 +36,7 @@ It returns the center, height and width of the priors. The values are relative t
 Returns:
 priors (num_priors, 4): The prior boxes represented as [[center_x, center_y, w, h]]. All the
 values
-  are relative to the image size.
+are relative to the image size.
 """
 
     priors = []

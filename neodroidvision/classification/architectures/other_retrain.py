@@ -7,6 +7,7 @@ __doc__ = r"""
 
            Created on 13/11/2019
            """
+__all__ = ["other_retrain"]
 
 
 def other_retrain(arch, model, num_classes: int):

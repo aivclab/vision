@@ -3,8 +3,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn.init import xavier_uniform_
-
 from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     SelfAttentionModule,
     init_weights,
@@ -12,6 +10,7 @@ from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     spectral_norm_embedding,
     spectral_norm_linear,
 )
+from torch.nn.init import xavier_uniform_
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -33,7 +32,7 @@ class ConditionalBatchNorm2d(nn.Module):
     def forward(self, x, y):
         out = self.bn(x)
         gamma, beta = self.embed(y).chunk(2, 1)
-        out = gamma.view(-1, self.num_features, 1, 1) * out + beta.view(
+        out = gamma.reshape(-1, self.num_features, 1, 1) * out + beta.reshape(
             -1, self.num_features, 1, 1
         )
         return out
@@ -115,7 +114,7 @@ class Generator(nn.Module):
     def forward(self, z, labels):
         # n x z_dim
         act0 = self.snlinear0(z)  # n x g_conv_dim*16*4*4
-        act0 = act0.view(-1, self.g_conv_dim * 16, 4, 4)  # n x g_conv_dim*16 x 4 x 4
+        act0 = act0.reshape(-1, self.g_conv_dim * 16, 4, 4)  # n x g_conv_dim*16 x 4 x 4
         act1 = self.block1(act0, labels)  # n x g_conv_dim*16 x 8 x 8
         act2 = self.block2(act1, labels)  # n x g_conv_dim*8 x 16 x 16
         act3 = self.block3(act2, labels)  # n x g_conv_dim*4 x 32 x 32

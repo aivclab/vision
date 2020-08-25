@@ -4,19 +4,19 @@ import numpy
 import pywt
 from matplotlib import pyplot
 
-from neodroidvision.regression.denoise.spectral_denoise import fft_im_denoise
-
 if __name__ == "__main__":
 
-    def wavelet_denoise(im):
+    def wavelet_denoise(
+        im,
+        mother_wavelet="db1",  # Daubechies wavelet 1
+        levels=4,
+        keep=1 / 1e2,  # percent
+    ):
         """
 
 :param im:
 :type im:
 """
-        mother_wavelet = "db1"  # Daubechies wavelet 1
-        levels = 4
-        keep = 1 / 1e2  # percent
 
         coef = pywt.wavedec2(im, wavelet=mother_wavelet, level=levels)
 
@@ -55,8 +55,7 @@ if __name__ == "__main__":
 
     im22 = (
         pyplot.imread(
-            "/home/heider/Pictures/Christian Heider Nielsen_scaled.png"
-            # str(Path.home() / "Data" / "Datasets" / "Denoise" / "moonlanding.png")
+            str(Path.home() / "Data" / "Datasets" / "Denoise" / "moonlanding.png")
         )
         .astype(float)
         .mean(-1)

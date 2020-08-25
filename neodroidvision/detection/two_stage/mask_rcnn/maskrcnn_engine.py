@@ -4,6 +4,12 @@ import time
 
 import torch
 import torchvision
+from neodroidvision.data.detection.coco import (
+    CocoEvaluator,
+    get_coco_api_from_dataset,
+    get_iou_types,
+)
+from neodroidvision.utilities import MetricLogger, SmoothedValue, reduce_dict
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
@@ -14,12 +20,6 @@ from draugr.torch_utilities import (
     global_torch_device,
     warmup_lr_scheduler,
 )
-from neodroidvision.data.detection.coco import (
-    CocoEvaluator,
-    get_coco_api_from_dataset,
-    get_iou_types,
-)
-from neodroidvision.utilities import MetricLogger, SmoothedValue, reduce_dict
 
 
 def train_single_epoch(

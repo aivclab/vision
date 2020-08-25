@@ -15,7 +15,7 @@ from neodroidvision.classification.architectures.self_attention_network.self_att
 class SelfAttentionTypeEnum(Enum):
     """
 
-  """
+"""
 
     pairwise = 0  # pairwise subtraction
     patchwise = 1  # patchwise unfolding
@@ -24,7 +24,7 @@ class SelfAttentionTypeEnum(Enum):
 class SelfAttentionModule(nn.Module):
     """
 
-  """
+"""
 
     def __init__(
         self,
@@ -39,23 +39,23 @@ class SelfAttentionModule(nn.Module):
     ):
         """
 
-    :param self_attention_type:
-    :type self_attention_type:
-    :param in_planes:
-    :type in_planes:
-    :param rel_planes:
-    :type rel_planes:
-    :param out_planes:
-    :type out_planes:
-    :param share_planes:
-    :type share_planes:
-    :param kernel_size:
-    :type kernel_size:
-    :param stride:
-    :type stride:
-    :param dilation:
-    :type dilation:
-    """
+:param self_attention_type:
+:type self_attention_type:
+:param in_planes:
+:type in_planes:
+:param rel_planes:
+:type rel_planes:
+:param out_planes:
+:type out_planes:
+:param share_planes:
+:type share_planes:
+:param kernel_size:
+:type kernel_size:
+:param stride:
+:type stride:
+:param dilation:
+:type dilation:
+"""
         super().__init__()
         self.self_attention_type, self.kernel_size, self.stride = (
             self_attention_type,
@@ -136,15 +136,15 @@ class SelfAttentionModule(nn.Module):
     ) -> torch.Tensor:
         """
 
-    :param height:
-    :type height:
-    :param width:
-    :type width:
-    :param is_cuda:
-    :type is_cuda:
-    :return:
-    :rtype:
-    """
+:param height:
+:type height:
+:param width:
+:type width:
+:param is_cuda:
+:type is_cuda:
+:return:
+:rtype:
+"""
         if is_cuda:
             loc_w = (
                 torch.linspace(-1.0, 1.0, width).cuda().unsqueeze(0).repeat(height, 1)
@@ -160,11 +160,11 @@ class SelfAttentionModule(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :type x:
-    :return:
-    :rtype:
-    """
+:param x:
+:type x:
+:return:
+:rtype:
+"""
         x1, x2, x3 = self.conv1(x), self.conv2(x), self.conv3(x)
         if self.self_attention_type == SelfAttentionTypeEnum.pairwise:
             position = self.conv_p(self.encode_position(*x.shape[2:], x.is_cuda))
@@ -195,7 +195,7 @@ class SelfAttentionModule(nn.Module):
 class SelfAttentionBottleneck(nn.Module):
     """
 
-  """
+"""
 
     def __init__(
         self,
@@ -227,11 +227,11 @@ class SelfAttentionBottleneck(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :type x:
-    :return:
-    :rtype:
-    """
+:param x:
+:type x:
+:return:
+:rtype:
+"""
         identity = x
         out = self.relu(self.bn1(x))
         out = self.relu(self.bn2(self.sam(out)))
@@ -243,21 +243,21 @@ class SelfAttentionBottleneck(nn.Module):
 class SelfAttentionNetwork(nn.Module):
     """
 
-  """
+"""
 
     @staticmethod
     def conv1x1(in_planes: int, out_planes: int, stride: int = 1) -> nn.Module:
         """
 
-    :param in_planes:
-    :type in_planes:
-    :param out_planes:
-    :type out_planes:
-    :param stride:
-    :type stride:
-    :return:
-    :rtype:
-    """
+:param in_planes:
+:type in_planes:
+:param out_planes:
+:type out_planes:
+:param stride:
+:type stride:
+:return:
+:rtype:
+"""
         return nn.Conv2d(
             in_planes, out_planes, kernel_size=1, stride=stride, bias=False
         )
@@ -335,11 +335,11 @@ class SelfAttentionNetwork(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :type x:
-    :return:
-    :rtype:
-    """
+:param x:
+:type x:
+:return:
+:rtype:
+"""
         x = self.relu(self.bn_in(self.conv_in(x)))
         x = self.relu(self.bn0(self.layer0(self.conv0(self.pool(x)))))
         x = self.relu(self.bn1(self.layer1(self.conv1(self.pool(x)))))
@@ -360,17 +360,17 @@ def make_san(
 ) -> nn.Module:
     """
 
-  :param self_attention_type:
-  :type self_attention_type:
-  :param layers:
-  :type layers:
-  :param kernels:
-  :type kernels:
-  :param num_classes:
-  :type num_classes:
-  :return:
-  :rtype:
-  """
+:param self_attention_type:
+:type self_attention_type:
+:param layers:
+:type layers:
+:param kernels:
+:type kernels:
+:param num_classes:
+:type num_classes:
+:return:
+:rtype:
+"""
     return SelfAttentionNetwork(
         self_attention_type, SelfAttentionBottleneck, layers, kernels, num_classes
     )

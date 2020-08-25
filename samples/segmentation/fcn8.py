@@ -8,10 +8,9 @@ __doc__ = r"""
            """
 
 import torch
-from torch.optim import Adam
-
 from neodroidvision.segmentation import dice_loss
 from neodroidvision.segmentation.fully_convolutional import FCN
+from torch.optim import Adam
 
 if __name__ == "__main__":
 

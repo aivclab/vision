@@ -4,9 +4,18 @@ import argparse
 import os
 import time
 
+import torchvision
 from matplotlib import pyplot
+from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
+    MixedObservationWrapper,
+)
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import (
+    pred_target_train_model,
+    squeezenet_retrain,
+)
 
-from draugr import generator_batch, horizontal_imshow
+from draugr import batch_generator, horizontal_imshow
 from draugr.python_utilities.torch_channel_transform import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
@@ -18,15 +27,6 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
-)
-from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
-    MixedObservationWrapper,
-)
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import (
-    pred_target_train_model,
-    squeezenet_retrain,
-    torchvision,
 )
 
 # from warg.pooled_queue_processor import PooledQueueTask
@@ -78,7 +78,7 @@ def main():
 
     with MixedObservationWrapper() as env:
         env.seed(seed)
-        train_iter = generator_batch(iter(env), batch_size)
+        train_iter = batch_generator(iter(env), batch_size)
         num_categories = env.sensor("Class").space.discrete_steps
         test_iter = train_iter
 

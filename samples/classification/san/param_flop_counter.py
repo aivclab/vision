@@ -1,7 +1,5 @@
 import numpy
 import torch
-
-from draugr.torch_utilities.complexity import MODULES_MAPPING, get_model_complexity_info
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
@@ -12,7 +10,10 @@ from neodroidvision.classification.architectures.self_attention_network.self_att
     Subtraction2,
 )
 
+from draugr.torch_utilities import MODULES_MAPPING, get_model_complexity_info
+
 if __name__ == "__main__":
+    from samples.classification.san.configs.base_san_cfg import SAN_CONFIG
 
     def main():
         with torch.cuda.device(0):
@@ -34,10 +35,6 @@ if __name__ == "__main__":
             MODULES_MAPPING[Subtraction] = subtraction_flops_counter_hook
             MODULES_MAPPING[Subtraction2] = subtraction2_flops_counter_hook
             MODULES_MAPPING[Aggregation] = aggregation_flops_counter_hook
-
-            from samples.classification.san.configs.imagenet_san10_pairwise import (
-                SAN_CONFIG,
-            )
 
             config = SAN_CONFIG
 

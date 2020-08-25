@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+
 import numpy
 import torch
 from matplotlib import pyplot
-from pathlib import Path
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
+    Split,
     TorchCacheSession,
     TorchDeviceSession,
     TorchEvalSession,
@@ -16,19 +22,12 @@ from draugr.torch_utilities import (
     global_torch_device,
     torch_seed,
 )
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
-from neodroidvision.segmentation import BCEDiceLoss
-from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
-½
+
            Created on 09/10/2019
            """
-
-from neodroidvision.data.datasets.supervised.segmentation import PennFudanDataset
-from neodroidvision.data.datasets.supervised import Split
 
 
 def reschedule_learning_rate(model, epoch, scheduler):
@@ -238,12 +237,12 @@ def main():
                             for p in range(data.shape[0]):
                                 output, mask = outpu[p], target[p]
                                 """
-                for m in mask:
-                  valid_masks.append(cv2_resize(m, a))
-                for probability in output:
-                  probabilities[sample_i, :, :] = cv2_resize(probability, a)
-                  sample_i += 1
-                """
+for m in mask:
+  valid_masks.append(cv2_resize(m, a))
+for probability in output:
+  probabilities[sample_i, :, :] = cv2_resize(probability, a)
+  sample_i += 1
+"""
                                 if sample_i >= tr - 1:
                                     break
                             if sample_i >= tr - 1:

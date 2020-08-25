@@ -1,7 +1,7 @@
 from typing import Tuple
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 __all__ = ["Compress"]
 

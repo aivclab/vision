@@ -1,8 +1,6 @@
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.autograd.function import Function
-
-from draugr.torch_utilities import global_torch_device
 
 __all__ = ["CenterLoss", "CenterLossFunc"]
 
@@ -10,7 +8,7 @@ __all__ = ["CenterLoss", "CenterLossFunc"]
 class CenterLoss(nn.Module):
     """
 
-  """
+"""
 
     def __init__(self, num_classes, feat_dim, size_average=True):
         super(CenterLoss, self).__init__()
@@ -24,15 +22,15 @@ class CenterLoss(nn.Module):
     def forward(self, label, feat):
         """
 
-    :param label:
-    :type label:
-    :param feat:
-    :type feat:
-    :return:
-    :rtype:
-    """
+:param label:
+:type label:
+:param feat:
+:type feat:
+:return:
+:rtype:
+"""
         batch_size = feat.size(0)
-        feat = feat.view(batch_size, -1)
+        feat = feat.reshape(batch_size, -1)
         # To check the dim of centers and features
         if feat.size(1) != self.feat_dim:
             raise ValueError(
@@ -51,19 +49,19 @@ class CenterLossFunc(Function):
     def forward(ctx, feature, label, centers, batch_size):
         """
 
-    :param ctx:
-    :type ctx:
-    :param feature:
-    :type feature:
-    :param label:
-    :type label:
-    :param centers:
-    :type centers:
-    :param batch_size:
-    :type batch_size:
-    :return:
-    :rtype:
-    """
+:param ctx:
+:type ctx:
+:param feature:
+:type feature:
+:param label:
+:type label:
+:param centers:
+:type centers:
+:param batch_size:
+:type batch_size:
+:return:
+:rtype:
+"""
         ctx.save_for_backward(feature, label, centers, batch_size)
         centers_batch = centers.index_select(0, label.long())
         return (feature - centers_batch).pow(2).sum() / 2.0 / batch_size
@@ -72,13 +70,13 @@ class CenterLossFunc(Function):
     def backward(ctx, grad_output):
         """
 
-    :param ctx:
-    :type ctx:
-    :param grad_output:
-    :type grad_output:
-    :return:
-    :rtype:
-    """
+:param ctx:
+:type ctx:
+:param grad_output:
+:type grad_output:
+:return:
+:rtype:
+"""
         feature, label, centers, batch_size = ctx.saved_tensors
         centers_batch = centers.index_select(0, label.long())
         diff = centers_batch - feature
@@ -91,18 +89,14 @@ class CenterLossFunc(Function):
         grad_centers.scatter_add_(
             0, label.unsqueeze(1).expand(feature.size()).long(), diff
         )
-        grad_centers = grad_centers / counts.view(-1, 1)
+        grad_centers = grad_centers / counts.reshape(-1, 1)
         return -grad_output * diff / batch_size, None, grad_centers / batch_size, None
 
 
 if __name__ == "__main__":
+    from draugr.torch_utilities import global_torch_device
 
     def main(test_cuda=False):
-        """
-
-    :param test_cuda:
-    :type test_cuda:
-    """
         print("-" * 80)
         device = torch.device("cuda" if test_cuda else "cpu")
         ct = CenterLoss(10, 2, size_average=True).to(global_torch_device())
@@ -118,5 +112,6 @@ if __name__ == "__main__":
 
     torch.manual_seed(999)
     main(test_cuda=False)
+
     if torch.cuda.is_available():
         main(test_cuda=True)
