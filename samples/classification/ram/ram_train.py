@@ -5,7 +5,7 @@ import time
 
 import torch
 from apppath import ensure_existence
-from neodroidvision.data.classification import MNIST
+from neodroidvision.data.classification import MNISTDataset
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
 from tensorboard_logger import configure, log_value
@@ -486,7 +486,7 @@ def main(config):
 
     # instantiate data loaders
     if config.is_train:
-        data_loader = MNIST.get_train_valid_loader(
+        data_loader = MNISTDataset.get_train_valid_loader(
             config.data_dir,
             config.batch_size,
             config.random_seed,
@@ -495,7 +495,7 @@ def main(config):
             **kwargs,
         )
     else:
-        data_loader = MNIST.get_test_loader(
+        data_loader = MNISTDataset.get_test_loader(
             config.data_dir, config.batch_size, **kwargs
         )
 

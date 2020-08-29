@@ -7,7 +7,7 @@ import torch
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import PennFudanDataset
-from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
 from torch.utils.data import DataLoader
 from tqdm import tqdm

@@ -7,10 +7,10 @@ import time
 
 import torch
 import torchvision
+from data.classification import MNISTDataset2
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
-from neodroidvision.data.classification.deprec.s_mnist import MNISTDataset
 from torch import optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -176,7 +176,7 @@ def main():
     if not options.no_cuda:
         global_torch_device("cpu")
 
-    dataset = MNISTDataset(PROJECT_APP_PATH.user_cache / "mnist", split=Split.Training)
+    dataset = MNISTDataset2(PROJECT_APP_PATH.user_cache / "mnist", split=Split.Training)
     train_iter = iter(
         recycle(
             DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
@@ -186,7 +186,7 @@ def main():
     val_iter = iter(
         recycle(
             DataLoader(
-                MNISTDataset(
+                MNISTDataset2(
                     PROJECT_APP_PATH.user_cache / "mnist", split=Split.Validation
                 ),
                 batch_size=batch_size,

@@ -17,10 +17,10 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from draugr.torch_utilities import (
-    Split,
-    TensorBoardPytorchWriter,
-    global_torch_device,
-    to_device_tensor_iterator,
+  Split,
+  TensorBoardPytorchWriter,
+  global_torch_device,
+  to_device_iterator,
 )
 from draugr.writers import Writer
 
@@ -216,7 +216,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     data_iter = iter(
         cycle(DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True))
     )
-    data_iter = to_device_tensor_iterator(data_iter, device)
+    data_iter = to_device_iterator(data_iter, device)
 
     model = SkipHourglassFission(
         input_channels=input_channels,
