@@ -8,61 +8,60 @@ __doc__ = r"""
            """
 
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 import torch
-from torch.utils.data import ConcatDataset, DataLoader
-
-from neodroidvision.data.datasets.supervised.detection.object_detection_dataset import (
-    ObjectDetectionDataset,
-)
-from neodroidvision.data.datasets.supervised.splitting import Split
+from neodroidvision.data.datasets.supervised.detection.multi_dataset import MultiDataset
 from neodroidvision.utilities import (
     BatchCollator,
     DistributedSampler,
     LimitedBatchResampler,
 )
+from torch.utils.data import ConcatDataset, DataLoader
 from warg import NOD
+
+from draugr.torch_utilities import Split
 
 __all__ = ["object_detection_data_loaders"]
 
 
 def object_detection_data_loaders(
+    *,
     data_root: Path,
     cfg: NOD,
     split: Split = Split.Training,
     distributed: bool = False,
     max_iter: int = None,
-    start_iter: int = 0,
-) -> List[DataLoader]:
+    start_iter: int = 0
+) -> Union[List[DataLoader], DataLoader]:
     """
 
-  :param data_root:
-  :type data_root:
-  :param cfg:
-  :type cfg:
-  :param split:
-  :type split:
-  :param distributed:
-  :type distributed:
-  :param max_iter:
-  :type max_iter:
-  :param start_iter:
-  :type start_iter:
-  :return:
-  :rtype:
-  """
+:param data_root:
+:type data_root:
+:param cfg:
+:type cfg:
+:param split:
+:type split:
+:param distributed:
+:type distributed:
+:param max_iter:
+:type max_iter:
+:param start_iter:
+:type start_iter:
+:return:
+:rtype:
+"""
 
     shuffle = split == Split.Training or distributed
     data_loaders = []
 
-    for dataset in ObjectDetectionDataset(
+    for dataset in MultiDataset(
         cfg=cfg,
         dataset_type=cfg.dataset_type,
         data_root=data_root,
-        sub_datasets=cfg.DATASETS.TRAIN
+        sub_datasets=cfg.datasets.train
         if split == Split.Training
-        else cfg.DATASETS.TEST,
+        else cfg.datasets.test,
         split=split,
     ).sub_datasets:
         if distributed:
@@ -74,9 +73,9 @@ def object_detection_data_loaders(
 
         batch_sampler = torch.utils.data.sampler.BatchSampler(
             sampler=sampler,
-            batch_size=cfg.SOLVER.BATCH_SIZE
+            batch_size=cfg.solver.batch_size
             if split == Split.Training
-            else cfg.TEST.BATCH_SIZE,
+            else cfg.test.batch_size,
             drop_last=False,
         )
         if max_iter is not None:
@@ -87,9 +86,9 @@ def object_detection_data_loaders(
         data_loaders.append(
             DataLoader(
                 dataset,
-                num_workers=cfg.DATA_LOADER.NUM_WORKERS,
+                num_workers=cfg.data_loader.num_workers,
                 batch_sampler=batch_sampler,
-                pin_memory=cfg.DATA_LOADER.PIN_MEMORY,
+                pin_memory=cfg.data_loader.pin_memory,
                 collate_fn=BatchCollator(split == Split.Training),
             )
         )

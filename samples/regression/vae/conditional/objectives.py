@@ -8,6 +8,19 @@ __doc__ = r"""
 
 
 def loss_fn(recon_x, x, mean, log_var):
+    """
+
+  :param recon_x:
+  :type recon_x:
+  :param x:
+  :type x:
+  :param mean:
+  :type mean:
+  :param log_var:
+  :type log_var:
+  :return:
+  :rtype:
+  """
     BCE = torch.nn.functional.binary_cross_entropy(
         recon_x.view(-1, 28 * 28), x.view(-1, 28 * 28), reduction="sum"
     )

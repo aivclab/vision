@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
 """Credit: mostly based on Ilya's excellent implementation here:
 https://github.com/ikostrikov/pytorch-flows"""
 import numpy
@@ -165,12 +174,12 @@ From https://github.com/ikostrikov/pytorch-flows/blob/master/main.py
     def forward(self, inputs, context=None, mode="forward"):
         if mode == "forward":
             return (
-                inputs[:, :, self.perm],
+                inputs[..., self.perm],
                 torch.zeros_like(inputs, device=inputs.device),
             )
         elif mode == "inverse":
             return (
-                inputs[:, :, self.inv_perm],
+                inputs[..., self.inv_perm],
                 torch.zeros_like(inputs, device=inputs.device),
             )
         else:

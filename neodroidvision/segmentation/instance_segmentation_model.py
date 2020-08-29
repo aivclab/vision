@@ -7,19 +7,27 @@ __doc__ = r"""
            Created on 07/03/2020
            """
 
+import numpy
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
+
+__all__ = ["bb_from_mask", "get_model_instance_segmentation"]
+
+
+def bb_from_mask(hard_mask):
+    nz = numpy.nonzero(hard_mask)
+    return [numpy.min(nz[0]), numpy.min(nz[1]), numpy.max(nz[0]), numpy.max(nz[1])]
 
 
 def get_model_instance_segmentation(num_classes, hidden_layer: int = 256):
     """
 
-  :param num_classes:
-  :type num_classes:
-  :return:
-  :rtype:
-  """
+:param num_classes:
+:type num_classes:
+:return:
+:rtype:
+"""
 
     # load an instance segmentation model pre-trained pre-trained on COCO
     model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)

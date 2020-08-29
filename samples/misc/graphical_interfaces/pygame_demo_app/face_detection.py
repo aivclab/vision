@@ -44,7 +44,7 @@ def cvimage_grayscale(cv_image):
 
 def cvimage_to_pygame(image):
     """Convert cvimage into a pygame image"""
-    image_rgb = cv2.CreateMat(image.height, image.width, cv2.CV_8UC3)
+    image_rgb = cv2.CreateMat(image._height, image._width, cv2.CV_8UC3)
     cv2.CvtColor(image, image_rgb, cv2.COLOR_BGR2RGB)
     return pygame.image.frombuffer(image.tostring(), cv2.GetSize(image_rgb), "RGB")
 

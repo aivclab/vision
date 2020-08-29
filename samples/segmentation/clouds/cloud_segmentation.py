@@ -8,15 +8,6 @@ import numpy
 import pandas
 import torch
 from matplotlib import pyplot
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr.torch_utilities import (
-    chw_to_hwc,
-    float_chw_to_hwc_uint,
-    global_torch_device,
-    torch_seed,
-)
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import (
@@ -25,6 +16,17 @@ from neodroidvision.segmentation import (
     mask_to_run_length,
 )
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr import chw_to_hwc, float_chw_to_hwc_uint
+from draugr.torch_utilities import (
+    Split,
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+    torch_seed,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -88,50 +90,50 @@ def train_model(
         valid_loss = 0.0
         dice_score = 0.0
 
-        model.train()
-        train_set = tqdm(train_loader, postfix={"train_loss": 0.0})
-        for data, target in train_set:
-            data, target = (
-                data.to(global_torch_device(), dtype=torch.float),
-                target.to(global_torch_device(), dtype=torch.float),
-            )
-            optimizer.zero_grad()
-            output, *_ = model(data)
-            output = torch.sigmoid(output)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-            train_loss += loss.item() * data.size(0)
-            train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
-
-        model.eval()
-        with torch.no_grad():
-            validation_set = tqdm(
-                valid_loader, postfix={"valid_loss": 0.0, "dice_score": 0.0}
-            )
-            for data, target in validation_set:
+        with TorchTrainSession(model):
+            train_set = tqdm(train_loader, postfix={"train_loss": 0.0})
+            for data, target in train_set:
                 data, target = (
                     data.to(global_torch_device(), dtype=torch.float),
                     target.to(global_torch_device(), dtype=torch.float),
                 )
-
-                output, *_ = model(
-                    data
-                )  # forward pass: compute predicted outputs by passing inputs to the model
+                optimizer.zero_grad()
+                output, *_ = model(data)
                 output = torch.sigmoid(output)
+                loss = criterion(output, target)
+                loss.backward()
+                optimizer.step()
+                train_loss += loss.item() * data.size(0)
+                train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
 
-                loss = criterion(output, target)  # calculate the batch loss
+        with TorchEvalSession(model):
+            with torch.no_grad():
+                validation_set = tqdm(
+                    valid_loader, postfix={"valid_loss": 0.0, "dice_score": 0.0}
+                )
+                for data, target in validation_set:
+                    data, target = (
+                        data.to(global_torch_device(), dtype=torch.float),
+                        target.to(global_torch_device(), dtype=torch.float),
+                    )
 
-                valid_loss += loss.item() * data.size(
-                    0
-                )  # update average validation loss
-                dice_cof = intersection_over_union(
-                    output.cpu().detach().numpy(), target.cpu().detach().numpy()
-                )
-                dice_score += dice_cof * data.size(0)
-                validation_set.set_postfix(
-                    ordered_dict={"valid_loss": loss.item(), "dice_score": dice_cof}
-                )
+                    output, *_ = model(
+                        data
+                    )  # forward pass: compute predicted outputs by passing inputs to the model
+                    output = torch.sigmoid(output)
+
+                    loss = criterion(output, target)  # calculate the batch loss
+
+                    valid_loss += loss.item() * data.size(
+                        0
+                    )  # update average validation loss
+                    dice_cof = intersection_over_union(
+                        output.cpu().detach().numpy(), target.cpu().detach().numpy()
+                    )
+                    dice_score += dice_cof * data.size(0)
+                    validation_set.set_postfix(
+                        ordered_dict={"valid_loss": loss.item(), "dice_score": dice_cof}
+                    )
 
         # calculate average losses
         train_loss = train_loss / len(train_loader.dataset)
@@ -274,19 +276,21 @@ def main():
     torch_seed(SEED)
 
     train_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset="train"),
+        CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Training),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
     )
     valid_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset="valid"),
+        CloudSegmentationDataset(
+            base_dataset_path, image_path, subset=Split.Validation
+        ),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
     )
     test_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset="test"),
+        CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Testing),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
@@ -340,9 +344,9 @@ def main():
 
         pr_mask = numpy.zeros(CloudSegmentationDataset.response_shape)
         for j in range(len(CloudSegmentationDataset.categories)):
-            probability_ = output[:, :, j]
+            probability_ = output[..., j]
             thr, min_size = class_parameters[j][0], class_parameters[j][1]
-            pr_mask[:, :, j], _ = threshold_mask(probability_, thr, min_size)
+            pr_mask[..., j], _ = threshold_mask(probability_, thr, min_size)
         CloudSegmentationDataset.visualise_prediction(
             image_vis,
             pr_mask,

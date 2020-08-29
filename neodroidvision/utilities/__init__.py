@@ -5,8 +5,9 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import *
+from .metric_utilities import *
 from .metric_utilities import *
 from .torch_utilities import *
 
 # from .tf_utilities import *
+from .visualisation import *

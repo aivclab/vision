@@ -6,15 +6,18 @@ import os
 import time
 from pathlib import Path
 
-from draugr.torch_utilities import (
-    ImageWriter,
-    TensorBoardPytorchWriter,
-    global_torch_device,
-    hwc_to_chw,
-)
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities
+
+import draugr.visualisation.matplotlib_utilities
+from draugr import hwc_to_chw
+from draugr.torch_utilities import (
+    ImageWriter,
+    Split,
+    TensorBoardPytorchWriter,
+    global_torch_device,
+)
 
 __author__ = "Christian Heider Nielsen"
 
@@ -56,8 +59,8 @@ def train_model(
     try:
         sess = tqdm(range(num_updates), leave=False)
         for update_i in sess:
-            for phase in ["train", "val"]:
-                if phase == "train":
+            for phase in [Split.Training, Split.Validation]:
+                if phase == Split.Training:
                     scheduler.step()
                     for param_group in optimizer.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
@@ -71,7 +74,7 @@ def train_model(
                 )
 
                 optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == "train"):
+                with torch.set_grad_enabled(phase == Split.Training):
                     seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
                     ret = calculate_loss(
                         (seg_pred, seg_target),
@@ -80,14 +83,14 @@ def train_model(
                         (normals_pred, normals_target),
                     )
 
-                    if phase == "train":
+                    if phase == Split.Training:
                         ret.loss.backward()
                         optimizer.step()
 
                 update_loss = ret.loss.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == "val" and update_loss < best_loss:
+                if phase == Split.Validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     writer.image(f"rgb_imgs", rgb_imgs, update_i)
@@ -95,10 +98,10 @@ def train_model(
                     writer.image(f"seg_target", seg_target, update_i)
                     writer.image(f"seg_pred", seg_pred, update_i)
                     writer.image(
-                        f"depth_target", depth_target, update_i, dataformats="NCHW"
+                        f"depth_target", depth_target, update_i, data_formats="NCHW"
                     )
                     writer.image(
-                        f"depth_pred", depth_pred, update_i, dataformats="NCHW"
+                        f"depth_pred", depth_pred, update_i, data_formats="NCHW"
                     )
                     writer.image(f"normals_pred", normals_pred, update_i)
                     writer.image(f"normals_target", normals_target, update_i)
@@ -143,7 +146,7 @@ def test_model(model, data_iterator, load_path=None):
     pred_rgb = [plot_utilities.masks_to_color_img(hwc_to_chw(x)) for x in pred]
     pred_recon = [hwc_to_chw(x) for x in recon]
 
-    plot_utilities.plot_side_by_side(
+    draugr.visualisation.matplotlib_utilities.plot_side_by_side(
         [input_images_rgb, target_masks_rgb, pred_rgb, pred_recon]
     )
     pyplot.show()
@@ -205,11 +208,11 @@ def main():
         test_model(trained_aeu_model, data_iter)
     else:
         _list_of_files = home_path.glob("*")
-        lastest_model_path = (
+        latest_model_path = (
             str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
         )
-        print("loading previous model: " + lastest_model_path)
-        test_model(aeu_model, data_iter, load_path=lastest_model_path)
+        print("loading previous model: " + latest_model_path)
+        test_model(aeu_model, data_iter, load_path=latest_model_path)
 
     torch.cuda.empty_cache()
     env.close()

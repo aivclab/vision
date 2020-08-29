@@ -1,8 +1,9 @@
-from torch import nn
+from typing import List
 
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
+from torch import Tensor, nn
 
 
 class MobileNetV2(SSDBackbone):
@@ -51,7 +52,7 @@ class MobileNetV2(SSDBackbone):
             )
             self.conv = nn.Sequential(*layers)
 
-        def forward(self, x):
+        def forward(self, x: Tensor) -> Tensor:
             if self.use_res_connect:
                 return x + self.conv(x)
             else:
@@ -59,7 +60,7 @@ class MobileNetV2(SSDBackbone):
 
     def __init__(
         self,
-        size,
+        size: int,
         width_mult: float = 1.0,
         inverted_residual_setting=None,
         input_channel: int = 32,
@@ -92,8 +93,8 @@ class MobileNetV2(SSDBackbone):
 
         # building first layer
         input_channel = int(input_channel * width_mult)
-        self.last_channel = int(last_channel * max(1.0, width_mult))
-        features = [MobileNetV2.ConvBatchNormReLU(3, input_channel, stride=2)]
+        self.last_channel_num = int(last_channel * max(1.0, width_mult))
+        feature_extractor = [MobileNetV2.ConvBatchNormReLU(3, input_channel, stride=2)]
 
         for (
             t,
@@ -104,18 +105,18 @@ class MobileNetV2(SSDBackbone):
             output_channel = int(c * width_mult)
             for i in range(n):
                 stride = s if i == 0 else 1
-                features.append(
+                feature_extractor.append(
                     block(input_channel, output_channel, stride, expand_ratio=t)
                 )
                 input_channel = output_channel
         # building last several layers
-        features.append(
+        feature_extractor.append(
             MobileNetV2.ConvBatchNormReLU(
-                input_channel, self.last_channel, kernel_size=1
+                input_channel, self.last_channel_num, kernel_size=1
             )
         )
         # make it nn.Sequential
-        self.features = nn.Sequential(*features)
+        self.features = nn.Sequential(*feature_extractor)
         self.extras = nn.ModuleList(
             [
                 MobileNetV2.InvertedResidual(1280, 512, 2, 0.2),
@@ -129,11 +130,11 @@ class MobileNetV2(SSDBackbone):
 
     def reset_parameters(self):
         """
-    weight initialization
+weight initialization
 
-    :return:
-    :rtype:
-    """
+:return:
+:rtype:
+"""
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -147,7 +148,7 @@ class MobileNetV2(SSDBackbone):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.zeros_(m.bias)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> List[Tensor]:
         features = []
         for i in range(14):
             x = self.features[i](x)
@@ -161,4 +162,4 @@ class MobileNetV2(SSDBackbone):
             x = self.extras[i](x)
             features.append(x)
 
-        return tuple(features)
+        return features

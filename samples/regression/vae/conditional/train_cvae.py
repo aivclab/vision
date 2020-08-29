@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
 import os
 import time
 from collections import defaultdict
@@ -6,37 +15,37 @@ import pandas as pd
 import seaborn as sns
 import torch
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
+from warg.named_ordered_dictionary import NOD
 
 from draugr.torch_utilities import global_torch_device
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
-from warg.named_ordered_dictionary import NOD
 from .objectives import loss_fn
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"
 
-args = NOD()
-args.seed = 58329583
-args.epochs = 1000
-args.batch_size = 256
-args.learning_rate = 0.001
-args.encoder_layer_sizes = [784, 256]
-args.decoder_layer_sizes = [256, 784]
-args.latent_size = 10
-args.print_every = 100
-DEVICE = global_torch_device()
+config = NOD()
+config.seed = 58329583
+config.epochs = 1000
+config.batch_size = 256
+config.learning_rate = 0.001
+config.encoder_layer_sizes = [784, 256]
+config.decoder_layer_sizes = [256, 784]
+config.latent_size = 10
+config.print_every = 100
+GLOBAL_DEVICE = global_torch_device()
 timstamp = time.time()
-torch.manual_seed(args.seed)
+torch.manual_seed(config.seed)
 if torch.cuda.is_available():
-    torch.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed(config.seed)
 
 vae = ConditionalVAE(
-    encoder_layer_sizes=args.encoder_layer_sizes,
-    latent_size=args.latent_size,
-    decoder_layer_sizes=args.decoder_layer_sizes,
+    encoder_layer_sizes=config.encoder_layer_sizes,
+    latent_size=config.latent_size,
+    decoder_layer_sizes=config.decoder_layer_sizes,
     num_conditions=10,
 ).to(global_torch_device())
 dataset = MNIST(
@@ -55,13 +64,15 @@ def one_hot(labels, num_labels, device="cpu"):
 
 
 def main():
-    data_loader = DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=True)
+    data_loader = DataLoader(
+        dataset=dataset, batch_size=config.batch_size, shuffle=True
+    )
 
-    optimizer = torch.optim.Adam(vae.parameters(), lr=args.learning_rate)
+    optimizer = torch.optim.Adam(vae.parameters(), lr=config.learning_rate)
 
     logs = defaultdict(list)
 
-    for epoch in range(args.epochs):
+    for epoch in range(config.epochs):
         tracker_epoch = defaultdict(lambda: defaultdict(dict))
 
         for iteration, (original, label) in enumerate(data_loader):
@@ -71,7 +82,7 @@ def main():
                 label.to(global_torch_device()),
             )
             reconstruction, mean, log_var, z = vae(
-                original, one_hot(label, 10, device=DEVICE)
+                original, one_hot(label, 10, device=GLOBAL_DEVICE)
             )
 
             for i, yi in enumerate(label):
@@ -87,18 +98,18 @@ def main():
 
             logs["loss"].append(loss.item())
 
-            if iteration % args.print_every == 0 or iteration == len(data_loader) - 1:
+            if iteration % config.print_every == 0 or iteration == len(data_loader) - 1:
                 print(
-                    f"Epoch {epoch:02d}/{args.epochs:02d}"
+                    f"Epoch {epoch:02d}/{config.epochs:02d}"
                     f" Batch {iteration:04d}/{len(data_loader) - 1:d},"
                     f" Loss {loss.item():9.4f}"
                 )
 
                 condition_vector = (
-                    torch.arange(0, 10, device=DEVICE).long().unsqueeze(1)
+                    torch.arange(0, 10, device=GLOBAL_DEVICE).long().unsqueeze(1)
                 )
                 sample = vae.sample(
-                    one_hot(condition_vector, 10, device=DEVICE),
+                    one_hot(condition_vector, 10, device=GLOBAL_DEVICE),
                     num=condition_vector.size(0),
                 )
 

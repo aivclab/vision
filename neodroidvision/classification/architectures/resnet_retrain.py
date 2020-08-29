@@ -9,11 +9,13 @@ __doc__ = r"""
            Created on 11/11/2019
            """
 
-from draugr import (
+from draugr.torch_utilities import (
     set_all_parameter_requires_grad,
     set_first_n_parameter_requires_grad,
-    get_trainable_parameters,
+    trainable_parameters,
 )
+
+__all__ = ["resnet_retrain"]
 
 
 def resnet_retrain(
@@ -30,4 +32,4 @@ def resnet_retrain(
 
     model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
 
-    return model, get_trainable_parameters(model)
+    return model, trainable_parameters(model)

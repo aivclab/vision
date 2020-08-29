@@ -19,22 +19,25 @@ __all__ = ["fcn_decoder", "fcn_encoder"]
 def fcn_encoder(in_channels: int, depth: int, start_channels: int) -> Tuple[List, int]:
     """
 
-  :param in_channels:
-  :type in_channels:
-  :param depth:
-  :type depth:
-  :param start_channels:
-  :type start_channels:
-  :return:
-  :rtype:
-  """
+:param in_channels:
+:type in_channels:
+:param depth:
+:type depth:
+:param start_channels:
+:type start_channels:
+:return:
+:rtype:
+"""
     down_convolutions = []
     new_layer_channels = start_channels
     prev_layer_channels = in_channels
     for i in range(depth):
-        pooling = True if i < depth - 1 else False
-        new_layer_channels = new_layer_channels * 2
-        down_conv = Compress(prev_layer_channels, new_layer_channels, pooling=pooling)
+        new_layer_channels *= 2
+        down_conv = Compress(
+            prev_layer_channels,
+            new_layer_channels,
+            pooling=True if i < depth - 1 else False,
+        )
         prev_layer_channels = new_layer_channels
         down_convolutions.append(down_conv)
 
@@ -46,17 +49,17 @@ def fcn_decoder(
 ) -> Tuple[List, int]:
     """
 
-  :param in_channels:
-  :type in_channels:
-  :param depth:
-  :type depth:
-  :param up_mode:
-  :type up_mode:
-  :param merge_mode:
-  :type merge_mode:
-  :return:
-  :rtype:
-  """
+:param in_channels:
+:type in_channels:
+:param depth:
+:type depth:
+:param up_mode:
+:type up_mode:
+:param merge_mode:
+:type merge_mode:
+:return:
+:rtype:
+"""
     up_convolutions_ae = []
     ae_prev_layer_channels = in_channels
     for i in range(depth - 1):

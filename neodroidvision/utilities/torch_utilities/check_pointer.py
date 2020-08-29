@@ -12,13 +12,12 @@ from pathlib import Path
 from typing import Any
 
 import torch
-from torch.nn import Module
-from torch.nn.parallel import DistributedDataParallel
-from torch.optim import Optimizer
-
 from neodroidvision.utilities.torch_utilities.custom_model_caching import (
     custom_cache_url,
 )
+from torch.nn import Module
+from torch.nn.parallel import DistributedDataParallel
+from torch.optim import Optimizer
 
 __all__ = ["CheckPointer"]
 
@@ -26,7 +25,7 @@ __all__ = ["CheckPointer"]
 class CheckPointer:
     """
 
-  """
+"""
 
     _last_checkpoint_name = "last_checkpoint.txt"
 
@@ -41,19 +40,19 @@ class CheckPointer:
     ):
         """
 
-    :param model:
-    :type model:
-    :param optimizer:
-    :type optimizer:
-    :param scheduler:
-    :type scheduler:
-    :param save_dir:
-    :type save_dir:
-    :param save_to_disk:
-    :type save_to_disk:
-    :param logger:
-    :type logger:
-    """
+:param model:
+:type model:
+:param optimizer:
+:type optimizer:
+:param scheduler:
+:type scheduler:
+:param save_dir:
+:type save_dir:
+:param save_to_disk:
+:type save_to_disk:
+:param logger:
+:type logger:
+"""
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
@@ -88,12 +87,15 @@ class CheckPointer:
         self.tag_last_checkpoint(save_file)
 
     def load(self, f: Path = None, use_latest=True):
+        if f is None:
+            return {}
+
         f = str(f)
         if (self.save_dir / self._last_checkpoint_name).exists() and use_latest:
             # override argument with existing checkpoint
             f = self.get_checkpoint_file()
 
-        if not f:
+        if f is None or f == "" or f == "None":
             # no checkpoint could be found
             self.logger.info("No checkpoint found.")
             return {}

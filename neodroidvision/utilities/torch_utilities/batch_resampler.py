@@ -3,6 +3,8 @@ from typing import Iterable, Tuple
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data.sampler import BatchSampler
 
+from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
+
 __all__ = ["LimitedBatchResampler", "BatchCollator"]
 
 
@@ -50,6 +52,7 @@ class BatchCollator:
                 key: default_collate([d[key] for d in list_targets])
                 for key in list_targets[0]
             }
+            targets = NamedTensorTuple(**targets)
 
         else:
             targets = None

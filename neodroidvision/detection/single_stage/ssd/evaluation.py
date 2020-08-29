@@ -1,40 +1,39 @@
 import logging
 from pathlib import Path
+from typing import Any, List
 
 import torch
 import torch.utils.data
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets import (
-    COCODataset,
-    VOCDataset,
-    coco_evaluation,
-    voc_evaluation,
-)
+from neodroidvision.data.detection.coco import COCODataset, coco_evaluation
+from neodroidvision.data.detection.voc import VOCDataset, voc_evaluation
 from neodroidvision.detection.single_stage.ssd.object_detection_dataloader import (
     object_detection_data_loaders,
 )
-from neodroidvision.data.datasets.supervised.splitting import Split
 from neodroidvision.utilities import (
     distributing_utilities,
     is_main_process,
     synchronise_torch_barrier,
 )
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 from warg import NOD
 
 __all__ = ["do_ssd_evaluation"]
 
+from draugr.torch_utilities import Split
+
 
 def compute_on_dataset(
-    model: Module, data_loader: DataLoader, device: torch.device
+    model: Module,
+    data_loader: DataLoader,
+    device: torch.device,
+    cpu_device=torch.device("cpu"),
 ) -> dict:
     results_dict = {}
     for batch in tqdm(data_loader):
         images, targets, image_ids = batch
-        cpu_device = torch.device("cpu")
         with torch.no_grad():
             results_dict.update(
                 {
@@ -47,16 +46,23 @@ def compute_on_dataset(
     return results_dict
 
 
-def accumulate_predictions_from_multiple_gpus(predictions_per_gpu):
-    all_predictions = distributing_utilities.all_gather(predictions_per_gpu)
+def accumulate_predictions_from_cuda_devices(predictions_per_gpu: Any) -> list:
+    """
+
+  :param predictions_per_gpu:
+  :return:
+  """
+    all_predictions = distributing_utilities.all_gather_cuda(predictions_per_gpu)
     if not distributing_utilities.is_main_process():
         return
-    # merge the list of dicts
+
     predictions = {}
-    for p in all_predictions:
+    for p in all_predictions:  # merge the list of dicts
         predictions.update(p)
-    # convert a dict where the key is the index in a list
-    image_ids = list(sorted(predictions.keys()))
+
+    image_ids = list(
+        sorted(predictions.keys())
+    )  # convert a dict where the key is the index in a list
     if len(image_ids) != image_ids[-1] + 1:
         logger = logging.getLogger("SSD.inference")
         logger.warning(
@@ -65,20 +71,18 @@ def accumulate_predictions_from_multiple_gpus(predictions_per_gpu):
             "might be missing from the evaluation"
         )
 
-    # convert to a list
-    predictions = [predictions[i] for i in image_ids]
-    return predictions
+    return [predictions[i] for i in image_ids]
 
 
-def evaluate_dataset(dataset, predictions, output_dir, **kwargs):
+def evaluate_dataset(dataset, predictions, output_dir, **kwargs) -> dict:
     """evaluate dataset using different methods based on dataset type.
 Args:
-    dataset: Dataset object
-    predictions(list[(boxes, labels, scores)]): Each item in the list represents the
-        prediction results for one image. And the index should match the dataset index.
-    output_dir: output folder, to save evaluation files or results.
+dataset: Dataset object
+predictions(list[(boxes, labels, scores)]): Each item in the list represents the
+    prediction results for one image. And the index should match the dataset index.
+output_dir: output folder, to save evaluation files or results.
 Returns:
-    evaluation result
+evaluation result
 """
     kws = dict(
         dataset=dataset, predictions=predictions, output_dir=output_dir, **kwargs
@@ -92,6 +96,7 @@ Returns:
 
 
 def inference_ssd(
+    *,
     model: Module,
     data_loader: DataLoader,
     dataset_name: str,
@@ -99,7 +104,18 @@ def inference_ssd(
     output_folder: Path = None,
     use_cached: bool = False,
     **kwargs,
-):
+) -> dict:
+    """
+
+  :param model:
+  :param data_loader:
+  :param dataset_name:
+  :param device:
+  :param output_folder:
+  :param use_cached:
+  :param kwargs:
+  :return:
+  """
     dataset = data_loader.dataset
     logger = logging.getLogger("SSD.inference")
     logger.info(f"Evaluating {dataset_name} dataset({len(dataset)} images):")
@@ -111,7 +127,7 @@ def inference_ssd(
     else:
         predictions = compute_on_dataset(model, data_loader, device)
         synchronise_torch_barrier()
-        predictions = accumulate_predictions_from_multiple_gpus(predictions)
+        predictions = accumulate_predictions_from_cuda_devices(predictions)
 
     if not is_main_process():
         return
@@ -127,7 +143,16 @@ def inference_ssd(
 @torch.no_grad()
 def do_ssd_evaluation(
     data_root: Path, cfg: NOD, model: Module, distributed: bool, **kwargs
-):
+) -> List:
+    """
+
+  :param data_root:
+  :param cfg:
+  :param model:
+  :param distributed:
+  :param kwargs:
+  :return:
+  """
     if isinstance(model, torch.nn.parallel.DistributedDataParallel):
         model = model.module
 
@@ -137,16 +162,22 @@ def do_ssd_evaluation(
     for dataset_name, data_loader in zip(
         cfg.DATASETS.TEST,
         object_detection_data_loaders(
-            data_root, cfg, split=Split.Validation, distributed=distributed
+            data_root=data_root,
+            cfg=cfg,
+            split=Split.Validation,
+            distributed=distributed,
         ),
     ):
         eval_results.append(
             inference_ssd(
-                model,
-                data_loader,
-                dataset_name,
-                device,
-                PROJECT_APP_PATH.user_data / "results" / "inference" / dataset_name,
+                model=model,
+                data_loader=data_loader,
+                dataset_name=dataset_name,
+                device=device,
+                output_folder=PROJECT_APP_PATH.user_data
+                / "results"
+                / "inference"
+                / dataset_name,
                 **kwargs,
             )
         )

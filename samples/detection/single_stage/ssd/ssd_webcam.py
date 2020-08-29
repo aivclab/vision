@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 22/03/2020
+           """
+
 import argparse
 from pathlib import Path
 from typing import List
@@ -5,24 +14,25 @@ from typing import List
 import cv2
 import numpy
 import torch
-from tqdm import tqdm
-
+from PIL import ImageFont
 from apppath import ensure_existence
-from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
-from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets.supervised.splitting import Split
-from neodroidvision.detection import SingleShotDectection
+from neodroidvision.detection import SingleShotDectectionNms
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
+from tqdm import tqdm
 from warg import NOD
+
+from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
+from draugr.torch_utilities import Split, TorchEvalSession, global_torch_device
 
 
 @torch.no_grad()
 def run_webcam_demo(
     cfg: NOD,
+    input_cfg: NOD,
     categories: List,
     model_ckpt: Path,
     score_threshold: float = 0.7,
@@ -30,25 +40,25 @@ def run_webcam_demo(
 ):
     """
 
-  :param categories:
-  :type categories:
-  :param cfg:
-  :type cfg:
-  :param model_ckpt:
-  :type model_ckpt:
-  :param score_threshold:
-  :type score_threshold:
-  :param window_name:
-  :type window_name:
-  :return:
-  :rtype:
-  """
+:param categories:
+:type categories:
+:param cfg:
+:type cfg:
+:param model_ckpt:
+:type model_ckpt:
+:param score_threshold:
+:type score_threshold:
+:param window_name:
+:type window_name:
+:return:
+:rtype:
+"""
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(
-        cfg.INPUT.IMAGE_SIZE, cfg.INPUT.PIXEL_MEAN, split=Split.Testing
+        input_cfg.image_size, input_cfg.pixel_mean, split=Split.Testing
     )
-    model = SingleShotDectection(cfg)
+    model = SingleShotDectectionNms(cfg)
 
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
@@ -63,17 +73,15 @@ def run_webcam_demo(
 
     with TorchEvalSession(model):
         for image in tqdm(frame_generator(cv2.VideoCapture(0))):
-            result = model(transforms(image)[0].unsqueeze(0).to(global_torch_device()))[
-                0
-            ]
+            result = model(transforms(image)[0].unsqueeze(0).to(global_torch_device()))
             height, width, *_ = image.shape
 
-            result["boxes"][:, 0::2] *= width / result["img_width"]
-            result["boxes"][:, 1::2] *= height / result["img_height"]
+            result.boxes[:, 0::2] *= width / result.img_width.cpu().item()
+            result.boxes[:, 1::2] *= height / result.img_height.cpu().item()
             (boxes, labels, scores) = (
-                result["boxes"].to(cpu_device).numpy(),
-                result["labels"].to(cpu_device).numpy(),
-                result["scores"].to(cpu_device).numpy(),
+                result.boxes.to(cpu_device).numpy(),
+                result.labels.to(cpu_device).numpy(),
+                result.scores.to(cpu_device).numpy(),
             )
 
             indices = scores > score_threshold
@@ -82,7 +90,16 @@ def run_webcam_demo(
             cv2.imshow(
                 window_name,
                 draw_bouding_boxes(
-                    image, boxes[indices], labels[indices], scores[indices], categories
+                    image,
+                    boxes[indices],
+                    labels=labels[indices],
+                    scores=scores[indices],
+                    categories=categories,
+                    score_font=ImageFont.truetype(
+                        "/home/heider/Projects/Alexandra/Python/vision/neodroidvision/utilities/Lato-Regular"
+                        ".ttf",
+                        24,
+                    ),
                 ).astype(numpy.uint8),
             )
             if cv2.waitKey(1) == 27:
@@ -106,7 +123,8 @@ def main():
 
     run_webcam_demo(
         cfg=base_cfg,
-        categories=base_cfg.dataset_type.categories,
+        input_cfg=base_cfg.input,
+        categories=base_cfg.dataset_type.category_sizes,
         model_ckpt=Path(args.ckpt),
         score_threshold=args.score_threshold,
     )

@@ -1,7 +1,8 @@
 import torch
-import torch.nn as nn
-
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
+from torch import nn
+
+__all__ = ["Decompress"]
 
 
 class Decompress(nn.Module):
@@ -19,17 +20,17 @@ A ReLU activation follows each convolution.
     ) -> nn.Module:
         """
 
-    :param in_channels:
-    :type in_channels:
-    :param out_channels:
-    :type out_channels:
-    :param mode:
-    :type mode:
-    :param factor:
-    :type factor:
-    :return:
-    :rtype:
-    """
+:param in_channels:
+:type in_channels:
+:param out_channels:
+:type out_channels:
+:param mode:
+:type mode:
+:param factor:
+:type factor:
+:return:
+:rtype:
+"""
         if mode == UpscaleMode.FractionalTranspose:
             return nn.ConvTranspose2d(
                 in_channels, out_channels, kernel_size=2, stride=factor
@@ -104,6 +105,4 @@ from_up: upconv'd tensor from the decoder pathway
         else:
             x = from_up + from_down
 
-        x = torch.relu(self.conv1(x))
-        x = torch.relu(self.conv2(x))
-        return x
+        return torch.relu(self.conv2(torch.relu(self.conv1(x))))

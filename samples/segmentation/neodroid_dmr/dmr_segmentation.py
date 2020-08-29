@@ -9,15 +9,21 @@ import pandas
 import seaborn
 import torch
 from matplotlib import pyplot
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr.torch_utilities import global_torch_device, torch_seed
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.datasets import CloudSegmentationDataset, Split
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 from neodroidvision.segmentation.masks import mask_to_run_length
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from draugr.torch_utilities import (
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+    torch_seed,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -73,46 +79,46 @@ def train_d(
         valid_loss = 0.0
         dice_score = 0.0
 
-        model.train()
-        train_set = tqdm(train_loader, postfix={"train_loss": 0.0})
-        for data, target in train_set:
-            data, target = (
-                data.to(global_torch_device()),
-                target.to(global_torch_device()),
-            )
-            optimizer.zero_grad()
-            output, *_ = model(data)
-            output = torch.sigmoid(output)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-            train_loss += loss.item() * data.size(0)
-            train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
-
-        model.eval()
-        with torch.no_grad():
-            validation_set = tqdm(
-                valid_loader, postfix={"valid_loss": 0.0, "dice_score": 0.0}
-            )
-            for data, target in validation_set:
+        with TorchTrainSession(model):
+            train_set = tqdm(train_loader, postfix={"train_loss": 0.0})
+            for data, target in train_set:
                 data, target = (
                     data.to(global_torch_device()),
                     target.to(global_torch_device()),
                 )
-                # forward pass: compute predicted outputs by passing inputs to the model
+                optimizer.zero_grad()
                 output, *_ = model(data)
                 output = torch.sigmoid(output)
-                # calculate the batch loss
                 loss = criterion(output, target)
-                # update average validation loss
-                valid_loss += loss.item() * data.size(0)
-                dice_cof = intersection_over_union(
-                    output.cpu().detach().numpy(), target.cpu().detach().numpy()
+                loss.backward()
+                optimizer.step()
+                train_loss += loss.item() * data.size(0)
+                train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
+
+        with TorchEvalSession(model):
+            with torch.no_grad():
+                validation_set = tqdm(
+                    valid_loader, postfix={"valid_loss": 0.0, "dice_score": 0.0}
                 )
-                dice_score += dice_cof * data.size(0)
-                validation_set.set_postfix(
-                    ordered_dict={"valid_loss": loss.item(), "dice_score": dice_cof}
-                )
+                for data, target in validation_set:
+                    data, target = (
+                        data.to(global_torch_device()),
+                        target.to(global_torch_device()),
+                    )
+                    # forward pass: compute predicted outputs by passing inputs to the model
+                    output, *_ = model(data)
+                    output = torch.sigmoid(output)
+                    # calculate the batch loss
+                    loss = criterion(output, target)
+                    # update average validation loss
+                    valid_loss += loss.item() * data.size(0)
+                    dice_cof = intersection_over_union(
+                        output.cpu().detach().numpy(), target.cpu().detach().numpy()
+                    )
+                    dice_score += dice_cof * data.size(0)
+                    validation_set.set_postfix(
+                        ordered_dict={"valid_loss": loss.item(), "dice_score": dice_cof}
+                    )
 
         # calculate average losses
         train_loss = train_loss / len(train_loader.dataset)
@@ -145,8 +151,8 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
     ## Grid Search for best Threshold
     class_params = {}
 
-    for class_id in CloudDataset.classes.keys():
-        print(CloudDataset.classes[class_id])
+    for class_id in CloudDataset._categories.keys():
+        print(CloudDataset._categories[class_id])
         attempts = []
         for t in range(0, 100, 5):
             t /= 100
@@ -193,8 +199,8 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
         mask = mask.astype("uint8").transpose(1, 2, 0)
         pr_mask = numpy.zeros((350, 525, 4))
         for j in range(4):
-            probability_ = resize_image_cv(output[:, :, j])
-            pr_mask[:, :, j], _ = post_process(
+            probability_ = resize_image_cv(output[..., j])
+            pr_mask[..., j], _ = post_process(
                 probability_, class_params[j][0], class_params[j][1]
             )
         visualize_with_raw(
@@ -213,10 +219,10 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
 
 def submission(model, class_params, base_path, batch_size, resized_loc):
     test_loader = DataLoader(
-        CloudDataset(
+        CloudSegmentationDataset(
             df_path=base_path / "sample_submission.csv",
             resized_loc=resized_loc,
-            subset="test",
+            subset=Split.Testing,
         ),
         batch_size=batch_size,
         shuffle=False,
@@ -292,16 +298,20 @@ def main():
     min_size = (10000, 10000, 10000, 10000)
 
     train_loader = DataLoader(
-        CloudDataset(
-            df_path=base_path / "train.csv", resized_loc=resized_loc, subset="train"
+        CloudSegmentationDataset(
+            df_path=base_path / "train.csv",
+            resized_loc=resized_loc,
+            subset=Split.Training,
         ),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
     )
     valid_loader = DataLoader(
-        CloudDataset(
-            df_path=base_path / "train.csv", resized_loc=resized_loc, subset="valid"
+        CloudSegmentationDataset(
+            df_path=base_path / "train.csv",
+            resized_loc=resized_loc,
+            subset=Split.Validation,
         ),
         batch_size=batch_size,
         shuffle=False,
@@ -309,7 +319,9 @@ def main():
     )
 
     model = SkipHourglassFission(
-        CloudDataset.predictors_shape[-1], CloudDataset.response_shape, encoding_depth=2
+        CloudSegmentationDataset.predictors_shape[-1],
+        CloudSegmentationDataset.response_shape,
+        encoding_depth=2,
     )
     model.to(global_torch_device())
 

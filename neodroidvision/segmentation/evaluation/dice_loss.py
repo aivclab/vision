@@ -2,9 +2,8 @@ from typing import Any
 
 import numpy
 import torch
-from torch import nn
-
 from neodroidvision.segmentation.evaluation.f_score import f_score
+from torch import nn
 
 __all__ = ["dice_loss", "dice_coefficient", "DiceLoss", "BCEDiceLoss"]
 
@@ -19,10 +18,8 @@ pred: tensor with first dimension as batch
 target: tensor with first dimension as batch
 """
 
-    pred_flat = pred.contiguous().view(
-        -1
-    )  # have to use contiguous since they may from a torch.view op
-    target_flat = target.contiguous().view(-1)
+    pred_flat = pred.reshape(-1)
+    target_flat = target.reshape(-1)
 
     intersection = 2.0 * (pred_flat * target_flat).sum() + epsilon
     union = (target_flat ** 2).sum() + (pred_flat ** 2).sum() + epsilon

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from typing import Tuple, Union
 
-
+import neodroid
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-
-import neodroid
-from draugr import global_torch_device
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
+
+from draugr.torch_utilities import global_torch_device
 
 __author__ = "Christian Heider Nielsen"
 
@@ -25,8 +25,18 @@ a_transform = transforms.Compose(
 
 a_retransform = transforms.Compose([transforms.ToPILImage("RGB")])
 
+__all__ = [
+    "neodroid_env_classification_generator",
+    "pooled_neodroid_env_classification_generator",
+]
 
-def NeodroidEnvClassificationGenerator(env, batch_size=64):
+
+def neodroid_env_classification_generator(env, batch_size=64) -> Tuple:
+    """
+
+    :param env:
+    :param batch_size:
+    """
     while True:
         predictors = []
         class_responses = []
@@ -44,16 +54,39 @@ def NeodroidEnvClassificationGenerator(env, batch_size=64):
         yield a, b
 
 
-def PooledNeodroidEnvClassificationGenerator(env, device, batch_size=64):
+def pooled_neodroid_env_classification_generator(env, device, batch_size=64) -> Tuple:
+    """
+
+    :param env:
+    :param device:
+    :param batch_size:
+    :return:
+    """
+
     class FetchConvert(PooledQueueTask):
-        def __init__(self, env, device="cpu", batch_size=64, *args, **kwargs):
+        def __init__(
+            self,
+            env,
+            device: Union[str, torch.device] = "cpu",
+            batch_size: int = 64,
+            *args,
+            **kwargs
+        ):
+            """
+
+      :param env:
+      :param device:
+      :param batch_size:
+      :param args:
+      :param kwargs:
+      """
             super().__init__(*args, **kwargs)
 
             self.env = env
             self.batch_size = batch_size
             self.device = device
 
-        def call(self, *args, **kwargs):
+        def call(self, *args, **kwargs) -> Tuple:
             predictors = []
             class_responses = []
 
@@ -66,9 +99,10 @@ def PooledNeodroidEnvClassificationGenerator(env, device, batch_size=64):
                 predictors.append(a_transform(rgb_arr))
                 class_responses.append(int(a_class))
 
-            a = torch.stack(predictors).to(self.device)
-            b = torch.LongTensor(class_responses).to(self.device)
-            return (a, b)
+            return (
+                torch.stack(predictors).to(self.device),
+                torch.LongTensor(class_responses).to(self.device),
+            )
 
     task = FetchConvert(env, device=device, batch_size=batch_size)
 
@@ -81,9 +115,13 @@ def PooledNeodroidEnvClassificationGenerator(env, device, batch_size=64):
 
 
 if __name__ == "__main__":
-    neodroid_generator = NeodroidEnvClassificationGenerator(neodroid.connect())
-    train_loader = torch.utils.data.DataLoader(
-        dataset=neodroid_generator, batch_size=12, shuffle=True
-    )
-    for p, r in train_loader:
-        print(r)
+
+    def asdadsad():
+        neodroid_generator = neodroid_env_classification_generator(neodroid.connect())
+        train_loader = torch.utils.data.DataLoader(
+            dataset=neodroid_generator, batch_size=12, shuffle=True
+        )
+        for p, r in train_loader:
+            print(r)
+
+    asdadsad()

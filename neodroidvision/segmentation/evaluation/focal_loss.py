@@ -15,18 +15,18 @@ class FocalLoss(nn.Module):
 This criterion is a implementation of Focal Loss, which is proposed in
 Focal Loss for Dense Object Detection.
 
-    Loss(x, class) = - \alpha (1-softmax(x)[class])^gamma \log(softmax(x)[class])
+Loss(x, class) = - \alpha (1-softmax(x)[class])^gamma \log(softmax(x)[class])
 
 The loss_functions are averaged across observations for each mini batch.
 Args:
-    alpha(1D Tensor, Variable) : the scalar factor for this criterion
-    gamma(float, double) : gamma > 0; reduces the relative loss for well-classified examples (p > .5),
-                           putting more focus on hard, misclassified examples
-    size_average(bool): size_average(bool): By default, the loss_functions are averaged over
-    observations for
-    each mini batch.
-                        However, if the field size_average is set to False, the loss_functions are
-                        instead summed for each mini batch.
+alpha(1D Tensor, Variable) : the scalar factor for this criterion
+gamma(float, double) : gamma > 0; reduces the relative loss for well-classified examples (p > .5),
+                     putting more focus on hard, misclassified examples
+size_average(bool): size_average(bool): By default, the loss_functions are averaged over
+observations for
+each mini batch.
+                  However, if the field size_average is set to False, the loss_functions are
+                  instead summed for each mini batch.
 """
 
     def __init__(
@@ -47,18 +47,20 @@ Args:
     def forward(self, inputs: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         N = inputs.size(0)
         C = inputs.size(1)
-        P = torch.softmax(inputs, 0)
+        P = torch.softmax(
+            inputs, 0
+        )  # TODO: use log_softmax? Check dim maybe it should be 1
 
         class_mask = inputs.data.new(N, C).fill_(0)
         class_mask = Variable(class_mask)
-        ids = targets.view(-1, 1)
+        ids = targets.reshape(-1, 1)
         class_mask.scatter_(1, ids.data, 1.0)
 
         if inputs.is_cuda and not self.alpha.is_cuda:
             self.alpha = self.alpha.cuda()
         alpha = self.alpha[ids.data.view(-1)]
 
-        probs = (P * class_mask).sum(1).view(-1, 1)
+        probs = (P * class_mask).sum(1).reshape(-1, 1)
 
         log_p = probs.log()
 

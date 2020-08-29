@@ -6,10 +6,9 @@ __doc__ = ""
 
 import torch
 import torch.utils.data
+from neodroidvision.regression.vae.architectures.vae import VAE
 from torch import nn
 from torch.nn.functional import binary_cross_entropy
-
-from neodroidvision.regression.vae.architectures.vae import VAE
 
 __all__ = ["VanillaVAE"]
 
@@ -24,7 +23,7 @@ class Encoder(nn.Module):
         self.log_std = nn.Linear(200, output_size)
 
     def encode(self, x):
-        x.view(-1, self._input_size)
+        x.reshape(-1, self._input_size)
         h1 = self.fcs(x)
         return self.mean(h1), self.log_std(h1)
 
@@ -55,22 +54,22 @@ class Decoder(nn.Module):
 class VanillaVAE(VAE):
     """
 
-  """
+"""
 
     def encode(self, *x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :return:
-    """
+:param x:
+:return:
+"""
         return self._encoder(*x)
 
     def decode(self, *x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :return:
-    """
+:param x:
+:return:
+"""
         return self._decoder(*x)
 
     def __init__(self, input_size=784, latent_size=2):

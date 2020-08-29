@@ -1,7 +1,5 @@
-apppath
+devpack
 neodroid
-warg
-draugr
 numpy
 scipy
 scikit-image
@@ -14,7 +12,8 @@ torch
 torchvision
 tensorflow
 pycocotools
-pathlib
 albumentations
 opencv-python
 seaborn
+munin
+PyWavelets

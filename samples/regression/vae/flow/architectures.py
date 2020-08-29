@@ -5,6 +5,8 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
+from typing import Tuple
+
 import numpy
 import torch
 import torch.utils
@@ -15,6 +17,10 @@ from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 
 
 class MLP(nn.Module):
+    """
+
+  """
+
     def __init__(self, input_size, output_size, hidden_size):
         super().__init__()
         modules = [
@@ -26,7 +32,14 @@ class MLP(nn.Module):
         ]
         self.net = nn.Sequential(*modules)
 
-    def forward(self, input):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
+        """
+
+    :param input:
+    :type input:
+    :return:
+    :rtype:
+    """
         return self.net(input)
 
 
@@ -45,7 +58,7 @@ Bernoulli model parameterized by a generative network with Gaussian latents for 
             input_size=latent_size, output_size=data_size, hidden_size=latent_size * 2
         )
 
-    def forward(self, z, x):
+    def forward(self, z, x) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 Return log probability of model.
 """
@@ -134,11 +147,26 @@ Return sample of latent variable and log prob.
 
 class NormalLogProb(nn.Module):
     def forward(self, loc, scale, z):
-        var = torch.pow(scale, 2)
+        """
+
+    :param loc:
+    :type loc:
+    :param scale:
+    :type scale:
+    :param z:
+    :type z:
+    :return:
+    :rtype:
+    """
+        var = scale ** 2
         return -0.5 * torch.log(2 * numpy.pi * var) - torch.pow(z - loc, 2) / (2 * var)
 
 
 class BernoulliLogProb(nn.Module):
+    """
+
+  """
+
     def __init__(self):
         super().__init__()
         self.bce_with_logits = nn.BCEWithLogitsLoss(reduction="none")

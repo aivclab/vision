@@ -1,28 +1,32 @@
+from neodroidvision.data.datasets.supervised.detection.voc import VOCDataset
+from neodroidvision.detection import SSDLiteBoxPredictor
 from neodroidvision.detection.single_stage.ssd.architecture.backbones import (
     mobilenet_v2_factory,
 )
+from neodroidvision.detection.single_stage.ssd.config.ssd_config import base_cfg
 
-from neodroidvision.detection.single_stage.ssd.config.base_config import base_cfg
-from neodroidvision.data import VOCDataset
+base_cfg.data_dir = base_cfg.data_dir / "PASCAL" / "Train"
 
-base_cfg.MODEL.update(NUM_CLASSES=21)
-base_cfg.MODEL.BACKBONE.update(
-    NAME=mobilenet_v2_factory, OUT_CHANNELS=(96, 1280, 512, 256, 256, 64)
+base_cfg.model.backbone.update(
+    name=mobilenet_v2_factory,
+    out_channels=(96, 1280, 512, 256, 256, 64),
+    predictor_type=SSDLiteBoxPredictor,
 ),
-base_cfg.MODEL.PRIORS.update(
-    FEATURE_MAPS=[20, 10, 5, 3, 2, 1],
-    STRIDES=[16, 32, 64, 100, 150, 300],
-    MIN_SIZES=[60, 105, 150, 195, 240, 285],
-    MAX_SIZES=[105, 150, 195, 240, 285, 330],
-    ASPECT_RATIOS=[[2, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3]],
-    BOXES_PER_LOCATION=[6, 6, 6, 6, 6, 6],
+base_cfg.model.box_head.priors.update(
+    feature_maps=(20, 10, 5, 3, 2, 1),
+    strides=(16, 32, 64, 100, 150, 300),
+    min_sizes=(60, 105, 150, 195, 240, 285),
+    max_sizes=(105, 150, 195, 240, 285, 330),
+    aspect_ratios=((2, 3), (2, 3), (2, 3), (2, 3), (2, 3), (2, 3)),
+    boxes_per_location=(6, 6, 6, 6, 6, 6),
 )
-base_cfg.INPUT.update(IMAGE_SIZE=320)
+base_cfg.input.update(image_size=320)
 
 base_cfg.dataset_type = VOCDataset
-base_cfg.DATASETS.update(
-    TRAIN=("voc_2007_trainval", "voc_2012_trainval"), TEST=("voc_2007_test",)
+base_cfg.datasets.update(
+    train=("voc_2007_trainval", "voc_2012_trainval"), test=("voc_2007_test",)
 )
-base_cfg.SOLVER.update(
-    MAX_ITER=120000, LR_STEPS=[80000, 100000], GAMMA=0.1, BATCH_SIZE=32, LR=1e-3
+base_cfg.solver.update(
+    max_iter=120000, lr_steps=(80000, 100000), gamma=0.1, batch_size=32, lr=1e-3
 )
+base_cfg.model.box_head.update(num_categories=len(base_cfg.dataset_type.categories))

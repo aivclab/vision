@@ -1,7 +1,11 @@
 ![neodroid](.github/images/header.png)
 
 # Vision
-This repository will host implementation computer vision algorithms applying the [Neodroid](https://github.com/sintefneodroid/) platform.
+This repository will host implementations of computer vision algorithms, this repository hosts a general
+ toolbox is in
+ library format under [neodroidvision](neodroidvision), while also hosts samples of usage in
+  [samples](samples), many of them utilising the
+ [Neodroid](https://github.com/sintefneodroid/) platform.
 
 ---
 
@@ -9,14 +13,14 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 
 ---
 
-| [![Build Status](https://travis-ci.org/sintefneodroid/agent.svg?branch=master)](https://travis-ci.org/sintefneodroid/agent)  | [![Coverage Status](https://coveralls.io/repos/github/sintefneodroid/agent/badge.svg?branch=master)](https://coveralls.io/github/sintefneodroid/agent?branch=master)  | [![GitHub Issues](https://img.shields.io/github/issues/sintefneodroid/agent.svg?style=flat)](https://github.com/sintefneodroid/agent/issues)  |  [![GitHub Forks](https://img.shields.io/github/forks/sintefneodroid/agent.svg?style=flat)](https://github.com/sintefneodroid/agent/network) | [![GitHub Stars](https://img.shields.io/github/stars/sintefneodroid/agent.svg?style=flat)](https://github.com/sintefneodroid/agent/stargazers) |[![GitHub License](https://img.shields.io/github/license/sintefneodroid/agent.svg?style=flat)](https://github.com/sintefneodroid/agent/blob/master/LICENSE.md) |
+| [![Build Status](https://travis-ci.org/aivclab/vision.svg?branch=master)](https://travis-ci.org/aivclab/vision)  | [![Coverage Status](https://coveralls.io/repos/github/aivclab/vision/badge.svg?branch=master)](https://coveralls.io/github/aivclab/vision?branch=master)  | [![GitHub Issues](https://img.shields.io/github/issues/aivclab/vision.svg?style=flat)](https://github.com/aivclab/vision/issues)  |  [![GitHub Forks](https://img.shields.io/github/forks/aivclab/vision.svg?style=flat)](https://github.com/aivclab/vision/network) | [![GitHub Stars](https://img.shields.io/github/stars/aivclab/vision.svg?style=flat)](https://github.com/aivclab/vision/stargazers) |[![GitHub License](https://img.shields.io/github/license/aivclab/vision.svg?style=flat)](https://github.com/aivclab/vision/blob/master/LICENSE.md) |
 |---|---|---|---|---|---|
 
 <p align="center" width="100%">
   <a href="https://www.python.org/">
     <img alt="python" src=".github/images/python.svg" height="40" align="left">
   </a>
-  <a href="http://pytorch.org/"style="float: right;">
+  <a href="http://pytorch.org/" style="float: right;">
     <img alt="pytorch" src=".github/images/pytorch.svg" height="40" align="right" >
   </a>
 </p>
@@ -38,13 +42,22 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 - [Contributing](#contributing)
 - [Other Components](#other-components-of-the-neodroid-platform)
 
-# Algorithms
-- [SAGAN](vision/.py) - Generative model
-- [CVAE](vision/.py) - Generative model
-- [BVAE](vision/.py) - Generative model
-- [Vanilla-CNN](vision/.py) - Classification
-- [Vanilla-MLP](vision/.py) - Classification
-- [YOLO](vision/.py) - Segmentation
+# Computer Vision Algorithms
+### Classification
+-
+
+### Segmentation
+- [UNET](neodroidvision/segmentation/instance_segmentation_model.py) -  Segmentation model
+- [AUX-UNET](neodroidvision/multitask/fission/skip_hourglass/skip_hourglass_fission.py) - Instance
+ Segmentation model + Auxilary ouputs
+### Detection
+- [SSD](neodroidvision/detection/single_stage/ssd) - Object Detection Model
+- [MASK-RCNN](neodroidvision/detection/two_stage/mask_rcnn) - Object Detection Model
+
+### Regression
+#### Generative
+- [SAGAN](neodroidvision/regression/generative) - Generative model
+- [VAE](neodroidvision/regression/vae) - Generative model
 
 # Requirements
 - pytorch
@@ -106,5 +119,4 @@ For citation you may use the following bibtex entry:
 # Authors
 
 * **Christian Heider Nielsen** - [cnheider](https://github.com/cnheider)
-
-Here other [contributors](https://github.com/aivclab/vision/contributors) to this project are listed.
+* [Other contributors](https://github.com/aivclab/vision/contributors)
