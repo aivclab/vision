@@ -2,9 +2,9 @@ import os
 import pickle
 from pathlib import Path
 
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import numpy as np
+import numpy
+from  matplotlib import animation, pyplot
+
 from samples.classification.ram.ram_params import get_ram_config
 
 from draugr.visualisation.matplotlib_utilities import (
@@ -24,7 +24,7 @@ def main(plot_dir: Path, epoch=None):
     glimpses = pickle.load(open(str(plot_dir / f"g_{epoch}.p"), "rb"))
     locations = pickle.load(open(str(plot_dir / f"l_{epoch}.p"), "rb"))
 
-    glimpses = np.concatenate(glimpses)
+    glimpses = numpy.concatenate(glimpses)
 
     size = int(str(plot_dir).split("_")[2][0])
     num_anims = len(locations)
@@ -35,7 +35,7 @@ def main(plot_dir: Path, epoch=None):
         denormalise_minusoneone(img_shape, l) for l in locations
     ]  # denormalize coordinates
 
-    fig, axs = plt.subplots(nrows=1, ncols=num_cols)
+    fig, axs = pyplot.subplots(nrows=1, ncols=num_cols)
 
     for j, ax in enumerate(axs.flat):
         ax.imshow(glimpses[j], cmap="Greys_r")
@@ -59,7 +59,7 @@ def main(plot_dir: Path, epoch=None):
         str(plot_dir / f"epoch_{epoch}.mp4"),
         extra_args=["-vcodec", "h264", "-pix_fmt", "yuv420p"],
     )  # save as mp4
-    plt.show()
+    pyplot.show()
 
 
 if __name__ == "__main__":

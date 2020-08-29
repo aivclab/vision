@@ -1,9 +1,8 @@
-import numpy as np
+import numpy
 import torch
-import torch.nn.functional as F
-import torch.nn.init as initer
+from torch.nn import init
 from PIL import Image
-from torch import nn
+from torch import log_softmax, nn
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.conv import _ConvNd
 
@@ -43,11 +42,11 @@ def intersection_and_union(output, target, K, ignore_index=255):
     assert output.shape == target.shape
     output = output.reshape(output.size).copy()
     target = target.reshape(target.size)
-    output[np.where(target == ignore_index)[0]] = 255
-    intersection = output[np.where(output == target)[0]]
-    area_intersection, _ = np.histogram(intersection, bins=np.arange(K + 1))
-    area_output, _ = np.histogram(output, bins=np.arange(K + 1))
-    area_target, _ = np.histogram(target, bins=np.arange(K + 1))
+    output[numpy.where(target == ignore_index)[0]] = 255
+    intersection = output[numpy.where(output == target)[0]]
+    area_intersection, _ = numpy.histogram(intersection, bins=numpy.arange(K + 1))
+    area_output, _ = numpy.histogram(output, bins=numpy.arange(K + 1))
+    area_target, _ = numpy.histogram(target, bins=numpy.arange(K + 1))
     area_union = area_output + area_target - area_intersection
     return area_intersection, area_union, area_target
 
@@ -96,44 +95,44 @@ def init_weights(
     for m in model.modules():
         if isinstance(m, (_ConvNd)):
             if conv == "kaiming":
-                initer.kaiming_normal_(m.weight)
+                init.kaiming_normal_(m.weight)
             elif conv == "xavier":
-                initer.xavier_normal_(m.weight)
+                init.xavier_normal_(m.weight)
             else:
                 raise ValueError("init type of conv error.\n")
             if m.bias is not None:
-                initer.constant_(m.bias, 0)
+                init.constant_(m.bias, 0)
 
         elif isinstance(m, _BatchNorm):
             if batchnorm == "normal":
-                initer.normal_(m.weight, 1.0, 0.02)
+                init.normal_(m.weight, 1.0, 0.02)
             elif batchnorm == "constant":
-                initer.constant_(m.weight, 1.0)
+                init.constant_(m.weight, 1.0)
             else:
                 raise ValueError("init type of batchnorm error.\n")
-            initer.constant_(m.bias, 0.0)
+            init.constant_(m.bias, 0.0)
 
         elif isinstance(m, nn.Linear):
             if linear == "kaiming":
-                initer.kaiming_normal_(m.weight)
+                init.kaiming_normal_(m.weight)
             elif linear == "xavier":
-                initer.xavier_normal_(m.weight)
+                init.xavier_normal_(m.weight)
             else:
                 raise ValueError("init type of linear error.\n")
             if m.bias is not None:
-                initer.constant_(m.bias, 0)
+                init.constant_(m.bias, 0)
 
         elif isinstance(m, nn.LSTM):
             for name, param in m.named_parameters():
                 if "weight" in name:
                     if lstm == "kaiming":
-                        initer.kaiming_normal_(param)
+                        init.kaiming_normal_(param)
                     elif lstm == "xavier":
-                        initer.xavier_normal_(param)
+                        init.xavier_normal_(param)
                     else:
                         raise ValueError("init type of lstm error.\n")
                 elif "bias" in name:
-                    initer.constant_(param, 0)
+                    init.constant_(param, 0)
 
 
 def colorize(gray, palette):
@@ -147,7 +146,7 @@ def colorize(gray, palette):
 :rtype:
 """
     # gray: numpy array of the label and 1*3N size list palette
-    color = Image.fromarray(gray.astype(np.uint8)).convert("P")
+    color = Image.fromarray(gray.astype(numpy.uint8)).convert("P")
     color.putpalette(palette)
     return color
 
@@ -229,7 +228,7 @@ def group_weight2(weight_group, module, norm_layer, lr):
 def mixup_data(x, y, alpha=0.2):
     """Returns mixed inputs, pairs of targets, and lambda"""
     if alpha > 0:
-        lam = np.random.beta(alpha, alpha)
+        lam = numpy.random.beta(alpha, alpha)
     else:
         lam = 1
     index = torch.randperm(x.shape[0])
@@ -256,12 +255,12 @@ def mixup_loss(output, target_a, target_b, lam=1.0, eps=0.0):
 """
     w = torch.zeros_like(output).scatter(1, target_a.unsqueeze(1), 1)
     w = w * (1 - eps) + (1 - w) * eps / (output.shape[1] - 1)
-    log_prob = F.log_softmax(output, dim=1)
+    log_prob = log_softmax(output, dim=1)
     loss_a = (-w * log_prob).sum(dim=1).mean()
 
     w = torch.zeros_like(output).scatter(1, target_b.unsqueeze(1), 1)
     w = w * (1 - eps) + (1 - w) * eps / (output.shape[1] - 1)
-    log_prob = F.log_softmax(output, dim=1)
+    log_prob = log_softmax(output, dim=1)
     loss_b = (-w * log_prob).sum(dim=1).mean()
     return lam * loss_a + (1 - lam) * loss_b
 
@@ -280,7 +279,7 @@ def smooth_loss(output, target, eps=0.1):
 """
     w = torch.zeros_like(output).scatter(1, target.unsqueeze(1), 1)
     w = w * (1 - eps) + (1 - w) * eps / (output.shape[1] - 1)
-    log_prob = F.log_softmax(output, dim=1)
+    log_prob = log_softmax(output, dim=1)
     loss = (-w * log_prob).sum(dim=1).mean()
     return loss
 

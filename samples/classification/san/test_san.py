@@ -3,9 +3,9 @@ import os
 import time
 from itertools import count
 
-import numpy as np
+import numpy
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
@@ -139,8 +139,8 @@ if __name__ == "__main__":
 
         iou_class = intersection_meter.sum / (union_meter.sum + 1e-10)
         accuracy_class = intersection_meter.sum / (target_meter.sum + 1e-10)
-        mIoU = np.mean(iou_class)
-        mAcc = np.mean(accuracy_class)
+        mIoU = numpy.mean(iou_class)
+        mAcc = numpy.mean(accuracy_class)
         allAcc = sum(intersection_meter.sum) / (sum(target_meter.sum) + 1e-10)
 
         logger.info(

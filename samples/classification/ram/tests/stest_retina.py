@@ -1,7 +1,7 @@
 from functools import reduce
 
-import matplotlib.pyplot as plt
-import numpy as np
+from  matplotlib import pyplot
+import numpy
 import torch
 from samples.classification.ram.architecture.ram_modules import GlimpseSensor
 from samples.classification.ram.ram_params import get_ram_config
@@ -25,7 +25,7 @@ def main():
     imgs = torch.cat(imgs).permute(0, 3, 1, 2)
 
     # loc = torch.Tensor(2, 2).uniform_(-1, 1)
-    loc = torch.from_numpy(np.array([[0.0, 0.0], [0.0, 0.0]]))
+    loc = torch.from_numpy(numpy.array([[0.0, 0.0], [0.0, 0.0]]))
 
     num_patches = 5
     scale = 2
@@ -38,8 +38,8 @@ def main():
     )
     glimpse = ret.foveate(imgs, loc).data.numpy()
 
-    glimpse = np.reshape(glimpse, [2, num_patches, 3, patch_size, patch_size])
-    glimpse = np.transpose(glimpse, [0, 1, 3, 4, 2])
+    glimpse = numpy.reshape(glimpse, [2, num_patches, 3, patch_size, patch_size])
+    glimpse = numpy.transpose(glimpse, [0, 1, 3, 4, 2])
 
     merged = []
     for i in range(len(glimpse)):
@@ -49,14 +49,14 @@ def main():
         res = reduce(pil_merge_images, list(g))
         merged.append(res)
 
-    merged = [np.asarray(l, dtype="float32") / 255.0 for l in merged]
+    merged = [numpy.asarray(l, dtype="float32") / 255.0 for l in merged]
 
-    fig, axs = plt.subplots(nrows=2, ncols=1)
+    fig, axs = pyplot.subplots(nrows=2, ncols=1)
     for i, ax in enumerate(axs.flat):
         axs[i].imshow(merged[i])
         axs[i].get_xaxis().set_visible(False)
         axs[i].get_yaxis().set_visible(False)
-    plt.show()
+    pyplot.show()
 
 
 if __name__ == "__main__":
