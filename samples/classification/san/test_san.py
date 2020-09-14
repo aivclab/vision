@@ -16,7 +16,7 @@ from neodroidvision.classification.architectures.self_attention_network import (
 )
 from san_utilities import cal_accuracy, intersection_and_union_gpu
 
-from draugr.metrics.meters import AverageMeter
+from draugr import AverageMeter
 from draugr.torch_utilities import Split
 
 if __name__ == "__main__":

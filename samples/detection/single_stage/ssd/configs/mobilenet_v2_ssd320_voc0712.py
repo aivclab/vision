@@ -14,7 +14,7 @@ base_cfg.model.backbone.update(
 ),
 base_cfg.model.box_head.priors.update(
     feature_maps=(20, 10, 5, 3, 2, 1),
-    strides=(16, 32, 64, 100, 150, 300),
+    strides=(16, 32, 64, 106, 160, 320),
     min_sizes=(60, 105, 150, 195, 240, 285),
     max_sizes=(105, 150, 195, 240, 285, 330),
     aspect_ratios=((2, 3), (2, 3), (2, 3), (2, 3), (2, 3), (2, 3)),

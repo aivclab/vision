@@ -5,12 +5,12 @@ from pathlib import Path
 
 import numpy
 import torch
+import tqdm
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
 from neodroidvision.data.neodroid_environments.classification.data import a_retransform
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from tqdm import tqdm
 from warg.named_ordered_dictionary import NOD
 
 from draugr import (
@@ -134,7 +134,7 @@ def predictor_response_train_model_neodroid_observations(
     since = time.time()
 
     try:
-        sess = tqdm(range(num_updates), leave=False, disable=False)
+        sess = tqdm.tqdm(range(num_updates), leave=False, disable=False)
         val_loss = 0
         update_loss = 0
         val_acc = 0

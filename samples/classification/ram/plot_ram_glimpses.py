@@ -7,7 +7,7 @@ from  matplotlib import animation, pyplot
 
 from samples.classification.ram.ram_params import get_ram_config
 
-from draugr.visualisation.matplotlib_utilities import (
+from draugr import (
     denormalise_minusoneone,
     matplotlib_bounding_box,
 )

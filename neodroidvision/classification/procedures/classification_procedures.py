@@ -5,15 +5,16 @@ from pathlib import Path
 
 import numpy
 import torch
+import tqdm
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities import img_html_embed_placeholder, math_markdown_embed
 from neodroidvision.data.neodroid_environments.classification.data import a_retransform
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from tqdm import tqdm
+
 from warg.named_ordered_dictionary import NOD
 
-from draugr import plot_confusion_matrix
+from draugr import confusion_matrix_plot
 from draugr.python_utilities.torch_channel_transform import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
@@ -87,7 +88,7 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
         predictions[i // num_columns][i % num_columns] = gd
 
-    plot_confusion_matrix(y_pred_max, truth_labels, class_names)
+    confusion_matrix_plot(y_pred_max, truth_labels, class_names)
 
     title = "Classification Report"
     model_name = latest_model_path
@@ -134,7 +135,7 @@ def pred_target_train_model(
     since = time.time()
 
     try:
-        sess = tqdm(range(num_updates), leave=False, disable=False)
+        sess = tqdm.tqdm(range(num_updates), leave=False, disable=False)
         val_loss = 0
         update_loss = 0
         val_acc = 0

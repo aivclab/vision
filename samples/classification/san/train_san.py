@@ -6,7 +6,7 @@ import time
 
 import numpy
 import torch
-from draugr.metrics.meters import AverageMeter
+from draugr import AverageMeter
 from draugr.torch_utilities import Split, TensorBoardPytorchWriter
 from neodroidvision.classification.architectures.self_attention_network import (
   SelfAttentionTypeEnum,
