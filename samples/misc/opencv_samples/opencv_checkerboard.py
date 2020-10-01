@@ -39,8 +39,7 @@ save_keys = ("mtx", "dist", "rvecs", "tvecs")
 
 
 def image_loader_generator():
-    images_2 = glob.glob(f"{base}/*.jpg")
-    for fname in images_2:
+    for fname in glob.glob(f"{base}/*.jpg"):
         yield cv2.imread(fname)
 
 

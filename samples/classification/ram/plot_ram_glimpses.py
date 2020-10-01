@@ -15,7 +15,7 @@ from draugr import (
 
 def main(plot_dir: Path, epoch=None):
     if epoch is None:
-        list_of_files = plot_dir.rglob("*.p")
+        list_of_files = list(plot_dir.rglob("*.p"))
         lastest_model_path = max(list_of_files, key=os.path.getctime)
         epoch = int(str(lastest_model_path).split("_")[-1].split(".")[0])
 

@@ -201,7 +201,7 @@ def main():
     model = model.to(global_torch_device())
 
     if options.continue_training:
-        _list_of_files = PROJECT_APP_PATH.user_data.rglob("*.model")
+        _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
         if latest_model_path is not None:

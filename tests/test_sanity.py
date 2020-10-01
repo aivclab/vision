@@ -3,7 +3,10 @@
 import sys
 
 __author__ = "Christian Heider Nielsen"
+__doc__ = r"""
 
+           Created on 01/08/2020
+           """
 
 def test_sanity():
     assert True
@@ -19,7 +22,7 @@ def test_print(capsys):
     print(text)
     sys.stderr.write("world")
     captured = capsys.readouterr()
-    assert text in captured.head
+    assert text in captured.out
     assert err in captured.err
 
 

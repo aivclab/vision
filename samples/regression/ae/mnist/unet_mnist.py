@@ -232,7 +232,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     )
 
     if load_earlier:
-        _list_of_files = PROJECT_APP_PATH.user_data.glob("*.model")
+        _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
         if latest_model_path is not None:
