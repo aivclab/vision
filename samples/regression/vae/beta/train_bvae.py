@@ -53,7 +53,7 @@ EPOCHS = 1000
 LR = 3e-3
 ENCODING_SIZE = 10
 DATASET = VggFaces2(
-    Path(f"/home/heider/Data/vggface2"), split=Split.Testing, resize_s=INPUT_SIZE
+    Path.home/"Data"/"vggface2", split=Split.Testing, resize_s=INPUT_SIZE
 )
 MODEL: VAE = HigginsVae(CHANNELS, latent_size=ENCODING_SIZE).to(global_torch_device())
 BETA = 4

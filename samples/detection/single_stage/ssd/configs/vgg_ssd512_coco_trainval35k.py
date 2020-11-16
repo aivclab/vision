@@ -7,8 +7,8 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from neodroidvision.data.datasets.supervised.detection.coco import COCODataset
-from neodroidvision.detection.single_stage.ssd.config.ssd_config import base_cfg
+from data.detection.coco import COCODataset
+from neodroidvision.detection.single_stage.ssd.config.ssd_base_config import base_cfg
 
 base_cfg.data_dir /= "COCO"
 

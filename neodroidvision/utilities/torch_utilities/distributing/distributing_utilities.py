@@ -210,7 +210,9 @@ def synchronise_torch_barrier() -> None:
 
 
 def setup_distributed_logger(
-    name: str, distributed_rank: int, save_dir: Path = None
+    name: str,
+    distributed_rank: int,
+    save_dir: Path = None
 ) -> logging.Logger:
     """
 

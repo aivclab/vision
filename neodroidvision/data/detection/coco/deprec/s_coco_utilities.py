@@ -124,7 +124,7 @@ class ConvertCocoPolysToMask(object):
         image_id = torch.tensor([target["image_id"]])
 
         anno = [obj for obj in target["annotations"] if obj.iscrowd == 0]
-        boxes = [obj.bbox for obj in anno]
+        boxes = [obj.BoundingBox for obj in anno]
 
         # guard against no boxes via resizing
         boxes = torch.as_tensor(boxes, dtype=torch.float32).reshape(-1, 4)
@@ -137,8 +137,8 @@ class ConvertCocoPolysToMask(object):
         masks = convert_coco_poly_to_mask([obj.segmentation for obj in anno], h, w)
 
         keypoints = None
-        if anno and anno[0].keypoints is not None:
-            keypoints = [obj.keypoints for obj in anno]
+        if anno and anno[0].Keypoints is not None:
+            keypoints = [obj.Keypoints for obj in anno]
             keypoints = torch.as_tensor(keypoints, dtype=torch.float32)
             num_keypoints = keypoints.shape[0]
             if num_keypoints:

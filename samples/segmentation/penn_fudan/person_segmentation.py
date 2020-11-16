@@ -162,9 +162,6 @@ def train_person_segmenter(
 
 def main():
     pyplot.style.use("bmh")
-
-    # base_path = Path.home() / "Data" / "Datasets" / "PennFudanPed"
-    # base_path = Path('/media/heider/2F8901B64D76E552/Datasets/Vision/Segmentation/PennFudanPed')
     base_path = Path.home() / "/Data" / "PennFudanPed"
 
     save_model_path = PROJECT_APP_PATH.user_data / "penn_fudan_ped_seg.model"

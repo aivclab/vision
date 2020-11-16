@@ -7,14 +7,14 @@ import numpy
 import torch
 from PIL import Image, ImageFont
 from apppath import ensure_existence
-from neodroidvision import PROJECT_APP_PATH
+from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDectection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
 
-from draugr.opencv_utilities import draw_bouding_boxes
+from draugr.opencv_utilities import draw_bounding_boxes
 from draugr.torch_utilities import Split, global_torch_device
 
 
@@ -74,17 +74,16 @@ def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_d
         )
         print(f"({i + 1:04d}/{len(image_paths):04d}) {image_name}: {meters}")
 
-        drawn_image = draw_bouding_boxes(
+        drawn_image = draw_bounding_boxes(
             image,
             boxes,
             labels,
             scores,
             class_names,
             score_font=ImageFont.truetype(
-                "/home/heider/Projects/Alexandra/Python/vision/neodroidvision/utilities/Lato-Regular"
-                ".ttf",
+                PACKAGE_DATA_PATH/"Lato-Regular.ttf",
                 24,
-            ),
+                ),
         ).astype(numpy.uint8)
         Image.fromarray(drawn_image).save(os.path.join(output_dir, image_name))
 
@@ -96,14 +95,18 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
+                "mobilenet_v2_ssd320_voc0712.pth"
+        # "mobilenet_v2_ssd320_voc0712.pth"
+        # "vgg_ssd300_coco_trainval35k.pth"
+        # "vgg_ssd512_coco_trainval35k.pth"
+        ,
         help="Trained " "weights.",
     )
     parser.add_argument("--score_threshold", type=float, default=0.7)
     parser.add_argument(
         "--images_dir",
-        default="/home/heider/Pictures/Neodroid/",
+        default=Path.home()/"Data"/"Neodroid",
         type=str,
         help="Specify a image dir to do prediction.",
     )

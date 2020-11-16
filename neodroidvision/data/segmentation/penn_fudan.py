@@ -49,6 +49,8 @@ class ReturnVariant(Enum):
 class PennFudanDataset(SupervisedDataset):
     """
 
+
+
 """
 
     predictor_channels = 3  # RGB input

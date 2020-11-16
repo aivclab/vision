@@ -8,12 +8,15 @@ __doc__ = r"""
            """
 
 import argparse
+from pathlib import Path
 from typing import List
 
 import cv2
 import numpy
 import torch
 from PIL import ImageFont
+
+from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH, PROJECT_NAME
 from neodroidvision.detection import SSDOut
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
@@ -21,13 +24,14 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 from tqdm import tqdm
 from warg import NOD
 
-from draugr.opencv_utilities import draw_bouding_boxes, frame_generator
+from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
 from draugr.torch_utilities import (
     Split,
     TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
 )
+import pkg_resources
 
 
 @torch.no_grad()
@@ -138,15 +142,14 @@ print(extra_files['foo.txt'])
                 cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
                 cv2.imshow(
                     window_name,
-                    draw_bouding_boxes(
+                    draw_bounding_boxes(
                         image,
                         boxes[indices],
                         labels=labels[indices],
                         scores=scores[indices],
                         categories=categories,
                         score_font=ImageFont.truetype(
-                            "/home/heider/Projects/Alexandra/Python/vision/neodroidvision/utilities/Lato-Regular"
-                            ".ttf",
+                            PACKAGE_DATA_PATH/"Lato-Regular.ttf",
                             24,
                         ),
                     ).astype(numpy.uint8),
@@ -168,9 +171,12 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
-        "/ssd/exclude"
-        "/models/mobilenet_v2_ssd320_voc0712.pth",
+        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
+                "mobilenet_v2_ssd320_voc0712.pth"
+    # "mobilenet_v2_ssd320_voc0712.pth"
+    # "vgg_ssd300_coco_trainval35k.pth"
+    # "vgg_ssd512_coco_trainval35k.pth"
+    ,
         help="Use weights from path",
     )
     parser.add_argument("--score_threshold", type=float, default=0.7)

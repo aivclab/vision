@@ -6,22 +6,22 @@ import time
 from pathlib import Path
 
 import torch
+from apppath import ensure_existence
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
     SingleShotDectectionNms,
     do_ssd_evaluation,
     object_detection_data_loaders,
-    reduce_loss_dict,
-    write_metrics_recursive,
 )
 from neodroidvision.utilities import (
     CheckPointer,
     MetricLogger,
     global_distribution_rank,
-    set_benchmark_device_dist,
-    setup_distributed_logger,
-)
+    reduce_loss_dict, set_benchmark_device_dist,
+    setup_distributed_logger, write_metrics_recursive,
+    )
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
@@ -37,14 +37,14 @@ from draugr.torch_utilities import (
 )
 
 
-def inner_train_ssd(
+def inner_train_ssd(*,
     data_root: Path,
     cfg: NOD,
     model: Module,
     data_loader: DataLoader,
     optimiser: Optimizer,
-    scheduler: callable,
-    checkpointer: callable,
+    scheduler: WarmupMultiStepLR,
+    check_pointer: callable,
     device: callable,
     arguments: callable,
     kws: NOD,
@@ -63,8 +63,8 @@ def inner_train_ssd(
 :type optimiser:
 :param scheduler:
 :type scheduler:
-:param checkpointer:
-:type checkpointer:
+:param check_pointer:
+:type check_pointer:
 :param device:
 :type device:
 :param arguments:
@@ -83,11 +83,11 @@ def inner_train_ssd(
         if kws.use_tensorboard and save_to_disk:
             import tensorboardX
 
-            summary_writer = tensorboardX.SummaryWriter(
+            writer = tensorboardX.SummaryWriter(
                 log_dir=str(PROJECT_APP_PATH.user_data / "results" / "tf_logs")
             )
         else:
-            summary_writer = None
+            writer = None
 
         max_iter = len(data_loader)
         start_iter = arguments["iteration"]
@@ -136,21 +136,21 @@ def inner_train_ssd(
                         ]
                     )
                 )
-                if summary_writer:
+                if writer:
                     global_step = iteration
-                    summary_writer.add_scalar(
+                    writer.add_scalar(
                         "losses/total_loss", losses_reduced, global_step=global_step
                     )
                     for loss_name, loss_item in loss_dict_reduced.items():
-                        summary_writer.add_scalar(
+                        writer.add_scalar(
                             f"losses/{loss_name}", loss_item, global_step=global_step
                         )
-                    summary_writer.add_scalar(
+                    writer.add_scalar(
                         "lr", optimiser.param_groups[0]["lr"], global_step=global_step
                     )
 
             if iteration % kws.save_step == 0:
-                checkpointer.save(f"model_{iteration:06d}", **arguments)
+                check_pointer.save(f"model_{iteration:06d}", **arguments)
 
             if (
                 kws.eval_step > 0
@@ -165,18 +165,18 @@ def inner_train_ssd(
                         distributed=kws.distributed,
                         iteration=iteration,
                     )
-                    if global_distribution_rank() == 0 and summary_writer:
+                    if global_distribution_rank() == 0 and writer:
                         for eval_result, dataset in zip(
                             eval_results, cfg.datasets.test
                         ):
                             write_metrics_recursive(
                                 eval_result["metrics"],
                                 "metrics/" + dataset,
-                                summary_writer,
+                                writer,
                                 iteration,
                             )
 
-        checkpointer.save("model_final", **arguments)
+        check_pointer.save("model_final", **arguments)
 
         total_training_time = int(
             time.time() - start_training_time
@@ -200,7 +200,7 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
 
     lr = solver_cfg.lr * kws.num_gpus  # scale by num gpus
     lr = solver_cfg.base_lr if lr is None else lr
-    optimizer = torch.optim.SGD(
+    optimiser = torch.optim.SGD(
         model.parameters(),
         lr=lr,
         momentum=solver_cfg.momentum,
@@ -209,7 +209,7 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
 
     milestones = [step // kws.num_gpus for step in solver_cfg.lr_steps]
     scheduler = WarmupMultiStepLR(
-        optimizer=optimizer,
+        optimiser=optimiser,
         milestones=solver_cfg.lr_steps if milestones is None else milestones,
         gamma=solver_cfg.gamma,
         warmup_factor=solver_cfg.warmup_factor,
@@ -219,7 +219,7 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
     arguments = {"iteration": 0}
     save_to_disk = global_distribution_rank() == 0
     checkpointer = CheckPointer(
-        model, optimizer, scheduler, cfg.output_dir, save_to_disk, logger
+        model, optimiser, scheduler, cfg.output_dir, save_to_disk, logger
     )
     arguments.update(checkpointer.load())
 
@@ -227,10 +227,10 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
     model.to(device)
 
     model = inner_train_ssd(
-        data_root,
-        cfg,
-        model,
-        object_detection_data_loaders(
+        data_root=data_root,
+        cfg=cfg,
+        model=model,
+        data_loader=object_detection_data_loaders(
             data_root=data_root,
             cfg=cfg,
             split=Split.Training,
@@ -238,12 +238,12 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
             max_iter=solver_cfg.max_iter // kws.num_gpus,
             start_iter=arguments["iteration"],
         ),
-        optimizer,
-        scheduler,
-        checkpointer,
-        device,
-        arguments,
-        kws,
+        optimiser=optimiser,
+        scheduler=scheduler,
+        check_pointer=checkpointer,
+        device=device,
+        arguments=arguments,
+        kws=kws
     )
     return model
 
@@ -284,13 +284,18 @@ def main():
 
     set_benchmark_device_dist(args.distributed, args.local_rank)
     logger = setup_distributed_logger(
-        "SSD", global_distribution_rank(), PROJECT_APP_PATH.user_data / "results"
+        "SSD",
+        global_distribution_rank(),
+        ensure_existence(PROJECT_APP_PATH.user_data / "results")
     )
     logger.info(f"Using {num_gpus} GPUs")
     logger.info(args)
     with TorchCacheSession():
         model = train_ssd(
-            base_cfg.data_dir, base_cfg, base_cfg.solver, NOD(**args.__dict__)
+            base_cfg.data_dir,
+            base_cfg,
+            base_cfg.solver,
+            NOD(**args.__dict__)
         )
 
     if not args.skip_test:

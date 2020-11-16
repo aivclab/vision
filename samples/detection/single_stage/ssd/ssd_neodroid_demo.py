@@ -17,7 +17,7 @@ from neodroidvision.utilities import CheckPointer
 from tqdm import tqdm
 from warg import NOD
 
-from draugr.opencv_utilities import draw_bouding_boxes, gamma_correct_float_to_byte
+from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_byte
 from draugr.torch_utilities import Split, TorchEvalSession, global_torch_device
 
 
@@ -86,7 +86,7 @@ def run_webcam_demo(
             cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
             cv2.imshow(
                 window_name,
-                draw_bouding_boxes(
+                draw_bounding_boxes(
                     image, boxes[indices], labels[indices], scores[indices], categories
                 ).astype(numpy.uint8),
             )
@@ -101,9 +101,12 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
-        "/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
+                "mobilenet_v2_ssd320_voc0712.pth"
+    # "mobilenet_v2_ssd320_voc0712.pth"
+    # "vgg_ssd300_coco_trainval35k.pth"
+    # "vgg_ssd512_coco_trainval35k.pth"
+    ,
         help="Use weights from path",
     )
     parser.add_argument("--score_threshold", type=float, default=0.7)

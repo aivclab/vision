@@ -25,4 +25,4 @@ class ObjectDetectionDataset(SupervisedDataset, ABC):
 
     @drop_unused_kws
     def __init__(self):
-        pass
+        super().__init__()

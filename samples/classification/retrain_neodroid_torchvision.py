@@ -16,7 +16,7 @@ from neodroidvision.classification import (
 )
 
 from draugr import batch_generator, horizontal_imshow
-from draugr.python_utilities.torch_channel_transform import (
+from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )

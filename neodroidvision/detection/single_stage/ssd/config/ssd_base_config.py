@@ -7,7 +7,7 @@ from warg import NOD
 
 base_cfg = NOD()
 
-base_cfg.data_dir = Path("/media/heider/2F8901B64D76E552/Datasets/Vision/Detection")
+base_cfg.data_dir = Path.home() / "Data"/"Vision"/"Detection"
 # base_cfg.DATA_DIR = Path.home() / "Data" / "Datasets"
 base_cfg.output_dir = PROJECT_APP_PATH.user_data / "results"
 
