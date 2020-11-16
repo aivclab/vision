@@ -13,17 +13,17 @@ from typing import Dict, Tuple
 import numpy
 import torch
 import torchvision
+from draugr.torch_utilities import Split, SupervisedDataset
 from matplotlib import pyplot
+from torch.utils import data
+from torchvision import transforms
+
 from neodroidvision.data.classification.imagenet.imagenet_2012_id import (
   categories_id
   )
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
   categories_names
   )
-from torch.utils import data
-from torchvision import transforms
-
-from draugr.torch_utilities import Split, SupervisedDataset
 
 __all__ = ["ImageNet2012"]
 
@@ -75,7 +75,7 @@ class ImageNet2012(SupervisedDataset):
 :return:
 :rtype:
 """
-    return {Split.Training: "train", Split.Validation: "val", Split.Testing: "test"}
+    return {Split.Training:"train", Split.Validation:"val", Split.Testing:"test"}
 
   def __init__(
       self,
@@ -143,13 +143,7 @@ if __name__ == "__main__":
 
     batch_size = 32
 
-    dt = ImageNet2012(
-        # Path.home() / "Data"/"Datasets"/"ILSVRC2012"
-        Path(
-            "/media/heider/957f468d-d334-4c09-aa85-860d050d2207/Data/Datasets/ILSVRC2012"
-            ),
-        split=Split.Validation,
-        )
+    dt = ImageNet2012(Path.home() / "Data" / "Datasets" / "ILSVRC2012", split=Split.Validation )
 
     val_loader = torch.utils.data.DataLoader(
         dt, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=True
@@ -166,5 +160,6 @@ if __name__ == "__main__":
       pyplot.title(dt.category_names[categories[0].item()])
       pyplot.show()
       break
+
 
   main()
