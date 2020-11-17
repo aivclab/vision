@@ -155,12 +155,11 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage"
-        "/ssd/exclude"
-        "/models/mobilenet_v2_ssd320_voc0712.pth"
-        # "/models/mobilenet_v2_ssd320_voc0712.pth"
-        # "/models/vgg_ssd300_coco_trainval35k.pth"
-        # "/models/vgg_ssd512_coco_trainval35k.pth"
+        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
+                "mobilenet_v2_ssd320_voc0712.pth"
+        # "mobilenet_v2_ssd320_voc0712.pth"
+        # "vgg_ssd300_coco_trainval35k.pth"
+        # "vgg_ssd512_coco_trainval35k.pth"
         ,
         help="Trained " "weights.",
     )

@@ -13,7 +13,6 @@ from neodroidvision.segmentation.fully_convolutional import FCN
 from torch.optim import Adam
 
 if __name__ == "__main__":
-
     def a():
         img_size = 224
         in_channels = 5

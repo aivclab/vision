@@ -2,12 +2,11 @@ import pickle
 from typing import Any, List
 
 import torch
-from torch._C import ByteTensor
 
 __all__ = ['to_byte_tensor', 'serialise_byte_tensor', 'deserialise_byte_tensor']
 
 
-def to_byte_tensor(data: Any, *, device='cuda') -> ByteTensor:
+def to_byte_tensor(data: Any, *, device='cuda') -> torch.ByteTensor:
   return torch.ByteTensor(
       torch.ByteStorage.from_buffer(pickle.dumps(data)  # gets a byte representation for the data
                                     )).to(device)  # convert this byte string into a byte tensor

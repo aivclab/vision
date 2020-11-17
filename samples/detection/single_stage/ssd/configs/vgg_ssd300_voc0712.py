@@ -1,5 +1,5 @@
-from neodroidvision.data.datasets.supervised.detection.voc import VOCDataset
-from neodroidvision.detection.single_stage.ssd.config.ssd_config import base_cfg
+from data.detection.voc import VOCDataset
+from neodroidvision.detection.single_stage.ssd.config.ssd_base_config import base_cfg
 
 base_cfg.data_dir = base_cfg.data_dir / "PASCAL" / "Train"
 

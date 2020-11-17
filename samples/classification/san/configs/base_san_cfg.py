@@ -9,16 +9,13 @@ __doc__ = r"""
 
 from pathlib import Path
 
-from neodroidvision.data.datasets.supervised.classification.imagenet.imagenet_2012 import (
-    ImageNet2012,
-)
 from warg import NOD
+
+from data.classification.imagenet.imagenet_2012 import ImageNet2012
 
 SAN_CONFIG = NOD(
     dataset_type=ImageNet2012,
-    dataset_path=Path(
-        "/media/heider/957f468d-d334-4c09-aa85-860d050d2207/Data/Datasets/ILSVRC2012"
-    ),
+    dataset_path=Path.home()/"Data"/"Datasets"/"ILSVRC2012",
     arch="san",
     self_attention_type=0,
     layers=[2, 1, 2, 4, 1],

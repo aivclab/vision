@@ -20,7 +20,7 @@ from neodroidvision.regression.vae.architectures.conditional_vae import Conditio
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
-from warg.named_ordered_dictionary import NOD
+from warg import NOD
 
 from draugr.torch_utilities import global_torch_device
 from .objectives import loss_fn

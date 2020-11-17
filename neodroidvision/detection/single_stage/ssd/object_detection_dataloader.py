@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import List, Union
 
 import torch
-from neodroidvision.data.datasets.supervised.detection.multi_dataset import MultiDataset
+from data.detection.multi_dataset import MultiDataset
 from neodroidvision.utilities import (
     BatchCollator,
     DistributedSampler,

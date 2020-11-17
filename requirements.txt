@@ -1,4 +1,4 @@
-devpack
+devpack # warg, draugr, apppath
 neodroid
 numpy
 scipy
@@ -10,7 +10,6 @@ pip
 h5py
 torch
 torchvision
-tensorflow
 pycocotools
 albumentations
 opencv-python

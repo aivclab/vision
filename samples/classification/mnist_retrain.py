@@ -29,6 +29,7 @@ from draugr.torch_utilities import (
 
 __author__ = "Christian Heider Nielsen"
 __all__ = []
+__doc__ = r''''''
 
 seed = 34874312
 batch_size = 16
@@ -37,8 +38,8 @@ learning_rate = 3e-5
 momentum = 0.9
 wd = 3e-8
 test_batch_size = batch_size
-early_stop = 3e-6
-num_updates = 6000
+EARLY_STOP = 3e-6
+NUM_UPDATES = 6000
 lr_cycles = 1
 flatt_size = 224 * 224 * 3
 
@@ -61,6 +62,21 @@ def predictor_response_train_model(
     device=global_torch_device(),
     early_stop=None,
 ):
+    """
+
+    :param model:
+    :param train_iterator:
+    :param criterion:
+    :param optimizer:
+    :param scheduler:
+    :param writer:
+    :param interrupted_path:
+    :param val_data_iterator:
+    :param num_updates:
+    :param device:
+    :param early_stop:
+    :return:
+    """
     best_model_wts = copy.deepcopy(model.state_dict())
     best_val_loss = 1e10
     since = time.time()
@@ -201,7 +217,7 @@ def main():
     model = model.to(global_torch_device())
 
     if options.continue_training:
-        _list_of_files = PROJECT_APP_PATH.user_data.rglob("*.model")
+        _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
         if latest_model_path is not None:
@@ -228,7 +244,7 @@ def main():
             writer=writer,
             interrupted_path=interrupted_path,
             val_data_iterator=val_iter,
-            num_updates=num_updates,
+            num_updates=NUM_UPDATES,
         )
 
     inputs, true_label = next(train_iter)

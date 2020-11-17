@@ -9,8 +9,17 @@ __doc__ = r"""
 
 __all__ = []
 
+from pathlib import Path
+
+import pkg_resources
+from neodroidvision import PROJECT_NAME
+
 
 def test_import():
     import neodroidvision
 
     print(neodroidvision.__version__)
+
+def test_package_data()->None:
+    import neodroidvision
+    print(neodroidvision.PACKAGE_DATA_PATH/"Lato-Regular.ttf")

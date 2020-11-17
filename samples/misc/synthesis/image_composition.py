@@ -6,7 +6,7 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 
-import numpy as np
+import numpy
 from PIL import Image, ImageEnhance
 from samples.misc.synthesis.mask_json_utilities import MaskJsonUtils
 from tqdm import tqdm
@@ -323,17 +323,17 @@ synthetic
 
             # Grab the alpha pixels above a specified threshold
             alpha_threshold = 200
-            mask_arr = np.array(
-                np.greater(np.array(new_alpha_mask), alpha_threshold), dtype=np.uint8
+            mask_arr = numpy.array(
+                numpy.greater(numpy.array(new_alpha_mask), alpha_threshold), dtype=numpy.uint8
             )
-            uint8_mask = np.uint8(mask_arr)  # This is composed of 1s and 0s
+            uint8_mask = numpy.uint8(mask_arr)  # This is composed of 1s and 0s
 
             # Multiply the mask value (1 or 0) by the color in each RGB channel and combine to get the mask
             mask_rgb_color = fg["mask_rgb_color"]
             red_channel = uint8_mask * mask_rgb_color[0]
             green_channel = uint8_mask * mask_rgb_color[1]
             blue_channel = uint8_mask * mask_rgb_color[2]
-            rgb_mask_arr = np.dstack((red_channel, green_channel, blue_channel))
+            rgb_mask_arr = numpy.dstack((red_channel, green_channel, blue_channel))
             isolated_mask = Image.fromarray(rgb_mask_arr, "RGB")
             isolated_alpha = Image.fromarray(uint8_mask * 255, "L")
 
@@ -346,8 +346,8 @@ synthetic
     def _transform_foreground(self, fg, fg_path):
         # Open foreground and get the alpha channel
         fg_image = Image.open(fg_path)
-        fg_alpha = np.array(fg_image.getchannel(3))
-        assert np.any(
+        fg_alpha = numpy.array(fg_image.getchannel(3))
+        assert numpy.any(
             fg_alpha == 0
         ), f"foreground needs to have some transparency: {str(fg_path)}"
 

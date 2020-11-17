@@ -8,7 +8,7 @@ from torch import distributed
 
 __all__ = ["SmoothedValue", "MetricLogger"]
 
-from neodroidvision.utilities import is_distribution_ready
+from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import is_distribution_ready
 
 
 class SmoothedValue(object):

@@ -16,7 +16,7 @@ from neodroidvision.classification import (
 )
 
 from draugr import batch_generator, horizontal_imshow
-from draugr.python_utilities.torch_channel_transform import (
+from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
@@ -88,7 +88,7 @@ def main():
         model = model.to(global_torch_device())
 
         if options.continue_training:
-            _list_of_files = PROJECT_APP_PATH.user_data.rglob("*.model")
+            _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
             lastest_model_path = str(max(_list_of_files, key=os.path.getctime))
             print(f"loading previous model: {lastest_model_path}")
             if lastest_model_path is not None:

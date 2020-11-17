@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-import numpy as np
+import numpy
 from PIL import Image
 from shapely.geometry import MultiPolygon, Polygon
 from skimage import measure
@@ -121,7 +121,7 @@ Returns:
             annotation["id"] = self._next_annotation_id()
 
             # Find contours in the isolated mask
-            mask = np.asarray(mask, dtype=np.float32)
+            mask = numpy.asarray(mask, dtype=numpy.float32)
             contours = measure.find_contours(mask, 0.5, positive_orientation="low")
 
             polygons = []
@@ -145,7 +145,7 @@ Returns:
                         poly.geom_type == "Polygon"
                     ):  # Ignore if still not a Polygon (could be a line or point)
                         polygons.append(poly)
-                        segmentation = np.array(poly.exterior.coords).ravel().tolist()
+                        segmentation = numpy.array(poly.exterior.coords).ravel().tolist()
                         annotation["segmentation"].append(segmentation)
 
             if len(polygons) == 0:

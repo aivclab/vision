@@ -7,7 +7,7 @@ import torch.utils.data
 from draugr.torch_utilities.sessions import TorchCacheSession
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDectection
-from neodroidvision.detection.single_stage.ssd.evaluation import do_ssd_evaluation
+from neodroidvision.detection.single_stage.ssd.ssd_evaluation import do_ssd_evaluation
 from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     global_distribution_rank,
@@ -28,8 +28,12 @@ def main():
     parser.add_argument(
         "--ckpt",
         help="The path to the checkpoint for test, default is the latest checkpoint.",
-        default="/home/heider/Projects/Alexandra/Python/vision/samples/detection/single_stage/ssd/exclude"
-        "/models/vgg_ssd300_coco_trainval35k.pth",
+        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
+                "mobilenet_v2_ssd320_voc0712.pth"
+    # "mobilenet_v2_ssd320_voc0712.pth"
+    # "vgg_ssd300_coco_trainval35k.pth"
+    # "vgg_ssd512_coco_trainval35k.pth"
+    ,
         type=str,
     )
 

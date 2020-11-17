@@ -3,6 +3,7 @@
 
 import datetime
 import os
+from pathlib import Path
 from warnings import warn
 
 import pkg_resources
@@ -10,7 +11,7 @@ from apppath import AppPath
 
 __project__ = "NeodroidVision"
 __author__ = "Christian Heider Nielsen"
-__version__ = "0.2.5"
+__version__ = "0.2.6"
 __doc__ = r"""
 .. module:: neodroidvision
    :platform: Unix, Windows
@@ -47,6 +48,7 @@ PROJECT_NAME = __project__.lower().strip().replace(" ", "_")
 PROJECT_VERSION = __version__
 PROJECT_AUTHOR = __author__.lower().strip().replace(" ", "_")
 PROJECT_APP_PATH = AppPath(app_name=PROJECT_NAME, app_author=PROJECT_AUTHOR)
+PACKAGE_DATA_PATH=Path(pkg_resources.resource_filename(PROJECT_NAME, 'data'))
 
 distributions = {v.key: v for v in pkg_resources.working_set}
 if PROJECT_NAME in distributions:

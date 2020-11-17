@@ -162,14 +162,11 @@ def train_person_segmenter(
 
 def main():
     pyplot.style.use("bmh")
-
-    # base_path = Path.home() / "Data" / "Datasets" / "PennFudanPed"
-    # base_path = Path('/media/heider/2F8901B64D76E552/Datasets/Vision/Segmentation/PennFudanPed')
     base_path = Path.home() / "/Data" / "PennFudanPed"
 
-    save_model_path = PROJECT_APP_PATH.user_data / "penn_fudan_ped_seg.model"
-    train_a = False
-    eval_a = not train_a
+    save_model_path = PROJECT_APP_PATH.user_data/ 'models' / "penn_fudan_ped_seg.model"
+    train_model = False
+    eval_model = not train_model
     SEED = 87539842
     batch_size = 8
     num_workers = 1  # os.cpu_count()
@@ -194,7 +191,7 @@ def main():
     )
     model.to(global_torch_device())
 
-    if train_a:
+    if train_model:
         if save_model_path.exists():
             model.load_state_dict(torch.load(str(save_model_path)))
             print("loading saved model")
@@ -216,7 +213,7 @@ def main():
                 save_model_path,
             )
 
-    if eval_a:
+    if eval_model:
         if save_model_path.exists():
             model.load_state_dict(torch.load(str(save_model_path)))
             print("loading saved model")

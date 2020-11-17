@@ -15,7 +15,7 @@ from neodroid.environments.droid_environment.deprecated.batched_unity_environmen
 from neodroid.utilities import extract_all_cameras
 from torchvision.models.detection import keypointrcnn_resnet50_fpn
 from torchvision.transforms.functional import to_tensor
-from warg.named_ordered_dictionary import NOD
+from warg import NOD
 
 cudnn = torch.backends.cudnn
 cudnn.benchmark = True

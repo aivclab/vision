@@ -207,7 +207,7 @@ def main():
         )
         test_model(trained_aeu_model, data_iter)
     else:
-        _list_of_files = home_path.glob("*")
+        _list_of_files = list(home_path.glob("*"))
         latest_model_path = (
             str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
         )

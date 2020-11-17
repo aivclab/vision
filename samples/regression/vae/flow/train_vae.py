@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from warg.named_ordered_dictionary import NOD
+from warg import NOD
 
 from draugr.torch_utilities import global_torch_device
 from .architectures import Generator, VariationalFlow, VariationalMeanField

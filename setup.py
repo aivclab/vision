@@ -80,10 +80,10 @@ class NeodroidVisionPackage:
 
     @property
     def package_data(self) -> dict:
-        readmes = [str(p) for p in pathlib.Path(__file__).parent.rglob('README.md')]
+        emds = [str(p) for p in pathlib.Path(__file__).parent.rglob('.md')]
         return {
         'neodroidvision':[
-            *readmes
+            *emds
             ]
         }
 

@@ -13,7 +13,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
-from draugr.metrics.meters import AverageMeter
+from draugr import AverageMeter
 
 
 class Trainer:
