@@ -14,7 +14,7 @@ __author__ = "Christian Heider Nielsen"
 
 import torch
 
-a_transform = transforms.Compose(
+default_torch_transform = transforms.Compose(
     [
         transforms.Resize(224),
         transforms.CenterCrop(224),
@@ -23,7 +23,7 @@ a_transform = transforms.Compose(
     ]
 )
 
-a_retransform = transforms.Compose([transforms.ToPILImage("RGB")])
+default_torch_retransform = transforms.Compose([transforms.ToPILImage("RGB")])
 
 __all__ = [
     "neodroid_env_classification_generator",
@@ -46,7 +46,7 @@ def neodroid_env_classification_generator(env, batch_size=64) -> Tuple:
             rgb_arr = Image.open(rgb_arr).convert("RGB")
             a_class = state.sensor("Class").value
 
-            predictors.append(a_transform(rgb_arr))
+            predictors.append(default_torch_transform(rgb_arr))
             class_responses.append(int(a_class))
 
         a = torch.stack(predictors).to(global_torch_device())
@@ -96,7 +96,7 @@ def pooled_neodroid_env_classification_generator(env, device, batch_size=64) -> 
                 rgb_arr = Image.open(rgb_arr).convert("RGB")
                 a_class = state.sensor("Class").value
 
-                predictors.append(a_transform(rgb_arr))
+                predictors.append(default_torch_transform(rgb_arr))
                 class_responses.append(int(a_class))
 
             return (

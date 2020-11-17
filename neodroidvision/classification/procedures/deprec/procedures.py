@@ -9,9 +9,9 @@ import tqdm
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
-from neodroidvision.data.neodroid_environments.classification.data import a_retransform
+from neodroidvision.data.neodroid_environments.classification.data import default_torch_retransform
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from warg.named_ordered_dictionary import NOD
+from warg import NOD
 
 from draugr import (
     confusion_matrix_plot,
@@ -54,7 +54,7 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
     truth_labels = labels.data.to("cpu").numpy()
 
-    input_images_rgb = [a_retransform(x) for x in inputs.to(global_torch_device())]
+    input_images_rgb = [default_torch_retransform(x) for x in inputs.to(global_torch_device())]
 
     cell_width = (800 / num_columns) - 6 - 6 * 2
 

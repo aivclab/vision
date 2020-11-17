@@ -5,7 +5,7 @@ import numpy
 import torch
 import torch.utils.data
 from neodroidvision.segmentation import dice_loss, jaccard_loss
-from warg.named_ordered_dictionary import NOD
+from warg import NOD
 
 from draugr.torch_utilities import channel_transform
 from draugr.torch_utilities.tensors.to_tensor import to_tensor
