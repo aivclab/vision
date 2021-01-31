@@ -13,7 +13,8 @@ from typing import Dict, Tuple
 import numpy
 import torch
 import torchvision
-from draugr.torch_utilities import Split, SupervisedDataset
+from draugr.numpy_utilities import Split
+from draugr.torch_utilities import SupervisedDataset
 from matplotlib import pyplot
 from torch.utils import data
 from torchvision import transforms
@@ -143,7 +144,7 @@ if __name__ == "__main__":
 
     batch_size = 32
 
-    dt = ImageNet2012(Path.home() / "Data" / "Datasets" / "ILSVRC2012", split=Split.Validation )
+    dt = ImageNet2012(Path.home() / "Data" / "Datasets" / "ILSVRC2012", split=Split.Validation)
 
     val_loader = torch.utils.data.DataLoader(
         dt, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=True

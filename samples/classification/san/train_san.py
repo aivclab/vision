@@ -7,11 +7,12 @@ import time
 import numpy
 import torch
 from draugr import AverageMeter
-from draugr.torch_utilities import Split, TensorBoardPytorchWriter
+from draugr.torch_utilities import TensorBoardPytorchWriter
 from neodroidvision.classification.architectures.self_attention_network import (
   SelfAttentionTypeEnum,
   make_san,
   )
+from draugr.numpy_utilities import Split
 from san_utilities import (
   cal_accuracy,
   intersection_and_union_gpu,

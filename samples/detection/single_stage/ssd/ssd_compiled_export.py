@@ -5,15 +5,16 @@ import cv2
 import torch
 from apppath import ensure_existence
 from draugr import sprint
+from draugr.numpy_utilities import Split
 from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import Split, global_torch_device
+from draugr.torch_utilities import global_torch_device
 from torch import quantization
 from tqdm import tqdm
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import (
-  SingleShotDectectionNms,
+  SingleShotDetectionNms,
   )
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
   SSDTransform,
@@ -43,7 +44,7 @@ def export_detection_model(
 :return:
 :rtype:
 """
-  model = SingleShotDectectionNms(cfg)
+  model = SingleShotDetectionNms(cfg)
 
   checkpointer = CheckPointer(
       model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
@@ -96,7 +97,7 @@ def main():
   # from configs.vgg_ssd300_coco_trainval35k import base_cfg
   # from .configs.vgg_ssd512_coco_trainval35k import base_cfg
 
-  global_torch_device(override=global_torch_device(cuda_if_available=False))
+  global_torch_device(override=global_torch_device('cpu'))
 
   parser = argparse.ArgumentParser(description="SSD Demo.")
   parser.add_argument(

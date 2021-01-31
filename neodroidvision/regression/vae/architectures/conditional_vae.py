@@ -7,82 +7,82 @@ __all__ = ["ConditionalVAE"]
 
 
 class Encoder(nn.Module):
-    def __init__(self, layer_sizes, latent_size, num_conditions):
+  def __init__(self, layer_sizes, latent_size, num_conditions):
 
-        super().__init__()
+    super().__init__()
 
-        self.input_size = layer_sizes[0]
-        self.multi_layer_perceptron = nn.Sequential()
-        layer_sizes[0] += num_conditions
+    self.input_size = layer_sizes[0]
+    self.multi_layer_perceptron = nn.Sequential()
+    layer_sizes[0] += num_conditions
 
-        for i, (in_size, out_size) in enumerate(zip(layer_sizes[:-1], layer_sizes[1:])):
-            self.multi_layer_perceptron.add_module(
-                name=f"L{i:d}", module=nn.Linear(in_size, out_size)
-            )
-            self.multi_layer_perceptron.add_module(name=f"A{i:d}", module=nn.ReLU())
+    for i, (in_size, out_size) in enumerate(zip(layer_sizes[:-1], layer_sizes[1:])):
+      self.multi_layer_perceptron.add_module(
+          name=f"L{i:d}", module=nn.Linear(in_size, out_size)
+          )
+      self.multi_layer_perceptron.add_module(name=f"A{i:d}", module=nn.ReLU())
 
-        self.linear_means = nn.Linear(layer_sizes[-1], latent_size)
-        self.linear_log_var = nn.Linear(layer_sizes[-1], latent_size)
+    self.linear_means = nn.Linear(layer_sizes[-1], latent_size)
+    self.linear_log_var = nn.Linear(layer_sizes[-1], latent_size)
 
-    def forward(self, x, condition):
-        x = torch.cat((x.reshape(-1, self.input_size), condition), dim=-1)
+  def forward(self, x, condition):
+    x = torch.cat((x.reshape(-1, self.input_size), condition), dim=-1)
 
-        x = self.multi_layer_perceptron(x)
+    x = self.multi_layer_perceptron(x)
 
-        mean = self.linear_means(x)
-        log_var = self.linear_log_var(x)
+    mean = self.linear_means(x)
+    log_var = self.linear_log_var(x)
 
-        return mean, log_var
+    return mean, log_var
 
 
 class Decoder(nn.Module):
-    def __init__(self, layer_sizes, latent_size, num_conditions):
+  def __init__(self, layer_sizes, latent_size, num_conditions):
 
-        super().__init__()
+    super().__init__()
 
-        self.MLP = nn.Sequential()
+    self.MLP = nn.Sequential()
 
-        for i, (in_size, out_size) in enumerate(
-            zip([latent_size + num_conditions] + layer_sizes[:-1], layer_sizes)
+    for i, (in_size, out_size) in enumerate(
+        zip([latent_size + num_conditions] + layer_sizes[:-1], layer_sizes)
         ):
-            self.MLP.add_module(name=f"L{i:d}", module=nn.Linear(in_size, out_size))
-            if i + 1 < len(layer_sizes):
-                self.MLP.add_module(name=f"A{i:d}", module=nn.ReLU())
-            else:
-                self.MLP.add_module(name="sigmoid", module=nn.Sigmoid())
+      self.MLP.add_module(name=f"L{i:d}", module=nn.Linear(in_size, out_size))
+      if i + 1 < len(layer_sizes):
+        self.MLP.add_module(name=f"A{i:d}", module=nn.ReLU())
+      else:
+        self.MLP.add_module(name="sigmoid", module=nn.Sigmoid())
 
-    def forward(self, z, condition):
-        z_cat = torch.cat((z, condition), dim=-1)
-        x = self.MLP(z_cat)
-        return x.view(-1, 28, 28)
+  def forward(self, z, condition):
+    z_cat = torch.cat((z, condition), dim=-1)
+    x = self.MLP(z_cat)
+    return x.view(-1, 28, 28)
 
 
 class ConditionalVAE(VAE):
-    def encode(self, *x: torch.Tensor) -> torch.Tensor:
-        return self.encoder(*x)
+  def encode(self, *x: torch.Tensor) -> torch.Tensor:
+    return self.encoder(*x)
 
-    def decode(self, *x: torch.Tensor) -> torch.Tensor:
-        return self.decoder(*x)
+  def decode(self, *x: torch.Tensor) -> torch.Tensor:
+    return self.decoder(*x)
 
-    def __init__(
-        self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
-    ):
-        super().__init__(latent_size)
+  def __init__(
+      self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
+      ):
+    super().__init__(latent_size)
 
-        assert num_conditions > 1
+    assert num_conditions > 1
 
-        assert type(encoder_layer_sizes) == list
-        assert type(latent_size) == int
-        assert type(decoder_layer_sizes) == list
+    assert type(encoder_layer_sizes) == list
+    assert type(latent_size) == int
+    assert type(decoder_layer_sizes) == list
 
-        self.encoder = Encoder(encoder_layer_sizes, latent_size, num_conditions)
+    self.encoder = Encoder(encoder_layer_sizes, latent_size, num_conditions)
 
-        self.decoder = Decoder(decoder_layer_sizes, latent_size, num_conditions)
+    self.decoder = Decoder(decoder_layer_sizes, latent_size, num_conditions)
 
-    def forward(self, x: torch.Tensor, condition: torch.Tensor):
-        mean, log_var = self.encode(x, condition)
+  def forward(self, x: torch.Tensor, condition: torch.Tensor):
+    mean, log_var = self.encode(x, condition)
 
-        z = self.reparameterise(mean, log_var)
-        reconstruction = self.decode(z, condition)
+    z = self.reparameterise(mean, log_var)
+    reconstruction = self.decode(z, condition)
 
-        return reconstruction, mean, log_var, z
+    return reconstruction, mean, log_var, z

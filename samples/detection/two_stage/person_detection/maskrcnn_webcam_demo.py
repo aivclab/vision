@@ -8,24 +8,24 @@ import torch
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from draugr.torch_utilities.images.conversion import quick_to_pil_image
+from draugr.numpy_utilities import Split
 
-from data.segmentation import PennFudanDataset
+from draugr.torch_utilities.images.conversion import quick_to_pil_image
 
 from tqdm import tqdm
 
 from draugr.opencv_utilities import frame_generator, draw_bounding_boxes
 from draugr.torch_utilities import (
   global_torch_device,
-  torch_seed,
   TorchEvalSession,
   to_tensor_generator,
-  hwc_to_chw_tensor,
-  uint_hwc_to_chw_float_tensor
+  uint_hwc_to_chw_float_tensor,
   )
-from draugr.torch_utilities import Split, load_model
+from draugr.random_utilities import seed_stack
+from draugr.torch_utilities import load_model
 
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
   get_pretrained_instance_segmentation_maskrcnn,
   )
@@ -36,9 +36,9 @@ if __name__ == "__main__":
     base_path = PROJECT_APP_PATH.user_data / 'maskrcnn'
     dataset_root = Path.home() / "Data"
 
-    torch_seed(3825)
+    seed_stack(3825)
 
-    dataset = PennFudanDataset(dataset_root / "PennFudanPed", Split.Training)
+    dataset = PennFudanDataset  # (dataset_root / "PennFudanPed", Split.Training)
     categories = dataset.categories
 
     if True:

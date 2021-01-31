@@ -12,40 +12,40 @@ from typing import Any, Tuple
 import numpy
 import torch
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
-    build_priors,
-    ssd_assign_priors,
-)
+  build_priors,
+  ssd_assign_priors,
+  )
 from warg import NOD
 
 from draugr.opencv_utilities import (
-    CV2Compose,
-    CV2Expand,
-    CV2PhotometricDistort,
-    CV2RandomMirror,
-    CV2RandomSampleCrop,
-    CV2Resize,
-    CV2ToPercentCoords,
-    CV2ToTensor,
-    ConvertFromInts,
-    SubtractMeans,
-)
-from draugr.torch_utilities import Split
+  CV2Compose,
+  CV2Expand,
+  CV2PhotometricDistort,
+  CV2RandomMirror,
+  CV2RandomSampleCrop,
+  CV2Resize,
+  CV2ToPercentCoords,
+  CV2ToTensor,
+  ConvertFromInts,
+  SubtractMeans,
+  )
+from draugr.numpy_utilities import Split
 from .conversion import (
-    center_to_corner_form,
-    convert_boxes_to_locations,
-    corner_form_to_center_form,
-)
+  center_to_corner_form,
+  convert_boxes_to_locations,
+  corner_form_to_center_form,
+  )
 
 __all__ = ["SSDTransform", "SSDAnnotationTransform"]
 
 
 class SSDTransform(torch.nn.Module):
-    """
+  """
 
 """
 
-    def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: Split):
-        """
+  def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: Split):
+    """
 
 :param image_size:
 :type image_size:
@@ -54,54 +54,54 @@ class SSDTransform(torch.nn.Module):
 :param split:
 :type split:
 """
-        super().__init__()
+    super().__init__()
 
-        transform_list = []
+    transform_list = []
 
-        if split == Split.Training:
-            transform_list.extend(
-                [
-                    ConvertFromInts(),
-                    CV2PhotometricDistort(),
-                    CV2Expand(pixel_mean),
-                    CV2RandomSampleCrop(),
-                    CV2RandomMirror(),
-                    CV2ToPercentCoords(),
-                ]
-            )
+    if split == Split.Training:
+      transform_list.extend(
+          [
+              ConvertFromInts(),
+              CV2PhotometricDistort(),
+              CV2Expand(pixel_mean),
+              CV2RandomSampleCrop(),
+              CV2RandomMirror(),
+              CV2ToPercentCoords(),
+              ]
+          )
 
-        transform_list.extend(
-            [CV2Resize(image_size), SubtractMeans(pixel_mean), CV2ToTensor()]
+    transform_list.extend(
+        [CV2Resize(image_size), SubtractMeans(pixel_mean), CV2ToTensor()]
         )
 
-        self.transforms = CV2Compose(transform_list)
+    self.transforms = CV2Compose(transform_list)
 
-    def __call__(self, *x):
-        """
+  def __call__(self, *x):
+    """
 
 :param x:
 :type x:
 :return:
 :rtype:
 """
-        return self.transforms(*x)
+    return self.transforms(*x)
 
 
 class SSDAnnotationTransform(torch.nn.Module):
-    """
+  """
 
 """
 
-    def __init__(
-        self,
-        *,
-        image_size: Any,
-        priors_cfg: NOD,
-        center_variance: Any,
-        size_variance: Any,
-        iou_threshold: Any
-    ):
-        """
+  def __init__(
+      self,
+      *,
+      image_size: Any,
+      priors_cfg: NOD,
+      center_variance: Any,
+      size_variance: Any,
+      iou_threshold: Any
+      ):
+    """
 
 :param image_size:
 :type image_size:
@@ -114,15 +114,15 @@ class SSDAnnotationTransform(torch.nn.Module):
 :param iou_threshold:
 :type iou_threshold:
 """
-        super().__init__()
-        self.center_form_priors = build_priors(image_size=image_size, **priors_cfg)
-        self.corner_form_priors = center_to_corner_form(self.center_form_priors)
-        self.center_variance = center_variance
-        self.size_variance = size_variance
-        self.iou_threshold = iou_threshold
+    super().__init__()
+    self.center_form_priors = build_priors(image_size=image_size, **priors_cfg)
+    self.corner_form_priors = center_to_corner_form(self.center_form_priors)
+    self.center_variance = center_variance
+    self.size_variance = size_variance
+    self.iou_threshold = iou_threshold
 
-    def __call__(self, gt_boxes: Any, gt_labels: Any) -> Tuple:
-        """
+  def __call__(self, gt_boxes: Any, gt_labels: Any) -> Tuple:
+    """
 
 :param gt_boxes:
 :type gt_boxes:
@@ -131,23 +131,23 @@ class SSDAnnotationTransform(torch.nn.Module):
 :return:
 :rtype:
 """
-        if type(gt_boxes) is numpy.ndarray:
-            gt_boxes = torch.from_numpy(gt_boxes)
+    if type(gt_boxes) is numpy.ndarray:
+      gt_boxes = torch.from_numpy(gt_boxes)
 
-        if type(gt_labels) is numpy.ndarray:
-            gt_labels = torch.from_numpy(gt_labels)
+    if type(gt_labels) is numpy.ndarray:
+      gt_labels = torch.from_numpy(gt_labels)
 
-        boxes, labels = ssd_assign_priors(
-            gt_boxes=gt_boxes,
-            gt_labels=gt_labels,
-            corner_form_priors=self.corner_form_priors,
-            iou_threshold=self.iou_threshold,
+    boxes, labels = ssd_assign_priors(
+        gt_boxes=gt_boxes,
+        gt_labels=gt_labels,
+        corner_form_priors=self.corner_form_priors,
+        iou_threshold=self.iou_threshold,
         )
-        locations = convert_boxes_to_locations(
-            center_form_boxes=corner_form_to_center_form(boxes),
-            center_form_priors=self.center_form_priors,
-            center_variance=self.center_variance,
-            size_variance=self.size_variance,
+    locations = convert_boxes_to_locations(
+        center_form_boxes=corner_form_to_center_form(boxes),
+        center_form_priors=self.center_form_priors,
+        center_variance=self.center_variance,
+        size_variance=self.size_variance,
         )
 
-        return locations, labels
+    return locations, labels

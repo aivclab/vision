@@ -14,23 +14,23 @@ from matplotlib import pyplot
 
 
 def boxed_text_overlay_plot(img, text):
-    """
+  """
 
 :param img:
 :type img:
 :param text:
 :type text:
 """
-    npimg = img.numpy()
-    pyplot.axis("off")
-    if text is not None:
-        pyplot.text(
-            x=0,
-            y=0,
-            s=text,
-            style="italic",
-            fontweight="bold",
-            bbox={"facecolor": "white", "alpha": 0.8, "pad": 10},
+  npimg = img.numpy()
+  pyplot.axis("off")
+  if text is not None:
+    pyplot.text(
+        x=0,
+        y=0,
+        s=text,
+        style="italic",
+        fontweight="bold",
+        bbox={"facecolor":"white", "alpha":0.8, "pad":10},
         )
-    pyplot.imshow(numpy.transpose(npimg, (1, 2, 0)))
-    pyplot.show()
+  pyplot.imshow(numpy.transpose(npimg, (1, 2, 0)))
+  pyplot.show()

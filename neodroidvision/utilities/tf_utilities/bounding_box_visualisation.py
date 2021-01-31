@@ -222,7 +222,7 @@ def draw_bounding_box_on_image_array(
     thickness=2,
     use_normalized_coordinates=True,
     mode="RGBA"
-    )->None:
+    ) -> None:
   """Adds a bounding box to an image (numpy array).
 
 Bounding box coordinates can be specified in either absolute (pixel) or
@@ -369,7 +369,7 @@ coordinates as absolute.
 
 def draw_bounding_boxes_on_image_array(
     image, boxes, labels=None, *, color="red", thickness=2, mode="RGBA"
-    )->None:
+    ) -> None:
   """Draws bounding boxes on image (numpy array).
 
 Args:

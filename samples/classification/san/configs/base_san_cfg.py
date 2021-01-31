@@ -11,11 +11,11 @@ from pathlib import Path
 
 from warg import NOD
 
-from data.classification.imagenet.imagenet_2012 import ImageNet2012
+from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
 
 SAN_CONFIG = NOD(
     dataset_type=ImageNet2012,
-    dataset_path=Path.home()/"Data"/"Datasets"/"ILSVRC2012",
+    dataset_path=Path.home() / "Data" / "Datasets" / "ILSVRC2012",
     arch="san",
     self_attention_type=0,
     layers=[2, 1, 2, 4, 1],
@@ -50,4 +50,4 @@ SAN_CONFIG = NOD(
     save_path=None,  #
     weight=None,  # path to initial weight (default=none)
     resume=None,  # path to latest checkpoint (default=none)
-)
+    )

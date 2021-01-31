@@ -11,32 +11,32 @@ Stream = namedtuple("Stream", ["ptr"])
 
 
 def get_dtype_str(t: torch.Tensor) -> str:
-    if isinstance(t, torch.cuda.FloatTensor):
-        return "float"
-    elif isinstance(t, torch.cuda.DoubleTensor):
-        return "double"
-    raise NotImplemented(f"Tensor type {t} not supported")
+  if isinstance(t, torch.cuda.FloatTensor):
+    return "float"
+  elif isinstance(t, torch.cuda.DoubleTensor):
+    return "double"
+  raise NotImplemented(f"Tensor type {t} not supported")
 
 
 @cupy.util.memoize(for_each_device=True)
 def load_kernel(kernel_name: Any, code: str, **kwargs) -> Any:
-    code = Template(code).substitute(**kwargs)
-    kernel_code = cupy.cuda.compile_with_cache(code)
-    return kernel_code.get_function(kernel_name)
+  code = Template(code).substitute(**kwargs)
+  kernel_code = cupy.cuda.compile_with_cache(code)
+  return kernel_code.get_function(kernel_name)
 
 
 CUDA_NUM_THREADS = 1024
 
 
-def GET_BLOCKS(N: int) -> int:
-    """
+def get_blocks_(N: int) -> int:
+  """
 
 :param N:
 :type N:
 :return:
 :rtype:
 """
-    return (N + CUDA_NUM_THREADS - 1) // CUDA_NUM_THREADS
+  return (N + CUDA_NUM_THREADS - 1) // CUDA_NUM_THREADS
 
 
 kernel_loop = """

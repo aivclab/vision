@@ -36,8 +36,8 @@ __all__ = [
     "CocoModeEnum",
     ]
 
-from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
-from draugr.torch_utilities import Split
+from draugr.torch_utilities import NamedTensorTuple
+from draugr.numpy_utilities import Split
 from warg import NOD
 
 

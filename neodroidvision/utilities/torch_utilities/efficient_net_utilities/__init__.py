@@ -4,5 +4,8 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
 
-           Created on 07/07/2020
+           Created on 24/03/2020
            """
+
+from .mobile_inverted import *
+from .tf_like_modules import *

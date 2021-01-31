@@ -12,6 +12,7 @@ from typing import Sequence, Tuple
 
 import numpy
 import torch
+from draugr.numpy_utilities import Split, SplitIndexer
 from matplotlib import pyplot
 from torch.utils.data import Subset
 from torch.utils.data.sampler import SubsetRandomSampler
@@ -19,11 +20,9 @@ from torchvision import datasets, transforms
 
 from torchvision.datasets import MNIST
 
-from draugr.torch_utilities import Split, SplitByPercentage, SupervisedDataset
+from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 
 __all__ = ["MNISTDataset", "MNISTDataset2"]
-
-
 
 
 class MNISTDataset2(SupervisedDataset):
@@ -99,7 +98,7 @@ class MNISTDataset2(SupervisedDataset):
 
     if split != Split.Testing:
       torch.manual_seed(seed)
-      train_ind, val_ind, test_ind = SplitByPercentage(
+      train_ind, val_ind, test_ind = SplitIndexer(
           len(mnist_data), validation=validation, testing=0.0
           ).shuffled_indices()
       if split == Split.Validation:
@@ -170,7 +169,7 @@ class MNISTDataset(SupervisedDataset):
       *,
       valid_size: float = 0.1,
       shuffle: bool = True,
-      num_workers: int = 4,
+      num_workers: int = 0,
       pin_memory: bool = False,
       using_cuda: bool = True,
       ) -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
@@ -211,8 +210,9 @@ pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
     assert (valid_size >= 0) and (valid_size <= 1), error_msg
 
     if using_cuda:
-      assert num_workers == 1
-      assert pin_memory == True
+      pass
+      # assert num_workers == 1
+      # assert pin_memory == True
 
     dataset = MNISTDataset(data_dir)
     num_train = len(dataset)
@@ -251,7 +251,7 @@ pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
       data_dir: Path,
       batch_size: int,
       *,
-      num_workers: int = 4,
+      num_workers: int = 0,
       pin_memory: bool = False,
       using_cuda: bool = True,
       ) -> torch.utils.data.DataLoader:
@@ -279,8 +279,9 @@ pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
     # define transforms
 
     if using_cuda:
-      assert num_workers == 1
-      assert pin_memory == True
+      pass
+      # assert num_workers == 1
+      # assert pin_memory == True
 
     dataset = MNISTDataset(data_dir, split=Split.Testing)
 
@@ -301,7 +302,7 @@ pin_memory: whether to copy tensors into CUDA pinned memory. Set it to
     images, labels = next(
         iter(
             torch.utils.data.DataLoader(
-                self, batch_size=9, shuffle=True, num_workers=1, pin_memory=False
+                self, batch_size=9, shuffle=True, num_workers=0, pin_memory=global_pin_memory(0)
                 )
             )
         )
