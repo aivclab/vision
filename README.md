@@ -2,8 +2,8 @@
 
 # Vision
 This repository will host implementations of computer vision algorithms, this repository hosts a general
- toolbox is in
- library format under [neodroidvision](neodroidvision), while also hosts samples of usage in
+ toolbox in
+ library format under [neodroidvision](neodroidvision), while also comprising a range of sample usages in
   [samples](samples), many of them utilising the
  [Neodroid](https://github.com/sintefneodroid/) platform.
 

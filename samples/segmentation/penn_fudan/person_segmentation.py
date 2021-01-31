@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy
 import torch
+from draugr.numpy_utilities import Split
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import PennFudanDataset
@@ -14,14 +15,13 @@ from tqdm import tqdm
 
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
-    Split,
-    TorchCacheSession,
-    TorchDeviceSession,
-    TorchEvalSession,
-    TorchTrainSession,
-    global_torch_device,
-    torch_seed,
-)
+  TorchCacheSession,
+  TorchDeviceSession,
+  TorchEvalSession,
+  TorchTrainSession,
+  global_torch_device,
+  )
+from draugr.random_utilities import seed_stack
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -31,33 +31,33 @@ __doc__ = r"""
 
 
 def reschedule_learning_rate(model, epoch, scheduler):
-    r"""This may be improved its just a hacky way to write SGDWR"""
-    if epoch == 7:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+  r"""This may be improved its just a hacky way to write SGDWR"""
+  if epoch == 7:
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
+    current_lr = next(iter(optimizer.param_groups))["lr"]
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
         )
-    if epoch == 13:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+  if epoch == 13:
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
+    current_lr = next(iter(optimizer.param_groups))["lr"]
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
         )
-    if epoch == 19:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+  if epoch == 19:
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
+    current_lr = next(iter(optimizer.param_groups))["lr"]
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
         )
-    if epoch == 25:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+  if epoch == 25:
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
+    current_lr = next(iter(optimizer.param_groups))["lr"]
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
         )
 
-    return model, scheduler
+  return model, scheduler
 
 
 def train_person_segmenter(
@@ -69,8 +69,8 @@ def train_person_segmenter(
     scheduler,
     save_model_path: Path,
     n_epochs: int = 100,
-):
-    """
+    ):
+  """
 
 :param model:
 :type model:
@@ -91,174 +91,174 @@ def train_person_segmenter(
 :return:
 :rtype:
 """
-    valid_loss_min = numpy.Inf  # track change in validation loss
-    assert n_epochs > 0, n_epochs
-    E = tqdm(range(1, n_epochs + 1))
-    for epoch in E:
-        train_loss = 0.0
-        valid_loss = 0.0
-        dice_score = 0.0
+  valid_loss_min = numpy.Inf  # track change in validation loss
+  assert n_epochs > 0, n_epochs
+  E = tqdm(range(1, n_epochs + 1))
+  for epoch in E:
+    train_loss = 0.0
+    valid_loss = 0.0
+    dice_score = 0.0
 
-        with TorchTrainSession(model):
-            for data, target in tqdm(train_loader):
-                data, target = (
-                    data.to(global_torch_device()),
-                    target.to(global_torch_device()),
-                )
-                optimizer.zero_grad()
-                output, *_ = model(data)
-                output = torch.sigmoid(output)
-                loss = criterion(output, target)
-                loss.backward()
-                optimizer.step()
-                train_loss += loss.item() * data.size(0)
+    with TorchTrainSession(model):
+      for data, target in tqdm(train_loader):
+        data, target = (
+            data.to(global_torch_device()),
+            target.to(global_torch_device()),
+            )
+        optimizer.zero_grad()
+        output, *_ = model(data)
+        output = torch.sigmoid(output)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+        train_loss += loss.item() * data.size(0)
 
-        with TorchEvalSession(model):
-            with torch.no_grad():
-                for data, target in tqdm(valid_loader):
-                    data, target = (
-                        data.to(global_torch_device()),
-                        target.to(global_torch_device()),
-                    )
-                    output, *_ = model(
-                        data
-                    )  # forward pass: compute predicted outputs by passing inputs to the model
-                    output = torch.sigmoid(output)
-                    loss = criterion(output, target)  # calculate the batch loss
-                    valid_loss += loss.item() * data.size(
-                        0
-                    )  # update average validation loss
-                    dice_cof = intersection_over_union(
-                        output.cpu().detach().numpy(), target.cpu().detach().numpy()
-                    )
-                    dice_score += dice_cof * data.size(0)
+    with TorchEvalSession(model):
+      with torch.no_grad():
+        for data, target in tqdm(valid_loader):
+          data, target = (
+              data.to(global_torch_device()),
+              target.to(global_torch_device()),
+              )
+          output, *_ = model(
+              data
+              )  # forward pass: compute predicted outputs by passing inputs to the model
+          output = torch.sigmoid(output)
+          loss = criterion(output, target)  # calculate the batch loss
+          valid_loss += loss.item() * data.size(
+              0
+              )  # update average validation loss
+          dice_cof = intersection_over_union(
+              output.cpu().detach().numpy(), target.cpu().detach().numpy()
+              )
+          dice_score += dice_cof * data.size(0)
 
-        # calculate average losses
-        train_loss = train_loss / len(train_loader.dataset)
-        valid_loss = valid_loss / len(valid_loader.dataset)
-        dice_score = dice_score / len(valid_loader.dataset)
+    # calculate average losses
+    train_loss = train_loss / len(train_loader.dataset)
+    valid_loss = valid_loss / len(valid_loader.dataset)
+    dice_score = dice_score / len(valid_loader.dataset)
 
-        # print training/validation statistics
-        E.set_description(
-            f"Epoch: {epoch}"
-            f" Training Loss: {train_loss:.6f} "
-            f"Validation Loss: {valid_loss:.6f} "
-            f"Dice Score: {dice_score:.6f}"
+    # print training/validation statistics
+    E.set_description(
+        f"Epoch: {epoch}"
+        f" Training Loss: {train_loss:.6f} "
+        f"Validation Loss: {valid_loss:.6f} "
+        f"Dice Score: {dice_score:.6f}"
         )
 
-        # save model if validation loss has decreased
-        if valid_loss <= valid_loss_min:
-            print(
-                f"Validation loss decreased ({valid_loss_min:.6f} --> {valid_loss:.6f}).  Saving model ..."
-            )
-            torch.save(model.state_dict(), save_model_path)
-            valid_loss_min = valid_loss
+    # save model if validation loss has decreased
+    if valid_loss <= valid_loss_min:
+      print(
+          f"Validation loss decreased ({valid_loss_min:.6f} --> {valid_loss:.6f}).  Saving model ..."
+          )
+      torch.save(model.state_dict(), save_model_path)
+      valid_loss_min = valid_loss
 
-        scheduler.step()
-        model, scheduler = reschedule_learning_rate(model, epoch, scheduler)
+    scheduler.step()
+    model, scheduler = reschedule_learning_rate(model, epoch, scheduler)
 
-    return model
+  return model
 
 
 def main():
-    pyplot.style.use("bmh")
-    base_path = Path.home() / "/Data" / "PennFudanPed"
+  pyplot.style.use("bmh")
+  base_path = Path.home() / "/Data" / "PennFudanPed"
 
-    save_model_path = PROJECT_APP_PATH.user_data/ 'models' / "penn_fudan_ped_seg.model"
-    train_model = False
-    eval_model = not train_model
-    SEED = 87539842
-    batch_size = 8
-    num_workers = 1  # os.cpu_count()
-    learning_rate = 0.01
-    torch_seed(SEED)
+  save_model_path = PROJECT_APP_PATH.user_data / 'models' / "penn_fudan_ped_seg.model"
+  train_model = False
+  eval_model = not train_model
+  SEED = 87539842
+  batch_size = 8
+  num_workers = 0
+  learning_rate = 0.01
+  seed_stack(SEED)
 
-    train_set = PennFudanDataset(base_path, Split.Training)
-    train_loader = DataLoader(
-        train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers
-    )
-    valid_loader = DataLoader(
-        PennFudanDataset(base_path, Split.Validation),
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-    )
+  train_set = PennFudanDataset(base_path, Split.Training)
+  train_loader = DataLoader(
+      train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers
+      )
+  valid_loader = DataLoader(
+      PennFudanDataset(base_path, Split.Validation),
+      batch_size=batch_size,
+      shuffle=False,
+      num_workers=num_workers,
+      )
 
-    model = SkipHourglassFission(
-        input_channels=train_set.predictor_shape[-1],
-        output_heads=(train_set.response_shape[-1],),
-        encoding_depth=1,
-    )
-    model.to(global_torch_device())
+  model = SkipHourglassFission(
+      input_channels=train_set.predictor_shape[-1],
+      output_heads=(train_set.response_shape[-1],),
+      encoding_depth=1,
+      )
+  model.to(global_torch_device())
 
-    if train_model:
-        if save_model_path.exists():
-            model.load_state_dict(torch.load(str(save_model_path)))
-            print("loading saved model")
+  if train_model:
+    if save_model_path.exists():
+      model.load_state_dict(torch.load(str(save_model_path)))
+      print("loading saved model")
 
-        with TorchTrainSession(model):
-            criterion = BCEDiceLoss(eps=1.0)
-            optimiser = torch.optim.SGD(model.parameters(), lr=learning_rate)
-            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-                optimiser, T_max=7, eta_min=learning_rate / 100, last_epoch=-1
-            )
+    with TorchTrainSession(model):
+      criterion = BCEDiceLoss(eps=1.0)
+      optimiser = torch.optim.SGD(model.parameters(), lr=learning_rate)
+      scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+          optimiser, T_max=7, eta_min=learning_rate / 100, last_epoch=-1
+          )
 
-            model = train_person_segmenter(
-                model,
-                train_loader,
-                valid_loader,
-                criterion,
-                optimiser,
-                scheduler,
-                save_model_path,
-            )
+      model = train_person_segmenter(
+          model,
+          train_loader,
+          valid_loader,
+          criterion,
+          optimiser,
+          scheduler,
+          save_model_path,
+          )
 
-    if eval_model:
-        if save_model_path.exists():
-            model.load_state_dict(torch.load(str(save_model_path)))
-            print("loading saved model")
+  if eval_model:
+    if save_model_path.exists():
+      model.load_state_dict(torch.load(str(save_model_path)))
+      print("loading saved model")
 
-        with TorchDeviceSession(global_torch_device(cuda_if_available=False), model):
-            with torch.no_grad():
-                with TorchCacheSession():
-                    with TorchEvalSession(model):
-                        valid_masks = []
-                        a = (350, 525)
-                        tr = min(len(valid_loader.dataset) * 4, 2000)
-                        probabilities = numpy.zeros((tr, *a), dtype=numpy.float32)
-                        for sample_i, (data, target) in enumerate(tqdm(valid_loader)):
-                            data = data.to(global_torch_device())
-                            target = target.cpu().detach().numpy()
-                            outpu, *_ = model(data)
-                            outpu = torch.sigmoid(outpu).cpu().detach().numpy()
-                            for p in range(data.shape[0]):
-                                output, mask = outpu[p], target[p]
-                                """
+    with TorchDeviceSession(global_torch_device('cpu'), model):
+      with torch.no_grad():
+        with TorchCacheSession():
+          with TorchEvalSession(model):
+            valid_masks = []
+            a = (350, 525)
+            tr = min(len(valid_loader.dataset) * 4, 2000)
+            probabilities = numpy.zeros((tr, *a), dtype=numpy.float32)
+            for sample_i, (data, target) in enumerate(tqdm(valid_loader)):
+              data = data.to(global_torch_device())
+              target = target.cpu().detach().numpy()
+              outpu, *_ = model(data)
+              outpu = torch.sigmoid(outpu).cpu().detach().numpy()
+              for p in range(data.shape[0]):
+                output, mask = outpu[p], target[p]
+                """
 for m in mask:
-  valid_masks.append(cv2_resize(m, a))
+valid_masks.append(cv2_resize(m, a))
 for probability in output:
-  probabilities[sample_i, :, :] = cv2_resize(probability, a)
-  sample_i += 1
+probabilities[sample_i, :, :] = cv2_resize(probability, a)
+sample_i += 1
 """
-                                if sample_i >= tr - 1:
-                                    break
-                            if sample_i >= tr - 1:
-                                break
+                if sample_i >= tr - 1:
+                  break
+              if sample_i >= tr - 1:
+                break
 
-                        f, ax = pyplot.subplots(3, 3, figsize=(24, 12))
+            f, ax = pyplot.subplots(3, 3, figsize=(24, 12))
 
-                        for i in range(3):
-                            ax[0, i].imshow(valid_masks[i], vmin=0, vmax=1)
-                            ax[0, i].set_title("Original", fontsize=14)
+            for i in range(3):
+              ax[0, i].imshow(valid_masks[i], vmin=0, vmax=1)
+              ax[0, i].set_title("Original", fontsize=14)
 
-                            ax[1, i].imshow(valid_masks[i], vmin=0, vmax=1)
-                            ax[1, i].set_title("Target", fontsize=14)
+              ax[1, i].imshow(valid_masks[i], vmin=0, vmax=1)
+              ax[1, i].set_title("Target", fontsize=14)
 
-                            ax[2, i].imshow(probabilities[i], vmin=0, vmax=1)
-                            ax[2, i].set_title("Prediction", fontsize=14)
+              ax[2, i].imshow(probabilities[i], vmin=0, vmax=1)
+              ax[2, i].set_title("Prediction", fontsize=14)
 
-                        pyplot.show()
+            pyplot.show()
 
 
 if __name__ == "__main__":
-    main()
+  main()

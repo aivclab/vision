@@ -16,10 +16,30 @@ from neodroidvision import PROJECT_NAME
 
 
 def test_import():
-    import neodroidvision
+  import neodroidvision
 
-    print(neodroidvision.__version__)
+  print(neodroidvision.__version__)
 
-def test_package_data()->None:
-    import neodroidvision
-    print(neodroidvision.PACKAGE_DATA_PATH/"Lato-Regular.ttf")
+
+def test_package_data() -> None:
+  import neodroidvision
+  print(neodroidvision.PACKAGE_DATA_PATH / "Lato-Regular.ttf")
+
+
+def test_import_regression():
+    from neodroidvision import regression
+    from neodroidvision import multitask
+    from neodroidvision import classification
+    from neodroidvision import segmentation
+    from neodroidvision import detection
+    from neodroidvision import data
+    print(regression.__doc__)
+    print(multitask.__doc__)
+    print(classification.__doc__)
+    print(segmentation.__doc__)
+    print(detection.__doc__)
+    print(data.__doc__)
+
+def test_import_samples():
+    from samples. segmentation import fcn8
+    print(fcn8.__doc__)

@@ -7,7 +7,6 @@ __doc__ = r'''
            Created on 11-11-2020
            '''
 
-
 import streamlit
 
 x = streamlit.slider('Select a value')

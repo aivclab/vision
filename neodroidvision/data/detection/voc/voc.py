@@ -17,7 +17,7 @@ from PIL import Image
 __all__ = ["VOCDataset"]
 
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
-from draugr.torch_utilities import Split
+from draugr.numpy_utilities import Split
 
 from neodroidvision.data.detection.object_detection_dataset import (
   ObjectDetectionDataset,
@@ -31,7 +31,7 @@ class VOCDataset(ObjectDetectionDataset):
 
   @property
   def response_shape(self) -> Tuple[int, ...]:
-    pass
+    return (len(VOCDataset.categories),)
 
   categories = (
       "__background__",
@@ -110,7 +110,7 @@ Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
 """
 
     super().__init__(data_root=data_root,
-                     dataset_name=                     dataset_name,
+                     dataset_name=dataset_name,
                      split=split,
                      img_transform=img_transform,
                      annotation_transform=annotation_transform
@@ -135,7 +135,7 @@ Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
     """
 
 """
-    pass
+    return (-1, -1, 3)
 
   def __getitem__(self, index):
     image_id = self._ids[index]

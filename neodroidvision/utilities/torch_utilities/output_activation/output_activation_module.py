@@ -16,17 +16,17 @@ from torch.nn import Module
 
 
 class OutputActivationModule(Module):
-    """
+  """
 For adding output activation to traced torchscript architectures
 """
 
-    def __init__(self, model: Module, output_activation: callable = torch.sigmoid):
-        super().__init__()
-        self._model = model
-        self._output_activation = output_activation
+  def __init__(self, model: Module, output_activation: callable = torch.sigmoid):
+    super().__init__()
+    self._model = model
+    self._output_activation = output_activation
 
-    def forward(self, *args, **kwargs) -> Union[Tuple[torch.Tensor, ...], torch.Tensor]:
-        out = self._model(*args, **kwargs)
-        if isinstance(out, tuple):
-            return (*[self._output_activation(a) for a in out],)
-        return self._output_activation(out)
+  def forward(self, *args, **kwargs) -> Union[Tuple[torch.Tensor, ...], torch.Tensor]:
+    out = self._model(*args, **kwargs)
+    if isinstance(out, tuple):
+      return (*[self._output_activation(a) for a in out],)
+    return self._output_activation(out)

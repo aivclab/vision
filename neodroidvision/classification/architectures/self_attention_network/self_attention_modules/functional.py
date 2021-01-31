@@ -6,8 +6,11 @@ __all__ = ["aggregation", "subtraction", "subtraction2"]
 
 
 class PadModeEnum(Enum):
-    zero_pad = 0
-    ref_pad = 1
+  '''
+
+  '''
+  zero_pad = 0
+  ref_pad = 1
 
 
 def aggregation(
@@ -18,8 +21,8 @@ def aggregation(
     padding: int = 0,
     dilation: int = 1,
     pad_mode: PadModeEnum = PadModeEnum.ref_pad,
-):
-    """
+    ):
+  """
 
 :param input:
 :type input:
@@ -38,23 +41,23 @@ def aggregation(
 :return:
 :rtype:
 """
-    assert (
-        input.shape[0] == weight.shape[0]
-        and (input.shape[1] % weight.shape[1] == 0)
-        and pad_mode in [0, 1]
-    )
-    if input.is_cuda:
-        if pad_mode == PadModeEnum.zero_pad:
-            out = functions.aggregation_zeropad(
-                input, weight, kernel_size, stride, padding, dilation
-            )
-        elif pad_mode == PadModeEnum.ref_pad:
-            out = functions.aggregation_refpad(
-                input, weight, kernel_size, stride, padding, dilation
-            )
-    else:
-        raise NotImplementedError
-    return out
+  assert (
+      input.shape[0] == weight.shape[0]
+      and (input.shape[1] % weight.shape[1] == 0)
+      and pad_mode in [0, 1]
+  )
+  if input.is_cuda:
+    if pad_mode == PadModeEnum.zero_pad:
+      out = functions.aggregation_zeropad(
+          input, weight, kernel_size, stride, padding, dilation
+          )
+    elif pad_mode == PadModeEnum.ref_pad:
+      out = functions.aggregation_refpad(
+          input, weight, kernel_size, stride, padding, dilation
+          )
+  else:
+    raise NotImplementedError
+  return out
 
 
 def subtraction(
@@ -64,8 +67,8 @@ def subtraction(
     padding: int = 0,
     dilation: int = 1,
     pad_mode: PadModeEnum = PadModeEnum.ref_pad,
-):
-    """
+    ):
+  """
 
 :param input:
 :type input:
@@ -82,19 +85,19 @@ def subtraction(
 :return:
 :rtype:
 """
-    assert input.dim() == 4 and pad_mode in [0, 1]
-    if input.is_cuda:
-        if pad_mode == PadModeEnum.zero_pad:
-            out = functions.subtraction_zeropad(
-                input, kernel_size, stride, padding, dilation
-            )
-        elif pad_mode == PadModeEnum.ref_pad:
-            out = functions.subtraction_refpad(
-                input, kernel_size, stride, padding, dilation
-            )
-    else:
-        raise NotImplementedError
-    return out
+  assert input.dim() == 4 and pad_mode in [0, 1]
+  if input.is_cuda:
+    if pad_mode == PadModeEnum.zero_pad:
+      out = functions.subtraction_zeropad(
+          input, kernel_size, stride, padding, dilation
+          )
+    elif pad_mode == PadModeEnum.ref_pad:
+      out = functions.subtraction_refpad(
+          input, kernel_size, stride, padding, dilation
+          )
+  else:
+    raise NotImplementedError
+  return out
 
 
 def subtraction2(
@@ -105,8 +108,8 @@ def subtraction2(
     padding: int = 0,
     dilation: int = 1,
     pad_mode: PadModeEnum = PadModeEnum.ref_pad,
-):
-    """
+    ):
+  """
 
 :param input1:
 :type input1:
@@ -125,16 +128,16 @@ def subtraction2(
 :return:
 :rtype:
 """
-    assert input1.dim() == 4 and input2.dim() == 4 and pad_mode in [0, 1]
-    if input1.is_cuda:
-        if pad_mode == PadModeEnum.zero_pad:
-            out = functions.subtraction2_zeropad(
-                input1, input2, kernel_size, stride, padding, dilation
-            )
-        elif pad_mode == PadModeEnum.ref_pad:
-            out = functions.subtraction2_refpad(
-                input1, input2, kernel_size, stride, padding, dilation
-            )
-    else:
-        raise NotImplementedError
-    return out
+  assert input1.dim() == 4 and input2.dim() == 4 and pad_mode in [0, 1]
+  if input1.is_cuda:
+    if pad_mode == PadModeEnum.zero_pad:
+      out = functions.subtraction2_zeropad(
+          input1, input2, kernel_size, stride, padding, dilation
+          )
+    elif pad_mode == PadModeEnum.ref_pad:
+      out = functions.subtraction2_refpad(
+          input1, input2, kernel_size, stride, padding, dilation
+          )
+  else:
+    raise NotImplementedError
+  return out

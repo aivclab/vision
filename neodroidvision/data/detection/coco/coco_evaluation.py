@@ -95,8 +95,6 @@ class CocoEvaluator(object):
 
       self.eval_imgs[iou_type].append(eval_imgs)
 
-
-
   def synchronize_between_processes(self):
     """
 
@@ -122,7 +120,7 @@ class CocoEvaluator(object):
       print(f"IoU metric: {iou_type}")
       coco_eval.summarize()
 
-  def prepare_data(self, predictions: Sequence, iou_type: IouType)->List[Dict[str, Any]]:
+  def prepare_data(self, predictions: Sequence, iou_type: IouType) -> List[Dict[str, Any]]:
     """
 
 :param predictions:
@@ -247,54 +245,55 @@ class CocoEvaluator(object):
           )
     return coco_results
 
-def evaluate(iou_type_evaluator:COCOeval)->Tuple:
-    """
+
+def evaluate(iou_type_evaluator: COCOeval) -> Tuple:
+  """
 Run per image evaluation on given images and store results (a list of dict) in self.evalImgs
 :return: None
 """
-    p = iou_type_evaluator.params
-    # add backward compatibility if useSegm is specified in params
-    if p.useSegm is not None:
-      p.iouType = "segm" if p.useSegm == 1 else "bbox"
-      print(f"useSegm (deprecated) is not None. Running {p.iouType} evaluation")
-    # print('Evaluate annotation type *{}*'.format(p.iouType))
-    p.imgIds = list(numpy.unique(p.imgIds))
-    if p.useCats:
-      p.catIds = list(numpy.unique(p.catIds))
-    p.maxDets = sorted(p.maxDets)
-    iou_type_evaluator.params = p
+  p = iou_type_evaluator.params
+  # add backward compatibility if useSegm is specified in params
+  if p.useSegm is not None:
+    p.iouType = "segm" if p.useSegm == 1 else "bbox"
+    print(f"useSegm (deprecated) is not None. Running {p.iouType} evaluation")
+  # print('Evaluate annotation type *{}*'.format(p.iouType))
+  p.imgIds = list(numpy.unique(p.imgIds))
+  if p.useCats:
+    p.catIds = list(numpy.unique(p.catIds))
+  p.maxDets = sorted(p.maxDets)
+  iou_type_evaluator.params = p
 
-    iou_type_evaluator._prepare()
-    # loop through images, area range, max detection number
-    cat_ids = p.catIds if p.useCats else [-1]
+  iou_type_evaluator._prepare()
+  # loop through images, area range, max detection number
+  cat_ids = p.catIds if p.useCats else [-1]
 
-    compute_iou = None
-    if p.iouType == "segm" or p.iouType == "bbox":
-      compute_iou = iou_type_evaluator.computeIoU
-    elif p.iouType == "keypoints":
-      compute_iou = iou_type_evaluator.computeOks
+  compute_iou = None
+  if p.iouType == "segm" or p.iouType == "bbox":
+    compute_iou = iou_type_evaluator.computeIoU
+  elif p.iouType == "keypoints":
+    compute_iou = iou_type_evaluator.computeOks
 
-    iou_type_evaluator.ious = {
-        (imgId, catId):compute_iou(imgId, catId)
-        for imgId in p.imgIds
-        for catId in cat_ids
-        }
+  iou_type_evaluator.ious = {
+      (imgId, catId):compute_iou(imgId, catId)
+      for imgId in p.imgIds
+      for catId in cat_ids
+      }
 
-    evaluate_img = iou_type_evaluator.evaluateImg
-    max_det = p.maxDets[-1]
-    eval_imgs = [
-        evaluate_img(img_id, cat_id, area_rng, max_det)
-        for cat_id in cat_ids
-        for area_rng in p.areaRng
-        for img_id in p.imgIds
-        ]
+  evaluate_img = iou_type_evaluator.evaluateImg
+  max_det = p.maxDets[-1]
+  eval_imgs = [
+      evaluate_img(img_id, cat_id, area_rng, max_det)
+      for cat_id in cat_ids
+      for area_rng in p.areaRng
+      for img_id in p.imgIds
+      ]
 
-    eval_imgs = numpy.asarray(eval_imgs).reshape(  # this is NOT in the pycocotools code, but could be done outside
-        len(cat_ids), len(p.areaRng), len(p.imgIds)
-        )
-    iou_type_evaluator._paramsEval = copy.deepcopy(iou_type_evaluator.params)
+  eval_imgs = numpy.asarray(eval_imgs).reshape(  # this is NOT in the pycocotools code, but could be done outside
+      len(cat_ids), len(p.areaRng), len(p.imgIds)
+      )
+  iou_type_evaluator._paramsEval = copy.deepcopy(iou_type_evaluator.params)
 
-    return p.imgIds, eval_imgs
+  return p.imgIds, eval_imgs
 
 
 def merge(img_ids, eval_imgs):

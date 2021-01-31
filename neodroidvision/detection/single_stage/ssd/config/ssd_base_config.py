@@ -7,7 +7,7 @@ from warg import NOD
 
 base_cfg = NOD()
 
-base_cfg.data_dir = Path.home() / "Data"/"Vision"/"Detection"
+base_cfg.data_dir = Path.home() / "Data" / "Vision" / "Detection"
 # base_cfg.DATA_DIR = Path.home() / "Data" / "Datasets"
 base_cfg.output_dir = PROJECT_APP_PATH.user_data / "results"
 
@@ -61,7 +61,7 @@ base_cfg.model.box_head.priors.aspect_ratios = (
     (2, 3),
     (2,),
     (2,),
-)  # when has 1 aspect ratio,
+    )  # when has 1 aspect ratio,
 # every location has 4 boxes, 2 ratio 6 boxes. #boxes = 2 + #ratio * 2
 base_cfg.model.box_head.priors.boxes_per_location = (
     4,
@@ -70,7 +70,7 @@ base_cfg.model.box_head.priors.boxes_per_location = (
     6,
     4,
     4,
-)  # number of boxes per feature map location
+    )  # number of boxes per feature map location
 base_cfg.model.box_head.priors.clip = True
 
 # -----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ base_cfg.input.pixel_mean = (
     123,
     117,
     104,
-)  # Values to be used for image normalization, RGB layout
+    )  # Values to be used for image normalization, RGB layout
 
 # -----------------------------------------------------------------------------
 # Dataset
@@ -96,7 +96,7 @@ base_cfg.dataset_type = None
 # DataLoader
 # -----------------------------------------------------------------------------
 base_cfg.data_loader = NOD()
-base_cfg.data_loader.num_workers = 8  # number of data loading threads
+base_cfg.data_loader.num_workers = 0  # number of data loading threads
 base_cfg.data_loader.pin_memory = True
 
 # ---------------------------------------------------------------------------- #

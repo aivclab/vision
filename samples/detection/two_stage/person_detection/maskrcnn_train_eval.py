@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os
 from pathlib import Path
 
 import torch
@@ -10,24 +9,25 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
 from apppath import ensure_existence
+from draugr.numpy_utilities import Split, SplitIndexer
 
 from torch.utils.data import DataLoader, Subset
 from tqdm import tqdm
 
 from draugr.torch_utilities import (
   global_torch_device,
-  torch_seed,
   TorchEvalSession,
   TorchTrainSession,
   )
-from draugr.python_utilities.functions import collate_batch_fn
+from draugr.random_utilities import seed_stack
+from warg.functions import collate_first_dim
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import PennFudanDataset
 from neodroidvision.data.segmentation.penn_fudan import (
-  ReturnVariant,
+  ReturnVariantEnum,
   )
-from draugr.torch_utilities import Split, SplitIndexer, TensorBoardPytorchWriter, load_model, save_model, trainable_parameters
+from draugr.torch_utilities import TensorBoardPytorchWriter, load_model, save_model, trainable_parameters
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
   get_pretrained_instance_segmentation_maskrcnn,
   )
@@ -42,27 +42,27 @@ if __name__ == "__main__":
     dataset_root = Path.home() / "Data"
     base_path = ensure_existence(PROJECT_APP_PATH.user_data / 'maskrcnn')
     log_path = ensure_existence(PROJECT_APP_PATH.user_log / 'maskrcnn')
-    export_root = ensure_existence(base_path/'models')
+    export_root = ensure_existence(base_path / 'models')
     model_name = f'maskrcnn_pennfudanped'
 
     batch_size = 4
     num_epochs = 10
     optimiser_spec = GDKC(torch.optim.Adam, lr=3e-4)
     scheduler_spec = GDKC(
-        torch.optim.lr_scheduler.StepLR,      # a learning rate scheduler which decreases the learning rate by
+        torch.optim.lr_scheduler.StepLR,  # a learning rate scheduler which decreases the learning rate by
         step_size=3,  # 10x every 3 epochs
         gamma=0.1,
         )
-    num_workers = os.cpu_count()
-    torch_seed(3825)
+    num_workers = 0
+    seed_stack(3825)
 
     dataset = PennFudanDataset(
-        dataset_root / "PennFudanPed", Split.Training, return_variant=ReturnVariant.all
+        dataset_root / "PennFudanPed", Split.Training, return_variant=ReturnVariantEnum.all
         )
     dataset_validation = PennFudanDataset(
         dataset_root / "PennFudanPed",
         Split.Validation,
-        return_variant=ReturnVariant.all,
+        return_variant=ReturnVariantEnum.all,
         )
     split = SplitIndexer(len(dataset), validation=0.3, testing=0)
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
-        collate_fn=collate_batch_fn,
+        collate_fn=collate_first_dim,
         )
 
     data_loader_val = DataLoader(
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         batch_size=1,
         shuffle=False,
         num_workers=num_workers,
-        collate_fn=collate_batch_fn,
+        collate_fn=collate_first_dim,
         )
 
     model = get_pretrained_instance_segmentation_maskrcnn(dataset.response_channels)
@@ -89,11 +89,11 @@ if __name__ == "__main__":
     lr_scheduler = scheduler_spec(optimiser)
 
     if True:
-      model=load_model(model_name=model_name,model_directory=export_root)
+      model = load_model(model_name=model_name, model_directory=export_root)
 
     if True:
       with TorchTrainSession(model):
-        with TensorBoardPytorchWriter(log_path/model_name) as writer:
+        with TensorBoardPytorchWriter(log_path / model_name) as writer:
           for epoch_i in tqdm(range(num_epochs), desc="Epoch #"):
             maskrcnn_train_single_epoch(model=model,
                                         optimiser=optimiser,
@@ -104,8 +104,7 @@ if __name__ == "__main__":
                               data_loader_val,
                               writer=writer
                               )  # evaluate on the validation dataset
-            save_model(model,model_name=model_name,save_directory=export_root)
-
+            save_model(model, model_name=model_name, save_directory=export_root)
 
     if True:
       with TorchEvalSession(model):  # put the model in evaluation mode
@@ -114,13 +113,11 @@ if __name__ == "__main__":
         with torch.no_grad():
           prediction = model([img.to(global_torch_device())])
 
-
         from matplotlib import pyplot
         pyplot.imshow(Image.fromarray(img.mul(255).permute(1, 2, 0).byte().numpy()))
         pyplot.show()
 
         import cv2
-
 
         pyplot.imshow(Image.fromarray(prediction[0]["masks"][0, 0].mul(255).byte().cpu().numpy()))
         pyplot.show()
@@ -131,7 +128,6 @@ if __name__ == "__main__":
             torch.sigmoid(prediction[0]["scores"]).to('cpu').numpy(),
             )
 
-
         from draugr.opencv_utilities import draw_bounding_boxes
         from draugr.torch_utilities.images.conversion import quick_to_pil_image
 
@@ -139,15 +135,15 @@ if __name__ == "__main__":
 
         cv2.namedWindow(model_name, cv2.WINDOW_NORMAL)
         cv2.imshow(
-          model_name,
-          draw_bounding_boxes(
-              quick_to_pil_image(img),
-              boxes[indices],
-              labels=labels[indices],
-              scores=scores[indices],
-              #categories=categories,
-              )
-          )
+            model_name,
+            draw_bounding_boxes(
+                quick_to_pil_image(img),
+                boxes[indices],
+                labels=labels[indices],
+                scores=scores[indices],
+                # categories=categories,
+                )
+            )
 
         cv2.waitKey()
 
