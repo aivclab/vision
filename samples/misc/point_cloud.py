@@ -15,13 +15,13 @@ polyscope.init()
 
 
 def generate_verts(n_pts=10):
-  numpy.random.seed(777)
-  return numpy.random.rand(n_pts, 3)
+    numpy.random.seed(777)
+    return numpy.random.rand(n_pts, 3)
 
 
 def generate_faces(n_pts=10):
-  numpy.random.seed(777)
-  return numpy.random.randint(0, n_pts, size=(2 * n_pts, 3))
+    numpy.random.seed(777)
+    return numpy.random.randint(0, n_pts, size=(2 * n_pts, 3))
 
 
 verts, faces = generate_verts(), generate_faces()

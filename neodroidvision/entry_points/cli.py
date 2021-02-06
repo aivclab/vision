@@ -23,34 +23,33 @@ indent = " " * margin
 
 
 class NeodroidVisionCLI(object):
-  def run(self) -> None:
-    pass
+    def run(self) -> None:
+        pass
 
-  @staticmethod
-  def version() -> None:
-    """
-Prints the version of this Neodroid installation.
-"""
-    draw_cli_header()
-    print(f"Version: {get_version()}")
+    @staticmethod
+    def version() -> None:
+        """
+        Prints the version of this Neodroid installation."""
+        draw_cli_header()
+        print(f"Version: {get_version()}")
 
-  @staticmethod
-  def sponsors() -> None:
-    print(sponsors)
+    @staticmethod
+    def sponsors() -> None:
+        print(sponsors)
 
 
 def draw_cli_header(*, title="Neodroid Vision", font="big"):
-  figlet = Figlet(font=font, justify="center", width=terminal_width)
-  description = figlet.renderText(title)
+    figlet = Figlet(font=font, justify="center", width=terminal_width)
+    description = figlet.renderText(title)
 
-  print(f"{description}{underline}\n")
+    print(f"{description}{underline}\n")
 
 
 def main(*, always_draw_header=False):
-  if always_draw_header:
-    draw_cli_header()
-  fire.Fire(NeodroidVisionCLI, name="neodroid-vision")
+    if always_draw_header:
+        draw_cli_header()
+    fire.Fire(NeodroidVisionCLI, name="neodroid-vision")
 
 
 if __name__ == "__main__":
-  main()
+    main()

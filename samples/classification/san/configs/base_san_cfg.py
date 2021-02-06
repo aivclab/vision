@@ -50,4 +50,4 @@ SAN_CONFIG = NOD(
     save_path=None,  #
     weight=None,  # path to initial weight (default=none)
     resume=None,  # path to latest checkpoint (default=none)
-    )
+)

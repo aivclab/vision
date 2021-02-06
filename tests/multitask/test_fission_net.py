@@ -31,12 +31,12 @@ def test_skip_fission_multi_dict():
     im = out["RGB"].detach()
     print(im.shape)
     pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
-    pyplot.show()
+    # pyplot.show()
 
     im2 = out["Depth"].detach()
     print(im2.shape)
     pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
-    #pyplot.show()
+    # pyplot.show()
 
 
 def test_skip_fission_multi_int():
@@ -56,9 +56,9 @@ def test_skip_fission_multi_int():
     im = out.detach()
     print(im.shape)
     pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
-    pyplot.show()
+    # pyplot.show()
 
     im2 = out2.detach()
     print(im2.shape)
     pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
-    #pyplot.show()
+    # pyplot.show()

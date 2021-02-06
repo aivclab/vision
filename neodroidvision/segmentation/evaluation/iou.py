@@ -13,9 +13,9 @@ __all__ = ["intersection_over_union"]
 
 
 def intersection_over_union(img1, img2) -> float:
-  img1 = numpy.asarray(img1).astype(numpy.bool)
-  img2 = numpy.asarray(img2).astype(numpy.bool)
+    img1 = numpy.asarray(img1).astype(numpy.bool)
+    img2 = numpy.asarray(img2).astype(numpy.bool)
 
-  intersection = numpy.logical_and(img1, img2)
+    intersection = numpy.logical_and(img1, img2)
 
-  return 2.0 * intersection.sum() / (img1.sum() + img2.sum())
+    return 2.0 * intersection.sum() / (img1.sum() + img2.sum())

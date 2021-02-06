@@ -17,12 +17,10 @@ from warg import drop_unused_kws
 
 
 class ObjectDetectionDataset(SupervisedDataset, ABC):
-  """
+    """"""
 
-"""
+    categories = None
 
-  categories = None
-
-  @drop_unused_kws
-  def __init__(self):
-    super().__init__()
+    @drop_unused_kws
+    def __init__(self):
+        super().__init__()

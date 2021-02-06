@@ -15,61 +15,59 @@ from tqdm import tqdm
 
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import (
-  TorchDeviceSession,
-  TorchEvalSession,
-  global_torch_device,
-  )
+    TorchDeviceSession,
+    TorchEvalSession,
+    global_torch_device,
+)
 
 from neodroidvision import PROJECT_APP_PATH
 
 
 @torch.no_grad()
 def run_seg_traced_webcam_demo():
-  """
+    """
 
-:return:
-:rtype:
-"""
+    :return:
+    :rtype:"""
 
-  import torch
-  import io
+    import torch
+    import io
 
-  load_path = (PROJECT_APP_PATH.user_data / 'penn_fudan_segmentation' / "seg_skip_fis").with_suffix(".traced")
-  # print(load_path)
-  # torch.jit.load(str(load_path))
+    load_path = (
+        PROJECT_APP_PATH.user_data / "penn_fudan_segmentation" / "seg_skip_fis"
+    ).with_suffix(".traced")
+    # print(load_path)
+    # torch.jit.load(str(load_path))
 
-  with open(
-      str(load_path), "rb"
-      ) as f:  # Load ScriptModule from io.BytesIO object
-    buffer = io.BytesIO(f.read())
+    with open(str(load_path), "rb") as f:  # Load ScriptModule from io.BytesIO object
+        buffer = io.BytesIO(f.read())
 
-  model = torch.jit.load(buffer)  # Load all tensors to the original device
+    model = torch.jit.load(buffer)  # Load all tensors to the original device
 
-  transform = transforms.Compose(
-      [
-          transforms.ToTensor(),
-          transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-          ]
-      )
-  from matplotlib.pyplot import imshow
-  with TorchDeviceSession(
-      device=global_torch_device('cpu'), model=model
-      ):
-    with TorchEvalSession(model):
-      for image in tqdm(frame_generator(cv2.VideoCapture(0))):
-        result = model(transform(image).unsqueeze(0).to(global_torch_device()))[
-          0
+    transform = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ]
+    )
+    from matplotlib.pyplot import imshow
 
-        imshow(result[0][0].numpy(), vmin=0.0, vmax=1.0)
-        show()
+    with TorchDeviceSession(device=global_torch_device("cpu"), model=model):
+        with TorchEvalSession(model):
+            for image in tqdm(frame_generator(cv2.VideoCapture(0))):
+                result = model(transform(image).unsqueeze(0).to(global_torch_device()))[
+                    0
+                ]
+
+                imshow(result[0][0].numpy(), vmin=0.0, vmax=1.0)
+                show()
 
 
 def main():
-  global_torch_device(override=global_torch_device('cpu'))
+    global_torch_device(override=global_torch_device("cpu"))
 
-  run_seg_traced_webcam_demo()
+    run_seg_traced_webcam_demo()
 
 
 if __name__ == "__main__":
-  main()
+    main()
