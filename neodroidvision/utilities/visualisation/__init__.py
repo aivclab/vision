@@ -9,5 +9,5 @@ from .encoding_space import *
 from .plot_kernel import *
 from .similarity_utilities import *
 
-if __name__ == '__main__':
-  pass
+if __name__ == "__main__":
+    pass

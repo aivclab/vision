@@ -26,8 +26,8 @@ criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
 checkerboard_points = numpy.zeros((numpy.prod(intersections_shape), 3), numpy.float32)
 checkerboard_points[:, :2] = numpy.mgrid[
-                             0: intersections_shape[0], 0: intersections_shape[1]
-                             ].T.reshape(-1, 2)
+    0 : intersections_shape[0], 0 : intersections_shape[1]
+].T.reshape(-1, 2)
 
 # Arrays to store object points and image points from all the images.
 object_points = []  # 3d point in real world space
@@ -39,106 +39,103 @@ save_keys = ("mtx", "dist", "rvecs", "tvecs")
 
 
 def image_loader_generator():
-  for fname in glob.glob(f"{base}/*.jpg"):
-    yield cv2.imread(fname)
+    for fname in glob.glob(f"{base}/*.jpg"):
+        yield cv2.imread(fname)
 
 
 a = ""
 
 
 def on_press(key):
-  global a
-  try:
-    a = key
-  except AttributeError:
-    pass
+    global a
+    try:
+        a = key
+    except AttributeError:
+        pass
 
 
 def on_release(key):
-  if key == keyboard.Key.esc:
-    return False
+    if key == keyboard.Key.esc:
+        return False
 
 
 with keyboard.Listener(
     on_press=on_press, on_release=on_release
-    ) as listener:  # Collect events until released
+) as listener:  # Collect events until released
 
-  def webcam_generator():
-    global a
-    cap = cv2.VideoCapture(0)
+    def webcam_generator():
+        global a
+        cap = cv2.VideoCapture(0)
 
-    while True:
-      ret, frame = cap.read()
+        while True:
+            ret, frame = cap.read()
 
-      if a != "":
-        if a == "q":
-          break
+            if a != "":
+                if a == "q":
+                    break
 
-        yield frame
+                yield frame
 
-      a = ""
+            a = ""
 
-    # When everything done, release the capture
-    cap.release()
-    cv2.destroyAllWindows()
-    raise StopIteration
+        # When everything done, release the capture
+        cap.release()
+        cv2.destroyAllWindows()
+        raise StopIteration
 
+    # images = image_loader_generator()
+    images = webcam_generator()
 
-  # images = image_loader_generator()
-  images = webcam_generator()
+    def find_intersections():
+        for img, _ in zip(images, range(10)):
+            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-
-  def find_intersections():
-    for img, _ in zip(images, range(10)):
-      gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-      # Find the chess board corners
-      intrsc_found, intersections = cv2.findChessboardCorners(
-          gray_img, intersections_shape, None
-          )
-
-      if (
-          intrsc_found
-      ):  # If found, add object points, image points (after refining them)
-        object_points.append(checkerboard_points)
-
-        sub_intrsc = cv2.cornerSubPix(
-            gray_img, intersections, (11, 11), (-1, -1), criteria
+            # Find the chess board corners
+            intrsc_found, intersections = cv2.findChessboardCorners(
+                gray_img, intersections_shape, None
             )
-        img_points.append(sub_intrsc)
 
-        # Draw and display the corners
-        pyplot.imshow(
-            cv2.drawChessboardCorners(
-                img, intersections_shape, sub_intrsc, intrsc_found
+            if (
+                intrsc_found
+            ):  # If found, add object points, image points (after refining them)
+                object_points.append(checkerboard_points)
+
+                sub_intrsc = cv2.cornerSubPix(
+                    gray_img, intersections, (11, 11), (-1, -1), criteria
                 )
-            )
-        pyplot.show()
+                img_points.append(sub_intrsc)
 
+                # Draw and display the corners
+                pyplot.imshow(
+                    cv2.drawChessboardCorners(
+                        img, intersections_shape, sub_intrsc, intrsc_found
+                    )
+                )
+                pyplot.show()
 
-  def calibrate():
-    img = cv2.imread(str(base / "left12.jpg"))
-    h, w = img.shape[:2]
-    shape_ = (w, h)
-    (
-        intrsc_found,
-        camera_mtx,
-        dist_coef,
-        rot_vecs,
-        trans_vecs,
+    def calibrate():
+        img = cv2.imread(str(base / "left12.jpg"))
+        h, w = img.shape[:2]
+        shape_ = (w, h)
+        (
+            intrsc_found,
+            camera_mtx,
+            dist_coef,
+            rot_vecs,
+            trans_vecs,
         ) = cv2.calibrateCamera(object_points, img_points, shape_, None, None)
 
-    numpy.savez(
-        calibration_file_name,
-        **{
-            b:i
-            for b, i in zip(
-                save_keys, [camera_mtx, dist_coef, rot_vecs, trans_vecs]
+        numpy.savez(
+            calibration_file_name,
+            **{
+                b: i
+                for b, i in zip(
+                    save_keys, [camera_mtx, dist_coef, rot_vecs, trans_vecs]
                 )
             },
         )
 
-    """
+        """
 new_camera_mtx, roi = cv2.getOptimalNewCameraMatrix(camera_mtx,
                                     dist_coef,
                                     shape_,
@@ -175,38 +172,36 @@ print(f"total error:{tot_error / len(object_points)}")
 
 """
 
+    def load_and_draw():
+        # Load previously saved data
+        with numpy.load(calibration_file_name) as X:
+            camera_mtx, dist_coef, _, _ = [X[i] for i in save_keys]
 
-  def load_and_draw():
-    # Load previously saved data
-    with numpy.load(calibration_file_name) as X:
-      camera_mtx, dist_coef, _, _ = [X[i] for i in save_keys]
+        for img in images:
 
-    for img in images:
-
-      gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-      intrsc_found, intersections = cv2.findChessboardCorners(
-          gray_img, intersections_shape, None
-          )
-
-      if intrsc_found:
-        sub_intrsc = cv2.cornerSubPix(
-            gray_img,
-            intersections,
-            winSize=(11, 11),
-            zeroZone=(-1, -1),
-            criteria=criteria,
+            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            intrsc_found, intersections = cv2.findChessboardCorners(
+                gray_img, intersections_shape, None
             )
 
-        # Find the rotation and translation vectors.
-        _, rot_vecs, trans_vecs, inliers = cv2.solvePnPRansac(
-            checkerboard_points, sub_intrsc, camera_mtx, dist_coef
-            )
+            if intrsc_found:
+                sub_intrsc = cv2.cornerSubPix(
+                    gray_img,
+                    intersections,
+                    winSize=(11, 11),
+                    zeroZone=(-1, -1),
+                    criteria=criteria,
+                )
 
-        img = draw_cube(img, rot_vecs, trans_vecs, camera_mtx, dist_coef)
-        pyplot.imshow(img)
-        pyplot.show()
+                # Find the rotation and translation vectors.
+                _, rot_vecs, trans_vecs, inliers = cv2.solvePnPRansac(
+                    checkerboard_points, sub_intrsc, camera_mtx, dist_coef
+                )
 
+                img = draw_cube(img, rot_vecs, trans_vecs, camera_mtx, dist_coef)
+                pyplot.imshow(img)
+                pyplot.show()
 
-  find_intersections()
-  calibrate()
-  load_and_draw()
+    find_intersections()
+    calibrate()
+    load_and_draw()

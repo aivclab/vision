@@ -10,10 +10,10 @@ __doc__ = r"""
            """
 
 from draugr.torch_utilities import (
-  set_all_parameter_requires_grad,
-  set_first_n_parameter_requires_grad,
-  trainable_parameters,
-  )
+    set_all_parameter_requires_grad,
+    set_first_n_parameter_requires_grad,
+    trainable_parameters,
+)
 
 __all__ = ["resnet_retrain"]
 
@@ -23,13 +23,13 @@ def resnet_retrain(
     freeze_first_num: int = 6,
     pretrained: bool = True,
     resnet_factory: callable = torchvision.models.resnet18,
-    ):
-  model = resnet_factory(pretrained=pretrained)
-  if freeze_first_num == 0:
-    set_all_parameter_requires_grad(model)
-  elif freeze_first_num > 0:
-    set_first_n_parameter_requires_grad(model, freeze_first_num)
+):
+    model = resnet_factory(pretrained=pretrained)
+    if freeze_first_num == 0:
+        set_all_parameter_requires_grad(model)
+    elif freeze_first_num > 0:
+        set_first_n_parameter_requires_grad(model, freeze_first_num)
 
-  model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
 
-  return model, trainable_parameters(model)
+    return model, trainable_parameters(model)

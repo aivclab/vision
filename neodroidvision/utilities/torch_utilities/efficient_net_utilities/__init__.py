@@ -9,3 +9,4 @@ __doc__ = r"""
 
 from .mobile_inverted import *
 from .tf_like_modules import *
+from .ef_torch_utilities import *

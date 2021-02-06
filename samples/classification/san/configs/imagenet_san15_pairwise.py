@@ -16,4 +16,4 @@ SAN_CONFIG.update(
     weight_decay=0.0001,
     save_path=Path("exclude/models/imagenet/san15_pairwise/model"),
     model_path=Path("exclude/models/imagenet/san15_pairwise/model/model_best.pth"),
-    )
+)

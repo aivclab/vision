@@ -51,7 +51,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
     "sphinx.ext.graphviz",
-    ]
+]
 
 napoleon_use_ivar = True
 
@@ -63,7 +63,7 @@ templates_path = ["_templates"]
 #
 # source_suffix = ['.rst', '.md']
 # source_suffix = '.rst'
-source_suffix = {".rst":"restructuredtext", ".txt":"markdown", ".md":"markdown"}
+source_suffix = {".rst": "restructuredtext", ".txt": "markdown", ".md": "markdown"}
 
 # source_parsers = {
 #    '.md': CommonMarkParser,
@@ -142,20 +142,28 @@ latex_elements = {
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
-    }
+}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, f"{PROJECT_NAME}.tex", f"{PROJECT_NAME} Documentation", PROJECT_AUTHOR, "manual")
-    ]
+    (
+        master_doc,
+        f"{PROJECT_NAME}.tex",
+        f"{PROJECT_NAME} Documentation",
+        PROJECT_AUTHOR,
+        "manual",
+    )
+]
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, PROJECT_NAME, f"{PROJECT_NAME} Documentation", [PROJECT_AUTHOR], 1)]
+man_pages = [
+    (master_doc, PROJECT_NAME, f"{PROJECT_NAME} Documentation", [PROJECT_AUTHOR], 1)
+]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -171,8 +179,8 @@ texinfo_documents = [
         PROJECT_NAME,
         "One line description of project.",
         "Miscellaneous",
-        )
-    ]
+    )
+]
 
 # -- Options for Epub output ----------------------------------------------
 
@@ -196,9 +204,9 @@ epub_exclude_files = ["search.html"]
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python":("https://docs.python.org/", None),
+    "python": ("https://docs.python.org/", None),
     "numpy": ("http://docs.scipy.org/doc/numpy/", None),
-    }
+}
 
 # -- A patch that prevents Sphinx from cross-referencing ivar tags -------
 # See http://stackoverflow.com/a/41184353/3343043
@@ -230,8 +238,14 @@ def patched_make_field(self, types, domain, items, **kw):
                 typename = typename.replace("float", "python:float")
                 typename = typename.replace("type", "python:type")
                 par.extend(
-                    self.make_xrefs(self.typerolename, domain, typename, addnodes.literal_emphasis, **kw)
+                    self.make_xrefs(
+                        self.typerolename,
+                        domain,
+                        typename,
+                        addnodes.literal_emphasis,
+                        **kw,
                     )
+                )
             else:
                 par += fieldtype
             par += nodes.Text(")")

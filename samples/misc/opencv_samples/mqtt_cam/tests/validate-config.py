@@ -6,14 +6,14 @@ from helpers import get_config
 CONFIG_FILE_PATH = os.getenv("MQTT_CAMERA_CONFIG", "../config.py")
 
 try:
-  CONFIG = get_config(CONFIG_FILE_PATH)
+    CONFIG = get_config(CONFIG_FILE_PATH)
 except Exception as exc:
-  print(f"Invalid path to config file: {CONFIG_FILE_PATH}")
-  print(exc)
+    print(f"Invalid path to config file: {CONFIG_FILE_PATH}")
+    print(exc)
 
 try:
-  pprint.pprint(CONFIG)
-  print(f"Valid config in {CONFIG_FILE_PATH}, congratulations!")
+    pprint.pprint(CONFIG)
+    print(f"Valid config in {CONFIG_FILE_PATH}, congratulations!")
 except Exception as exc:
-  print(f"Invalid config in {CONFIG_FILE_PATH}")
-  print(exc)
+    print(f"Invalid config in {CONFIG_FILE_PATH}")
+    print(exc)
