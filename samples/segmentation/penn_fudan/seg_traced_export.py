@@ -26,7 +26,7 @@ def export_detection_model(
         PROJECT_APP_PATH.user_data / "penn_fudan_segmentation"
     )
     / "seg_skip_fis",
-    SEED=87539842,
+    SEED: int = 87539842,
 ) -> None:
     """
 

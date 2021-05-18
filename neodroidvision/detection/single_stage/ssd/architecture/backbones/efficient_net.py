@@ -136,7 +136,7 @@ class EfficientNet(SSDBackbone):
         self.reset_parameters()
 
     def extract_features(self, inputs: torch.Tensor) -> Tuple:
-        """ Returns output of the final convolution layer """
+        """Returns output of the final convolution layer"""
 
         # Stem
         x = swish(self._bn0(self._conv_stem(inputs)))
@@ -155,7 +155,7 @@ class EfficientNet(SSDBackbone):
         return x, features
 
     def forward(self, inputs: torch.Tensor) -> List[torch.Tensor]:
-        """ Calls extract_features to extract features, applies final linear layer, and returns logits. """
+        """Calls extract_features to extract features, applies final linear layer, and returns logits."""
 
         # Convolution layers
         x, features = self.extract_features(inputs)
@@ -168,7 +168,7 @@ class EfficientNet(SSDBackbone):
 
     @staticmethod
     def efficientnet_params(model_name: str) -> Tuple[float, float, int, float]:
-        """ Map EfficientNet model name to parameter coefficients. """
+        """Map EfficientNet model name to parameter coefficients."""
         params_dict = {
             # Coefficients:   width,depth,res,dropout
             "efficientnet-b0": (1.0, 1.0, 224, 0.2),
@@ -189,7 +189,7 @@ class EfficientNet(SSDBackbone):
         dropout_rate=0.2,
         drop_connect_rate=0.2,
     ):
-        """ Creates a efficient net model. """
+        """Creates a efficient net model."""
 
         GlobalParams = collections.namedtuple(
             "GlobalParams",
@@ -226,11 +226,11 @@ class EfficientNet(SSDBackbone):
         BlockArgs.__new__.__defaults__ = (None,) * len(BlockArgs._fields)
 
         class BlockDecoder(object):
-            """ Block Decoder for readability, straight from the official TensorFlow repository """
+            """Block Decoder for readability, straight from the official TensorFlow repository"""
 
             @staticmethod
             def _decode_block_string(block_string):
-                """ Gets a block through a string notation of arguments. """
+                """Gets a block through a string notation of arguments."""
                 assert isinstance(block_string, str)
 
                 ops = block_string.split("_")
@@ -261,15 +261,15 @@ class EfficientNet(SSDBackbone):
             def _encode_block_string(block):
                 """Encodes a block to a string."""
                 args = [
-                    "r%d" % block.num_repeat,
-                    "k%d" % block.kernel_size,
-                    "s%d%d" % (block.strides[0], block.strides[1]),
-                    "e%s" % block.expand_ratio,
-                    "i%d" % block.input_filters,
-                    "o%d" % block.output_filters,
+                    f"r{block.num_repeat:d}",
+                    f"k{block.kernel_size:d}",
+                    f"s{block.strides[0]:d}{block.strides[1]:d}",
+                    f"e{block.expand_ratio}",
+                    f"i{block.input_filters:d}",
+                    f"o{block.output_filters:d}",
                 ]
                 if 0 < block.se_ratio <= 1:
-                    args.append("se%s" % block.se_ratio)
+                    args.append(f"se{block.se_ratio}")
                 if block.id_skip is False:
                     args.append("noskip")
                 return "_".join(args)
@@ -327,7 +327,7 @@ class EfficientNet(SSDBackbone):
 
     @staticmethod
     def get_model_params(model_name, override_params):
-        """ Get the block args and global params for a given model """
+        """Get the block args and global params for a given model"""
         if model_name.startswith("efficientnet"):
             w, d, _, p = EfficientNet.efficientnet_params(model_name)
             # note: all models have drop connect rate = 0.2

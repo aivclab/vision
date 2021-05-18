@@ -136,10 +136,10 @@ post_quantize_model = False
 if post_quantize_model: # Accuracy may drop!
 traced_model = model
 if True:
-  q_model=quantization.prepare_script(traced_model)
-  ... qmodel.forward(...) .. training
-  q_model=quantization.convert_script(traced_model)
-  q_model.save('model.qtraced')
+q_model=quantization.prepare_script(traced_model)
+... qmodel.forward(...) .. training
+q_model=quantization.convert_script(traced_model)
+q_model.save('model.qtraced')
 """
 
 

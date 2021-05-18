@@ -6,7 +6,7 @@ __all__ = ["CenterLoss", "CenterLossFunc"]
 
 
 class CenterLoss(nn.Module):
-    """"""
+    """ """
 
     def __init__(self, num_classes, feat_dim, size_average=True):
         super(CenterLoss, self).__init__()
@@ -17,7 +17,7 @@ class CenterLoss(nn.Module):
         self.feat_dim = feat_dim
         self.size_average = size_average
 
-    def forward(self, label, feat):
+    def forward(self, label: torch.Tensor, feat: torch.Tensor) -> torch.Tensor:
         """
 
         :param label:
@@ -43,7 +43,7 @@ class CenterLoss(nn.Module):
 
 class CenterLossFunc(Function):
     @staticmethod
-    def forward(ctx, feature, label, centers, batch_size):
+    def forward(ctx, feature, label, centers, batch_size) -> torch.Tensor:
         """
 
         :param ctx:

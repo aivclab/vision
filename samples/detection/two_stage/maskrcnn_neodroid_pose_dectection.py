@@ -8,8 +8,8 @@ import numpy
 import torch
 from PIL import Image, ImageDraw
 from matplotlib import animation, pyplot
-from neodroid.environments.droid_environment import UnityEnvironment
-from neodroid.environments.droid_environment.deprecated.batched_unity_environments import (
+from neodroid.environments.droid_environment import DictUnityEnvironment
+from neodroid.environments.droid_environment.unity.deprecated.batched_unity_environments import (
     VectorWrapper,
 )
 from neodroid.utilities import extract_all_cameras
@@ -119,7 +119,7 @@ time_s = time.time()
 
 image_axs = NOD()
 
-env = VectorWrapper(UnityEnvironment(connect_to_running=True))
+env = VectorWrapper(DictUnityEnvironment(connect_to_running=True))
 fig = pyplot.figure()
 print_obs = False
 

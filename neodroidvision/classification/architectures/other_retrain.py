@@ -10,7 +10,12 @@ __doc__ = r"""
 __all__ = ["other_retrain"]
 
 
-def other_retrain(arch, model, num_classes: int):
+def other_retrain(
+    arch: str, model: torch.nn.Module, num_classes: int
+) -> torch.nn.Module:
+    """
+    Inplace op but returns the model anyway
+    """
     if arch.startswith("alexnet"):
         model._action_classifier[6] = torch.nn.Linear(
             model._action_classifier[6].in_features, num_classes
@@ -40,3 +45,4 @@ def other_retrain(arch, model, num_classes: int):
             model.AuxLogits.fc.in_features, num_classes
         )
         model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    return model

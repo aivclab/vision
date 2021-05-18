@@ -1,6 +1,15 @@
-![neodroid](.github/images/header.png)
 
-# Vision
+<!--![header](.github/images/header.png)-->
+
+<p align="center">
+  <img src=".github/images/header.png" alt='header' />
+</p>
+
+<h1 align="center">Vision</h1>
+
+<!--# Vision-->
+
+
 This repository will host implementations of computer vision algorithms, this repository hosts a general
  toolbox in
  library format under [neodroidvision](neodroidvision), while also comprising a range of sample usages in

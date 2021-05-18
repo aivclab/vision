@@ -14,6 +14,7 @@ from typing import Tuple
 import torch
 import torchvision
 from draugr.numpy_utilities import Split
+from draugr.stopping import IgnoreInterruptSignal
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset
@@ -233,7 +234,7 @@ def stest_many_versus_many2(
 if __name__ == "__main__":
 
     def main():
-        """"""
+        """ """
         data_dir = Path.home() / "Data" / "mnist_png"
         train_batch_size = 64
         train_number_epochs = 100
@@ -258,7 +259,7 @@ if __name__ == "__main__":
                 PROJECT_APP_PATH.user_log / model_name / str(time.time())
             ) as writer:
                 # with CaptureEarlyStop() as _:
-                with suppress(KeyboardInterrupt):
+                with IgnoreInterruptSignal():
                     model = train_siamese(
                         model,
                         optimiser,

@@ -10,6 +10,8 @@ __doc__ = r"""
 from typing import Tuple
 
 import torch
+from warg import Number
+
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
     hard_negative_mining,
 )
@@ -20,9 +22,9 @@ __all__ = ["MultiBoxLoss"]
 
 
 class MultiBoxLoss(nn.Module):
-    """"""
+    """ """
 
-    def __init__(self, neg_pos_ratio: float):
+    def __init__(self, neg_pos_ratio: Number):
         """Implement SSD MultiBox Loss.
 
         Basically, MultiBox loss combines classification loss
