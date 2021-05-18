@@ -1,4 +1,4 @@
-from data.detection.voc import VOCDataset
+from neodroidvision.data.detection.voc import VOCDataset
 from neodroidvision.detection import SSDLiteBoxPredictor
 from neodroidvision.detection.single_stage.ssd.architecture.backbones import (
     mobilenet_v2_factory,

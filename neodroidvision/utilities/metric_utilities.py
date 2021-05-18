@@ -1,6 +1,7 @@
 import datetime
 import time
 from collections import defaultdict, deque
+from typing import Optional
 
 import torch
 import torch.utils.data
@@ -17,7 +18,7 @@ class SmoothedValue(object):
     """Track a series of values and provide access to smoothed values over a
     window or the global series average."""
 
-    def __init__(self, window_size=20, fmt: str = None):
+    def __init__(self, window_size=20, fmt: Optional[str] = None):
         if fmt is None:
             self.fmt = "{median:.4f} ({global_avg:.4f})"
         else:

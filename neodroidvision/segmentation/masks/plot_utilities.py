@@ -1,10 +1,19 @@
 import itertools
+from typing import Dict, Tuple
 
 import numpy
 from matplotlib import pyplot
+from warg import Number
+
+__all__ = [
+    "plot_errors",
+    "masks_to_color_img",
+    "plot_prediction",
+    "bounding_box_from_mask",
+]
 
 
-def plot_errors(results_dict, title) -> None:
+def plot_errors(results_dict: Dict, title: str) -> None:
     markers = itertools.cycle(("+", "x", "o"))
 
     pyplot.title(f"{title}")
@@ -43,3 +52,10 @@ def plot_prediction(img_array, labels, max_pred, pred, n_col: int = 3) -> None:
         plots[i // n_col, i % n_col].set_title(
             f"truth:{labels[i]},\n max_pred:{max_pred[i]},\n pred:{pred[i]}", fontsize=8
         )
+
+
+def bounding_box_from_mask(
+    hard_mask: numpy.ndarray,
+) -> Tuple[Number, Number, Number, Number]:
+    nz = numpy.nonzero(hard_mask)
+    return numpy.min(nz[0]), numpy.min(nz[1]), numpy.max(nz[0]), numpy.max(nz[1])

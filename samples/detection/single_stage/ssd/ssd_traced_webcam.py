@@ -145,7 +145,8 @@ print(extra_files['foo.txt'])
                         scores=scores[indices],
                         categories=categories,
                         score_font=ImageFont.truetype(
-                            PACKAGE_DATA_PATH / "Lato-Regular.ttf", 24,
+                            PACKAGE_DATA_PATH / "Lato-Regular.ttf",
+                            24,
                         ),
                     ).astype(numpy.uint8),
                 )
@@ -181,7 +182,7 @@ def main():
 
     run_traced_webcam_demo(
         input_cfg=base_cfg.input,
-        categories=base_cfg.dataset_type.category_sizes,
+        categories=base_cfg.dataset_type.response_shape,
         score_threshold=args.score_threshold,
     )
 

@@ -8,7 +8,7 @@ __doc__ = r"""
            """
 
 from pathlib import Path
-from typing import List, Union
+from typing import List, Optional, Union
 
 import torch
 from draugr.numpy_utilities import Split
@@ -31,7 +31,7 @@ def object_detection_data_loaders(
     cfg: NOD,
     split: Split = Split.Training,
     distributed: bool = False,
-    max_iter: int = None,
+    max_iter: Optional[int] = None,
     start_iter: int = 0
 ) -> Union[List[DataLoader], DataLoader]:
     """

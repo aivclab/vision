@@ -9,6 +9,9 @@ __doc__ = r"""
            """
 
 
+__all__ = ["run_length_to_mask", "mask_to_run_length"]
+
+
 def run_length_to_mask(
     mask_rle: str = "", shape: tuple = (1400, 2100)
 ) -> numpy.ndarray:

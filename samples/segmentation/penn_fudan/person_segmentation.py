@@ -30,7 +30,9 @@ __doc__ = r"""
            """
 
 
-def reschedule_learning_rate(model, epoch, scheduler):
+def reschedule_learning_rate(
+    model: torch.nn.Module, epoch: int, scheduler: torch.optim.lr_scheduler
+):
     r"""This may be improved its just a hacky way to write SGDWR"""
     if epoch == 7:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
@@ -60,13 +62,13 @@ def reschedule_learning_rate(model, epoch, scheduler):
     return model, scheduler
 
 
-def train_person_segmenter(
-    model,
-    train_loader,
-    valid_loader,
-    criterion,
-    optimizer,
-    scheduler,
+def train_person_segmentor(
+    model: torch.nn.Module,
+    train_loader: torch.utils.data.DataLoader,
+    valid_loader: torch.utils.data.DataLoader,
+    criterion: callable,
+    optimizer: torch.optim.optimizer,
+    scheduler: torch.optim.lr_scheduler,
     save_model_path: Path,
     n_epochs: int = 100,
 ):
@@ -202,7 +204,7 @@ def main():
                 optimiser, T_max=7, eta_min=learning_rate / 100, last_epoch=-1
             )
 
-            model = train_person_segmenter(
+            model = train_person_segmentor(
                 model,
                 train_loader,
                 valid_loader,

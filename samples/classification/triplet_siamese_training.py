@@ -14,6 +14,7 @@ import torch
 import torch.nn.functional as F
 import torchvision.utils
 from draugr.numpy_utilities import Split
+from draugr.stopping import IgnoreInterruptSignal
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset, TripletDataset
@@ -61,7 +62,7 @@ def accuracy(*, distances, is_diff, threshold: float = 0.5):
 
 
 def vis(model, data_dir, img_size):
-    """"""
+    """ """
     # ## Visualising some of the data
     # The top row and the bottom row of any column is one pair. The 0s and 1s correspond to the column of the
     # image.
@@ -94,7 +95,7 @@ def vis(model, data_dir, img_size):
 
 
 def stest_one_versus_many(model, data_dir, img_size):
-    """"""
+    """ """
     data_iterator = iter(
         DataLoader(
             PairDataset(
@@ -133,7 +134,7 @@ def stest_one_versus_many(model, data_dir, img_size):
 
 
 def stest_many_versus_many(model, data_dir, img_size, threshold=0.5):
-    """"""
+    """ """
     data_iterator = iter(
         DataLoader(
             PairDataset(
@@ -310,7 +311,7 @@ def train_siamese(
 if __name__ == "__main__":
 
     def main():
-        """"""
+        """ """
         data_dir = Path.home() / "Data" / "mnist_png"
         train_batch_size = 64
         train_number_epochs = 100
@@ -333,21 +334,21 @@ if __name__ == "__main__":
                 )
 
             with TensorBoardPytorchWriter():
-                from draugr.stopping import CaptureEarlyStop
+                # from draugr.stopping import CaptureEarlyStop
 
-                with CaptureEarlyStop() as _:
-                    with suppress(KeyboardInterrupt):
-                        model = train_siamese(
-                            model,
-                            optimiser,
-                            TripletMarginLoss().to(global_torch_device()),
-                            train_number_epochs=train_number_epochs,
-                            data_dir=data_dir,
-                            train_batch_size=train_batch_size,
-                            model_name=model_name,
-                            save_path=save_path,
-                            img_size=img_size,
-                        )
+                # with CaptureEarlyStop() as _:
+                with IgnoreInterruptSignal():
+                    model = train_siamese(
+                        model,
+                        optimiser,
+                        TripletMarginLoss().to(global_torch_device()),
+                        train_number_epochs=train_number_epochs,
+                        data_dir=data_dir,
+                        train_batch_size=train_batch_size,
+                        model_name=model_name,
+                        save_path=save_path,
+                        img_size=img_size,
+                    )
             save_model_parameters(
                 model,
                 optimiser=optimiser,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from PIL import Image
-from neodroid.environments.droid_environment import connect
+from neodroid.environments.droid_environment import connect_dict
 from torch.utils.data import Dataset
 from torchvision.transforms import transforms
 
@@ -13,7 +13,7 @@ __doc__ = r"""
 
 
 class NeodroidCameraObservationDataset(Dataset):
-    """"""
+    """ """
 
     # mean = numpy.array([0.485, 0.456, 0.406])
     # std = numpy.array([0.229, 0.224, 0.225])
@@ -51,8 +51,8 @@ class NeodroidCameraObservationDataset(Dataset):
         )
 
         self.trans = transforms.Compose(t)
-        self.env = connect()
-        self.env_iter = iter(connect())
+        self.env = connect_dict()
+        self.env_iter = iter(connect_dict())
         self.size = size
 
     def __len__(self):
@@ -60,7 +60,7 @@ class NeodroidCameraObservationDataset(Dataset):
 
     def __getitem__(self, index):
         if not self.env.is_connected:
-            self.env = connect()
+            self.env = connect_dict()
             self.env_iter = iter(self.env)
 
         state = next(self.env_iter)
