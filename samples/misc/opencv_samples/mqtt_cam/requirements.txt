@@ -1,6 +1,6 @@
 black==19.3b0
 paho-mqtt==1.4.0
-Pillow==7.2.0
+Pillow==8.2.0
 imutils==0.5.3
 PyYAML==5.1.2
 streamlit==0.62.1
