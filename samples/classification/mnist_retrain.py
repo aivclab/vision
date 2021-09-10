@@ -7,29 +7,31 @@ import time
 
 import torch
 import torchvision
-from data.classification import MNISTDataset2
-from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import squeezenet_retrain
-from torch import optim
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
 from draugr import horizontal_imshow, recycle
+from draugr.numpy_utilities import Split
 from draugr.torch_utilities import (
-    Split,
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
     ensure_directory_exist,
+    global_pin_memory,
     global_torch_device,
     to_tensor,
     torch_clean_up,
 )
+from matplotlib import pyplot
+from torch import optim
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import squeezenet_retrain
 
 __author__ = "Christian Heider Nielsen"
 __all__ = []
-__doc__ = r''''''
+__doc__ = r""""""
+
+from neodroidvision.data.classification import MNISTDataset2
 
 seed = 34874312
 batch_size = 16
@@ -207,7 +209,7 @@ def main():
                 ),
                 batch_size=batch_size,
                 shuffle=True,
-                pin_memory=True,
+                pin_memory=global_pin_memory(0),
             )
         )
     )
@@ -232,37 +234,37 @@ def main():
         optimizer_ft, step_size=7, gamma=0.1
     )
 
-    writer = TensorBoardPytorchWriter(this_log)
+    with TensorBoardPytorchWriter(this_log) as writer:
+        if train_model:
+            model = predictor_response_train_model(
+                model,
+                train_iterator=train_iter,
+                criterion=criterion,
+                optimizer=optimizer_ft,
+                scheduler=exp_lr_scheduler,
+                writer=writer,
+                interrupted_path=interrupted_path,
+                val_data_iterator=val_iter,
+                num_updates=NUM_UPDATES,
+            )
 
-    if train_model:
-        model = predictor_response_train_model(
-            model,
-            train_iterator=train_iter,
-            criterion=criterion,
-            optimizer=optimizer_ft,
-            scheduler=exp_lr_scheduler,
-            writer=writer,
-            interrupted_path=interrupted_path,
-            val_data_iterator=val_iter,
-            num_updates=NUM_UPDATES,
+        inputs, true_label = next(train_iter)
+        inputs = to_tensor(
+            inputs, dtype=torch.float, device=global_torch_device()
+        ).repeat(1, 3, 1, 1)
+        true_label = to_tensor(
+            true_label, dtype=torch.long, device=global_torch_device()
         )
 
-    inputs, true_label = next(train_iter)
-    inputs = to_tensor(inputs, dtype=torch.float, device=global_torch_device()).repeat(
-        1, 3, 1, 1
-    )
-    true_label = to_tensor(true_label, dtype=torch.long, device=global_torch_device())
+        pred = model(inputs)
+        predicted = torch.argmax(pred, -1)
+        true_label = to_tensor(true_label, dtype=torch.long)
+        print(predicted, true_label)
+        horizontal_imshow(
+            inputs, [f"p:{int(p)},t:{int(t)}" for p, t in zip(predicted, true_label)]
+        )
+        pyplot.show()
 
-    pred = model(inputs)
-    predicted = torch.argmax(pred, -1)
-    true_label = to_tensor(true_label, dtype=torch.long)
-    print(predicted, true_label)
-    horizontal_imshow(
-        inputs, [f"p:{int(p)},t:{int(t)}" for p, t in zip(predicted, true_label)]
-    )
-    pyplot.show()
-
-    writer.close()
     torch_clean_up()
 
     # model.eval()

@@ -3,6 +3,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.init import xavier_uniform_
+
 from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     SelfAttentionModule,
     init_weights,
@@ -10,7 +12,6 @@ from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     spectral_norm_embedding,
     spectral_norm_linear,
 )
-from torch.nn.init import xavier_uniform_
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -32,10 +33,9 @@ class ConditionalBatchNorm2d(nn.Module):
     def forward(self, x, y):
         out = self.bn(x)
         gamma, beta = self.embed(y).chunk(2, 1)
-        out = gamma.reshape(-1, self.num_features, 1, 1) * out + beta.reshape(
+        return gamma.reshape(-1, self.num_features, 1, 1) * out + beta.reshape(
             -1, self.num_features, 1, 1
         )
-        return out
 
 
 class GenBlock(nn.Module):
@@ -80,8 +80,7 @@ class GenBlock(nn.Module):
         x0 = F.interpolate(x0, scale_factor=2, mode="nearest")  # upsample
         x0 = self.spectral_norm_conv2d0(x0)
 
-        out = x + x0
-        return out
+        return x + x0
 
 
 class Generator(nn.Module):
@@ -92,7 +91,7 @@ class Generator(nn.Module):
 
         self.z_dim = z_dim
         self.g_conv_dim = g_conv_dim
-        self.snlinear0 = spectral_norm_linear(
+        self.spectral_norm_linear0 = spectral_norm_linear(
             in_features=z_dim, out_features=g_conv_dim * 16 * 4 * 4
         )
         self.block1 = GenBlock(g_conv_dim * 16, g_conv_dim * 16, num_classes)
@@ -108,12 +107,11 @@ class Generator(nn.Module):
         )
         self.tanh = nn.Tanh()
 
-        # Weight init
         self.apply(init_weights)
 
     def forward(self, z, labels):
         # n x z_dim
-        act0 = self.snlinear0(z)  # n x g_conv_dim*16*4*4
+        act0 = self.spectral_norm_linear0(z)  # n x g_conv_dim*16*4*4
         act0 = act0.reshape(-1, self.g_conv_dim * 16, 4, 4)  # n x g_conv_dim*16 x 4 x 4
         act1 = self.block1(act0, labels)  # n x g_conv_dim*16 x 8 x 8
         act2 = self.block2(act1, labels)  # n x g_conv_dim*8 x 16 x 16
@@ -124,8 +122,7 @@ class Generator(nn.Module):
         act5 = self.bn(act5)  # n x g_conv_dim  x 128 x 128
         act5 = self.relu(act5)  # n x g_conv_dim  x 128 x 128
         act6 = self.spectral_norm_conv2d1(act5)  # n x 3 x 128 x 128
-        act6 = self.tanh(act6)  # n x 3 x 128 x 128
-        return act6
+        return self.tanh(act6)  # n x 3 x 128 x 128
 
 
 class DiscriminatorOptBlock(nn.Module):
@@ -146,7 +143,7 @@ class DiscriminatorOptBlock(nn.Module):
             stride=1,
             padding=1,
         )
-        self.downsample = nn.AvgPool2d(2)
+        self.down_sample = nn.AvgPool2d(2)
         self.spectral_norm_conv2d0 = spectral_norm_conv2d(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -161,13 +158,12 @@ class DiscriminatorOptBlock(nn.Module):
         x = self.spectral_norm_conv2d1(x)
         x = self.relu(x)
         x = self.spectral_norm_conv2d2(x)
-        x = self.downsample(x)
+        x = self.down_sample(x)
 
-        x0 = self.downsample(x0)
+        x0 = self.down_sample(x0)
         x0 = self.spectral_norm_conv2d0(x0)
 
-        out = x + x0
-        return out
+        return x + x0
 
 
 class DiscriminatorBlock(nn.Module):
@@ -188,10 +184,10 @@ class DiscriminatorBlock(nn.Module):
             stride=1,
             padding=1,
         )
-        self.downsample = nn.AvgPool2d(2)
-        self.ch_mismatch = False
+        self.down_sample = nn.AvgPool2d(2)
+        self.channel_mismatch = False
         if in_channels != out_channels:
-            self.ch_mismatch = True
+            self.channel_mismatch = True
         self.spectral_norm_conv2d0 = spectral_norm_conv2d(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -200,23 +196,22 @@ class DiscriminatorBlock(nn.Module):
             padding=0,
         )
 
-    def forward(self, x, downsample=True):
+    def forward(self, x, down_sample: bool = True):
         x0 = x
 
         x = self.relu(x)
         x = self.spectral_norm_conv2d1(x)
         x = self.relu(x)
         x = self.spectral_norm_conv2d2(x)
-        if downsample:
-            x = self.downsample(x)
+        if down_sample:
+            x = self.down_sample(x)
 
-        if downsample or self.ch_mismatch:
+        if down_sample or self.channel_mismatch:
             x0 = self.spectral_norm_conv2d0(x0)
-            if downsample:
-                x0 = self.downsample(x0)
+            if down_sample:
+                x0 = self.down_sample(x0)
 
-        out = x + x0
-        return out
+        return x + x0
 
 
 class Discriminator(nn.Module):
@@ -233,14 +228,15 @@ class Discriminator(nn.Module):
         self.block4 = DiscriminatorBlock(d_conv_dim * 8, d_conv_dim * 16)
         self.block5 = DiscriminatorBlock(d_conv_dim * 16, d_conv_dim * 16)
         self.relu = nn.ReLU(inplace=True)
-        self.snlinear1 = spectral_norm_linear(
+        self.spectral_norm_linear1 = spectral_norm_linear(
             in_features=d_conv_dim * 16, out_features=1
         )
-        self.sn_embedding1 = spectral_norm_embedding(num_classes, d_conv_dim * 16)
+        self.spectral_norm_embedding1 = spectral_norm_embedding(
+            num_classes, d_conv_dim * 16
+        )
 
-        # Weight init
         self.apply(init_weights)
-        xavier_uniform_(self.sn_embedding1.weight)
+        xavier_uniform_(self.spectral_norm_embedding1.weight)
 
     def forward(self, x, labels):
         # n x 3 x 128 x 128
@@ -253,11 +249,9 @@ class Discriminator(nn.Module):
         h5 = self.block5(h4, downsample=False)  # n x d_conv_dim*16 x 4 x 4
         h5 = self.relu(h5)  # n x d_conv_dim*16 x 4 x 4
         h6 = torch.sum(h5, dim=[2, 3])  # n x d_conv_dim*16
-        output1 = torch.squeeze(self.snlinear1(h6))  # n x 1
+        output1 = torch.squeeze(self.spectral_norm_linear1(h6))  # n x 1
         # Projection
-        h_labels = self.sn_embedding1(labels)  # n x d_conv_dim*16
+        h_labels = self.spectral_norm_embedding1(labels)  # n x d_conv_dim*16
         proj = torch.mul(h6, h_labels)  # n x d_conv_dim*16
         output2 = torch.sum(proj, dim=[1])  # n x 1
-        # Out
-        output = output1 + output2  # n x 1
-        return output
+        return output1 + output2  # n x 1

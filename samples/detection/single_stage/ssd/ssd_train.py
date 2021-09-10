@@ -7,11 +7,23 @@ from pathlib import Path
 
 import torch
 from apppath import ensure_existence
+from draugr.numpy_utilities import Split
+from draugr.torch_utilities import (
+    TorchCacheSession,
+    TorchEvalSession,
+    TorchTrainSession,
+    WarmupMultiStepLR,
+)
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
+from warg import NOD
+from warg.arguments import str2bool
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
-    SingleShotDectectionNms,
+    SingleShotDetectionNms,
     do_ssd_evaluation,
     object_detection_data_loaders,
 )
@@ -19,25 +31,15 @@ from neodroidvision.utilities import (
     CheckPointer,
     MetricLogger,
     global_distribution_rank,
-    reduce_loss_dict, set_benchmark_device_dist,
-    setup_distributed_logger, write_metrics_recursive,
-    )
-from torch.nn import Module
-from torch.optim import Optimizer
-from torch.utils.data import DataLoader
-from warg import NOD
-from warg.arguments import str2bool
-
-from draugr.torch_utilities import (
-    Split,
-    TorchCacheSession,
-    TorchEvalSession,
-    TorchTrainSession,
-    WarmupMultiStepLR,
+    reduce_loss_dict,
+    set_benchmark_device_dist,
+    setup_distributed_logger,
+    write_metrics_recursive,
 )
 
 
-def inner_train_ssd(*,
+def inner_train_ssd(
+    *,
     data_root: Path,
     cfg: NOD,
     model: Module,
@@ -51,29 +53,28 @@ def inner_train_ssd(*,
 ) -> Module:
     """
 
-:param data_root:
-:type data_root:
-:param cfg:
-:type cfg:
-:param model:
-:type model:
-:param data_loader:
-:type data_loader:
-:param optimiser:
-:type optimiser:
-:param scheduler:
-:type scheduler:
-:param check_pointer:
-:type check_pointer:
-:param device:
-:type device:
-:param arguments:
-:type arguments:
-:param kws:
-:type kws:
-:return:
-:rtype:
-"""
+    :param data_root:
+    :type data_root:
+    :param cfg:
+    :type cfg:
+    :param model:
+    :type model:
+    :param data_loader:
+    :type data_loader:
+    :param optimiser:
+    :type optimiser:
+    :param scheduler:
+    :type scheduler:
+    :param check_pointer:
+    :type check_pointer:
+    :param device:
+    :type device:
+    :param arguments:
+    :type arguments:
+    :param kws:
+    :type kws:
+    :return:
+    :rtype:"""
     logger = logging.getLogger("SSD.trainer")
     logger.info("Start training ...")
     meters = MetricLogger()
@@ -190,7 +191,7 @@ def inner_train_ssd(*,
 
 def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
     logger = logging.getLogger("SSD.trainer")
-    model = SingleShotDectectionNms(cfg)
+    model = SingleShotDetectionNms(cfg)
     device = torch.device(cfg.model.device)
 
     if kws.distributed:
@@ -243,7 +244,7 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
         check_pointer=checkpointer,
         device=device,
         arguments=arguments,
-        kws=kws
+        kws=kws,
     )
     return model
 
@@ -286,16 +287,13 @@ def main():
     logger = setup_distributed_logger(
         "SSD",
         global_distribution_rank(),
-        ensure_existence(PROJECT_APP_PATH.user_data / "results")
+        ensure_existence(PROJECT_APP_PATH.user_data / "results"),
     )
     logger.info(f"Using {num_gpus} GPUs")
     logger.info(args)
     with TorchCacheSession():
         model = train_ssd(
-            base_cfg.data_dir,
-            base_cfg,
-            base_cfg.solver,
-            NOD(**args.__dict__)
+            base_cfg.data_dir, base_cfg, base_cfg.solver, NOD(**args.__dict__)
         )
 
     if not args.skip_test:

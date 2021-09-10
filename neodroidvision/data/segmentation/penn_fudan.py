@@ -14,18 +14,17 @@ from typing import Tuple, Union
 import numpy
 import torch
 from PIL import Image
-from matplotlib import pyplot
-from torchvision.transforms import Compose, Resize, ToTensor
-
+from draugr.numpy_utilities import Split
 from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
-    Split,
     SupervisedDataset,
     float_chw_to_hwc_uint_tensor,
     global_torch_device,
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
+from matplotlib import pyplot
+from torchvision.transforms import Compose, Resize, ToTensor
 
 __all__ = ["PennFudanDataset"]
 
@@ -36,10 +35,8 @@ from neodroidvision.utilities import (
 )
 
 
-class ReturnVariant(Enum):
-    """
-
-"""
+class ReturnVariantEnum(Enum):
+    """ """
 
     binary = "binary"
     instanced = "instanced"
@@ -47,11 +44,7 @@ class ReturnVariant(Enum):
 
 
 class PennFudanDataset(SupervisedDataset):
-    """
-
-
-
-"""
+    """ """
 
     predictor_channels = 3  # RGB input
     response_channels = 2  # our dataset has two classes only - background and person
@@ -66,14 +59,13 @@ class PennFudanDataset(SupervisedDataset):
     def response_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
-        if self._return_variant == ReturnVariant.binary:
+        :return:
+        :rtype:"""
+        if self._return_variant == ReturnVariantEnum.binary:
             return (*self.image_size_T, self.response_channels_binary)
         elif (
-            self._return_variant == ReturnVariant.instanced
-            or self._return_variant == ReturnVariant.all
+            self._return_variant == ReturnVariantEnum.instanced
+            or self._return_variant == ReturnVariantEnum.all
         ):
             return (*self.image_size_T, self.response_channels)
         raise NotImplementedError
@@ -82,20 +74,18 @@ class PennFudanDataset(SupervisedDataset):
     def predictor_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return (*self.image_size_T, self.predictor_channels)
 
     @staticmethod
     def get_transforms(split: Split):
         """
 
-:param split:
-:type split:
-:return:
-:rtype:
-"""
+        :param split:
+        :type split:
+        :return:
+        :rtype:"""
         transforms = [Resize(PennFudanDataset.image_size_T), ToTensor()]
 
         # if split == Split.Training:
@@ -107,11 +97,10 @@ class PennFudanDataset(SupervisedDataset):
     def get_tuple_transforms(split: Split):
         """
 
-:param split:
-:type split:
-:return:
-:rtype:
-"""
+        :param split:
+        :type split:
+        :return:
+        :rtype:"""
         transforms = [
             # Resize(PennFudanDataset.image_size_T),
             TupleToTensor()
@@ -126,31 +115,30 @@ class PennFudanDataset(SupervisedDataset):
         self,
         root: Union[str, Path],
         split: Split = Split.Training,
-        return_variant: ReturnVariant = ReturnVariant.binary,
+        return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
     ):
         """
 
-:param root:
-:type root:
-:param split:
-:type split:
-"""
+        :param root:
+        :type root:
+        :param split:
+        :type split:"""
         super().__init__()
         if not isinstance(root, Path):
             root = Path(root)
         self._root_data_path = root
         self._return_variant = return_variant
 
-        if self._return_variant != ReturnVariant.all:
+        if self._return_variant != ReturnVariantEnum.all:
             self._transforms = self.get_transforms(split)
         else:
             self._transforms = self.get_tuple_transforms(split)
 
-        if self._return_variant == ReturnVariant.binary:
+        if self._return_variant == ReturnVariantEnum.binary:
             self._getter = self.get_binary
-        elif self._return_variant == ReturnVariant.instanced:
+        elif self._return_variant == ReturnVariantEnum.instanced:
             self._getter = self.get_instanced
-        elif self._return_variant == ReturnVariant.all:
+        elif self._return_variant == ReturnVariantEnum.all:
             self._getter = self.get_all
         else:
             raise NotImplementedError
@@ -167,21 +155,19 @@ class PennFudanDataset(SupervisedDataset):
     def __getitem__(self, idx: int):
         """
 
-:param idx:
-:type idx:
-:return:
-:rtype:
-"""
+        :param idx:
+        :type idx:
+        :return:
+        :rtype:"""
         return self._getter(idx)
 
     def get_binary(self, idx):
         """
 
-:param idx:
-:type idx:
-:return:
-:rtype:
-"""
+        :param idx:
+        :type idx:
+        :return:
+        :rtype:"""
         img = numpy.array(Image.open(self._img_path / self.imgs[idx]).convert("RGB"))
         mask = numpy.array(Image.open(self._ped_path / self.masks[idx]))
 
@@ -198,11 +184,10 @@ class PennFudanDataset(SupervisedDataset):
     def get_instanced(self, idx):
         """
 
-:param idx:
-:type idx:
-:return:
-:rtype:
-"""
+        :param idx:
+        :type idx:
+        :return:
+        :rtype:"""
         img = to_tensor(Image.open(self._img_path / self.imgs[idx]).convert("RGB"))
         mask = to_tensor(Image.open(self._ped_path / self.masks[idx]))
 
@@ -218,11 +203,10 @@ class PennFudanDataset(SupervisedDataset):
     def get_all(self, idx):
         """
 
-:param idx:
-:type idx:
-:return:
-:rtype:
-"""
+        :param idx:
+        :type idx:
+        :return:
+        :rtype:"""
         mask = torch.as_tensor(
             numpy.array(Image.open(self._ped_path / self.masks[idx]))
         )
@@ -278,7 +262,7 @@ if __name__ == "__main__":
         Path.home() / "Data" / "Datasets" / "PennFudanPed", Split.Training
     )
 
-    global_torch_device(override=global_torch_device(cuda_if_available=False))
+    global_torch_device(override=global_torch_device("cpu"))
 
     idx = -2
     img, mask = dataset[idx]

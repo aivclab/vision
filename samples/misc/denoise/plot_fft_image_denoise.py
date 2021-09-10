@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy
 from matplotlib import pyplot
+
 from neodroidvision.regression.denoise.spectral_denoise import fft_im_denoise
 
 if __name__ == "__main__":
@@ -9,9 +10,8 @@ if __name__ == "__main__":
     def plot_spectrum(im_fft):
         """
 
-:param im_fft:
-:type im_fft:
-"""
+        :param im_fft:
+        :type im_fft:"""
         from matplotlib.colors import LogNorm
 
         # A logarithmic colormap
@@ -21,9 +21,8 @@ if __name__ == "__main__":
     def blur_im(im):
         """
 
-:param im:
-:type im:
-"""
+        :param im:
+        :type im:"""
         ############################################################
         # Easier and better: :func:`scipy.ndimage.gaussian_filter`
         ############################################################
@@ -42,9 +41,8 @@ if __name__ == "__main__":
     def main(im_raw):
         """
 
-:param im_raw:
-:type im_raw:
-"""
+        :param im_raw:
+        :type im_raw:"""
         pyplot.figure()
         pyplot.imshow(im_raw, pyplot.cm.gray)
         pyplot.title("Original image")

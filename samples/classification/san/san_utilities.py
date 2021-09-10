@@ -1,8 +1,8 @@
 import numpy
 import torch
-from torch.nn import init
 from PIL import Image
 from torch import log_softmax, nn
+from torch.nn import init
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.conv import _ConvNd
 
@@ -26,17 +26,16 @@ def poly_learning_rate(optimizer, base_lr, curr_iter, max_iter, power=0.9):
 def intersection_and_union(output, target, K, ignore_index=255):
     """
 
-:param output:
-:type output:
-:param target:
-:type target:
-:param K:
-:type K:
-:param ignore_index:
-:type ignore_index:
-:return:
-:rtype:
-"""
+    :param output:
+    :type output:
+    :param target:
+    :type target:
+    :param K:
+    :type K:
+    :param ignore_index:
+    :type ignore_index:
+    :return:
+    :rtype:"""
     # 'K' classes, output and target sizes are N or N * L or N * H * W, each value in range 0 to K - 1.
     assert output.ndim in [1, 2, 3]
     assert output.shape == target.shape
@@ -54,17 +53,16 @@ def intersection_and_union(output, target, K, ignore_index=255):
 def intersection_and_union_gpu(output, target, K, ignore_index=255):
     """
 
-:param output:
-:type output:
-:param target:
-:type target:
-:param K:
-:type K:
-:param ignore_index:
-:type ignore_index:
-:return:
-:rtype:
-"""
+    :param output:
+    :type output:
+    :param target:
+    :type target:
+    :param K:
+    :type K:
+    :param ignore_index:
+    :type ignore_index:
+    :return:
+    :rtype:"""
     # 'K' classes, output and target sizes are N or N * L or N * H * W, each value in range 0 to K - 1.
     assert output.dim() in [1, 2, 3]
     assert output.shape == target.shape
@@ -86,12 +84,11 @@ def init_weights(
     model, conv="kaiming", batchnorm="normal", linear="kaiming", lstm="kaiming"
 ):
     """
-:param model: Pytorch Model which is nn.Module
-:param conv:  'kaiming' or 'xavier'
-:param batchnorm: 'normal' or 'constant'
-:param linear: 'kaiming' or 'xavier'
-:param lstm: 'kaiming' or 'xavier'
-"""
+    :param model: Pytorch Model which is nn.Module
+    :param conv:  'kaiming' or 'xavier'
+    :param batchnorm: 'normal' or 'constant'
+    :param linear: 'kaiming' or 'xavier'
+    :param lstm: 'kaiming' or 'xavier'"""
     for m in model.modules():
         if isinstance(m, (_ConvNd)):
             if conv == "kaiming":
@@ -138,13 +135,12 @@ def init_weights(
 def colorize(gray, palette):
     """
 
-:param gray:
-:type gray:
-:param palette:
-:type palette:
-:return:
-:rtype:
-"""
+    :param gray:
+    :type gray:
+    :param palette:
+    :type palette:
+    :return:
+    :rtype:"""
     # gray: numpy array of the label and 1*3N size list palette
     color = Image.fromarray(gray.astype(numpy.uint8)).convert("P")
     color.putpalette(palette)
@@ -154,17 +150,16 @@ def colorize(gray, palette):
 def group_weight(weight_group, module, norm_layer, lr):
     """
 
-:param weight_group:
-:type weight_group:
-:param module:
-:type module:
-:param norm_layer:
-:type norm_layer:
-:param lr:
-:type lr:
-:return:
-:rtype:
-"""
+    :param weight_group:
+    :type weight_group:
+    :param module:
+    :type module:
+    :param norm_layer:
+    :type norm_layer:
+    :param lr:
+    :type lr:
+    :return:
+    :rtype:"""
     group_decay = []
     group_no_decay = []
     for m in module.modules():
@@ -191,17 +186,16 @@ def group_weight(weight_group, module, norm_layer, lr):
 def group_weight2(weight_group, module, norm_layer, lr):
     """
 
-:param weight_group:
-:type weight_group:
-:param module:
-:type module:
-:param norm_layer:
-:type norm_layer:
-:param lr:
-:type lr:
-:return:
-:rtype:
-"""
+    :param weight_group:
+    :type weight_group:
+    :param module:
+    :type module:
+    :param norm_layer:
+    :type norm_layer:
+    :param lr:
+    :type lr:
+    :return:
+    :rtype:"""
     group_decay = []
     group_no_decay = []
     for m in module.modules():
@@ -240,19 +234,18 @@ def mixup_data(x, y, alpha=0.2):
 def mixup_loss(output, target_a, target_b, lam=1.0, eps=0.0):
     """
 
-:param output:
-:type output:
-:param target_a:
-:type target_a:
-:param target_b:
-:type target_b:
-:param lam:
-:type lam:
-:param eps:
-:type eps:
-:return:
-:rtype:
-"""
+    :param output:
+    :type output:
+    :param target_a:
+    :type target_a:
+    :param target_b:
+    :type target_b:
+    :param lam:
+    :type lam:
+    :param eps:
+    :type eps:
+    :return:
+    :rtype:"""
     w = torch.zeros_like(output).scatter(1, target_a.unsqueeze(1), 1)
     w = w * (1 - eps) + (1 - w) * eps / (output.shape[1] - 1)
     log_prob = log_softmax(output, dim=1)
@@ -268,15 +261,14 @@ def mixup_loss(output, target_a, target_b, lam=1.0, eps=0.0):
 def smooth_loss(output, target, eps=0.1):
     """
 
-:param output:
-:type output:
-:param target:
-:type target:
-:param eps:
-:type eps:
-:return:
-:rtype:
-"""
+    :param output:
+    :type output:
+    :param target:
+    :type target:
+    :param eps:
+    :type eps:
+    :return:
+    :rtype:"""
     w = torch.zeros_like(output).scatter(1, target.unsqueeze(1), 1)
     w = w * (1 - eps) + (1 - w) * eps / (output.shape[1] - 1)
     log_prob = log_softmax(output, dim=1)

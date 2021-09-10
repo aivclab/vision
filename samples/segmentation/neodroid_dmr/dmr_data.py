@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from typing import Any
 
 import numpy
 import torch
 import torch.utils.data
-from neodroidvision.segmentation import dice_loss, jaccard_loss
-from warg import NOD
-
 from draugr.torch_utilities import channel_transform
 from draugr.torch_utilities.tensors.to_tensor import to_tensor
+from neodroid.environments.droid_environment import DictUnityEnvironment
+from torch.nn.functional import binary_cross_entropy_with_logits
+from warg import NOD
+
+from neodroidvision.segmentation import dice_loss, jaccard_loss
 
 __author__ = "Christian Heider Nielsen"
 
 
-def neodroid_camera_data_iterator(env, device, batch_size=12):
+def neodroid_camera_data_iterator(
+    env: DictUnityEnvironment, device: torch.device, batch_size: int = 12
+) -> Any:
     """
 
-  :param env:
-  :type env:
-  :param device:
-  :type device:
-  :param batch_size:
-  :type batch_size:
-  """
+    :param env:
+    :type env:
+    :param device:
+    :type device:
+    :param batch_size:
+    :type batch_size:"""
     while True:
         rgb = []
         mask_responses = []
@@ -52,12 +56,14 @@ def neodroid_camera_data_iterator(env, device, batch_size=12):
 
             depth_image[:, :] = depth_arr[..., 0]
 
-            rgb.append(channel_transform(rgb_arr)[:3, :, :])
+            rgb.append(channel_transform.hwc_to_chw_tensor(rgb_arr)[:3, :, :])
             mask_responses.append(numpy.asarray([red_mask, blue_mask, green_mask]))
             depth_responses.append(
                 numpy.clip(numpy.asarray([depth_image / 255.0]), 0, 1)
             )
-            normals_responses.append(channel_transform(normal_arr)[:3, :, :])
+            normals_responses.append(
+                channel_transform.hwc_to_chw_tensor(normal_arr)[:3, :, :]
+            )
         yield (
             to_tensor(rgb, device=device),
             (
@@ -68,20 +74,19 @@ def neodroid_camera_data_iterator(env, device, batch_size=12):
         )
 
 
-def calculate_loss(seg, recon, depth, normals):
+def calculate_multi_auto_encoder_loss(seg, recon, depth, normals):
     """
 
-  :param seg:
-  :type seg:
-  :param recon:
-  :type recon:
-  :param depth:
-  :type depth:
-  :param normals:
-  :type normals:
-  :return:
-  :rtype:
-  """
+    :param seg:
+    :type seg:
+    :param recon:
+    :type recon:
+    :param depth:
+    :type depth:
+    :param normals:
+    :type normals:
+    :return:
+    :rtype:"""
     (
         (seg_pred, seg_target),
         (recon_pred, recon_target),
@@ -89,18 +94,10 @@ def calculate_loss(seg, recon, depth, normals):
         (normals_pred, normals_target),
     ) = (seg, recon, depth, normals)
 
-    seg_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(
-        seg_pred, seg_target
-    )
-    ae_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(
-        recon_pred, recon_target
-    )
-    normals_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(
-        normals_pred, normals_target
-    )
-    depth_bce_loss = torch.nn.functional.binary_cross_entropy_with_logits(
-        depth_pred, depth_target
-    )
+    seg_bce_loss = binary_cross_entropy_with_logits(seg_pred, seg_target)
+    ae_bce_loss = binary_cross_entropy_with_logits(recon_pred, recon_target)
+    normals_bce_loss = binary_cross_entropy_with_logits(normals_pred, normals_target)
+    depth_bce_loss = binary_cross_entropy_with_logits(depth_pred, depth_target)
 
     pred_soft = torch.sigmoid(seg_pred)
     dice = dice_loss(pred_soft, seg_target, epsilon=1)

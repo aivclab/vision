@@ -1,36 +1,36 @@
-import os
 import pickle
 import shutil
 import time
+from pathlib import Path
 
 import torch
 from apppath import ensure_existence
-from neodroidvision.data.classification import MNISTDataset
+from draugr import AverageMeter
+from draugr.writers import MockWriter, Writer
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
-from tensorboard_logger import configure, log_value
+
+# from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
-from draugr import AverageMeter
+from neodroidvision.data.classification import MNISTDataset
 
 
 class Trainer:
     """A Recurrent Attention Model trainer.
 
-All hyperparameters are provided by the user in the
-config file.
-"""
+    All hyperparameters are provided by the user in the
+    config file."""
 
     def __init__(self, config, data_loader):
         """
-Construct a new Trainer instance.
+        Construct a new Trainer instance.
 
-Args:
-    config: object containing command line arguments.
-    data_loader: A data iterator.
-"""
+        Args:
+            config: object containing command line arguments.
+            data_loader: A data iterator."""
         self.config = config
 
         if config.use_gpu and torch.cuda.is_available():
@@ -72,11 +72,14 @@ Args:
         self.lr = config.init_lr
 
         # misc params
-        self.model_name = f"ram_{config.num_glimpses}_{config.patch_size}x{config.patch_size}_{config.glimpse_scale}"
+        self.model_name = (
+            f"ram_{config.num_glimpses}_{config.patch_size}x{config.patch_size}_"
+            f"{config.glimpse_scale}"
+        )
         self.best = config.best
-        self.ckpt_dir = config.ckpt_dir
-        self.logs_dir = config.logs_dir
-        self.plot_dir = config.plot_dir / self.model_name
+        self.ckpt_dir = Path(config.ckpt_dir)
+        self.logs_dir = Path(config.logs_dir)
+        self.plot_dir = Path(config.plot_dir) / self.model_name
         self.best_valid_acc = 0.0
         self.counter = 0
         self.lr_patience = config.lr_patience
@@ -91,12 +94,14 @@ Args:
         ensure_existence(self.plot_dir)
 
         # configure tensorboard logging
-        if self.use_tensorboard:
-            tensorboard_dir = self.logs_dir / self.model_name
-            print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
-            if not os.path.exists(tensorboard_dir):
-                os.makedirs(tensorboard_dir)
-            configure(tensorboard_dir)
+        """
+if self.use_tensorboard:
+    tensorboard_dir = self.logs_dir / self.model_name
+    print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
+    if not os.path.exists(tensorboard_dir):
+        os.makedirs(tensorboard_dir)
+    configure(tensorboard_dir)
+"""
 
         self.model = RecurrentAttention(
             self.patch_size,
@@ -133,10 +138,9 @@ Args:
     def train(self):
         """Train the model on the training set.
 
-A checkpoint of the model is saved after each epoch
-and if the validation accuracy is improved upon,
-a separate ckpt is created for use on the test set.
-"""
+        A checkpoint of the model is saved after each epoch
+        and if the validation accuracy is improved upon,
+        a separate ckpt is created for use on the test set."""
         # load the most recent checkpoint
         if self.resume:
             self.load_checkpoint(best=False)
@@ -189,15 +193,14 @@ a separate ckpt is created for use on the test set.
                 is_best,
             )
 
-    def train_one_epoch(self, epoch):
+    def train_one_epoch(self, epoch, *, writer: Writer = MockWriter()):
         """
-Train the model for 1 epoch of the training set.
+        Train the model for 1 epoch of the training set.
 
-An epoch corresponds to one full pass through the entire
-training set in successive mini-batches.
+        An epoch corresponds to one full pass through the entire
+        training set in successive mini-batches.
 
-This is used by train() and should not be called manually.
-"""
+        This is used by train() and should not be called manually."""
         self.model.train()
         batch_time = AverageMeter()
         losses = AverageMeter()
@@ -300,15 +303,14 @@ This is used by train() and should not be called manually.
                 # log to tensorboard
                 if self.use_tensorboard:
                     iteration = epoch * len(self.train_loader) + i
-                    log_value("train_loss", losses.avg, iteration)
-                    log_value("train_acc", accs.avg, iteration)
+                    writer.scalar("train_loss", losses.avg, iteration)
+                    writer.scalar("train_acc", accs.avg, iteration)
 
             return losses.avg, accs.avg
 
     @torch.no_grad()
-    def validate(self, epoch):
-        """Evaluate the RAM model on the validation set.
-"""
+    def validate(self, epoch, *, writer: Writer = MockWriter()):
+        """Evaluate the RAM model on the validation set."""
         losses = AverageMeter()
         accs = AverageMeter()
 
@@ -380,8 +382,8 @@ This is used by train() and should not be called manually.
             # log to tensorboard
             if self.use_tensorboard:
                 iteration = epoch * len(self.valid_loader) + i
-                log_value("valid_loss", losses.avg, iteration)
-                log_value("valid_acc", accs.avg, iteration)
+                writer.scalar("valid_loss", losses.avg, iteration)
+                writer.scalar("valid_acc", accs.avg, iteration)
 
         return losses.avg, accs.avg
 
@@ -389,9 +391,8 @@ This is used by train() and should not be called manually.
     def test(self):
         """Test the RAM model.
 
-This function should only be called at the very
-end once the model has finished training.
-"""
+        This function should only be called at the very
+        end once the model has finished training."""
         correct = 0
 
         # load the best checkpoint
@@ -428,38 +429,35 @@ end once the model has finished training.
     def save_checkpoint(self, state, is_best):
         """Saves a checkpoint of the model.
 
-If this model has reached the best validation accuracy thus
-far, a seperate file with the suffix `best` is created.
-"""
-        ckpt_path = os.path.join(self.ckpt_dir, f"{self.model_name}_ckpt.pth.tar")
+        If this model has reached the best validation accuracy thus
+        far, a seperate file with the suffix `best` is created."""
+        ckpt_path = str(self.ckpt_dir / f"{self.model_name}_ckpt.pth.tar")
         torch.save(state, ckpt_path)
         if is_best:
             shutil.copyfile(
                 ckpt_path,
-                os.path.join(self.ckpt_dir, f"{self.model_name}_model_best.pth.tar"),
+                str(self.ckpt_dir / f"{self.model_name}_model_best.pth.tar"),
             )
 
     def load_checkpoint(self, best=False):
         """Load the best copy of a model.
 
-This is useful for 2 cases:
-- Resuming training with the most recent model checkpoint.
-- Loading the best validation model to evaluate on the test data.
+        This is useful for 2 cases:
+        - Resuming training with the most recent model checkpoint.
+        - Loading the best validation model to evaluate on the test data.
 
-Args:
-    best: if set to True, loads the best model.
-        Use this if you want to evaluate your model
-        on the test data. Else, set to False in which
-        case the most recent version of the checkpoint
-        is used.
-"""
+        Args:
+            best: if set to True, loads the best model.
+                Use this if you want to evaluate your model
+                on the test data. Else, set to False in which
+                case the most recent version of the checkpoint
+                is used."""
         print(f"[*] Loading model from {self.ckpt_dir}")
 
         filename = f"{self.model_name}_ckpt.pth.tar"
         if best:
             filename = f"{self.model_name}_model_best.pth.tar"
-        ckpt_path = os.path.join(self.ckpt_dir, filename)
-        ckpt = torch.load(ckpt_path)
+        ckpt = torch.load(str(self.ckpt_dir / filename))
 
         # load variables from checkpoint
         self.start_epoch = ckpt["epoch"]
@@ -469,7 +467,8 @@ Args:
 
         if best:
             print(
-                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with best valid acc of {ckpt['best_valid_acc']:.3f}"
+                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with "
+                f"best valid acc of {ckpt['best_valid_acc']:.3f}"
             )
         else:
             print(f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']}")

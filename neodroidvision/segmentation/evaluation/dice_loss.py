@@ -2,8 +2,9 @@ from typing import Any
 
 import numpy
 import torch
-from neodroidvision.segmentation.evaluation.f_score import f_score
 from torch import nn
+
+from neodroidvision.segmentation.evaluation.f_score import f_score
 
 __all__ = ["dice_loss", "dice_coefficient", "DiceLoss", "BCEDiceLoss"]
 
@@ -12,11 +13,10 @@ def dice_coefficient(
     pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
     """
-This definition generalize to real valued pred and target vector.
-This should be differentiable.
-pred: tensor with first dimension as batch
-target: tensor with first dimension as batch
-"""
+    This definition generalize to real valued pred and target vector.
+    This should be differentiable.
+    pred: tensor with first dimension as batch
+    target: tensor with first dimension as batch"""
 
     pred_flat = pred.reshape(-1)
     target_flat = target.reshape(-1)

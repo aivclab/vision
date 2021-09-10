@@ -1,9 +1,10 @@
 from typing import List
 
+from torch import Tensor, nn
+
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
-from torch import Tensor, nn
 
 
 class MobileNetV2(SSDBackbone):
@@ -130,11 +131,10 @@ class MobileNetV2(SSDBackbone):
 
     def reset_parameters(self):
         """
-weight initialization
+        weight initialization
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):

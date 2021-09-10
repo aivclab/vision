@@ -17,9 +17,7 @@ from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 
 
 class MLP(nn.Module):
-    """
-
-  """
+    """ """
 
     def __init__(self, input_size, output_size, hidden_size):
         super().__init__()
@@ -35,18 +33,16 @@ class MLP(nn.Module):
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """
 
-    :param input:
-    :type input:
-    :return:
-    :rtype:
-    """
+        :param input:
+        :type input:
+        :return:
+        :rtype:"""
         return self.net(input)
 
 
 class Generator(nn.Module):
     """
-Bernoulli model parameterized by a generative network with Gaussian latents for MNIST.
-"""
+    Bernoulli model parameterized by a generative network with Gaussian latents for MNIST."""
 
     def __init__(self, latent_size, data_size):
         super().__init__()
@@ -60,8 +56,7 @@ Bernoulli model parameterized by a generative network with Gaussian latents for 
 
     def forward(self, z, x) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-Return log probability of model.
-"""
+        Return log probability of model."""
         log_p_z = self.log_p_z(self.p_z_loc, self.p_z_scale, z).sum(-1, keepdim=True)
         logits = self.generative_network(z)
         # unsqueeze sample dimension
@@ -72,8 +67,7 @@ Return log probability of model.
 
 class VariationalMeanField(nn.Module):
     """
-Approximate posterior parameterized by an inference network.
-"""
+    Approximate posterior parameterized by an inference network."""
 
     def __init__(self, latent_size, data_size):
         super().__init__()
@@ -87,8 +81,7 @@ Approximate posterior parameterized by an inference network.
 
     def forward(self, x, n_samples=1):
         """
-Return sample of latent variable and log prob.
-"""
+        Return sample of latent variable and log prob."""
         loc, scale_arg = torch.chunk(
             self.inference_network(x).unsqueeze(1), chunks=2, dim=-1
         )
@@ -101,8 +94,7 @@ Return sample of latent variable and log prob.
 
 class VariationalFlow(nn.Module):
     """
-Approximate posterior parameterized by a flow (https://arxiv.org/abs/1606.04934).
-"""
+    Approximate posterior parameterized by a flow (https://arxiv.org/abs/1606.04934)."""
 
     def __init__(self, latent_size, data_size, flow_depth):
         super().__init__()
@@ -131,8 +123,7 @@ Approximate posterior parameterized by a flow (https://arxiv.org/abs/1606.04934)
 
     def forward(self, x, n_samples=1):
         """
-Return sample of latent variable and log prob.
-"""
+        Return sample of latent variable and log prob."""
         loc, scale_arg, h = torch.chunk(
             self.inference_network(x).unsqueeze(1), chunks=3, dim=-1
         )
@@ -149,23 +140,20 @@ class NormalLogProb(nn.Module):
     def forward(self, loc, scale, z):
         """
 
-    :param loc:
-    :type loc:
-    :param scale:
-    :type scale:
-    :param z:
-    :type z:
-    :return:
-    :rtype:
-    """
+        :param loc:
+        :type loc:
+        :param scale:
+        :type scale:
+        :param z:
+        :type z:
+        :return:
+        :rtype:"""
         var = scale ** 2
         return -0.5 * torch.log(2 * numpy.pi * var) - torch.pow(z - loc, 2) / (2 * var)
 
 
 class BernoulliLogProb(nn.Module):
-    """
-
-  """
+    """ """
 
     def __init__(self):
         super().__init__()

@@ -7,8 +7,19 @@ import cv2
 import numpy
 import pandas
 import torch
+from draugr.numpy_utilities import Split, chw_to_hwc, float_chw_to_hwc_uint
+from draugr.random_utilities import seed_stack
+from draugr.torch_utilities import (
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+)
 from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
 from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import CloudSegmentationDataset
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import (
     BCEDiceLoss,
@@ -16,17 +27,6 @@ from neodroidvision.segmentation import (
     mask_to_run_length,
 )
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr import chw_to_hwc, float_chw_to_hwc_uint
-from draugr.torch_utilities import (
-    Split,
-    TorchEvalSession,
-    TorchTrainSession,
-    global_torch_device,
-    torch_seed,
-)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -34,16 +34,11 @@ __doc__ = r"""
            Created on 09/10/2019
            """
 
-from neodroidvision.data.datasets.supervised.segmentation import (
-    CloudSegmentationDataset,
-)
-
 
 def post_process_minsize(mask, min_size):
     """
-Post processing of each predicted mask, components with lesser number of pixels
-than `min_size` are ignored
-"""
+    Post processing of each predicted mask, components with lesser number of pixels
+    than `min_size` are ignored"""
     num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
     predictions, num = numpy.zeros(mask.shape), 0
     for c in range(1, num_component):
@@ -56,10 +51,9 @@ than `min_size` are ignored
 
 def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
     """
-This is slightly different from other kernels as we draw convex hull here itself.
-Post processing of each predicted mask, components with lesser number of pixels
-than `min_size` are ignored
-"""
+    This is slightly different from other kernels as we draw convex hull here itself.
+    Post processing of each predicted mask, components with lesser number of pixels
+    than `min_size` are ignored"""
     mask = cv2.threshold(probability, threshold, 1, cv2.THRESH_BINARY)[1]
     mask = draw_convex_hull(mask.astype(numpy.uint8))
     num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
@@ -162,7 +156,7 @@ def train_model(
 
 
 def threshold_grid_search(model, valid_loader, max_samples=2000):
-    """ Grid Search for best Threshold """
+    """Grid Search for best Threshold"""
 
     valid_masks = []
     count = 0
@@ -272,8 +266,8 @@ def main():
 
     SEED = 87539842
     batch_size = 8
-    num_workers = 2
-    torch_seed(SEED)
+    num_workers = 0
+    seed_stack(SEED)
 
     train_loader = DataLoader(
         CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Training),

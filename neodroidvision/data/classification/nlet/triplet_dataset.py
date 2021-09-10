@@ -16,28 +16,31 @@ import torch
 
 __all__ = ["TripletDataset"]
 
+from draugr.torch_utilities import global_pin_memory
+
 from neodroidvision.data.classification.nlet import PairDataset
 
 
 class TripletDataset(
     PairDataset
-):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a general torch lib.
+):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a
+    # general torch lib.
     """
-# This dataset generates a triple of images. an image of a category, another of the same category and lastly one from another category
-"""
+    # This dataset generates a triple of images. an image of a category, another of the same category and
+    lastly one from another category"""
 
     def __getitem__(self, idx1: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-    returns torch.tensors for img triplet, first tensor being idx random category, second being the same category with different index
-    and third being of a random other category(Never the same)
+        returns torch.tensors for img triplet, first tensor being idx random category, second being the same
+        category with different index
+        and third being of a random other category(Never the same)
 
 
 
-:param idx1:
-:type idx1:
-:return:
-:rtype:
-"""
+        :param idx1:
+        :type idx1:
+        :return:
+        :rtype:"""
         t1 = random.choice(self._dataset.category_names)
 
         while True:
@@ -59,12 +62,14 @@ class TripletDataset(
         )
 
     def sample(self, horizontal_merge: bool = False) -> None:
-        """
-
-  """
+        """ """
         dl = iter(
             torch.utils.data.DataLoader(
-                self, batch_size=9, shuffle=True, num_workers=1, pin_memory=False
+                self,
+                batch_size=9,
+                shuffle=True,
+                num_workers=0,
+                pin_memory=global_pin_memory(0),
             )
         )
         for _ in range(3):

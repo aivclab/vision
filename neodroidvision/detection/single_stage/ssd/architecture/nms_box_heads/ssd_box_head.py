@@ -2,6 +2,10 @@ from collections import namedtuple
 from typing import Any, Tuple
 
 import torch
+from draugr.torch_utilities import to_tensor
+from torch import nn
+from torch.nn import Parameter, functional
+
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
@@ -9,10 +13,6 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes import conversion
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
 )
-from torch import nn
-from torch.nn import Parameter, functional
-
-from draugr.torch_utilities import to_tensor
 
 __all__ = ["SSDNmsBoxHead", "SSDOut"]
 
@@ -25,9 +25,7 @@ SSDOut = namedtuple("SSDOut", ("boxes", "labels", "scores", "img_width", "img_he
 
 
 class SSDNmsBoxHead(nn.Module):
-    """
-
-"""
+    """ """
 
     @drop_unused_kws
     def __init__(
@@ -44,23 +42,22 @@ class SSDNmsBoxHead(nn.Module):
     ):
         """
 
-:param image_size:
-:type image_size:
-:param confidence_threshold:
-:type confidence_threshold:
-:param nms_threshold:
-:type nms_threshold:
-:param max_per_image:
-:type max_per_image:
-:param priors:
-:type priors:
-:param center_variance:
-:type center_variance:
-:param size_variance:
-:type size_variance:
-:param predictor:
-:type predictor:
-"""
+        :param image_size:
+        :type image_size:
+        :param confidence_threshold:
+        :type confidence_threshold:
+        :param nms_threshold:
+        :type nms_threshold:
+        :param max_per_image:
+        :type max_per_image:
+        :param priors:
+        :type priors:
+        :param center_variance:
+        :type center_variance:
+        :param size_variance:
+        :type size_variance:
+        :param predictor:
+        :type predictor:"""
         super().__init__()
 
         self.predictor = predictor
@@ -77,8 +74,7 @@ class SSDNmsBoxHead(nn.Module):
 
     def post_init(self, **priors_cfg) -> None:
         """
-Builds priors
-"""
+        Builds priors"""
         self._priors = Parameter(
             build_priors(image_size=self.image_size, **priors_cfg), requires_grad=False
         )
@@ -88,8 +84,7 @@ Builds priors
         scores: torch.Tensor, *args, threshold: float
     ) -> Tuple[torch.Tensor, ...]:
         """
-Only keep detections above the confidence threshold
-"""
+        Only keep detections above the confidence threshold"""
         indices = torch.nonzero(scores > threshold, as_tuple=False).squeeze(
             1
         )  # remove low scoring boxes
@@ -100,19 +95,17 @@ Only keep detections above the confidence threshold
         scores: torch.Tensor, *args, k: int
     ) -> Tuple[torch.Tensor, ...]:
         """
-Only keep detections above the confidence threshold
-"""
+        Only keep detections above the confidence threshold"""
         indices = torch.argsort(scores, descending=True)
         return (scores[indices][:k], *[a[indices][:k] for a in args])
 
     def forward(self, features: torch.Tensor) -> SSDOut:
         """
 
-:param features:
-:type features:
-:return:
-:rtype:
-"""
+        :param features:
+        :type features:
+        :return:
+        :rtype:"""
         categori_logits, bbox_pred = self.predictor(features)
 
         results = []
@@ -146,9 +139,9 @@ Only keep detections above the confidence threshold
 
             """ WILL NOT WORK FOR TRACED MODELS!
 scores, boxes, labels = self.keep_above(scores,
-                                  boxes,
-                                  labels,
-                                  threshold=self.confidence_threshold)
+                boxes,
+                labels,
+                threshold=self.confidence_threshold)
 """
             scores, boxes, labels = self.sort_keep_top_k(
                 scores, boxes, labels, k=self.max_candidates

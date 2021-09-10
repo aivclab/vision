@@ -14,15 +14,14 @@ from matplotlib import pyplot
 
 def plot_kernels(tensor, number_cols=5, m_interpolation="bilinear"):
     """
-Function to visualize the kernels.
+    Function to visualize the kernels.
 
-Arguments:
-    tensor:
-    number_cols: number of columns to be displayed
-    m_interpolation: interpolation methods matplotlib. See in:
+    Arguments:
+      tensor:
+      number_cols: number of columns to be displayed
+      m_interpolation: interpolation methods matplotlib. See in:
 
-    https://matplotlib.org/gallery/images_contours_and_fields/interpolation_methods.html
-"""
+      https://matplotlib.org/gallery/images_contours_and_fields/interpolation_methods.html"""
 
     number_kernels = tensor.shape[0]
     number_rows = 1 + number_kernels // number_cols

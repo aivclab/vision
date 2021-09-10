@@ -17,8 +17,7 @@ from torch.nn import Module
 
 class OutputActivationModule(Module):
     """
-For adding output activation to traced torchscript architectures
-"""
+    For adding output activation to traced torchscript architectures"""
 
     def __init__(self, model: Module, output_activation: callable = torch.sigmoid):
         super().__init__()

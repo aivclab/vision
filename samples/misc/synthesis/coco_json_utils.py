@@ -12,8 +12,7 @@ from warg import NOD
 
 
 def create_coco_image(image_path, image_id, image_license):
-    """ Creates the "image" portion of COCO json
-"""
+    """Creates the "image" portion of COCO json"""
     # Open the image and get the size
     image_file = Image.open(image_path)
     width, height = image_file.size
@@ -28,32 +27,30 @@ def create_coco_image(image_path, image_id, image_license):
 
 
 class AnnotationJsonUtils:
-    """ Creates an annotation object to describe a COCO dataset
-"""
+    """Creates an annotation object to describe a COCO dataset"""
 
     def __init__(self):
         self.annotation_id_index = 0
 
     def create_coco_annotations(self, image_mask_path, image_id, category_ids):
-        """ Takes a pixel-based RGB image mask and creates COCO annotations.
-Args:
-    image_mask_path: a pathlib.Path to the image mask
-    image_id: the integer image id
-    category_ids: a dictionary of integer category ids keyed by RGB color (a tuple converted to a string)
-        e.g. {'(255, 0, 0)': {'category': 'owl', 'super_category': 'bird'} }
-Returns:
-    annotations: a list of COCO annotation dictionaries that can
-    be converted to json. e.g.:
-    {
-        "segmentation": [[101.79,307.32,69.75,281.11,...,100.05,309.66]],
-        "area": 51241.3617,
-        "iscrowd": 0,
-        "image_id": 284725,
-        "bbox": [68.01,134.89,433.41,174.77],
-        "category_id": 6,
-        "id": 165690
-    }
-"""
+        """Takes a pixel-based RGB image mask and creates COCO annotations.
+        Args:
+        image_mask_path: a Path to the image mask
+        image_id: the integer image id
+        category_ids: a dictionary of integer category ids keyed by RGB color (a tuple converted to a string)
+            e.g. {'(255, 0, 0)': {'category': 'owl', 'super_category': 'bird'} }
+        Returns:
+        annotations: a list of COCO annotation dictionaries that can
+        be converted to json. e.g.:
+        {
+            "segmentation": [[101.79,307.32,69.75,281.11,...,100.05,309.66]],
+            "area": 51241.3617,
+            "iscrowd": 0,
+            "image_id": 284725,
+            "bbox": [68.01,134.89,433.41,174.77],
+            "category_id": 6,
+            "id": 165690
+        }"""
         # Set class variables
         self._image_id = image_id
         self._category_ids = category_ids
@@ -145,7 +142,9 @@ Returns:
                         poly.geom_type == "Polygon"
                     ):  # Ignore if still not a Polygon (could be a line or point)
                         polygons.append(poly)
-                        segmentation = numpy.array(poly.exterior.coords).ravel().tolist()
+                        segmentation = (
+                            numpy.array(poly.exterior.coords).ravel().tolist()
+                        )
                         annotation["segmentation"].append(segmentation)
 
             if len(polygons) == 0:
@@ -176,11 +175,10 @@ Returns:
 
 class CocoJsonCreator:
     def validate_and_process_args(self, args):
-        """ Validates the arguments coming in from the command line and performs
-    initial processing
-Args:
-    args: ArgumentParser arguments
-"""
+        """Validates the arguments coming in from the command line and performs
+        initial processing
+        Args:
+        args: ArgumentParser arguments"""
         # Validate the mask definition file exists
         mask_definition_file = Path(args.mask_definition)
         if not (mask_definition_file.exists and mask_definition_file.is_file()):
@@ -211,8 +209,7 @@ Args:
         ), 'dataset_info JSON was missing "license"'
 
     def create_info(self):
-        """ Creates the "info" piece of the COCO json
-"""
+        """Creates the "info" piece of the COCO json"""
         info_json = self._dataset_info["info"]
 
         return NOD(
@@ -225,8 +222,7 @@ Args:
         )
 
     def create_licenses(self):
-        """ Creates the "license" portion of the COCO json
-"""
+        """Creates the "license" portion of the COCO json"""
         license_json = self._dataset_info["license"]
 
         return [
@@ -238,12 +234,11 @@ Args:
         ]
 
     def create_categories(self):
-        """ Creates the "categories" portion of the COCO json
-Returns:
-    categories: category objects that become part of the final json
-    category_ids_by_name: a lookup dictionary for category ids based
-        on the name of the category
-"""
+        """Creates the "categories" portion of the COCO json
+        Returns:
+        categories: category objects that become part of the final json
+        category_ids_by_name: a lookup dictionary for category ids based
+            on the name of the category"""
 
         categories = []
         category_ids_by_name = dict()
@@ -263,9 +258,8 @@ Returns:
         return categories, category_ids_by_name
 
     def create_images_and_annotations(self, category_ids_by_name):
-        """ Creates the list of images (in json) and the annotations for each
-    image for the "image" and "annotations" portions of the COCO json
-"""
+        """Creates the list of images (in json) and the annotations for each
+        image for the "image" and "annotations" portions of the COCO json"""
 
         aji = AnnotationJsonUtils()
 
@@ -307,9 +301,8 @@ Returns:
     def __call__(self, args):
         """
 
-:param args:
-:type args:
-"""
+        :param args:
+        :type args:"""
         self.validate_and_process_args(args)
 
         info = self.create_info()

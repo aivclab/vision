@@ -8,22 +8,23 @@ import numpy
 import pandas
 import seaborn
 import torch
-from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.datasets import CloudSegmentationDataset, Split
-from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
-from neodroidvision.segmentation import BCEDiceLoss
-from neodroidvision.segmentation.evaluation.iou import intersection_over_union
-from neodroidvision.segmentation.masks import mask_to_run_length
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
+from draugr.numpy_utilities import Split
+from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
-    torch_seed,
 )
+from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import CloudSegmentationDataset
+from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.segmentation import BCEDiceLoss
+from neodroidvision.segmentation.evaluation.iou import intersection_over_union
+from neodroidvision.segmentation.masks import mask_to_run_length
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -33,7 +34,7 @@ __doc__ = r"""
 
 
 def reschedule(model, epoch, scheduler):
-    "This can be improved its just a hacky way to write SGDWR "
+    "This can be improved its just a hacky way to write SGDWR"
     if epoch == 7:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
         current_lr = next(iter(optimizer.param_groups))["lr"]
@@ -151,8 +152,8 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
     ## Grid Search for best Threshold
     class_params = {}
 
-    for class_id in CloudDataset._categories.keys():
-        print(CloudDataset._categories[class_id])
+    for class_id in CloudSegmentationDataset._categories.keys():
+        print(CloudSegmentationDataset._categories[class_id])
         attempts = []
         for t in range(0, 100, 5):
             t /= 100
@@ -226,7 +227,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
         ),
         batch_size=batch_size,
         shuffle=False,
-        num_workers=2,
+        num_workers=0,
     )
 
     submit_ = pandas.read_csv(str(base_path / "sample_submission.csv"))
@@ -292,8 +293,8 @@ def main():
 
     SEED = 87539842
     batch_size = 8
-    num_workers = 2
-    torch_seed(SEED)
+    num_workers = 0
+    seed_stack(SEED)
 
     min_size = (10000, 10000, 10000, 10000)
 

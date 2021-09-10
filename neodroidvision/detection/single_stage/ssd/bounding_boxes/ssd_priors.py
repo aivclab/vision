@@ -32,12 +32,11 @@ def build_priors(
     clip: bool = True
 ) -> torch.Tensor:
     """Generate SSD Prior Boxes.
-It returns the center, height and width of the priors. The values are relative to the image size
-Returns:
-priors (num_priors, 4): The prior boxes represented as [[center_x, center_y, w, h]]. All the
-values
-are relative to the image size.
-"""
+    It returns the center, height and width of the priors. The values are relative to the image size
+    Returns:
+    priors (num_priors, 4): The prior boxes represented as [[center_x, center_y, w, h]]. All the
+    values
+    are relative to the image size."""
 
     priors = []
     for k, f in enumerate(feature_maps):
@@ -82,22 +81,21 @@ def ssd_assign_priors(
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     """Assign ground truth boxes and targets to priors.
 
-Args:
-gt_boxes (num_targets, 4): ground truth boxes.
-gt_labels (num_targets): labels of targets.
-priors (num_priors, 4): corner form priors
-Returns:
-boxes (num_priors, 4): real values for priors.
-labels (num_priros): labels for priors.
-:param gt_boxes:
-:type gt_boxes:
-:param gt_labels:
-:type gt_labels:
-:param corner_form_priors:
-:type corner_form_priors:
-:param iou_threshold:
-:type iou_threshold:
-"""
+    Args:
+    gt_boxes (num_targets, 4): ground truth boxes.
+    gt_labels (num_targets): labels of targets.
+    priors (num_priors, 4): corner form priors
+    Returns:
+    boxes (num_priors, 4): real values for priors.
+    labels (num_priros): labels for priors.
+    :param gt_boxes:
+    :type gt_boxes:
+    :param gt_labels:
+    :type gt_labels:
+    :param corner_form_priors:
+    :type corner_form_priors:
+    :param iou_threshold:
+    :type iou_threshold:"""
     # size: num_priors x num_targets
     ious = iou_of_tensors(gt_boxes.unsqueeze(0), corner_form_priors.unsqueeze(1))
     # size: num_priors

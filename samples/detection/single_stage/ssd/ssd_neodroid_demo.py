@@ -6,19 +6,20 @@ import cv2
 import numpy
 import torch
 from apppath import ensure_existence
-from neodroid.environments.droid_environment import UnityEnvironment
+from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_byte
+from draugr.torch_utilities import TorchEvalSession, global_torch_device
+from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
+from tqdm import tqdm
+from warg import NOD
+
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.detection import SingleShotDectection
+from neodroidvision.detection import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
-from tqdm import tqdm
-from warg import NOD
-
-from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_byte
-from draugr.torch_utilities import Split, TorchEvalSession, global_torch_device
 
 
 @torch.no_grad()
@@ -31,25 +32,24 @@ def run_webcam_demo(
 ):
     """
 
-:param categories:
-:type categories:
-:param cfg:
-:type cfg:
-:param model_ckpt:
-:type model_ckpt:
-:param score_threshold:
-:type score_threshold:
-:param window_name:
-:type window_name:
-:return:
-:rtype:
-"""
+    :param categories:
+    :type categories:
+    :param cfg:
+    :type cfg:
+    :param model_ckpt:
+    :type model_ckpt:
+    :param score_threshold:
+    :type score_threshold:
+    :param window_name:
+    :type window_name:
+    :return:
+    :rtype:"""
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(
         cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
     )
-    model = SingleShotDectection(cfg)
+    model = SingleShotDetection(cfg)
 
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
@@ -63,7 +63,7 @@ def run_webcam_demo(
     model.to(global_torch_device())
 
     with TorchEvalSession(model):
-        for infos in tqdm(UnityEnvironment(connect_to_running=True)):
+        for infos in tqdm(DictUnityEnvironment(connect_to_running=True)):
             info = next(iter(infos.values()))
             new_images = extract_all_cameras(info)
             image = next(iter(new_images.values()))[..., :3][..., ::-1]
@@ -101,12 +101,14 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
-                "mobilenet_v2_ssd320_voc0712.pth"
-    # "mobilenet_v2_ssd320_voc0712.pth"
-    # "vgg_ssd300_coco_trainval35k.pth"
-    # "vgg_ssd512_coco_trainval35k.pth"
-    ,
+        default=PROJECT_APP_PATH.user_data
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
+        # "mobilenet_v2_ssd320_voc0712.pth"
+        # "vgg_ssd300_coco_trainval35k.pth"
+        # "vgg_ssd512_coco_trainval35k.pth"
+        ,
         help="Use weights from path",
     )
     parser.add_argument("--score_threshold", type=float, default=0.7)

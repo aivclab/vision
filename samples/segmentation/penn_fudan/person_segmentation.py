@@ -4,24 +4,25 @@ from pathlib import Path
 
 import numpy
 import torch
-from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.segmentation import PennFudanDataset
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
-from torch.utils.data import DataLoader
-from tqdm import tqdm
+from draugr.numpy_utilities import Split
+from draugr.random_utilities import seed_stack
 
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
-    Split,
     TorchCacheSession,
     TorchDeviceSession,
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
-    torch_seed,
 )
+from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -30,7 +31,9 @@ __doc__ = r"""
            """
 
 
-def reschedule_learning_rate(model, epoch, scheduler):
+def reschedule_learning_rate(
+    model: torch.nn.Module, epoch: int, scheduler: torch.optim.lr_scheduler
+):
     r"""This may be improved its just a hacky way to write SGDWR"""
     if epoch == 7:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
@@ -60,37 +63,36 @@ def reschedule_learning_rate(model, epoch, scheduler):
     return model, scheduler
 
 
-def train_person_segmenter(
-    model,
-    train_loader,
-    valid_loader,
-    criterion,
-    optimizer,
-    scheduler,
+def train_person_segmentor(
+    model: torch.nn.Module,
+    train_loader: torch.utils.data.DataLoader,
+    valid_loader: torch.utils.data.DataLoader,
+    criterion: callable,
+    optimizer: torch.optim.optimizer,
+    scheduler: torch.optim.lr_scheduler,
     save_model_path: Path,
     n_epochs: int = 100,
 ):
     """
 
-:param model:
-:type model:
-:param train_loader:
-:type train_loader:
-:param valid_loader:
-:type valid_loader:
-:param criterion:
-:type criterion:
-:param optimizer:
-:type optimizer:
-:param scheduler:
-:type scheduler:
-:param save_model_path:
-:type save_model_path:
-:param n_epochs:
-:type n_epochs:
-:return:
-:rtype:
-"""
+    :param model:
+    :type model:
+    :param train_loader:
+    :type train_loader:
+    :param valid_loader:
+    :type valid_loader:
+    :param criterion:
+    :type criterion:
+    :param optimizer:
+    :type optimizer:
+    :param scheduler:
+    :type scheduler:
+    :param save_model_path:
+    :type save_model_path:
+    :param n_epochs:
+    :type n_epochs:
+    :return:
+    :rtype:"""
     valid_loss_min = numpy.Inf  # track change in validation loss
     assert n_epochs > 0, n_epochs
     E = tqdm(range(1, n_epochs + 1))
@@ -164,14 +166,14 @@ def main():
     pyplot.style.use("bmh")
     base_path = Path.home() / "/Data" / "PennFudanPed"
 
-    save_model_path = PROJECT_APP_PATH.user_data/ 'models' / "penn_fudan_ped_seg.model"
+    save_model_path = PROJECT_APP_PATH.user_data / "models" / "penn_fudan_ped_seg.model"
     train_model = False
     eval_model = not train_model
     SEED = 87539842
     batch_size = 8
-    num_workers = 1  # os.cpu_count()
+    num_workers = 0
     learning_rate = 0.01
-    torch_seed(SEED)
+    seed_stack(SEED)
 
     train_set = PennFudanDataset(base_path, Split.Training)
     train_loader = DataLoader(
@@ -203,7 +205,7 @@ def main():
                 optimiser, T_max=7, eta_min=learning_rate / 100, last_epoch=-1
             )
 
-            model = train_person_segmenter(
+            model = train_person_segmentor(
                 model,
                 train_loader,
                 valid_loader,
@@ -218,7 +220,7 @@ def main():
             model.load_state_dict(torch.load(str(save_model_path)))
             print("loading saved model")
 
-        with TorchDeviceSession(global_torch_device(cuda_if_available=False), model):
+        with TorchDeviceSession(global_torch_device("cpu"), model):
             with torch.no_grad():
                 with TorchCacheSession():
                     with TorchEvalSession(model):
@@ -235,10 +237,10 @@ def main():
                                 output, mask = outpu[p], target[p]
                                 """
 for m in mask:
-  valid_masks.append(cv2_resize(m, a))
+valid_masks.append(cv2_resize(m, a))
 for probability in output:
-  probabilities[sample_i, :, :] = cv2_resize(probability, a)
-  sample_i += 1
+probabilities[sample_i, :, :] = cv2_resize(probability, a)
+sample_i += 1
 """
                                 if sample_i >= tr - 1:
                                     break

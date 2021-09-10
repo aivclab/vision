@@ -6,8 +6,8 @@ from torch.nn.modules.utils import _pair
 
 from .self_attention_utilities import (
     CUDA_NUM_THREADS,
-    GET_BLOCKS,
     Stream,
+    get_blocks_,
     get_dtype_str,
     kernel_loop,
     load_kernel,
@@ -127,23 +127,22 @@ class Subtraction2Refpad(Function):
     ) -> torch.Tensor:
         """
 
-:param ctx:
-:type ctx:
-:param input1:
-:type input1:
-:param input2:
-:type input2:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:return:
-:rtype:
-"""
+        :param ctx:
+        :type ctx:
+        :param input1:
+        :type input1:
+        :param input2:
+        :type input2:
+        :param kernel_size:
+        :type kernel_size:
+        :param stride:
+        :type stride:
+        :param padding:
+        :type padding:
+        :param dilation:
+        :type dilation:
+        :return:
+        :rtype:"""
         kernel_size, stride, padding, dilation = (
             _pair(kernel_size),
             _pair(stride),
@@ -198,7 +197,7 @@ class Subtraction2Refpad(Function):
             )
             f(
                 block=(CUDA_NUM_THREADS, 1, 1),
-                grid=(GET_BLOCKS(n), 1, 1),
+                grid=(get_blocks_(n), 1, 1),
                 args=[input1.data_ptr(), input2.data_ptr(), output.data_ptr()],
                 stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
             )
@@ -209,13 +208,12 @@ class Subtraction2Refpad(Function):
     def backward(ctx, grad_output) -> Tuple:
         """
 
-:param ctx:
-:type ctx:
-:param grad_output:
-:type grad_output:
-:return:
-:rtype:
-"""
+        :param ctx:
+        :type ctx:
+        :param grad_output:
+        :type grad_output:
+        :return:
+        :rtype:"""
         kernel_size, stride, padding, dilation = (
             ctx.kernel_size,
             ctx.stride,
@@ -267,7 +265,7 @@ class Subtraction2Refpad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[grad_output.data_ptr(), grad_input1.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )
@@ -288,7 +286,7 @@ class Subtraction2Refpad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[grad_output.data_ptr(), grad_input2.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )
@@ -317,21 +315,20 @@ class Subtraction2Refpad(Function):
 def subtraction2_refpad(input1, input2, kernel_size=3, stride=1, padding=0, dilation=1):
     """
 
-:param input1:
-:type input1:
-:param input2:
-:type input2:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:return:
-:rtype:
-"""
+    :param input1:
+    :type input1:
+    :param input2:
+    :type input2:
+    :param kernel_size:
+    :type kernel_size:
+    :param stride:
+    :type stride:
+    :param padding:
+    :type padding:
+    :param dilation:
+    :type dilation:
+    :return:
+    :rtype:"""
     assert input1.dim() == 4
     if input1.is_cuda:
         out = Subtraction2Refpad.apply(

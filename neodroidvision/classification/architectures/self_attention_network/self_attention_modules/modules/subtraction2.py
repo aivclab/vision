@@ -7,24 +7,21 @@ __all__ = ["Subtraction2"]
 
 
 class Subtraction2(nn.Module):
-    """
-
-"""
+    """ """
 
     def __init__(self, kernel_size, stride, padding, dilation, pad_mode):
         """
 
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:param pad_mode:
-:type pad_mode:
-"""
+        :param kernel_size:
+        :type kernel_size:
+        :param stride:
+        :type stride:
+        :param padding:
+        :type padding:
+        :param dilation:
+        :type dilation:
+        :param pad_mode:
+        :type pad_mode:"""
         super().__init__()
         self.kernel_size = _pair(kernel_size)
         self.stride = _pair(stride)
@@ -35,13 +32,12 @@ class Subtraction2(nn.Module):
     def forward(self, input1, input2):
         """
 
-:param input1:
-:type input1:
-:param input2:
-:type input2:
-:return:
-:rtype:
-"""
+        :param input1:
+        :type input1:
+        :param input2:
+        :type input2:
+        :return:
+        :rtype:"""
         return F.subtraction2(
             input1,
             input2,

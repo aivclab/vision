@@ -4,11 +4,10 @@ from typing import Tuple, Union
 
 import neodroid
 from PIL import Image
+from draugr.torch_utilities import global_torch_device
 from torch.utils.data import Dataset
 from torchvision import transforms
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
-
-from draugr.torch_utilities import global_torch_device
 
 __author__ = "Christian Heider Nielsen"
 
@@ -74,12 +73,11 @@ def pooled_neodroid_env_classification_generator(env, device, batch_size=64) -> 
         ):
             """
 
-      :param env:
-      :param device:
-      :param batch_size:
-      :param args:
-      :param kwargs:
-      """
+            :param env:
+            :param device:
+            :param batch_size:
+            :param args:
+            :param kwargs:"""
             super().__init__(*args, **kwargs)
 
             self.env = env

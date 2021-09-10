@@ -2,48 +2,46 @@ from pathlib import Path
 
 import cv2
 import torch
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities import OutputActivationModule
-from torchvision import transforms
-from tqdm import tqdm
-
+from apppath import ensure_existence
 from draugr import sprint
 from draugr.opencv_utilities import frame_generator
+from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
-    torch_seed,
 )
+from torchvision import transforms
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities import OutputActivationModule
 
 
 @torch.no_grad()
-def export_detection_model(model_export_path: Path = Path("seg_skip_fis"),) -> None:
+def export_detection_model(
+    model_export_path: Path = ensure_existence(
+        PROJECT_APP_PATH.user_data / "penn_fudan_segmentation"
+    )
+    / "seg_skip_fis",
+    SEED: int = 87539842,
+) -> None:
     """
 
-:param verbose:
-:type verbose:
-:param cfg:
-:type cfg:
-:param model_ckpt:
-:type model_ckpt:
-:param model_export_path:
-:type model_export_path:
-:return:
-:rtype:
-"""
+    :param model_export_path:
+    :type model_export_path:
+    :return:
+    :rtype:"""
 
     model = OutputActivationModule(
         SkipHourglassFission(input_channels=3, output_heads=(1,), encoding_depth=1)
     )
 
-    with TorchDeviceSession(
-        device=global_torch_device(cuda_if_available=False), model=model
-    ):
+    with TorchDeviceSession(device=global_torch_device("cpu"), model=model):
         with TorchEvalSession(model):
-            SEED = 87539842
 
-            torch_seed(SEED)
+            seed_stack(SEED)
 
             # standard PyTorch mean-std input image normalization
             transform = transforms.Compose(

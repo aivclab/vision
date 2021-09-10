@@ -7,11 +7,11 @@ __doc__ = r"""
            Created on 09/02/2020
            """
 
+import draugr
 import fire
-from neodroidvision import get_version
 from pyfiglet import Figlet
 
-import draugr
+from neodroidvision import get_version
 
 sponsors = "SINTEF Ocean, Alexandra Institute, Norges Forskningsråd"
 margin_percentage = 0 / 6
@@ -29,8 +29,7 @@ class NeodroidVisionCLI(object):
     @staticmethod
     def version() -> None:
         """
-Prints the version of this Neodroid installation.
-"""
+        Prints the version of this Neodroid installation."""
         draw_cli_header()
         print(f"Version: {get_version()}")
 

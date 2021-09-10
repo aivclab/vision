@@ -13,36 +13,33 @@ from typing import Dict, Tuple
 
 import torch
 from PIL import Image
+from draugr.numpy_utilities import Split
 from matplotlib import pyplot
 from torch.utils import data
 from torchvision import transforms
 
 __all__ = ["VggFaces2"]
 
-from draugr.torch_utilities import Split, SupervisedDataset
+from draugr.torch_utilities import SupervisedDataset
 
 
 class VggFaces2(SupervisedDataset):
-    """
-
-"""
+    """ """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return (0,)
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return self._resize_shape
 
     # mean = numpy.array([0.485, 0.456, 0.406])
@@ -59,11 +56,10 @@ class VggFaces2(SupervisedDataset):
     def get_id_label_map(meta_file):
         """
 
-:param meta_file:
-:type meta_file:
-:return:
-:rtype:
-"""
+        :param meta_file:
+        :type meta_file:
+        :return:
+        :rtype:"""
         import pandas
 
         N_IDENTITY = 9131  # total number of identities in VGG Face2
@@ -85,9 +81,8 @@ class VggFaces2(SupervisedDataset):
     def split_names(self) -> Dict[Split, str]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return {
             Split.Training: "train",
             Split.Validation: "validation",
@@ -102,10 +97,9 @@ class VggFaces2(SupervisedDataset):
         raw_images: bool = False,
     ):
         """
-:type resize_s: int or tuple(w,h)
-:param dataset_path: dataset directory
-:param split: train, valid, test
-"""
+        :type resize_s: int or tuple(w,h)
+        :param dataset_path: dataset directory
+        :param split: train, valid, test"""
         super().__init__()
         assert dataset_path.exists(), f"root: {dataset_path} not found."
         split = self.split_names[split]

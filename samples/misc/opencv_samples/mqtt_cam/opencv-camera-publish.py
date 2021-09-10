@@ -1,25 +1,21 @@
-"""
-Capture frames from a camera using OpenCV and publish on an MQTT topic.
-"""
-import os
 import time
 
-from helpers import get_config, get_now_string, pil_image_to_byte_array
-from imutils import opencv2matplotlib
-from imutils.video import VideoStream
-from mqtt_callbacks import get_mqtt_client
+import cv2
 from PIL import Image
+from draugr.opencv_utilities import AsyncVideoStream
+from draugr.python_utilities.datetimes import now_repr
+from draugr.visualisation.pillow_utilities import pil_image_to_byte_array
 
-CONFIG_FILE_PATH = os.getenv("MQTT_CAMERA_CONFIG", "./config/config.yml")
-CONFIG = get_config(CONFIG_FILE_PATH)
+from mqtt_callbacks import get_mqtt_client
+from .config import MQTT_CAM_CONFIG
 
-MQTT_BROKER = CONFIG["mqtt"]["broker"]
-MQTT_PORT = CONFIG["mqtt"]["port"]
-MQTT_QOS = CONFIG["mqtt"]["QOS"]
+MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]
+MQTT_PORT = MQTT_CAM_CONFIG["mqtt"]["port"]
+MQTT_QOS = MQTT_CAM_CONFIG["mqtt"]["QOS"]
 
-MQTT_TOPIC_CAMERA = CONFIG["camera"]["mqtt_topic"]
-VIDEO_SOURCE = CONFIG["camera"]["video_source"]
-FPS = CONFIG["camera"]["fps"]
+MQTT_TOPIC_CAMERA = MQTT_CAM_CONFIG["camera"]["mqtt_topic"]
+VIDEO_SOURCE = MQTT_CAM_CONFIG["camera"]["video_source"]
+FPS = MQTT_CAM_CONFIG["camera"]["fps"]
 
 
 def main():
@@ -28,19 +24,15 @@ def main():
     time.sleep(4)  # Wait for connection setup to complete
     client.loop_start()
 
-    # Open camera
-    camera = VideoStream(src=VIDEO_SOURCE, framerate=FPS).start()
-    time.sleep(2)  # Webcam light should come on if using one
-
-    while True:
-        frame = camera.read()
-        np_array_RGB = opencv2matplotlib(frame)  # Convert to RGB
-
-        image = Image.fromarray(np_array_RGB)
-        byte_array = pil_image_to_byte_array(image)
-        client.publish(MQTT_TOPIC_CAMERA, byte_array, qos=MQTT_QOS)
-        now = get_now_string()
-        print(f"published frame on topic: {MQTT_TOPIC_CAMERA} at {now}")
+    for frame in AsyncVideoStream(src=VIDEO_SOURCE):
+        client.publish(
+            MQTT_TOPIC_CAMERA,
+            pil_image_to_byte_array(
+                Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            ),
+            qos=MQTT_QOS,
+        )
+        print(f"published frame on topic: {MQTT_TOPIC_CAMERA} at {now_repr()}")
         time.sleep(1 / FPS)
 
 

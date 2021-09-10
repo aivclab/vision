@@ -10,19 +10,16 @@ __doc__ = r"""
 from typing import List
 
 import torch
-from numpy import product
-from torch import nn
-
 from draugr.torch_utilities import conv2d_hw_shape
 from draugr.torch_utilities.operations.sizes.pad2d import pad2d_hw_shape
+from numpy import product
+from torch import nn
 
 __all__ = ["NLetConvNet"]
 
 
 class NLetConvNet(nn.Module):
-    """
-
-"""
+    """ """
 
     def __init__(self, in_size=None, output_size: int = 2):
         super().__init__()
@@ -68,11 +65,10 @@ class NLetConvNet(nn.Module):
     def forward(self, *n_let) -> List[torch.Tensor]:
         """
 
-:param input1:
-:type input1:
-:param input2:
-:type input2:
-:return:
-:rtype:
-"""
+        :param input1:
+        :type input1:
+        :param input2:
+        :type input2:
+        :return:
+        :rtype:"""
         return [self.convolutions(x) for x in n_let]

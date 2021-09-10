@@ -1,30 +1,26 @@
-"""
-Subscribe and save camera images with timestamp.
-"""
-import os
 import time
 
-from helpers import byte_array_to_pil_image, get_config, get_now_string
+from draugr.python_utilities.datetimes import now_repr
+from draugr.visualisation.pillow_utilities import byte_array_to_pil_image
+
 from mqtt_callbacks import get_mqtt_client
+from .config import MQTT_CAM_CONFIG
 
-CONFIG_FILE_PATH = os.getenv("MQTT_CAMERA_CONFIG", "./config/config.yml")
-CONFIG = get_config(CONFIG_FILE_PATH)
+MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]
+MQTT_PORT = MQTT_CAM_CONFIG["mqtt"]["port"]
+MQTT_QOS = MQTT_CAM_CONFIG["mqtt"]["QOS"]
 
-MQTT_BROKER = CONFIG["mqtt"]["broker"]
-MQTT_PORT = CONFIG["mqtt"]["port"]
-MQTT_QOS = CONFIG["mqtt"]["QOS"]
+SAVE_TOPIC = MQTT_CAM_CONFIG["save-captures"]["mqtt_topic"]
+CAPTURES_DIRECTORY = MQTT_CAM_CONFIG["save-captures"]["captures_directory"]
 
-SAVE_TOPIC = CONFIG["save-captures"]["mqtt_topic"]
-CAPTURES_DIRECTORY = CONFIG["save-captures"]["captures_directory"]
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    now = get_now_string()
+    now = now_repr()
     print("message on " + str(msg.topic) + f" at {now}")
 
     try:
-        image = byte_array_to_pil_image(msg.payload)
-        image = image.convert("RGB")
+        image = byte_array_to_pil_image(msg.payload).convert("RGB")
 
         save_file_path = CAPTURES_DIRECTORY + f"capture_{now}.jpg"
         image.save(save_file_path)

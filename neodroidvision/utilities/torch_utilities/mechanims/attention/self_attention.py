@@ -52,7 +52,7 @@ def spectral_norm_embedding(num_embeddings, embedding_dim):
 
 
 class SelfAttentionModule(nn.Module):
-    """ Self attention Layer"""
+    """Self attention Layer"""
 
     def __init__(self, in_channels):
         super().__init__()
@@ -94,12 +94,11 @@ class SelfAttentionModule(nn.Module):
 
     def forward(self, x):
         """
-inputs :
-x : input feature maps(B X C X W X H)
-returns :
-out : self attention value + input feature
-attention: B X N X N (N is Width*Height)
-"""
+        inputs :
+        x : input feature maps(B X C X W X H)
+        returns :
+        out : self attention value + input feature
+        attention: B X N X N (N is Width*Height)"""
         _, ch, h, w = x.size()
         # Theta path
         theta = self.spectral_norm_conv1x1_theta(x)

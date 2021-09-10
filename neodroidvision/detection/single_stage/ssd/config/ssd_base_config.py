@@ -1,13 +1,14 @@
 from pathlib import Path
 
+from warg import NOD
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection import SSDBoxPredictor
 from neodroidvision.detection.single_stage.ssd.architecture.backbones import vgg_factory
-from warg import NOD
 
 base_cfg = NOD()
 
-base_cfg.data_dir = Path.home() / "Data"/"Vision"/"Detection"
+base_cfg.data_dir = Path.home() / "Data" / "Vision" / "Detection"
 # base_cfg.DATA_DIR = Path.home() / "Data" / "Datasets"
 base_cfg.output_dir = PROJECT_APP_PATH.user_data / "results"
 
@@ -96,7 +97,7 @@ base_cfg.dataset_type = None
 # DataLoader
 # -----------------------------------------------------------------------------
 base_cfg.data_loader = NOD()
-base_cfg.data_loader.num_workers = 8  # number of data loading threads
+base_cfg.data_loader.num_workers = 0  # number of data loading threads
 base_cfg.data_loader.pin_memory = True
 
 # ---------------------------------------------------------------------------- #

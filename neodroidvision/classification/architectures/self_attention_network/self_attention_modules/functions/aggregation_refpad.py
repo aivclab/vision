@@ -4,8 +4,8 @@ from torch.nn.modules.utils import _pair
 
 from .self_attention_utilities import (
     CUDA_NUM_THREADS,
-    GET_BLOCKS,
     Stream,
+    get_blocks_,
     get_dtype_str,
     kernel_loop,
     load_kernel,
@@ -135,23 +135,22 @@ class AggregationRefpad(Function):
     def forward(ctx, input, weight, kernel_size, stride, padding, dilation):
         """
 
-:param ctx:
-:type ctx:
-:param input:
-:type input:
-:param weight:
-:type weight:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:return:
-:rtype:
-"""
+        :param ctx:
+        :type ctx:
+        :param input:
+        :type input:
+        :param weight:
+        :type weight:
+        :param kernel_size:
+        :type kernel_size:
+        :param stride:
+        :type stride:
+        :param padding:
+        :type padding:
+        :param dilation:
+        :type dilation:
+        :return:
+        :rtype:"""
         kernel_size, stride, padding, dilation = (
             _pair(kernel_size),
             _pair(stride),
@@ -204,7 +203,7 @@ class AggregationRefpad(Function):
             )
             f(
                 block=(CUDA_NUM_THREADS, 1, 1),
-                grid=(GET_BLOCKS(n), 1, 1),
+                grid=(get_blocks_(n), 1, 1),
                 args=[input.data_ptr(), weight.data_ptr(), output.data_ptr()],
                 stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
             )
@@ -215,13 +214,12 @@ class AggregationRefpad(Function):
     def backward(ctx, grad_output):
         """
 
-:param ctx:
-:type ctx:
-:param grad_output:
-:type grad_output:
-:return:
-:rtype:
-"""
+        :param ctx:
+        :type ctx:
+        :param grad_output:
+        :type grad_output:
+        :return:
+        :rtype:"""
         kernel_size, stride, padding, dilation = (
             ctx.kernel_size,
             ctx.stride,
@@ -271,7 +269,7 @@ class AggregationRefpad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[
                         grad_output.data_ptr(),
                         weight.data_ptr(),
@@ -310,7 +308,7 @@ class AggregationRefpad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[
                         grad_output.data_ptr(),
                         input.data_ptr(),
@@ -324,21 +322,20 @@ class AggregationRefpad(Function):
 def aggregation_refpad(input, weight, kernel_size=3, stride=1, padding=0, dilation=1):
     """
 
-:param input:
-:type input:
-:param weight:
-:type weight:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:return:
-:rtype:
-"""
+    :param input:
+    :type input:
+    :param weight:
+    :type weight:
+    :param kernel_size:
+    :type kernel_size:
+    :param stride:
+    :type stride:
+    :param padding:
+    :type padding:
+    :param dilation:
+    :type dilation:
+    :return:
+    :rtype:"""
     assert input.shape[0] == weight.shape[0] and (input.shape[1] % weight.shape[1] == 0)
     if input.is_cuda:
         out = AggregationRefpad.apply(

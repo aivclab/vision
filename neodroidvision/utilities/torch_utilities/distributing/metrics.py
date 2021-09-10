@@ -10,10 +10,11 @@ __doc__ = r"""
 import typing
 
 import torch
+from torch import distributed as dist
+
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     global_world_size,
 )
-from torch import distributed as dist
 
 __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 
@@ -32,10 +33,9 @@ def write_metrics_recursive(
 
 def reduce_loss_dict(loss_dict: dict) -> dict:
     """
-Reduce the loss dictionary from all processes so that process with rank
-0 has the averaged results. Returns a dict with the same fields as
-loss_dict, after reduction.
-"""
+    Reduce the loss dictionary from all processes so that process with rank
+    0 has the averaged results. Returns a dict with the same fields as
+    loss_dict, after reduction."""
     world_size = global_world_size()
 
     if world_size < 2:

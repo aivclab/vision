@@ -6,28 +6,15 @@ __doc__ = r"""
 
 import math
 import time
-from contextlib import suppress
 from itertools import count
 from pathlib import Path
 from typing import Tuple
 
 import torch
 import torchvision
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.nlet import PairDataset
-from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankingSiamese
-from neodroidvision.utilities.visualisation.similarity_utilities import (
-    boxed_text_overlay_plot,
-)
-from torch import nn, optim
-from torch.nn import Module
-from torch.optim import Optimizer
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from tqdm import tqdm
-
+from draugr.numpy_utilities import Split
+from draugr.stopping import IgnoreInterruptSignal
 from draugr.torch_utilities import (
-    Split,
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
@@ -37,20 +24,32 @@ from draugr.torch_utilities import (
     to_tensor,
 )
 from draugr.writers import MockWriter, Writer
+from torch import nn, optim
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.nlet import PairDataset
+from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankingSiamese
+from neodroidvision.utilities.visualisation.similarity_utilities import (
+    boxed_text_overlay_plot,
+)
 
 
 def accuracy(*, distances, is_diff, threshold: float = 0.5):
     """
 
-:param distances:
-:type distances:
-:param is_diff:
-:type is_diff:
-:param threshold:
-:type threshold:
-:return:
-:rtype:
-"""
+    :param distances:
+    :type distances:
+    :param is_diff:
+    :type is_diff:
+    :param threshold:
+    :type threshold:
+    :return:
+    :rtype:"""
     return torch.mean(
         (
             is_diff
@@ -77,33 +76,32 @@ def train_siamese(
     validation_interval: int = 1,
 ):
     """
-:param img_size:
-:type img_size:
-:param validation_interval:
-:type validation_interval:
-:param data_dir:
-:type data_dir:
-:param optimiser:
-:type optimiser:
-:param criterion:
-:type criterion:
-:param writer:
-:type writer:
-:param model_name:
-:type model_name:
-:param save_path:
-:type save_path:
-:param save_best:
-:type save_best:
-:param model:
-:type model:
-:param train_number_epochs:
-:type train_number_epochs:
-:param train_batch_size:
-:type train_batch_size:
-:return:
-:rtype:
-"""
+    :param img_size:
+    :type img_size:
+    :param validation_interval:
+    :type validation_interval:
+    :param data_dir:
+    :type data_dir:
+    :param optimiser:
+    :type optimiser:
+    :param criterion:
+    :type criterion:
+    :param writer:
+    :type writer:
+    :param model_name:
+    :type model_name:
+    :param save_path:
+    :type save_path:
+    :param save_best:
+    :type save_best:
+    :param model:
+    :type model:
+    :param train_number_epochs:
+    :type train_number_epochs:
+    :param train_batch_size:
+    :type train_batch_size:
+    :return:
+    :rtype:"""
 
     train_dataloader = DataLoader(
         PairDataset(
@@ -118,7 +116,7 @@ def train_siamese(
             split=Split.Training,
         ),
         shuffle=True,
-        num_workers=4,
+        num_workers=0,
         batch_size=train_batch_size,
     )
 
@@ -135,7 +133,7 @@ def train_siamese(
             split=Split.Validation,
         ),
         shuffle=True,
-        num_workers=4,
+        num_workers=0,
         batch_size=train_batch_size,
     )
 
@@ -177,7 +175,8 @@ def train_siamese(
                                     save_directory=save_path,
                                 )
             E.set_description(
-                f"Epoch number {epoch}, Current train loss {train_loss}, valid loss {valid_loss}, valid_accuracy {valid_accuracy}"
+                f"Epoch number {epoch}, Current train loss {train_loss}, valid loss {valid_loss}, valid_accuracy "
+                f"{valid_accuracy}"
             )
 
     return model
@@ -188,15 +187,14 @@ def stest_many_versus_many2(
 ):
     """
 
-:param model:
-:type model:
-:param data_dir:
-:type data_dir:
-:param img_size:
-:type img_size:
-:param threshold:
-:type threshold:
-"""
+    :param model:
+    :type model:
+    :param data_dir:
+    :type data_dir:
+    :param img_size:
+    :type img_size:
+    :param threshold:
+    :type threshold:"""
     dataiter = iter(
         DataLoader(
             PairDataset(
@@ -209,7 +207,7 @@ def stest_many_versus_many2(
                     ]
                 ),
             ),
-            num_workers=4,
+            num_workers=0,
             batch_size=1,
             shuffle=True,
         )
@@ -235,9 +233,7 @@ def stest_many_versus_many2(
 if __name__ == "__main__":
 
     def main():
-        """
-
-"""
+        """ """
         data_dir = Path.home() / "Data" / "mnist_png"
         train_batch_size = 64
         train_number_epochs = 100
@@ -262,7 +258,7 @@ if __name__ == "__main__":
                 PROJECT_APP_PATH.user_log / model_name / str(time.time())
             ) as writer:
                 # with CaptureEarlyStop() as _:
-                with suppress(KeyboardInterrupt):
+                with IgnoreInterruptSignal():
                     model = train_siamese(
                         model,
                         optimiser,

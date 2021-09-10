@@ -10,26 +10,25 @@ __doc__ = r"""
 from typing import Tuple
 
 import torch
+from torch import nn
+from torch.nn import functional
+from warg import Number
+
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
     hard_negative_mining,
 )
-from torch import nn
-from torch.nn import functional
 
 __all__ = ["MultiBoxLoss"]
 
 
 class MultiBoxLoss(nn.Module):
-    """
+    """ """
 
-  """
-
-    def __init__(self, neg_pos_ratio: float):
+    def __init__(self, neg_pos_ratio: Number):
         """Implement SSD MultiBox Loss.
 
-Basically, MultiBox loss combines classification loss
-and Smooth L1 regression loss.
-"""
+        Basically, MultiBox loss combines classification loss
+        and Smooth L1 regression loss."""
         super().__init__()
         self._neg_pos_ratio = neg_pos_ratio
 
@@ -42,12 +41,11 @@ and Smooth L1 regression loss.
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute classification loss and smooth l1 loss.
 
-Args:
-confidence (batch_size, num_priors, num_categories): class predictions.
-predicted_locations (batch_size, num_priors, 4): predicted locations.
-labels (batch_size, num_priors): real labels of all the priors.
-gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors.
-"""
+        Args:
+        confidence (batch_size, num_priors, num_categories): class predictions.
+        predicted_locations (batch_size, num_priors, 4): predicted locations.
+        labels (batch_size, num_priors): real labels of all the priors.
+        gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors."""
 
         with torch.no_grad():
             # derived from cross_entropy=sum(log(p))

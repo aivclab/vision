@@ -8,9 +8,8 @@ __all__ = ["Compress"]
 
 class Compress(nn.Module):
     """
-A helper Module that performs 2 convolutions and 1 MaxPool.
-A ReLU activation follows each convolution.
-"""
+    A helper Module that performs 2 convolutions and 1 MaxPool.
+    A ReLU activation follows each convolution."""
 
     def __init__(self, in_channels: int, out_channels: int, pooling: bool = True):
         super().__init__()

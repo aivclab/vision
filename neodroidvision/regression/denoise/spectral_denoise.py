@@ -13,29 +13,32 @@ from scipy import fftpack
 
 def fft_im_denoise(img: numpy.ndarray, keep_fraction: float = 0.1) -> numpy.ndarray:
     """
-a blur with an FFT
+    a blur with an FFT
 
-Implements, via FFT, the following convolution:
+    Implements, via FFT, the following convolution:
 
-.. math::
+    .. math::
 
-f_1(t) = \int dt'\, K(t-t') f_0(t')
+    f_1(t) = \int dt'\, K(t-t') f_0(t')
 
-.. math::
+    .. math::
 
-\tilde{f}_1(\omega) = \tilde{K}(\omega) \tilde{f}_0(\omega)
+    \tilde{f}_1(\omega) = \tilde{K}(\omega) \tilde{f}_0(\omega)
 
-# keep_fraction - Define the fraction of coefficients (in each direction) we keep
+    # keep_fraction - Define the fraction of coefficients (in each direction) we keep
 
-Compute the 2d FFT of the input image
-Filter in FFT
-Reconstruct the final image
+    Compute the 2d FFT of the input image
+    Filter in FFT
+    Reconstruct the final image
 
-:param img:
-:type img:
-:return:
-:rtype:
-"""
+    :param img:
+    :type img:
+    :return:
+    :rtype:
+
+      Parameters
+      ----------
+      keep_fraction"""
     assert 0.0 < keep_fraction < 1.0
 
     im_fft = fftpack.fft2(img)

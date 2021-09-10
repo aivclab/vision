@@ -1,5 +1,7 @@
 import numpy
 import torch
+from draugr.torch_utilities import MODULES_MAPPING, get_model_complexity_info
+
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
@@ -9,8 +11,6 @@ from neodroidvision.classification.architectures.self_attention_network.self_att
     Subtraction,
     Subtraction2,
 )
-
-from draugr.torch_utilities import MODULES_MAPPING, get_model_complexity_info
 
 if __name__ == "__main__":
     from samples.classification.san.configs.base_san_cfg import SAN_CONFIG

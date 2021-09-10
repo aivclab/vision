@@ -6,18 +6,17 @@ import os
 import time
 from pathlib import Path
 
-from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.segmentation.masks import plot_utilities
-
 import draugr.visualisation.matplotlib_utilities
-from draugr import hwc_to_chw
+from draugr.numpy_utilities import Split, hwc_to_chw
 from draugr.torch_utilities import (
-    ImageWriter,
-    Split,
     TensorBoardPytorchWriter,
     global_torch_device,
 )
+from draugr.writers import ImageWriterMixin
+from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
+
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.segmentation.masks import plot_utilities
 
 __author__ = "Christian Heider Nielsen"
 
@@ -27,13 +26,13 @@ from torch.optim import lr_scheduler
 from tqdm import tqdm
 from matplotlib import pyplot
 
-from samples.segmentation.dmr.dmr_data import (
-    calculate_loss,
+from samples.segmentation.neodroid_dmr.dmr_data import (
+    calculate_multi_auto_encoder_loss,
     neodroid_camera_data_iterator,
 )
 
 
-def get_metric_str(metrics, writer: ImageWriter, update_i):
+def get_metric_str(metrics, writer: ImageWriterMixin, update_i):
     outputs = []
     for k, v in metrics:
         a = v.data.cpu().numpy()
@@ -48,7 +47,7 @@ def train_model(
     data_iterator,
     optimizer,
     scheduler,
-    writer: ImageWriter,
+    writer: ImageWriterMixin,
     interrupted_path,
     num_updates=25000,
 ):
@@ -76,7 +75,7 @@ def train_model(
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(phase == Split.Training):
                     seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
-                    ret = calculate_loss(
+                    ret = calculate_multi_auto_encoder_loss(
                         (seg_pred, seg_target),
                         (recon_pred, rgb_imgs),
                         (depth_pred, depth_target),

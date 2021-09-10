@@ -9,28 +9,28 @@ __doc__ = r"""
 
 from typing import Tuple
 
-from neodroidvision.data.datasets import SupervisedDataset
-
 __all__ = ["CamVid"]
+
+from draugr.torch_utilities import SupervisedDataset
 
 
 class CamVid(SupervisedDataset):
-    """
+    """ """
 
-"""
+    def __getitem__(self, index):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """
-
-"""
+        """ """
         return self.image_size
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
-        """
-
-"""
+        """ """
         return (self.response_channels,)
 
     predictor_channels = 3  # RGB input

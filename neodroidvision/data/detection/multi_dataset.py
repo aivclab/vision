@@ -11,11 +11,12 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import Sequence, Tuple
 
+from draugr.numpy_utilities import Split
 from torch.utils.data import ConcatDataset
 
 __all__ = ["MultiDataset"]
 
-from draugr.torch_utilities import Split, SupervisedDataset
+from draugr.torch_utilities import SupervisedDataset
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
     SSDAnnotationTransform,
@@ -23,25 +24,20 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 
 
 class MultiDataset(SupervisedDataset):
-    """
-
-"""
+    """ """
 
     @property
     @abstractmethod
     def categories(self) -> Sequence:
-        """
-
-"""
+        """ """
         raise NotImplementedError
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return (len(self.categories),)
 
     def __init__(
@@ -55,19 +51,18 @@ class MultiDataset(SupervisedDataset):
     ):
         """
 
-:param data_root:
-:type data_root:
-:param sub_datasets:
-:type sub_datasets:
-:param transform:
-:type transform:
-:param target_transform:
-:type target_transform:
-:param split:
-:type split:
-:return:
-:rtype:
-"""
+        :param data_root:
+        :type data_root:
+        :param sub_datasets:
+        :type sub_datasets:
+        :param transform:
+        :type transform:
+        :param target_transform:
+        :type target_transform:
+        :param split:
+        :type split:
+        :return:
+        :rtype:"""
         assert len(sub_datasets) > 0, "No data found!"
 
         img_transform = SSDTransform(

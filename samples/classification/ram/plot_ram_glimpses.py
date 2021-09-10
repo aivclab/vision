@@ -3,14 +3,12 @@ import pickle
 from pathlib import Path
 
 import numpy
-from  matplotlib import animation, pyplot
-
-from samples.classification.ram.ram_params import get_ram_config
-
 from draugr import (
     denormalise_minusoneone,
     matplotlib_bounding_box,
 )
+from matplotlib import animation, pyplot
+from samples.classification.ram.ram_params import get_ram_config
 
 
 def main(plot_dir: Path, epoch=None):

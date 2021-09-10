@@ -71,7 +71,7 @@ def detect_mouth(cv_image):
 
 def draw_from_points(cv_image, points):
     """Takes the cv_image and points and draws a rectangle based on the points.
-Returns a cv_image."""
+    Returns a cv_image."""
     for (x, y, w, h), n in points:
         cv2.rectangle(cv_image, (x, y), (x + w, y + h), 255)
     return cv_image

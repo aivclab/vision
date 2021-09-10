@@ -23,22 +23,21 @@ def f_score(
 ) -> torch.Tensor:
     """
 
-Args:
-pr (torch.Tensor): A list of predicted elements
-gt (torch.Tensor):  A list of elements that are to be predicted
-eps (float): epsilon to avoid zero division
-threshold: threshold for outputs binarization
-Returns:
-float: IoU (Jaccard) score
+    Args:
+    pr (torch.Tensor): A list of predicted elements
+    gt (torch.Tensor):  A list of elements that are to be predicted
+    eps (float): epsilon to avoid zero division
+    threshold: threshold for outputs binarization
+    Returns:
+    float: IoU (Jaccard) score
 
-:param pr:
-:param gt:
-:param beta:
-:param eps:
-:param threshold:
-:param activation:
-:return:
-"""
+    :param pr:
+    :param gt:
+    :param beta:
+    :param eps:
+    :param threshold:
+    :param activation:
+    :return:"""
     if activation:
         pr = activation(pr)
 

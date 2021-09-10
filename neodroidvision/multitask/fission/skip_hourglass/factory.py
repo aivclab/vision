@@ -19,15 +19,14 @@ __all__ = ["fcn_decoder", "fcn_encoder"]
 def fcn_encoder(in_channels: int, depth: int, start_channels: int) -> Tuple[List, int]:
     """
 
-:param in_channels:
-:type in_channels:
-:param depth:
-:type depth:
-:param start_channels:
-:type start_channels:
-:return:
-:rtype:
-"""
+    :param in_channels:
+    :type in_channels:
+    :param depth:
+    :type depth:
+    :param start_channels:
+    :type start_channels:
+    :return:
+    :rtype:"""
     down_convolutions = []
     new_layer_channels = start_channels
     prev_layer_channels = in_channels
@@ -49,17 +48,16 @@ def fcn_decoder(
 ) -> Tuple[List, int]:
     """
 
-:param in_channels:
-:type in_channels:
-:param depth:
-:type depth:
-:param up_mode:
-:type up_mode:
-:param merge_mode:
-:type merge_mode:
-:return:
-:rtype:
-"""
+    :param in_channels:
+    :type in_channels:
+    :param depth:
+    :type depth:
+    :param up_mode:
+    :type up_mode:
+    :param merge_mode:
+    :type merge_mode:
+    :return:
+    :rtype:"""
     up_convolutions_ae = []
     ae_prev_layer_channels = in_channels
     for i in range(depth - 1):

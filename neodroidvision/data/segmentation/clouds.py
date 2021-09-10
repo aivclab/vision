@@ -19,9 +19,14 @@ from torch.utils.data import Dataset
 
 __all__ = ["CloudSegmentationDataset"]
 
-from draugr import uint_hwc_to_chw_float, hwc_to_chw, float_chw_to_hwc_uint, chw_to_hwc
+from draugr.numpy_utilities import (
+    uint_hwc_to_chw_float,
+    hwc_to_chw,
+    float_chw_to_hwc_uint,
+    chw_to_hwc,
+    Split,
+)
 from draugr.opencv_utilities import cv2_resize
-from draugr.torch_utilities import Split
 
 
 class CloudSegmentationDataset(Dataset):
@@ -130,8 +135,7 @@ return (img * self.std + self.mean).astype(numpy.uint8)
 
     def fetch_masks(self, image_name: str):
         """
-Create mask based on df, image name and shape.
-"""
+        Create mask based on df, image name and shape."""
         masks = numpy.zeros(self.response_shape, dtype=numpy.float32)
         df = self.data_frame[self.data_frame["im_id"] == image_name]
 
@@ -177,9 +181,8 @@ Create mask based on df, image name and shape.
     @staticmethod
     def visualise(image, mask, original_image=None, original_mask=None):
         """
-Plot image and masks.
-If two pairs of images and masks are passes, show both.
-"""
+        Plot image and masks.
+        If two pairs of images and masks are passes, show both."""
         fontsize = 14
 
         if original_image is None and original_mask is None:
@@ -226,9 +229,8 @@ If two pairs of images and masks are passes, show both.
         raw_mask=None,
     ):
         """
-Plot image and masks.
-If two pairs of images and masks are passes, show both.
-"""
+        Plot image and masks.
+        If two pairs of images and masks are passes, show both."""
         fontsize = 14
 
         f, ax = pyplot.subplots(3, 5, figsize=(24, 12))
@@ -267,8 +269,7 @@ If two pairs of images and masks are passes, show both.
 
     def plot_training_sample(self):
         """
-Wrapper for `visualize` function.
-"""
+        Wrapper for `visualize` function."""
         orig_transforms = self.transforms
         self.transforms = None
         image, mask = self.__getitem__(numpy.random.randint(0, self.__len__()))

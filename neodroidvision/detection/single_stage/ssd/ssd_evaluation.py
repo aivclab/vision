@@ -4,6 +4,11 @@ from typing import Any, List
 
 import torch
 import torch.utils.data
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+from warg import NOD
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.detection.coco import COCODataset, coco_evaluation
 from neodroidvision.data.detection.voc import VOCDataset, voc_evaluation
@@ -15,14 +20,10 @@ from neodroidvision.utilities import (
     is_main_process,
     synchronise_torch_barrier,
 )
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-from warg import NOD
 
 __all__ = ["do_ssd_evaluation"]
 
-from draugr.torch_utilities import Split
+from draugr.numpy_utilities import Split
 
 
 def compute_on_dataset(
@@ -49,9 +50,8 @@ def compute_on_dataset(
 def accumulate_predictions_from_cuda_devices(predictions_per_gpu: Any) -> list:
     """
 
-  :param predictions_per_gpu:
-  :return:
-  """
+    :param predictions_per_gpu:
+    :return:"""
     all_predictions = distributing_utilities.all_gather_cuda(predictions_per_gpu)
     if not distributing_utilities.is_main_process():
         return
@@ -74,16 +74,15 @@ def accumulate_predictions_from_cuda_devices(predictions_per_gpu: Any) -> list:
     return [predictions[i] for i in image_ids]
 
 
-def evaluate_dataset(dataset, predictions, output_dir, **kwargs) -> dict:
+def evaluate_dataset(dataset, predictions, output_dir: Path, **kwargs) -> dict:
     """evaluate dataset using different methods based on dataset type.
-Args:
-dataset: Dataset object
-predictions(list[(boxes, labels, scores)]): Each item in the list represents the
-    prediction results for one image. And the index should match the dataset index.
-output_dir: output folder, to save evaluation files or results.
-Returns:
-evaluation result
-"""
+    Args:
+    dataset: Dataset object
+    predictions(list[(boxes, labels, scores)]): Each item in the list represents the
+      prediction results for one image. And the index should match the dataset index.
+    output_dir: output folder, to save evaluation files or results.
+    Returns:
+    evaluation result"""
     kws = dict(
         dataset=dataset, predictions=predictions, output_dir=output_dir, **kwargs
     )
@@ -107,15 +106,14 @@ def inference_ssd(
 ) -> dict:
     """
 
-  :param model:
-  :param data_loader:
-  :param dataset_name:
-  :param device:
-  :param output_folder:
-  :param use_cached:
-  :param kwargs:
-  :return:
-  """
+    :param model:
+    :param data_loader:
+    :param dataset_name:
+    :param device:
+    :param output_folder:
+    :param use_cached:
+    :param kwargs:
+    :return:"""
     dataset = data_loader.dataset
     logger = logging.getLogger("SSD.inference")
     logger.info(f"Evaluating {dataset_name} dataset({len(dataset)} images):")
@@ -146,13 +144,12 @@ def do_ssd_evaluation(
 ) -> List:
     """
 
-  :param data_root:
-  :param cfg:
-  :param model:
-  :param distributed:
-  :param kwargs:
-  :return:
-  """
+    :param data_root:
+    :param cfg:
+    :param model:
+    :param distributed:
+    :param kwargs:
+    :return:"""
     if isinstance(model, torch.nn.parallel.DistributedDataParallel):
         model = model.module
 

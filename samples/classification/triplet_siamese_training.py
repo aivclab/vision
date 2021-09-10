@@ -5,7 +5,6 @@ __doc__ = r"""
 """
 
 import math
-from contextlib import suppress
 from itertools import count
 from pathlib import Path
 
@@ -13,21 +12,9 @@ import numpy
 import torch
 import torch.nn.functional as F
 import torchvision.utils
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.nlet import PairDataset
-from neodroidvision.regression import NLetConvNet
-from neodroidvision.utilities.visualisation.similarity_utilities import (
-    boxed_text_overlay_plot,
-)
-from torch import optim
-from torch.nn import TripletMarginLoss
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from tqdm import tqdm
-
-from draugr import CaptureEarlyStop
+from draugr.numpy_utilities import Split
+from draugr.stopping import IgnoreInterruptSignal
 from draugr.torch_utilities import (
-    Split,
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
@@ -37,20 +24,31 @@ from draugr.torch_utilities import (
     to_tensor,
 )
 from draugr.writers import MockWriter, Writer
+from torch import optim
+from torch.nn import TripletMarginLoss
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.nlet import PairDataset, TripletDataset
+from neodroidvision.regression import NLetConvNet
+from neodroidvision.utilities.visualisation.similarity_utilities import (
+    boxed_text_overlay_plot,
+)
 
 
 def accuracy(*, distances, is_diff, threshold: float = 0.5):
     """
 
-:param distances:
-:type distances:
-:param is_diff:
-:type is_diff:
-:param threshold:
-:type threshold:
-:return:
-:rtype:
-"""
+    :param distances:
+    :type distances:
+    :param is_diff:
+    :type is_diff:
+    :param threshold:
+    :type threshold:
+    :return:
+    :rtype:"""
     return torch.mean(
         (
             is_diff
@@ -62,13 +60,11 @@ def accuracy(*, distances, is_diff, threshold: float = 0.5):
 
 
 def vis(model, data_dir, img_size):
-    """
-
-"""
+    """ """
     # ## Visualising some of the data
     # The top row and the bottom row of any column is one pair. The 0s and 1s correspond to the column of the
     # image.
-    # 0 indiciates dissimilar, and 1 indicates similar.
+    # 0 indicates dissimilar, and 1 indicates similar.
 
     example_batch = next(
         iter(
@@ -85,7 +81,7 @@ def vis(model, data_dir, img_size):
                     split=Split.Validation,
                 ),
                 shuffle=True,
-                num_workers=8,
+                num_workers=0,
                 batch_size=8,
             )
         )
@@ -97,10 +93,8 @@ def vis(model, data_dir, img_size):
 
 
 def stest_one_versus_many(model, data_dir, img_size):
-    """
-
-"""
-    dataiter = iter(
+    """ """
+    data_iterator = iter(
         DataLoader(
             PairDataset(
                 data_dir,
@@ -113,14 +107,14 @@ def stest_one_versus_many(model, data_dir, img_size):
                 ),
                 split=Split.Testing,
             ),
-            num_workers=4,
+            num_workers=0,
             batch_size=1,
             shuffle=True,
         )
     )
-    x0, *_ = next(dataiter)
+    x0, *_ = next(data_iterator)
     for i in range(10):
-        _, x1, _ = next(dataiter)
+        _, x1, _ = next(data_iterator)
         dis = (
             torch.pairwise_distance(
                 *model(
@@ -138,10 +132,8 @@ def stest_one_versus_many(model, data_dir, img_size):
 
 
 def stest_many_versus_many(model, data_dir, img_size, threshold=0.5):
-    """
-
-  """
-    dataiter = iter(
+    """ """
+    data_iterator = iter(
         DataLoader(
             PairDataset(
                 data_dir,
@@ -153,13 +145,13 @@ def stest_many_versus_many(model, data_dir, img_size, threshold=0.5):
                     ]
                 ),
             ),
-            num_workers=4,
+            num_workers=0,
             batch_size=1,
             shuffle=True,
         )
     )
     for i in range(10):
-        x0, x1, is_diff = next(dataiter)
+        x0, x1, is_diff = next(data_iterator)
         distance = (
             torch.pairwise_distance(
                 *model(
@@ -194,29 +186,33 @@ def train_siamese(
     validation_interval: int = 1,
 ):
     """
-:param data_dir:
-:type data_dir:
-:param optimiser:
-:type optimiser:
-:param criterion:
-:type criterion:
-:param writer:
-:type writer:
-:param model_name:
-:type model_name:
-:param save_path:
-:type save_path:
-:param save_best:
-:type save_best:
-:param model:
-:type model:
-:param train_number_epochs:
-:type train_number_epochs:
-:param train_batch_size:
-:type train_batch_size:
-:return:
-:rtype:
-"""
+    :param data_dir:
+    :type data_dir:
+    :param optimiser:
+    :type optimiser:
+    :param criterion:
+    :type criterion:
+    :param writer:
+    :type writer:
+    :param model_name:
+    :type model_name:
+    :param save_path:
+    :type save_path:
+    :param save_best:
+    :type save_best:
+    :param model:
+    :type model:
+    :param train_number_epochs:
+    :type train_number_epochs:
+    :param train_batch_size:
+    :type train_batch_size:
+    :return:
+    :rtype:
+
+      Parameters
+      ----------
+      img_size
+      validation_interval"""
 
     train_dataloader = DataLoader(
         TripletDataset(
@@ -231,7 +227,7 @@ def train_siamese(
             split=Split.Training,
         ),
         shuffle=True,
-        num_workers=4,
+        num_workers=0,
         batch_size=train_batch_size,
     )
 
@@ -248,7 +244,7 @@ def train_siamese(
             split=Split.Validation,
         ),
         shuffle=True,
-        num_workers=4,
+        num_workers=0,
         batch_size=train_batch_size,
     )
 
@@ -313,9 +309,7 @@ def train_siamese(
 if __name__ == "__main__":
 
     def main():
-        """
-
-"""
+        """ """
         data_dir = Path.home() / "Data" / "mnist_png"
         train_batch_size = 64
         train_number_epochs = 100
@@ -330,7 +324,7 @@ if __name__ == "__main__":
 
         if train:
             if load_prev:
-                model, optimer = load_model_parameters(
+                model, optimiser = load_model_parameters(
                     model,
                     optimiser=optimiser,
                     model_name=model_name,
@@ -338,19 +332,21 @@ if __name__ == "__main__":
                 )
 
             with TensorBoardPytorchWriter():
-                with CaptureEarlyStop() as _:
-                    with suppress(KeyboardInterrupt):
-                        model = train_siamese(
-                            model,
-                            optimiser,
-                            TripletMarginLoss().to(global_torch_device()),
-                            train_number_epochs=train_number_epochs,
-                            data_dir=data_dir,
-                            train_batch_size=train_batch_size,
-                            model_name=model_name,
-                            save_path=save_path,
-                            img_size=img_size,
-                        )
+                # from draugr.stopping import CaptureEarlyStop
+
+                # with CaptureEarlyStop() as _:
+                with IgnoreInterruptSignal():
+                    model = train_siamese(
+                        model,
+                        optimiser,
+                        TripletMarginLoss().to(global_torch_device()),
+                        train_number_epochs=train_number_epochs,
+                        data_dir=data_dir,
+                        train_batch_size=train_batch_size,
+                        model_name=model_name,
+                        save_path=save_path,
+                        img_size=img_size,
+                    )
             save_model_parameters(
                 model,
                 optimiser=optimiser,

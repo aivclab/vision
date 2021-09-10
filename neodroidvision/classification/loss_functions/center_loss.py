@@ -6,9 +6,7 @@ __all__ = ["CenterLoss", "CenterLossFunc"]
 
 
 class CenterLoss(nn.Module):
-    """
-
-"""
+    """ """
 
     def __init__(self, num_classes, feat_dim, size_average=True):
         super(CenterLoss, self).__init__()
@@ -19,16 +17,15 @@ class CenterLoss(nn.Module):
         self.feat_dim = feat_dim
         self.size_average = size_average
 
-    def forward(self, label, feat):
+    def forward(self, label: torch.Tensor, feat: torch.Tensor) -> torch.Tensor:
         """
 
-:param label:
-:type label:
-:param feat:
-:type feat:
-:return:
-:rtype:
-"""
+        :param label:
+        :type label:
+        :param feat:
+        :type feat:
+        :return:
+        :rtype:"""
         batch_size = feat.size(0)
         feat = feat.reshape(batch_size, -1)
         # To check the dim of centers and features
@@ -46,22 +43,21 @@ class CenterLoss(nn.Module):
 
 class CenterLossFunc(Function):
     @staticmethod
-    def forward(ctx, feature, label, centers, batch_size):
+    def forward(ctx, feature, label, centers, batch_size) -> torch.Tensor:
         """
 
-:param ctx:
-:type ctx:
-:param feature:
-:type feature:
-:param label:
-:type label:
-:param centers:
-:type centers:
-:param batch_size:
-:type batch_size:
-:return:
-:rtype:
-"""
+        :param ctx:
+        :type ctx:
+        :param feature:
+        :type feature:
+        :param label:
+        :type label:
+        :param centers:
+        :type centers:
+        :param batch_size:
+        :type batch_size:
+        :return:
+        :rtype:"""
         ctx.save_for_backward(feature, label, centers, batch_size)
         centers_batch = centers.index_select(0, label.long())
         return (feature - centers_batch).pow(2).sum() / 2.0 / batch_size
@@ -70,13 +66,12 @@ class CenterLossFunc(Function):
     def backward(ctx, grad_output):
         """
 
-:param ctx:
-:type ctx:
-:param grad_output:
-:type grad_output:
-:return:
-:rtype:
-"""
+        :param ctx:
+        :type ctx:
+        :param grad_output:
+        :type grad_output:
+        :return:
+        :rtype:"""
         feature, label, centers, batch_size = ctx.saved_tensors
         centers_batch = centers.index_select(0, label.long())
         diff = centers_batch - feature
@@ -94,11 +89,12 @@ class CenterLossFunc(Function):
 
 
 if __name__ == "__main__":
-    from draugr.torch_utilities import global_torch_device
 
-    def main(test_cuda=False):
+    def main():
+        from draugr.torch_utilities import global_torch_device
+
+        torch.manual_seed(999)
         print("-" * 80)
-        device = torch.device("cuda" if test_cuda else "cpu")
         ct = CenterLoss(10, 2, size_average=True).to(global_torch_device())
         y = torch.Tensor([0, 0, 2, 1]).to(global_torch_device())
         feat = torch.zeros(4, 2).to(global_torch_device()).requires_grad_()
@@ -110,8 +106,4 @@ if __name__ == "__main__":
         print(ct.centers.grad)
         print(feat.grad)
 
-    torch.manual_seed(999)
-    main(test_cuda=False)
-
-    if torch.cuda.is_available():
-        main(test_cuda=True)
+    main()

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from functools import partial
+
 import cv2
 import imageio
 from kivy.app import App
@@ -28,7 +30,11 @@ Window.clearcolor = (0.9, 0.9, 0.9, 1)
 class MainLayout(BoxLayout):
     _video_capture = None
     _face_cascade = None
-    _frame_name = str(PROJECT_APP_PATH.user_cache / "face_detection_frame.jpg")
+    _frame_name = (
+        rf'{PROJECT_APP_PATH.user_cache / "face_detection_frame.jpg"}'.replace(
+            "\\", "/"
+        )
+    )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -93,11 +99,11 @@ class MainLayout(BoxLayout):
 
     def start(self):
         if self.ids.status.text == "Stop":
-            self.stop()
+            self.stop_stream()
         else:
-            self.start_cam()
+            self.start_stream()
 
-    def start_cam(self):
+    def start_stream(self):
         self.ids.status.text = "Stop"
         self._video_capture = cv2.VideoCapture(0)
         self._face_cascade = cv2.CascadeClassifier(
@@ -105,7 +111,7 @@ class MainLayout(BoxLayout):
         )
         Clock.schedule_once(self.update)
 
-    def stop(self):
+    def stop_stream(self):
         self.ids.status.text = "Start"
         Clock.unschedule(self.update)
         self._video_capture.release()
@@ -129,9 +135,11 @@ class MainLayout(BoxLayout):
         self.ids.image_source.reload()
         Clock.schedule_once(self.update)
 
-    @staticmethod
-    def close():
+    def close(self):
+        self.stop_stream()
+        # self.stop()
         App.get_running_app().stop()
+        # exit(0)
 
     def settings(self):
         self._popup.open()
@@ -146,8 +154,7 @@ class MainLayout(BoxLayout):
 
 class VideoStreamApp(App):
     """
-VideoStreamApp
-"""
+    VideoStreamApp"""
 
     layout_kv = f"""
 MainLayout:
@@ -156,12 +163,12 @@ MainLayout:
     padding: root.width * 0.05, root.height * .05
     spacing: '5dp'
     BoxLayout:
-      size_hint: [1,.85]
+      size_hint: [1, .85]
       Image:
         id: image_source
         source: '{MainLayout._frame_name}'
     BoxLayout:
-      size_hint: [1,.15]
+      size_hint: [1, .15]
       GridLayout:
         cols: 3
         spacing: '10dp'
@@ -184,12 +191,56 @@ MainLayout:
           background_normal: ''
           background_color: (0.82, 0.82, 0.82, 1.0)
           on_press: root.close()
-  """
+"""
 
     def build(self):
-        a = Builder.load_string(VideoStreamApp.layout_kv)
-        a.start_cam()
+        a = Builder.load_string(VideoStreamApp.layout_kv, filename="my_rule.kv")
+        # a.bind(on_request_close=self.on_request_close)
+        a.start_stream()
         return a
+
+    '''
+def on_request_close(self, *args):
+    self.textpopup(title='Exit', text='Are you sure?')
+    return True
+    def textpopup(self, title='', text=''):
+        """Open the pop-up with the name.
+
+        :param title: title of the pop-up to open
+        :type title: str
+        :param text: main text of the pop-up to open
+        :type text: str
+        :rtype: None
+        """
+    box = BoxLayout(orientation='vertical')
+    box.add_widget(Label(text=text))
+    mybutton = Button(text='OK', size_hint=(1, 0.25))
+    box.add_widget(mybutton)
+    popup = Popup(title=title, content=box, size_hint=(None, None), size=(600, 300))
+    mybutton.bind(on_release=self.stop)
+    popup.open()
+    '''
+
+    def stop(self, *largs):
+        # Open the popup you want to open and declare callback if user pressed `Yes`
+        popup = ExitPopup(title="Are you sure?")
+        popup.bind(on_confirm=partial(self.close_app, *largs))
+        popup.open()
+
+    def close_app(self, *largs):
+        super().stop(*largs)
+
+
+class ExitPopup(Popup):
+    def __init__(self, **kwargs):
+        super(ExitPopup, self).__init__(**kwargs)
+        self.register_event_type("on_confirm")
+
+    def on_confirm(self):
+        pass
+
+    def on_button_yes(self):
+        self.dispatch("on_confirm")
 
 
 def main():

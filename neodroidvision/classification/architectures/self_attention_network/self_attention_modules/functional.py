@@ -6,6 +6,8 @@ __all__ = ["aggregation", "subtraction", "subtraction2"]
 
 
 class PadModeEnum(Enum):
+    """ """
+
     zero_pad = 0
     ref_pad = 1
 
@@ -21,23 +23,22 @@ def aggregation(
 ):
     """
 
-:param input:
-:type input:
-:param weight:
-:type weight:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:param pad_mode:
-:type pad_mode:
-:return:
-:rtype:
-"""
+    :param input:
+    :type input:
+    :param weight:
+    :type weight:
+    :param kernel_size:
+    :type kernel_size:
+    :param stride:
+    :type stride:
+    :param padding:
+    :type padding:
+    :param dilation:
+    :type dilation:
+    :param pad_mode:
+    :type pad_mode:
+    :return:
+    :rtype:"""
     assert (
         input.shape[0] == weight.shape[0]
         and (input.shape[1] % weight.shape[1] == 0)
@@ -67,21 +68,20 @@ def subtraction(
 ):
     """
 
-:param input:
-:type input:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:param pad_mode:
-:type pad_mode:
-:return:
-:rtype:
-"""
+    :param input:
+    :type input:
+    :param kernel_size:
+    :type kernel_size:
+    :param stride:
+    :type stride:
+    :param padding:
+    :type padding:
+    :param dilation:
+    :type dilation:
+    :param pad_mode:
+    :type pad_mode:
+    :return:
+    :rtype:"""
     assert input.dim() == 4 and pad_mode in [0, 1]
     if input.is_cuda:
         if pad_mode == PadModeEnum.zero_pad:
@@ -108,23 +108,22 @@ def subtraction2(
 ):
     """
 
-:param input1:
-:type input1:
-:param input2:
-:type input2:
-:param kernel_size:
-:type kernel_size:
-:param stride:
-:type stride:
-:param padding:
-:type padding:
-:param dilation:
-:type dilation:
-:param pad_mode:
-:type pad_mode:
-:return:
-:rtype:
-"""
+    :param input1:
+    :type input1:
+    :param input2:
+    :type input2:
+    :param kernel_size:
+    :type kernel_size:
+    :param stride:
+    :type stride:
+    :param padding:
+    :type padding:
+    :param dilation:
+    :type dilation:
+    :param pad_mode:
+    :type pad_mode:
+    :return:
+    :rtype:"""
     assert input1.dim() == 4 and input2.dim() == 4 and pad_mode in [0, 1]
     if input1.is_cuda:
         if pad_mode == PadModeEnum.zero_pad:

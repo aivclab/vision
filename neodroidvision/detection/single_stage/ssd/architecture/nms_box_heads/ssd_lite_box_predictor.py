@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 11/05/2020
            """
 
+from torch import nn
+
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
 from neodroidvision.utilities import SeparableConv2d
-from torch import nn
 
 __all__ = ["SSDLiteBoxPredictor"]
 
@@ -22,15 +23,14 @@ class SSDLiteBoxPredictor(BoxPredictor):
     ) -> nn.Module:
         """
 
-:param level:
-:type level:
-:param out_channels:
-:type out_channels:
-:param boxes_per_location:
-:type boxes_per_location:
-:return:
-:rtype:
-"""
+        :param level:
+        :type level:
+        :param out_channels:
+        :type out_channels:
+        :param boxes_per_location:
+        :type boxes_per_location:
+        :return:
+        :rtype:"""
         if level == len(self.out_channels) - 1:
             return nn.Conv2d(
                 out_channels, boxes_per_location * self.num_categories, kernel_size=1
@@ -49,15 +49,14 @@ class SSDLiteBoxPredictor(BoxPredictor):
     ) -> nn.Module:
         """
 
-:param level:
-:type level:
-:param out_channels:
-:type out_channels:
-:param boxes_per_location:
-:type boxes_per_location:
-:return:
-:rtype:
-"""
+        :param level:
+        :type level:
+        :param out_channels:
+        :type out_channels:
+        :param boxes_per_location:
+        :type boxes_per_location:
+        :return:
+        :rtype:"""
         if level == len(self.out_channels) - 1:
             return nn.Conv2d(out_channels, boxes_per_location * 4, kernel_size=1)
         return SeparableConv2d(

@@ -6,25 +6,24 @@ from pathlib import Path
 
 import torch
 import torch.utils.data
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
-from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
-from neodroidvision.regression.vae.architectures.vae import VAE
-from neodroidvision.regression.visualisation.encoder_utilities import plot_manifold
-from torch import optim
-from torch.utils.data import DataLoader
-from torchvision.utils import save_image
-from tqdm import tqdm
-
+from draugr.numpy_utilities import Split
 from draugr.torch_utilities import (
-    Split,
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
 )
 from draugr.writers import Writer
-from .objectives import kl_divergence, reconstruction_loss
+from torch import optim
+from torch.utils.data import DataLoader
+from torchvision.utils import save_image
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
+from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
+from neodroidvision.regression.vae.architectures.vae import VAE
+from objectives import kl_divergence, reconstruction_loss
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -33,9 +32,8 @@ __doc__ = r"""
 
 torch.manual_seed(82375329)
 LOWEST_L = inf
-import multiprocessing
 
-core_count = min(8, multiprocessing.cpu_count() - 1)
+core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
 
 GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DL_KWARGS = (
@@ -53,7 +51,7 @@ EPOCHS = 1000
 LR = 3e-3
 ENCODING_SIZE = 10
 DATASET = VggFaces2(
-    Path.home/"Data"/"vggface2", split=Split.Testing, resize_s=INPUT_SIZE
+    Path.home() / "Data" / "vggface2", split=Split.Testing, resize_s=INPUT_SIZE
 )
 MODEL: VAE = HigginsVae(CHANNELS, latent_size=ENCODING_SIZE).to(global_torch_device())
 BETA = 4
@@ -103,7 +101,7 @@ def train_model(
         )
 
 
-def test_model(
+def stest_model(
     model: VAE,
     epoch_i: int,
     metric_writer: Writer,
@@ -135,10 +133,10 @@ def test_model(
                         )
                         """
 scatter_plot_encoding_space(str(BASE_PATH /
-            f'encoding_space_{str(epoch_i)}.png'),
-        mean.to('cpu').numpy(),
-        log_var.to('cpu').numpy(),
-        labels)
+f'encoding_space_{str(epoch_i)}.png'),
+mean.to('cpu').numpy(),
+log_var.to('cpu').numpy(),
+labels)
 """
                 break
 
@@ -159,13 +157,13 @@ if __name__ == "__main__":
     def main():
 
         """
-ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
-             train=True,
-             download=True,
-             transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
-                                                              train=False,
-                                                              transform=transforms.ToTensor())]
-                                                              """
+        ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
+                 train=True,
+                 download=True,
+                 transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
+                                                                  train=False,
+                                                                  transform=transforms.ToTensor())]
+        """
 
         dataset_loader = DataLoader(
             DATASET, batch_size=BATCH_SIZE, shuffle=True, **DL_KWARGS
@@ -178,12 +176,15 @@ ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
         ) as metric_writer:
             for epoch in range(1, EPOCHS + 1):
                 train_model(MODEL, optimiser, epoch, metric_writer, dataset_loader)
-                test_model(MODEL, epoch, metric_writer, dataset_loader)
+                stest_model(MODEL, epoch, metric_writer, dataset_loader)
                 with torch.no_grad():
-                    a = MODEL.sample().view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
-                    A = DATASET.inverse_transform(a)
-                    A.save(str(BASE_PATH / f"sample_{str(epoch)}.png"))
+                    inv_sample = DATASET.inverse_transform(
+                        MODEL.sample().view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
+                    )
+                    inv_sample.save(str(BASE_PATH / f"sample_{str(epoch)}.png"))
                     if ENCODING_SIZE == 2:
+                        from neodroidvision.utilities import plot_manifold
+
                         plot_manifold(
                             MODEL,
                             out_path=str(BASE_PATH / f"manifold_{str(epoch)}.png"),

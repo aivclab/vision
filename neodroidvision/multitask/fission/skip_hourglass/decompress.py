@@ -1,15 +1,15 @@
 import torch
-from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 from torch import nn
+
+from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 
 __all__ = ["Decompress"]
 
 
 class Decompress(nn.Module):
     """
-A helper Module that performs 2 convolutions and 1 UpConvolution.
-A ReLU activation follows each convolution.
-"""
+    A helper Module that performs 2 convolutions and 1 UpConvolution.
+    A ReLU activation follows each convolution."""
 
     @staticmethod
     def decompress(
@@ -20,17 +20,16 @@ A ReLU activation follows each convolution.
     ) -> nn.Module:
         """
 
-:param in_channels:
-:type in_channels:
-:param out_channels:
-:type out_channels:
-:param mode:
-:type mode:
-:param factor:
-:type factor:
-:return:
-:rtype:
-"""
+        :param in_channels:
+        :type in_channels:
+        :param out_channels:
+        :type out_channels:
+        :param mode:
+        :type mode:
+        :param factor:
+        :type factor:
+        :return:
+        :rtype:"""
         if mode == UpscaleMode.FractionalTranspose:
             return nn.ConvTranspose2d(
                 in_channels, out_channels, kernel_size=2, stride=factor
@@ -93,11 +92,10 @@ A ReLU activation follows each convolution.
 
     def forward(self, from_down: torch.Tensor, from_up: torch.Tensor) -> torch.Tensor:
         """
-Forward pass
-Arguments:
-from_down: tensor from the encoder pathway
-from_up: upconv'd tensor from the decoder pathway
-"""
+        Forward pass
+        Arguments:
+        from_down: tensor from the encoder pathway
+        from_up: upconv'd tensor from the decoder pathway"""
         from_up = self.upconv(from_up)
 
         if self.merge_mode == MergeMode.Concat:

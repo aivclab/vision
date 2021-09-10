@@ -14,9 +14,8 @@ if __name__ == "__main__":
     ):
         """
 
-:param im:
-:type im:
-"""
+        :param im:
+        :type im:"""
 
         coef = pywt.wavedec2(im, wavelet=mother_wavelet, level=levels)
 
@@ -40,9 +39,8 @@ if __name__ == "__main__":
     def main(im_raw):
         """
 
-:param im_raw:
-:type im_raw:
-"""
+        :param im_raw:
+        :type im_raw:"""
         pyplot.figure()
         pyplot.imshow(im_raw, pyplot.cm.gray)
         pyplot.title("Original image")

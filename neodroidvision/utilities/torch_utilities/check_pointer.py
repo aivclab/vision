@@ -12,20 +12,19 @@ from pathlib import Path
 from typing import Any
 
 import torch
-from neodroidvision.utilities.torch_utilities.custom_model_caching import (
-    custom_cache_url,
-)
 from torch.nn import Module
 from torch.nn.parallel import DistributedDataParallel
 from torch.optim import Optimizer
+
+from neodroidvision.utilities.torch_utilities.custom_model_caching import (
+    custom_cache_url,
+)
 
 __all__ = ["CheckPointer"]
 
 
 class CheckPointer:
-    """
-
-"""
+    """ """
 
     _last_checkpoint_name = "last_checkpoint.txt"
 
@@ -40,19 +39,18 @@ class CheckPointer:
     ):
         """
 
-:param model:
-:type model:
-:param optimizer:
-:type optimizer:
-:param scheduler:
-:type scheduler:
-:param save_dir:
-:type save_dir:
-:param save_to_disk:
-:type save_to_disk:
-:param logger:
-:type logger:
-"""
+        :param model:
+        :type model:
+        :param optimizer:
+        :type optimizer:
+        :param scheduler:
+        :type scheduler:
+        :param save_dir:
+        :type save_dir:
+        :param save_to_disk:
+        :type save_to_disk:
+        :param logger:
+        :type logger:"""
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler

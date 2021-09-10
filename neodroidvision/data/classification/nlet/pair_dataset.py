@@ -13,21 +13,22 @@ from typing import Tuple, Union
 
 import numpy
 import torch
+from draugr.numpy_utilities import Split
+from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
-from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 from warg import drop_unused_kws, passes_kws_to
 
-from draugr.torch_utilities import Split, SupervisedDataset, to_tensor
+from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 
 __all__ = ["PairDataset"]
 
 
 class PairDataset(
     SupervisedDataset
-):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a general torch lib.
+):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a
+    # general torch lib.
     """
-# This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair
-"""
+    # This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair"""
 
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws
@@ -49,15 +50,15 @@ class PairDataset(
 
     def __getitem__(self, idx1: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-    returns torch.tensors for img pair and a label for whether the pair is of the same class (1 if not the same)
+        returns torch.tensors for img pair and a label for whether the pair is of the same class (1 if not the
+        same)
 
 
 
-:param idx1:
-:type idx1:
-:return:
-:rtype:
-"""
+        :param idx1:
+        :type idx1:
+        :return:
+        :rtype:"""
         t1 = random.choice(self._dataset.category_names)
 
         if random.randint(0, 1):
@@ -88,30 +89,30 @@ class PairDataset(
     def response_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return (len(self._dataset.category_names),)
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
         """
 
-:return:
-:rtype:
-"""
+        :return:
+        :rtype:"""
         return to_tensor(self.__getitem__(0)[0]).shape
 
     def __len__(self):
         return len(self._dataset)
 
     def sample(self, horizontal_merge: bool = False) -> None:
-        """
-
-  """
+        """ """
         dl = iter(
             torch.utils.data.DataLoader(
-                self, batch_size=9, shuffle=True, num_workers=1, pin_memory=False
+                self,
+                batch_size=9,
+                shuffle=True,
+                num_workers=0,
+                pin_memory=global_pin_memory(0),
             )
         )
         for _ in range(3):
@@ -130,11 +131,10 @@ class PairDataset(
     def plot_images(images, label=None) -> None:
         """
 
-:param images:
-:type images:
-:param label:
-:type label:
-"""
+        :param images:
+        :type images:
+        :param label:
+        :type label:"""
         images = images.squeeze()
         if label is not None:
             assert len(images) == len(label) == 9

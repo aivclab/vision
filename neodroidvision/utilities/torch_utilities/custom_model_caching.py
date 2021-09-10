@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import torch
+
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     is_main_process,
     synchronise_torch_barrier,
@@ -33,22 +34,21 @@ __all__ = ["custom_cache_url", "load_state_dict_from_url"]
 # but with a few improvements and modifications
 def custom_cache_url(url: str, model_dir: Path = None, progress: bool = True) -> Path:
     r"""Loads the Torch serialized object at the given URL.
-If the object is already present in `model_dir`, it's deserialized and
-returned. The filename part of the URL should follow the naming convention
-``filename-<sha256>.ext`` where ``<sha256>`` is the first eight or more
-digits of the SHA256 hash of the contents of the file. The hash is used to
-ensure unique names and to verify the contents of the file.
-The default value of `model_dir` is ``$TORCH_HOME/models`` where
-``$TORCH_HOME`` defaults to ``~/.torch``. The default directory can be
-overridden with the ``$TORCH_MODEL_ZOO`` environment variable.
-Args:
-url (string): URL of the object to download
-model_dir (string, optional): directory in which to save the object
-progress (bool, optional): whether or not to display a progress bar to stderr
-Example:
->>> cached_file = maskrcnn_benchmark.utils.model_zoo.custom_cache_url(
-'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth')
-"""
+    If the object is already present in `model_dir`, it's deserialized and
+    returned. The filename part of the URL should follow the naming convention
+    ``filename-<sha256>.ext`` where ``<sha256>`` is the first eight or more
+    digits of the SHA256 hash of the contents of the file. The hash is used to
+    ensure unique names and to verify the contents of the file.
+    The default value of `model_dir` is ``$TORCH_HOME/models`` where
+    ``$TORCH_HOME`` defaults to ``~/.torch``. The default directory can be
+    overridden with the ``$TORCH_MODEL_ZOO`` environment variable.
+    Args:
+    url (string): URL of the object to download
+    model_dir (string, optional): directory in which to save the object
+    progress (bool, optional): whether or not to display a progress bar to stderr
+    Example:
+    >>> cached_file = maskrcnn_benchmark.utils.model_zoo.custom_cache_url(
+    'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth')"""
     if model_dir is None:
         model_dir = os.getenv(
             "TORCH_MODEL_ZOO",

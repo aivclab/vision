@@ -4,8 +4,8 @@ from torch.nn.modules.utils import _pair
 
 from .self_attention_utilities import (
     CUDA_NUM_THREADS,
-    GET_BLOCKS,
     Stream,
+    get_blocks_,
     get_dtype_str,
     kernel_loop,
     load_kernel,
@@ -150,7 +150,7 @@ class SubtractionZeropad(Function):
             )
             f(
                 block=(CUDA_NUM_THREADS, 1, 1),
-                grid=(GET_BLOCKS(n), 1, 1),
+                grid=(get_blocks_(n), 1, 1),
                 args=[input.data_ptr(), output.data_ptr()],
                 stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
             )
@@ -210,7 +210,7 @@ class SubtractionZeropad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[grad_output.data_ptr(), grad_input.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )

@@ -20,20 +20,16 @@ from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
 
-from draugr.torch_utilities import Split
+from draugr.numpy_utilities import Split
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 
 
 class VOCDataset(ObjectDetectionDataset):
-    """
-
-"""
+    """ """
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """
-
-"""
+        """ """
         raise NotImplementedError
 
     @property
@@ -96,25 +92,24 @@ class VOCDataset(ObjectDetectionDataset):
     ):
         """
 
-Dataset for VOC data.
+        Dataset for VOC data.
 
-data_root: the root of the VOC2007 or VOC2012 dataset, the directory contains the following
+        data_root: the root of the VOC2007 or VOC2012 dataset, the directory contains the following
 
-Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
+        Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
 
-:param data_root:
-:type data_root:
-:param dataset_name:
-:type dataset_name:
-:param split:
-:type split:
-:param img_transform:
-:type img_transform:
-:param annotation_transform:
-:type annotation_transform:
-:param keep_difficult:
-:type keep_difficult:
-"""
+        :param data_root:
+        :type data_root:
+        :param dataset_name:
+        :type dataset_name:
+        :param split:
+        :type split:
+        :param img_transform:
+        :type img_transform:
+        :param annotation_transform:
+        :type annotation_transform:
+        :param keep_difficult:
+        :type keep_difficult:"""
 
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
@@ -149,11 +144,10 @@ Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
     def get_annotation(self, index):
         """
 
-:param index:
-:type index:
-:return:
-:rtype:
-"""
+        :param index:
+        :type index:
+        :return:
+        :rtype:"""
         image_id = self._ids[index]
         return image_id, self._get_annotation(image_id)
 
@@ -197,11 +191,10 @@ Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject.
     def get_img_info(self, index):
         """
 
-:param index:
-:type index:
-:return:
-:rtype:
-"""
+        :param index:
+        :type index:
+        :return:
+        :rtype:"""
         img_id = self._ids[index]
         annotation_file = self._data_dir / "Annotations" / f"{img_id}.xml"
         anno = ElementTree.parse(annotation_file).getroot()

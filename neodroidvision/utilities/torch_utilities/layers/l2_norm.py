@@ -15,16 +15,13 @@ __all__ = ["L2Norm"]
 
 
 class L2Norm(nn.Module):
-    """
-
-  """
+    """ """
 
     def __init__(self, n_channels: int, scale: float):
         """
 
-    :param n_channels:
-    :param scale:
-    """
+        :param n_channels:
+        :param scale:"""
         super().__init__()
         self.n_channels = n_channels
         self.gamma = scale or None
@@ -35,16 +32,14 @@ class L2Norm(nn.Module):
     def reset_parameters(self) -> None:
         """
 
-    :return:
-    """
+        :return:"""
         init.constant_(self.weight, self.gamma)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
 
-    :param x:
-    :return:
-    """
+        :param x:
+        :return:"""
         norm = x.pow(2).sum(dim=1, keepdim=True).sqrt() + self.eps
         x = torch.div(x, norm)
         return self.weight.unsqueeze(0).unsqueeze(2).unsqueeze(3).expand_as(x) * x

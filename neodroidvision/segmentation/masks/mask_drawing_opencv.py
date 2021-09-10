@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from enum import Enum
+from typing import List
 
 import cv2
 import numpy
@@ -11,8 +12,10 @@ __doc__ = r"""
            Created on 20/10/2019
            """
 
+__all__ = ["draw_masks", "ConvexHullEnum", "draw_convex_hull"]
 
-def draw_masks(img2: numpy.ndarray, img_mask_list) -> numpy.ndarray:
+
+def draw_masks(img2: numpy.ndarray, img_mask_list: List) -> numpy.ndarray:
     img = img2.copy()
     for ii in range(4):  # for each of the 4 masks
         color_mask = numpy.zeros(img2.shape)
@@ -31,23 +34,23 @@ def draw_masks(img2: numpy.ndarray, img_mask_list) -> numpy.ndarray:
     return img
 
 
-class ConvexHullMode(Enum):
+class ConvexHullEnum(Enum):
     rect = "rect"
     convex = "convex"
     minAreaRect = "minAreaRect"
 
 
 def draw_convex_hull(
-    mask: numpy.ndarray, mode: ConvexHullMode = ConvexHullMode.convex
+    mask: numpy.ndarray, mode: ConvexHullEnum = ConvexHullEnum.convex
 ) -> numpy.ndarray:
     img = numpy.zeros(mask.shape)
     contours, hier = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     for c in contours:
-        if mode == ConvexHullMode.rect:  # simple rectangle
+        if mode == ConvexHullEnum.rect:  # simple rectangle
             x, y, w, h = cv2.boundingRect(c)
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 255), -1)
-        if mode == ConvexHullMode.convex:  # minimum convex hull
+        if mode == ConvexHullEnum.convex:  # minimum convex hull
             hull = cv2.convexHull(c)
             cv2.drawContours(img, [hull], 0, (255, 255, 255), -1)
         else:  # minimum area rectangle

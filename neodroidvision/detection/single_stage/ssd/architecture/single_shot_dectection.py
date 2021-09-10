@@ -1,12 +1,12 @@
 import torch
 from torch import nn
 
-__all__ = ["SingleShotDectection"]
+__all__ = ["SingleShotDetection"]
 
 from warg import NOD
 
 
-class SingleShotDectection(nn.Module):
+class SingleShotDetection(nn.Module):
     def __init__(self, cfg: NOD):
         super().__init__()
         self.backbone = cfg.model.backbone.name(

@@ -12,25 +12,24 @@ from typing import Tuple
 
 import numpy
 from PIL import Image
+from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import xywh_to_minmax
+
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
 
-from draugr.opencv_utilities import xywh_to_minmax
-
 __all__ = ["COCODataset"]
 
-from draugr.torch_utilities import NamedTensorTuple, Split
+from draugr.torch_utilities import NamedTensorTuple
 
 
 class COCODataset(ObjectDetectionDataset):
-    """
-
-"""
+    """ """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
-        pass
+        return (len(COCODataset.categories),)
 
     categories = (
         "__background__",
@@ -132,10 +131,8 @@ class COCODataset(ObjectDetectionDataset):
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """
-
-"""
-        pass
+        """ """
+        return (-1, -1, 3)
 
     def __init__(
         self,
@@ -147,19 +144,18 @@ class COCODataset(ObjectDetectionDataset):
     ):
         """
 
-:param data_root:
-:type data_root:
-:param dataset_name:
-:type dataset_name:
-:param split:
-:type split:
-:param img_transform:
-:type img_transform:
-:param annotation_transform:
-:type annotation_transform:
-:param remove_empty:
-:type remove_empty:
-"""
+        :param data_root:
+        :type data_root:
+        :param dataset_name:
+        :type dataset_name:
+        :param split:
+        :type split:
+        :param img_transform:
+        :type img_transform:
+        :param annotation_transform:
+        :type annotation_transform:
+        :param remove_empty:
+        :type remove_empty:"""
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
         )
@@ -199,11 +195,10 @@ class COCODataset(ObjectDetectionDataset):
     def get_annotation(self, index):
         """
 
-:param index:
-:type index:
-:return:
-:rtype:
-"""
+        :param index:
+        :type index:
+        :return:
+        :rtype:"""
         image_id = self._ids[index]
         return image_id, self._get_annotation(image_id)
 
@@ -234,11 +229,10 @@ class COCODataset(ObjectDetectionDataset):
     def get_img_info(self, index):
         """
 
-:param index:
-:type index:
-:return:
-:rtype:
-"""
+        :param index:
+        :type index:
+        :return:
+        :rtype:"""
         return self._coco_source.imgs[self._ids[index]]
 
     def _read_image(self, image_id):

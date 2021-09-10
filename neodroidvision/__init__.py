@@ -32,8 +32,7 @@ from typing import Any
 
 def dist_is_editable(dist: Any) -> bool:
     """
-Return True if given Distribution is an editable install.
-"""
+    Return True if given Distribution is an editable install."""
     import sys
     from pathlib import Path
 
@@ -46,9 +45,11 @@ Return True if given Distribution is an editable install.
 
 PROJECT_NAME = __project__.lower().strip().replace(" ", "_")
 PROJECT_VERSION = __version__
+PROJECT_YEAR = 2018
 PROJECT_AUTHOR = __author__.lower().strip().replace(" ", "_")
 PROJECT_APP_PATH = AppPath(app_name=PROJECT_NAME, app_author=PROJECT_AUTHOR)
-PACKAGE_DATA_PATH=Path(pkg_resources.resource_filename(PROJECT_NAME, 'data'))
+PACKAGE_DATA_PATH = Path(pkg_resources.resource_filename(PROJECT_NAME, "data"))
+INCLUDE_PROJECT_READMES = False
 
 distributions = {v.key: v for v in pkg_resources.working_set}
 if PROJECT_NAME in distributions:

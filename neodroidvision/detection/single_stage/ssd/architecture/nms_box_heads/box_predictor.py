@@ -8,9 +8,7 @@ __all__ = ["BoxPredictor"]
 
 
 class BoxPredictor(nn.Module):
-    """
-
-"""
+    """ """
 
     def __init__(self, boxes_per_location, out_channels, num_categories):
         super().__init__()
@@ -37,32 +35,28 @@ class BoxPredictor(nn.Module):
     def category_block(self, level: int, out_channels: int, boxes_per_location: int):
         """
 
-:param level:
-:type level:
-:param out_channels:
-:type out_channels:
-:param boxes_per_location:
-:type boxes_per_location:
-"""
+        :param level:
+        :type level:
+        :param out_channels:
+        :type out_channels:
+        :param boxes_per_location:
+        :type boxes_per_location:"""
         raise NotImplementedError
 
     @abstractmethod
     def location_block(self, level: int, out_channels: int, boxes_per_location: int):
         """
 
-:param level:
-:type level:
-:param out_channels:
-:type out_channels:
-:param boxes_per_location:
-:type boxes_per_location:
-"""
+        :param level:
+        :type level:
+        :param out_channels:
+        :type out_channels:
+        :param boxes_per_location:
+        :type boxes_per_location:"""
         raise NotImplementedError
 
     def reset_parameters(self) -> None:
-        """
-
-"""
+        """ """
         for module in self.modules():
             if isinstance(module, nn.Conv2d):
                 nn.init.xavier_uniform_(module.weight)
@@ -71,11 +65,10 @@ class BoxPredictor(nn.Module):
     def forward(self, features: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
-:param features:
-:type features:
-:return:
-:rtype:
-"""
+        :param features:
+        :type features:
+        :return:
+        :rtype:"""
         cls_logits = []
         bbox_pred = []
         for feature, cat_fun, loc_fun in zip(

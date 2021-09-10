@@ -15,11 +15,12 @@ from typing import Any, List
 
 import torch
 import torch.utils.data
+from torch import distributed
+
 from neodroidvision.utilities.torch_utilities.distributing.serialisation import (
     deserialise_byte_tensor,
     to_byte_tensor,
 )
-from torch import distributed
 
 __all__ = [
     "all_gather_cuda",
@@ -40,8 +41,7 @@ __all__ = [
 def is_distribution_ready() -> bool:
     """
 
-  :return:
-  """
+    :return:"""
     if not distributed.is_available():
         return False
     if not distributed.is_initialized():
@@ -52,8 +52,7 @@ def is_distribution_ready() -> bool:
 def global_world_size() -> int:
     """
 
-  :return:
-  """
+    :return:"""
     if not is_distribution_ready():
         return 1
     return distributed.get_world_size()
@@ -62,8 +61,7 @@ def global_world_size() -> int:
 def global_distribution_rank() -> int:
     """
 
-  :return:
-  """
+    :return:"""
     if not is_distribution_ready():
         return 0
     return distributed.get_rank()
@@ -72,26 +70,23 @@ def global_distribution_rank() -> int:
 def is_main_process() -> bool:
     """
 
-  :return:
-  """
+    :return:"""
     return global_distribution_rank() == 0
 
 
 def save_on_master(*args, **kwargs) -> None:
     """
 
-  :param args:
-  :param kwargs:
-  :return:
-  """
+    :param args:
+    :param kwargs:
+    :return:"""
     if is_main_process():
         torch.save(*args, **kwargs)
 
 
 def setup_for_distributed(is_master: bool) -> None:
     """
-This function disables printing when not in master process
-"""
+    This function disables printing when not in master process"""
     import builtins as __builtin__
 
     builtin_print = __builtin__.print
@@ -106,12 +101,11 @@ This function disables printing when not in master process
 
 def all_gather_cuda(data: Any) -> List[bytes]:
     """
-Run all_gather on arbitrary picklable data (not necessarily tensors)
-Args:
-data: any picklable object
-Returns:
-list[data]: list of data gathered from each rank
-"""
+    Run all_gather on arbitrary picklable data (not necessarily tensors)
+    Args:
+    data: any picklable object
+    Returns:
+    list[data]: list of data gathered from each rank"""
     world_size = global_world_size()
     if world_size == 1:
         return [data]
@@ -143,13 +137,12 @@ list[data]: list of data gathered from each rank
 
 def reduce_dict(input_dict: dict, average: bool = True) -> dict:
     """
-Args:
-input_dict (dict): all the values will be reduced
-average (bool): whether to do average or sum
-Reduce the values in the dictionary from all processes so that all processes
-have the averaged results. Returns a dict with the same fields as
-input_dict, after reduction.
-"""
+    Args:
+    input_dict (dict): all the values will be reduced
+    average (bool): whether to do average or sum
+    Reduce the values in the dictionary from all processes so that all processes
+    have the averaged results. Returns a dict with the same fields as
+    input_dict, after reduction."""
     world_size = global_world_size()
     if world_size < 2:
         return input_dict
@@ -198,9 +191,8 @@ def init_distributed_mode(args: Any) -> None:
 
 def synchronise_torch_barrier() -> None:
     """
- Helper function to synchronize (barrier) among all processes when
- using distributed training
-"""
+    Helper function to synchronize (barrier) among all processes when
+    using distributed training"""
     if not is_distribution_ready():
         return
     world_size = distributed.get_world_size()
@@ -210,17 +202,14 @@ def synchronise_torch_barrier() -> None:
 
 
 def setup_distributed_logger(
-    name: str,
-    distributed_rank: int,
-    save_dir: Path = None
+    name: str, distributed_rank: int, save_dir: Path = None
 ) -> logging.Logger:
     """
 
-  :param name:
-  :param distributed_rank:
-  :param save_dir:
-  :return:
-  """
+    :param name:
+    :param distributed_rank:
+    :param save_dir:
+    :return:"""
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     # don't log results for the non-master process
@@ -242,10 +231,9 @@ def setup_distributed_logger(
 def set_benchmark_device_dist(distributed: bool, local_rank: int) -> None:
     """
 
-  :param distributed:
-  :param local_rank:
-  :return:
-  """
+    :param distributed:
+    :param local_rank:
+    :return:"""
     if torch.cuda.is_available():
         # This flag allows you to enable the inbuilt cudnn auto-tuner to
         # find the best algorithm to use for your hardware.

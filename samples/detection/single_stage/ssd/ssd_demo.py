@@ -7,20 +7,23 @@ import numpy
 import torch
 from PIL import Image, ImageFont
 from apppath import ensure_existence
+from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import draw_bounding_boxes
+from draugr.torch_utilities import global_torch_device
+
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
-from neodroidvision.detection import SingleShotDectection
+from neodroidvision.detection import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
 
-from draugr.opencv_utilities import draw_bounding_boxes
-from draugr.torch_utilities import Split, global_torch_device
-
 
 @torch.no_grad()
-def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_dir):
-    model = SingleShotDectection(cfg)
+def run_demo(
+    cfg, categories, model_ckpt, score_threshold, images_dir, output_dir: Path
+):
+    model = SingleShotDetection(cfg)
 
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
@@ -77,15 +80,15 @@ def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_d
         drawn_image = draw_bounding_boxes(
             image,
             boxes,
-            labels,
-            scores,
-            class_names,
+            labels=labels,
+            scores=scores,
+            categories=categories,
             score_font=ImageFont.truetype(
-                PACKAGE_DATA_PATH/"Lato-Regular.ttf",
+                PACKAGE_DATA_PATH / "Lato-Regular.ttf",
                 24,
-                ),
+            ),
         ).astype(numpy.uint8)
-        Image.fromarray(drawn_image).save(os.path.join(output_dir, image_name))
+        Image.fromarray(drawn_image).save(str(output_dir / image_name))
 
 
 def main():
@@ -95,8 +98,10 @@ def main():
     parser.add_argument(
         "--ckpt",
         type=str,
-        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
-                "mobilenet_v2_ssd320_voc0712.pth"
+        default=PROJECT_APP_PATH.user_data
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"
@@ -106,7 +111,7 @@ def main():
     parser.add_argument("--score_threshold", type=float, default=0.7)
     parser.add_argument(
         "--images_dir",
-        default=Path.home()/"Data"/"Neodroid",
+        default=Path.home() / "Data" / "Neodroid",
         type=str,
         help="Specify a image dir to do prediction.",
     )
@@ -115,11 +120,11 @@ def main():
 
     run_demo(
         cfg=base_cfg,
-        class_names=base_cfg.dataset_type.category_sizes,
+        categories=base_cfg.dataset_type.categories,
         model_ckpt=args.ckpt,
         score_threshold=args.score_threshold,
         images_dir=Path(args.images_dir),
-        output_dir=base_cfg.OUTPUT_DIR,
+        output_dir=Path(base_cfg.OUTPUT_DIR),
     )
 
 

@@ -1,6 +1,7 @@
 import datetime
 import time
 from collections import defaultdict, deque
+from typing import Optional
 
 import torch
 import torch.utils.data
@@ -8,15 +9,16 @@ from torch import distributed
 
 __all__ = ["SmoothedValue", "MetricLogger"]
 
-from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import is_distribution_ready
+from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
+    is_distribution_ready,
+)
 
 
 class SmoothedValue(object):
     """Track a series of values and provide access to smoothed values over a
-window or the global series average.
-"""
+    window or the global series average."""
 
-    def __init__(self, window_size=20, fmt: str = None):
+    def __init__(self, window_size=20, fmt: Optional[str] = None):
         if fmt is None:
             self.fmt = "{median:.4f} ({global_avg:.4f})"
         else:
@@ -32,8 +34,7 @@ window or the global series average.
 
     def synchronise_between_processes_torch(self):
         """
-Warning: does not synchronize the deque!
-"""
+        Warning: does not synchronize the deque!"""
         if not is_distribution_ready():
             return
         t = torch.tensor([self.count, self.total], dtype=torch.float64, device="cuda")

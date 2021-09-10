@@ -16,11 +16,10 @@ from matplotlib import pyplot
 def boxed_text_overlay_plot(img, text):
     """
 
-:param img:
-:type img:
-:param text:
-:type text:
-"""
+    :param img:
+    :type img:
+    :param text:
+    :type text:"""
     npimg = img.numpy()
     pyplot.axis("off")
     if text is not None:

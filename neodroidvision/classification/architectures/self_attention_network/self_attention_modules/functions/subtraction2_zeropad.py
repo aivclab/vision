@@ -4,8 +4,8 @@ from torch.nn.modules.utils import _pair
 
 from .self_attention_utilities import (
     CUDA_NUM_THREADS,
-    GET_BLOCKS,
     Stream,
+    get_blocks_,
     get_dtype_str,
     kernel_loop,
     load_kernel,
@@ -33,7 +33,8 @@ const ${Dtype}* bottom1_data, const ${Dtype}* bottom2_data, ${Dtype}* top_data) 
         const int offset_top = ((n * ${input_channels} + c) * ${kernel_h} * ${kernel_w} + (kh * ${kernel_w}
         + kw)) * ${top_height} * ${top_width} + h * ${top_width} + w;
         if ((h_in >= 0) && (h_in < ${bottom_height}) && (w_in >= 0) && (w_in < ${bottom_width})) {
-          const int offset_bottom = ((n * ${input_channels} + c) * ${bottom_height} + h_in) * ${bottom_width} + w_in;
+          const int offset_bottom = ((n * ${input_channels} + c) * ${bottom_height} + h_in) * ${
+          bottom_width} + w_in;
           top_data[offset_top] = bottom1_data[offset_center] - bottom2_data[offset_bottom];
         }
         else
@@ -167,7 +168,7 @@ class Subtraction2Zeropad(Function):
             )
             f(
                 block=(CUDA_NUM_THREADS, 1, 1),
-                grid=(GET_BLOCKS(n), 1, 1),
+                grid=(get_blocks_(n), 1, 1),
                 args=[input1.data_ptr(), input2.data_ptr(), output.data_ptr()],
                 stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
             )
@@ -227,7 +228,7 @@ class Subtraction2Zeropad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[grad_output.data_ptr(), grad_input1.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )
@@ -243,7 +244,7 @@ class Subtraction2Zeropad(Function):
                 )
                 f(
                     block=(CUDA_NUM_THREADS, 1, 1),
-                    grid=(GET_BLOCKS(n), 1, 1),
+                    grid=(get_blocks_(n), 1, 1),
                     args=[grad_output.data_ptr(), grad_input2.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )

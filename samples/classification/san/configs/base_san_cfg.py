@@ -11,11 +11,11 @@ from pathlib import Path
 
 from warg import NOD
 
-from data.classification.imagenet.imagenet_2012 import ImageNet2012
+from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
 
 SAN_CONFIG = NOD(
     dataset_type=ImageNet2012,
-    dataset_path=Path.home()/"Data"/"Datasets"/"ILSVRC2012",
+    dataset_path=Path.home() / "Data" / "Datasets" / "ILSVRC2012",
     arch="san",
     self_attention_type=0,
     layers=[2, 1, 2, 4, 1],
@@ -37,7 +37,8 @@ SAN_CONFIG = NOD(
     batch_size=256,  # batch size for training
     batch_size_val=128,  # batch size for validation during training, memory and speed tradeoff
     batch_size_test=10,  # 100,
-    evaluate=True,  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
+    evaluate=True,
+    # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
     dist_url="tcp://127.0.0.1:6789",
     dist_backend="nccl",
     multiprocessing_distributed=True,

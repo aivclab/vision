@@ -4,19 +4,20 @@ from pathlib import Path
 import cv2
 import torch
 from apppath import ensure_existence
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDectection
-from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
-    SSDTransform,
-)
-from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
+from draugr import sprint
+from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import frame_generator
+from draugr.torch_utilities import global_torch_device
 from torch import onnx, quantization
 from tqdm import tqdm
 from warg import NOD
 
-from draugr import sprint
-from draugr.opencv_utilities import frame_generator
-from draugr.torch_utilities import Split, global_torch_device
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection
+from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
+    SSDTransform,
+)
+from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 
 
 @torch.no_grad()
@@ -30,18 +31,17 @@ def export_detection_model(
 ) -> None:
     """
 
-:param verbose:
-:type verbose:
-:param cfg:
-:type cfg:
-:param model_ckpt:
-:type model_ckpt:
-:param model_export_path:
-:type model_export_path:
-:return:
-:rtype:
-"""
-    model = SingleShotDectection(cfg)
+    :param verbose:
+    :type verbose:
+    :param cfg:
+    :type cfg:
+    :param model_ckpt:
+    :type model_ckpt:
+    :param model_export_path:
+    :type model_export_path:
+    :return:
+    :rtype:"""
+    model = SingleShotDetection(cfg)
 
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
@@ -133,12 +133,12 @@ def export_detection_model(
     """
 post_quantize_model = False
 if post_quantize_model: # Accuracy may drop!
-  traced_model = model
-  if True:
-    q_model=quantization.prepare_script(traced_model)
-    ... qmodel.forward(...) .. training
-    q_model=quantization.convert_script(traced_model)
-    q_model.save('model.qtraced')
+traced_model = model
+if True:
+q_model=quantization.prepare_script(traced_model)
+... qmodel.forward(...) .. training
+q_model=quantization.convert_script(traced_model)
+q_model.save('model.qtraced')
 """
 
 
@@ -149,14 +149,16 @@ def main():
     # from configs.vgg_ssd300_coco_trainval35k import base_cfg
     # from .configs.vgg_ssd512_coco_trainval35k import base_cfg
 
-    global_torch_device(override=global_torch_device(cuda_if_available=False))
+    global_torch_device(override=global_torch_device("cpu"))
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
     parser.add_argument(
         "--ckpt",
         type=str,
-        default=PROJECT_APP_PATH.user_data / "ssd" / "models" /
-                "mobilenet_v2_ssd320_voc0712.pth"
+        default=PROJECT_APP_PATH.user_data
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

@@ -7,22 +7,22 @@ from itertools import cycle
 from pathlib import Path
 from typing import Iterator
 
+from draugr.numpy_utilities import Split
+from draugr.torch_utilities import (
+    TensorBoardPytorchWriter,
+    global_torch_device,
+    to_device_iterator,
+)
+from draugr.writers import Writer
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 from torch.nn.modules.module import Module
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-from draugr.torch_utilities import (
-  Split,
-  TensorBoardPytorchWriter,
-  global_torch_device,
-  to_device_iterator,
-)
-from draugr.writers import Writer
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
 __author__ = "Christian Heider Nielsen"
 
@@ -51,25 +51,24 @@ def training(
 ) -> Module:
     """
 
-:param model:
-:type model:
-:param data_iterator:
-:type data_iterator:
-:param optimizer:
-:type optimizer:
-:param scheduler:
-:type scheduler:
-:param writer:
-:type writer:
-:param interrupted_path:
-:type interrupted_path:
-:param num_updates:
-:type num_updates:
-:param early_stop_threshold:
-:type early_stop_threshold:
-:return:
-:rtype:
-"""
+    :param model:
+    :type model:
+    :param data_iterator:
+    :type data_iterator:
+    :param optimizer:
+    :type optimizer:
+    :param scheduler:
+    :type scheduler:
+    :param writer:
+    :type writer:
+    :param interrupted_path:
+    :type interrupted_path:
+    :param num_updates:
+    :type num_updates:
+    :param early_stop_threshold:
+    :type early_stop_threshold:
+    :return:
+    :rtype:"""
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
     since = time.time()
@@ -146,11 +145,10 @@ def training(
 def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
     """
 
-:param model:
-:type model:
-:param data_iterator:
-:type data_iterator:
-"""
+    :param model:
+    :type model:
+    :param data_iterator:
+    :type data_iterator:"""
     with torch.no_grad():
         with TorchEvalSession(model):
             img, target = next(data_iterator)
@@ -175,11 +173,10 @@ def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
 def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     """
 
-:param load_earlier:
-:type load_earlier:
-:param train:
-:type train:
-"""
+    :param load_earlier:
+    :type load_earlier:
+    :param train:
+    :type train:"""
     seed = 2554215
     batch_size = 32
 
