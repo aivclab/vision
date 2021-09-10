@@ -17,7 +17,7 @@ from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 
 
 class MLP(nn.Module):
-    """"""
+    """ """
 
     def __init__(self, input_size, output_size, hidden_size):
         super().__init__()
@@ -153,7 +153,7 @@ class NormalLogProb(nn.Module):
 
 
 class BernoulliLogProb(nn.Module):
-    """"""
+    """ """
 
     def __init__(self):
         super().__init__()

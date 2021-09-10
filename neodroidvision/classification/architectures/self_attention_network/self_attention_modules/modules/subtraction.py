@@ -7,7 +7,7 @@ __all__ = ["Subtraction"]
 
 
 class Subtraction(nn.Module):
-    """"""
+    """ """
 
     def __init__(self, kernel_size, stride, padding, dilation, pad_mode):
         """

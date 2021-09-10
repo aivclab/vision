@@ -16,7 +16,7 @@ __all__ = ["MinMaxNorm", "Reshape"]
 
 
 class MinMaxNorm(Module):
-    """"""
+    """ """
 
     def __init__(self, min_value: float = 0, max_value: float = 1):
         """

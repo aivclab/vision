@@ -25,11 +25,11 @@ from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 
 
 class VOCDataset(ObjectDetectionDataset):
-    """"""
+    """ """
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """"""
+        """ """
         raise NotImplementedError
 
     @property

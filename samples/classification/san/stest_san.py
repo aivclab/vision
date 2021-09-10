@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from itertools import count
+from pathlib import Path
 
 import numpy
 import torch
@@ -54,7 +55,7 @@ if __name__ == "__main__":
         logger.info(model)
         model = torch.nn.DataParallel(model.cuda())
 
-        if os.path.isdir(SAN_CONFIG.save_path):
+        if Path(SAN_CONFIG.save_path).is_dir():
             logger.info(f"=> loading checkpoint '{SAN_CONFIG.model_path}'")
             checkpoint = torch.load(SAN_CONFIG.model_path)
             model.load_state_dict(checkpoint["state_dict"], strict=True)

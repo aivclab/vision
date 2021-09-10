@@ -8,7 +8,7 @@ __all__ = ["BoxPredictor"]
 
 
 class BoxPredictor(nn.Module):
-    """"""
+    """ """
 
     def __init__(self, boxes_per_location, out_channels, num_categories):
         super().__init__()
@@ -56,7 +56,7 @@ class BoxPredictor(nn.Module):
         raise NotImplementedError
 
     def reset_parameters(self) -> None:
-        """"""
+        """ """
         for module in self.modules():
             if isinstance(module, nn.Conv2d):
                 nn.init.xavier_uniform_(module.weight)

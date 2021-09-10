@@ -3,6 +3,7 @@ import os
 import random
 import shutil
 import time
+from pathlib import Path
 
 import numpy
 import torch
@@ -121,7 +122,7 @@ def main_worker(gpu, ngpus_per_node, config):
         model = torch.nn.DataParallel(model.cuda())
 
     if CONFIG.weight:
-        if os.path.isfile(CONFIG.weight):
+        if Path(CONFIG.weight).is_file():
             if is_main_process():
                 global logger
                 logger.info(f"=> loading weight '{CONFIG.weight}'")
@@ -136,7 +137,7 @@ def main_worker(gpu, ngpus_per_node, config):
                 logger.info(f"=> no weight found at '{CONFIG.weight}'")
 
     if CONFIG.resume:
-        if os.path.isfile(CONFIG.resume):
+        if Path(CONFIG.resume).is_file():
             if is_main_process():
                 global logger
                 logger.info(f"=> loading checkpoint '{CONFIG.resume}'")

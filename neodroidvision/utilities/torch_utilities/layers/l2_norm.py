@@ -15,7 +15,7 @@ __all__ = ["L2Norm"]
 
 
 class L2Norm(nn.Module):
-    """"""
+    """ """
 
     def __init__(self, n_channels: int, scale: float):
         """

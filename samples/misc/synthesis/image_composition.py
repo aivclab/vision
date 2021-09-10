@@ -440,13 +440,14 @@ if __name__ == "__main__":
         help="The input directory. \
                         This contains a 'backgrounds' directory of pngs or jpgs, and a 'foregrounds' "
         "directory which \
-                                 contains supercategory directories (e.g. 'animal', 'vehicle'), "
+                                    contains supercategory directories (e.g. 'animal', 'vehicle'), "
         "each of which "
         "contain category \
-                                 directories (e.g. 'horse', 'bear'). Each category directory contains png "
+                                    directories (e.g. 'horse', 'bear'). Each category directory contains png "
         "images of "
         "that item on a \
-                                 transparent background (e.g. a grizzly bear on a transparent background).",
+                                    transparent background (e.g. a grizzly bear on a transparent "
+        "background).",
     )
     parser.add_argument(
         "--output_dir",
@@ -455,7 +456,7 @@ if __name__ == "__main__":
         required=True,
         help="The directory where "
         "images, masks, \
-                                 and json files will be placed",
+                                    and json files will be placed",
     )
     parser.add_argument(
         "--count",

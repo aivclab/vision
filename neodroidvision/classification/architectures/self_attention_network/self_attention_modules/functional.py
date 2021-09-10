@@ -6,7 +6,7 @@ __all__ = ["aggregation", "subtraction", "subtraction2"]
 
 
 class PadModeEnum(Enum):
-    """"""
+    """ """
 
     zero_pad = 0
     ref_pad = 1

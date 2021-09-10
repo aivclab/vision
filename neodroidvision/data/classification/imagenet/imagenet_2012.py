@@ -28,7 +28,7 @@ __all__ = ["ImageNet2012"]
 
 
 class ImageNet2012(SupervisedDataset):
-    """"""
+    """ """
 
     mean = numpy.array([0.485, 0.456, 0.406])
     std = numpy.array([0.229, 0.224, 0.225])

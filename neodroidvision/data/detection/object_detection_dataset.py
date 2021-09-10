@@ -17,7 +17,7 @@ from warg import drop_unused_kws
 
 
 class ObjectDetectionDataset(SupervisedDataset, ABC):
-    """"""
+    """ """
 
     categories = None
 

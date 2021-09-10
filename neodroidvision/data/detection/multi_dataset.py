@@ -24,12 +24,12 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 
 
 class MultiDataset(SupervisedDataset):
-    """"""
+    """ """
 
     @property
     @abstractmethod
     def categories(self) -> Sequence:
-        """"""
+        """ """
         raise NotImplementedError
 
     @property

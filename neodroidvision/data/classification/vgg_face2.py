@@ -24,7 +24,7 @@ from draugr.torch_utilities import SupervisedDataset
 
 
 class VggFaces2(SupervisedDataset):
-    """"""
+    """ """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:

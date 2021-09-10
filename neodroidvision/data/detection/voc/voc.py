@@ -25,7 +25,7 @@ from neodroidvision.data.detection.object_detection_dataset import (
 
 
 class VOCDataset(ObjectDetectionDataset):
-    """"""
+    """ """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
@@ -130,7 +130,7 @@ class VOCDataset(ObjectDetectionDataset):
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """"""
+        """ """
         return (-1, -1, 3)
 
     def __getitem__(self, index):

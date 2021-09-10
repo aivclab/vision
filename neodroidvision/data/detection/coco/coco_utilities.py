@@ -74,7 +74,7 @@ CocoMask = NOD(
 
 
 class FilterAndRemapCocoCategories(object):
-    """"""
+    """ """
 
     def __init__(self, categories: List[str], remap: bool = True):
         self._categories = categories
@@ -290,7 +290,7 @@ def get_coco_api_from_dataset(
 
 
 class CocoDetection(torchvision.datasets.CocoDetection):
-    """"""
+    """ """
 
     def __init__(self, img_folder, ann_file, transforms):
         super().__init__(img_folder, ann_file)

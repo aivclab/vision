@@ -13,14 +13,14 @@ from neodroidvision.classification.architectures.self_attention_network.self_att
 
 
 class SelfAttentionTypeEnum(Enum):
-    """"""
+    """ """
 
     pairwise = 0  # pairwise subtraction
     patchwise = 1  # patchwise unfolding
 
 
 class SelfAttentionModule(nn.Module):
-    """"""
+    """ """
 
     def __init__(
         self,
@@ -186,7 +186,7 @@ class SelfAttentionModule(nn.Module):
 
 
 class SelfAttentionBottleneck(nn.Module):
-    """"""
+    """ """
 
     def __init__(
         self,
@@ -231,7 +231,7 @@ class SelfAttentionBottleneck(nn.Module):
 
 
 class SelfAttentionNetwork(nn.Module):
-    """"""
+    """ """
 
     @staticmethod
     def conv1x1(in_planes: int, out_planes: int, stride: int = 1) -> nn.Module:

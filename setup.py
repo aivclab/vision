@@ -17,14 +17,14 @@ python_version_check()
 
 
 def read_reqs(file: str, path: Path) -> List[str]:
-    """"""
+    """ """
 
     def readlines_ignore_comments(f):
-        """"""
+        """ """
         return [a_ for a_ in f.readlines() if "#" not in a_ and a_]
 
     def recursive_flatten_ignore_str(seq: Sequence) -> Sequence:
-        """"""
+        """ """
         if not seq:  # is empty Sequence
             return seq
         if isinstance(seq[0], str):
@@ -37,7 +37,7 @@ def read_reqs(file: str, path: Path) -> List[str]:
         return (*seq[:1], *recursive_flatten_ignore_str(seq[1:]))
 
     def unroll_nested_reqs(req_str: str, base_path: Path):
-        """"""
+        """ """
         if req_str.startswith("-r"):
             with open(base_path / req_str.strip("-r").strip()) as f:
                 return [

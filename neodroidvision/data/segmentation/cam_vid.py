@@ -15,7 +15,7 @@ from draugr.torch_utilities import SupervisedDataset
 
 
 class CamVid(SupervisedDataset):
-    """"""
+    """ """
 
     def __getitem__(self, index):
         raise NotImplementedError
@@ -25,12 +25,12 @@ class CamVid(SupervisedDataset):
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """"""
+        """ """
         return self.image_size
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
-        """"""
+        """ """
         return (self.response_channels,)
 
     predictor_channels = 3  # RGB input
