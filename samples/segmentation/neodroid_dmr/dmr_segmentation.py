@@ -9,22 +9,22 @@ import pandas
 import seaborn
 import torch
 from draugr.numpy_utilities import Split
+from draugr.random_utilities import seed_stack
+from draugr.torch_utilities import (
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+)
 from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import CloudSegmentationDataset
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 from neodroidvision.segmentation.masks import mask_to_run_length
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr.torch_utilities import (
-    TorchEvalSession,
-    TorchTrainSession,
-    global_torch_device,
-)
-from draugr.random_utilities import seed_stack
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -34,7 +34,7 @@ __doc__ = r"""
 
 
 def reschedule(model, epoch, scheduler):
-    "This can be improved its just a hacky way to write SGDWR "
+    "This can be improved its just a hacky way to write SGDWR"
     if epoch == 7:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
         current_lr = next(iter(optimizer.param_groups))["lr"]

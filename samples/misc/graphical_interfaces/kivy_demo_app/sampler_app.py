@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy
 import torch
+from draugr.torch_utilities import global_torch_device
 from kivy.app import App
 from kivy.config import Config
 from kivy.core.window import Window
@@ -12,11 +13,10 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
 from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
-
-from draugr.torch_utilities import global_torch_device
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -41,6 +41,8 @@ MODEL.load_state_dict(CHECKPOINT)
 
 
 class MainLayout(BoxLayout):
+    """ """
+
     _video_capture = None
     _face_cascade = None
     _frame_name = str(PROJECT_APP_PATH.user_cache / "face_detection_frame.jpg")
@@ -50,6 +52,7 @@ class MainLayout(BoxLayout):
         self.build()
 
     def post_build(self):
+        """ """
         self.ids.slider1.bind(value=self.sample)
         self.ids.slider2.bind(value=self.sample)
         self.ids.slider3.bind(value=self.sample)
@@ -62,6 +65,7 @@ class MainLayout(BoxLayout):
         self.ids.slider10.bind(value=self.sample)
 
     def build_dropdown(self):
+        """ """
         dropdown_layout = DropDown()
 
         for index in range(10):
@@ -94,10 +98,12 @@ class MainLayout(BoxLayout):
         return self._dropdown_btn
 
     def on_select_model(self, ins, model):
+        """ """
         self._selected_model = model
         self._dropdown_btn.text = model
 
     def build(self):
+        """ """
         apply_btn = Button(text="Apply", bold=True)
         apply_btn.bind(on_press=self.settings_process)
 
@@ -116,6 +122,7 @@ class MainLayout(BoxLayout):
         )
 
     def resample(self):
+        """ """
         self.ids.slider1.set_norm_value(numpy.random.random())
         self.ids.slider2.set_norm_value(numpy.random.random())
         self.ids.slider3.set_norm_value(numpy.random.random())
@@ -130,6 +137,7 @@ class MainLayout(BoxLayout):
         self.sample()
 
     def sample(self, *args):
+        """ """
         rgb = MODEL.sample_from(
             [
                 self.ids.slider1.value,
@@ -152,12 +160,15 @@ class MainLayout(BoxLayout):
 
     @staticmethod
     def close():
+        """ """
         App.get_running_app().stop()
 
     def settings(self):
+        """ """
         self._popup.open()
 
     def settings_process(self, btn):
+        """ """
         try:
             self._current_model = self._selected_model
         except:
@@ -350,12 +361,14 @@ MainLayout:
   """
 
     def build(self):
+        """ """
         a = Builder.load_string(SamplerApp.layout_kv)
         a.post_build()
         return a
 
 
 def main():
+    """ """
     SamplerApp().run()
 
 

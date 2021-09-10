@@ -13,20 +13,18 @@ from typing import Sequence, Tuple
 import numpy
 import torch
 from draugr.numpy_utilities import Split, SplitIndexer
+from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 from matplotlib import pyplot
 from torch.utils.data import Subset
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
-
 from torchvision.datasets import MNIST
-
-from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 
 __all__ = ["MNISTDataset", "MNISTDataset2"]
 
 
 class MNISTDataset2(SupervisedDataset):
-    """"""
+    """ """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
@@ -113,7 +111,7 @@ class MNISTDataset2(SupervisedDataset):
 
 
 class MNISTDataset(SupervisedDataset):
-    """"""
+    """ """
 
     trans = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
@@ -285,7 +283,7 @@ class MNISTDataset(SupervisedDataset):
         return data_loader
 
     def sample(self) -> None:
-        """"""
+        """ """
         images, labels = next(
             iter(
                 torch.utils.data.DataLoader(

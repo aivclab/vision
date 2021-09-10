@@ -4,7 +4,9 @@ import os
 
 import torch
 import torch.utils.data
+from draugr.torch_utilities import global_torch_device
 from draugr.torch_utilities.sessions import TorchCacheSession
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.ssd_evaluation import do_ssd_evaluation
@@ -15,10 +17,9 @@ from neodroidvision.utilities.torch_utilities.distributing.distributing_utilitie
     setup_distributed_logger,
 )
 
-from draugr.torch_utilities import global_torch_device
-
 
 def main():
+    """ """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(

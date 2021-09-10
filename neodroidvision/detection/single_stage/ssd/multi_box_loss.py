@@ -10,13 +10,13 @@ __doc__ = r"""
 from typing import Tuple
 
 import torch
+from torch import nn
+from torch.nn import functional
 from warg import Number
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
     hard_negative_mining,
 )
-from torch import nn
-from torch.nn import functional
 
 __all__ = ["MultiBoxLoss"]
 

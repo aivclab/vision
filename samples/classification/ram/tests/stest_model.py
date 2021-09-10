@@ -1,9 +1,8 @@
 import sys
 
+from draugr import pil_img_to_np_array
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
-
-from draugr import pil_img_to_np_array
 
 sys.path.append("..")
 

@@ -9,10 +9,7 @@ __doc__ = r"""
 
 __all__ = []
 
-from pathlib import Path
-
-import pkg_resources
-from neodroidvision import PROJECT_NAME
+import pytest
 
 
 def test_import():
@@ -43,6 +40,7 @@ def test_import_regression():
     print(data.__doc__)
 
 
+@pytest.mark.skip
 def test_import_samples():
     from samples.segmentation import fcn8
 

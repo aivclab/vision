@@ -5,13 +5,7 @@ from pathlib import Path
 import numpy
 import torch
 from draugr.numpy_utilities import Split
-from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.segmentation import PennFudanDataset
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
-from torch.utils.data import DataLoader
-from tqdm import tqdm
+from draugr.random_utilities import seed_stack
 
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
@@ -21,7 +15,14 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     global_torch_device,
 )
-from draugr.random_utilities import seed_stack
+from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

@@ -14,7 +14,7 @@ from torch.nn import functional
 
 
 class Conv2dSamePadding(nn.Conv2d):
-    """ 2D Convolutions like TensorFlow """
+    """2D Convolutions like TensorFlow"""
 
     def __init__(
         self,

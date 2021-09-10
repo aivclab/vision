@@ -7,15 +7,14 @@ __doc__ = r"""
            Created on 03-05-2021
            """
 
+import cv2
+import dlib
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib_utilities import (
     dlib68FacialLandmarksIndices,
     eye_aspect_ratio,
     shape_to_ndarray,
 )
-
-import dlib
-import cv2
 
 
 def aushdas():
@@ -56,7 +55,8 @@ def aushdas():
 
             if (
                 left_eye_ar < EYE_AR_THRESH or right_eye_ar < EYE_AR_THRESH
-            ):  # check to see if the eye aspect ratio is below the blink    # threshold, and if so, increment the blink frame counter
+            ):  # check to see if the eye aspect ratio is below the blink    # threshold, and if so, increment
+                # the blink frame counter
                 COUNTER += 1
             else:  # otherwise, the eye aspect ratio is not below the blink    # threshold
                 # if the eyes were closed for a sufficient number of

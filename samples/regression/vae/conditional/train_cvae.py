@@ -7,23 +7,22 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import os
 import time
 from collections import defaultdict
 
 import pandas as pd
 import seaborn as sns
 import torch
+from draugr.torch_utilities import global_torch_device
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD
 
-from draugr.torch_utilities import global_torch_device
-from .objectives import loss_fn
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
+from objectives import loss_fn
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"
 
@@ -37,7 +36,7 @@ config.decoder_layer_sizes = [256, 784]
 config.latent_size = 10
 config.print_every = 100
 GLOBAL_DEVICE = global_torch_device()
-timstamp = time.time()
+timestamp = time.time()
 torch.manual_seed(config.seed)
 if torch.cuda.is_available():
     torch.cuda.manual_seed(config.seed)
@@ -54,6 +53,9 @@ dataset = MNIST(
     transform=transforms.ToTensor(),
     download=True,
 )
+tmsp_path = fig_root / str(timestamp)
+if not tmsp_path.exists():
+    tmsp_path.mkdir(parents=True)
 
 
 def one_hot(labels, num_labels, device="cpu"):
@@ -129,15 +131,8 @@ def main():
                     pyplot.imshow(sample[p].cpu().data.numpy())
                     pyplot.axis("off")
 
-                if not os.path.exists(os.path.join(fig_root, str(timstamp))):
-                    if not (os.path.exists(os.path.join(fig_root))):
-                        os.mkdir(os.path.join(fig_root))
-                    os.mkdir(os.path.join(fig_root, str(timstamp)))
-
                 pyplot.savefig(
-                    os.path.join(
-                        fig_root, str(timstamp), f"Epoch{epoch:d}_Iter{iteration:d}.png"
-                    ),
+                    str(tmsp_path / f"Epoch{epoch:d}_Iter{iteration:d}.png"),
                     dpi=300,
                 )
                 pyplot.clf()
@@ -153,7 +148,7 @@ def main():
             legend=True,
         )
         g.savefig(
-            os.path.join(fig_root, str(timstamp), f"Epoch{epoch:d}_latent_space.png"),
+            str(tmsp_path / f"Epoch{epoch:d}_latent_space.png"),
             dpi=300,
         )
 

@@ -8,8 +8,6 @@ import torch
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from draugr.numpy_utilities import Split
-
 from draugr.torch_utilities.images.conversion import quick_to_pil_image
 
 from tqdm import tqdm

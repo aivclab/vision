@@ -1,6 +1,7 @@
 import torch
-from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 from torch import nn
+
+from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 
 __all__ = ["Decompress"]
 

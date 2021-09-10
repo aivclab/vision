@@ -7,13 +7,19 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+import collections
+import re
 from typing import List, Tuple
 
 import torch
+from torch import nn
 
-import collections
-import re
-
+from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
+    SSDBackbone,
+)
+from neodroidvision.utilities.torch_utilities.custom_model_caching import (
+    load_state_dict_from_url,
+)
 from neodroidvision.utilities.torch_utilities.efficient_net_utilities import (
     Conv2dSamePadding,
     MobileInvertedResidualBottleneckConvBlock,
@@ -23,13 +29,6 @@ from neodroidvision.utilities.torch_utilities.efficient_net_utilities import (
 from neodroidvision.utilities.torch_utilities.output_activation.custom_activations import (
     swish,
 )
-from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
-    SSDBackbone,
-)
-from neodroidvision.utilities.torch_utilities.custom_model_caching import (
-    load_state_dict_from_url,
-)
-from torch import nn
 
 __all__ = ["EfficientNet"]
 

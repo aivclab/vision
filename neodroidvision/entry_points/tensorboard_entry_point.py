@@ -10,7 +10,6 @@ from draugr.stopping import IgnoreInterruptSignal
 
 def main(keep_alive=True):
     from draugr.torch_utilities.writers.tensorboard.launcher import launch_tensorboard
-    from contextlib import suppress
     from time import sleep
 
     from neodroidvision import PROJECT_APP_PATH

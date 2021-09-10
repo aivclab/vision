@@ -8,15 +8,16 @@ __all__ = ["non_maximum_suppression", "batched_non_maximum_suppression"]
 
 __doc__ = """This file is merily a wrapper to provide a custom implementation of NMS"""
 
-if torchvision.__version__ >= "0.3.0":
+if int(torchvision.__version__.split(".")[1]) >= int("0.3.0".split(".")[1]):
     nms_support = torchvision.ops.nms
 else:
+    print(f"torchvision version: {torchvision.__version__}" "\n nms not supported")
     try:
 
         import ssd_torch_extension
 
         nms_support = ssd_torch_extension.nms  # non_maximum_suppression
-    except ImportError:
+    except ImportError or ModuleNotFoundError:
         warnings.warn(
             "No NMS is available. Please upgrade torchvision to 0.3.0+ or compile c++ NMS "
             "using `cd ext & python build.py build_ext develop`"

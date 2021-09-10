@@ -3,6 +3,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.init import xavier_uniform_
+
 from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     SelfAttentionModule,
     init_weights,
@@ -10,7 +12,6 @@ from neodroidvision.utilities.torch_utilities.mechanims.attention import (
     spectral_norm_embedding,
     spectral_norm_linear,
 )
-from torch.nn.init import xavier_uniform_
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

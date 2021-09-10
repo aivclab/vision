@@ -23,13 +23,16 @@ from neodroidvision.data.classification.nlet import PairDataset
 
 class TripletDataset(
     PairDataset
-):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a general torch lib.
+):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a
+    # general torch lib.
     """
-    # This dataset generates a triple of images. an image of a category, another of the same category and lastly one from another category"""
+    # This dataset generates a triple of images. an image of a category, another of the same category and
+    lastly one from another category"""
 
     def __getitem__(self, idx1: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-        returns torch.tensors for img triplet, first tensor being idx random category, second being the same category with different index
+        returns torch.tensors for img triplet, first tensor being idx random category, second being the same
+        category with different index
         and third being of a random other category(Never the same)
 
 
@@ -59,7 +62,7 @@ class TripletDataset(
         )
 
     def sample(self, horizontal_merge: bool = False) -> None:
-        """"""
+        """ """
         dl = iter(
             torch.utils.data.DataLoader(
                 self,

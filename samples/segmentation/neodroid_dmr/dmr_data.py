@@ -5,14 +5,13 @@ from typing import Any
 import numpy
 import torch
 import torch.utils.data
-from torch.nn.functional import binary_cross_entropy_with_logits
-
-from neodroid.environments.droid_environment import DictUnityEnvironment
-from neodroidvision.segmentation import dice_loss, jaccard_loss
-from warg import NOD
-
 from draugr.torch_utilities import channel_transform
 from draugr.torch_utilities.tensors.to_tensor import to_tensor
+from neodroid.environments.droid_environment import DictUnityEnvironment
+from torch.nn.functional import binary_cross_entropy_with_logits
+from warg import NOD
+
+from neodroidvision.segmentation import dice_loss, jaccard_loss
 
 __author__ = "Christian Heider Nielsen"
 

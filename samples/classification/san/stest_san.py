@@ -5,19 +5,19 @@ from itertools import count
 
 import numpy
 import torch
-from torch import nn
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
+from draugr import AverageMeter
+from draugr.numpy_utilities import Split
 from matplotlib import pyplot
+from torch import nn
+
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
 )
 from san_utilities import cal_accuracy, intersection_and_union_gpu
-
-from draugr import AverageMeter
-from draugr.numpy_utilities import Split
 
 if __name__ == "__main__":
 
@@ -99,7 +99,8 @@ if __name__ == "__main__":
                 output = model(input)
                 pyplot.imshow(dataset.inverse_base_transform(input[0].cpu()))
                 pyplot.title(
-                    f"pred:{dataset.category_names[output.max(1)[1][0].item()]} truth:{dataset.category_names[target[0].item()]}"
+                    f"pred:{dataset.category_names[output.max(1)[1][0].item()]} truth:"
+                    f"{dataset.category_names[target[0].item()]}"
                 )
                 pyplot.show()
 
@@ -150,7 +151,8 @@ if __name__ == "__main__":
         for i in range(dataset.response_shape[0]):
             if target_meter.sum[i] > 0:
                 logger.info(
-                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:{target_meter.sum[i]}"
+                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:"
+                    f"{target_meter.sum[i]}"
                 )
         logger.info("<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<")
         print(loss_meter.avg, mIoU, mAcc, allAcc, top1_meter.avg, top5_meter.avg)

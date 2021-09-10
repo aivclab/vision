@@ -13,12 +13,11 @@ from typing import Tuple
 import numpy
 from PIL import Image
 from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import xywh_to_minmax
 
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
-
-from draugr.opencv_utilities import xywh_to_minmax
 
 __all__ = ["COCODataset"]
 
@@ -26,7 +25,7 @@ from draugr.torch_utilities import NamedTensorTuple
 
 
 class COCODataset(ObjectDetectionDataset):
-    """"""
+    """ """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
@@ -132,7 +131,7 @@ class COCODataset(ObjectDetectionDataset):
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """"""
+        """ """
         raise NotImplementedError
 
     def __init__(

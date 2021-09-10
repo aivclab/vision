@@ -7,12 +7,16 @@ import time
 import numpy
 import torch
 from draugr import AverageMeter
+from draugr.numpy_utilities import Split
 from draugr.torch_utilities import TensorBoardPytorchWriter
+from torch import distributed, multiprocessing, nn
+from torch.backends import cudnn
+from torch.optim import lr_scheduler
+
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
 )
-from draugr.numpy_utilities import Split
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,
@@ -20,9 +24,6 @@ from san_utilities import (
     mixup_loss,
     smooth_loss,
 )
-from torch import distributed, multiprocessing, nn
-from torch.backends import cudnn
-from torch.optim import lr_scheduler
 
 
 def find_unclaimed_port():
@@ -431,7 +432,8 @@ def validate(val_loader, model, criterion):
         for i in range(val_loader.dataset.response_shape[0]):
             if target_meter.sum[i] > 0:
                 logger.info(
-                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:{target_meter.sum[i]}"
+                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:"
+                    f"{target_meter.sum[i]}"
                 )
         logger.info("<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<")
     return loss_meter.avg, mIoU, mAcc, allAcc, top1_meter.avg, top5_meter.avg

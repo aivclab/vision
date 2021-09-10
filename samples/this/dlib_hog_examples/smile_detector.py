@@ -1,13 +1,11 @@
+import cv2
+import dlib
 from draugr.opencv_utilities import AsyncVideoStream
-
 from draugr.opencv_utilities.dlib_utilities import (
     dlib68FacialLandmarksIndices,
     mouth_aspect_ratio,
     shape_to_ndarray,
 )
-
-import dlib
-import cv2
 
 if __name__ == "__main__":
 

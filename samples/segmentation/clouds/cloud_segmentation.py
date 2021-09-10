@@ -7,7 +7,17 @@ import cv2
 import numpy
 import pandas
 import torch
+from draugr.numpy_utilities import Split, chw_to_hwc, float_chw_to_hwc_uint
+from draugr.random_utilities import seed_stack
+from draugr.torch_utilities import (
+    TorchEvalSession,
+    TorchTrainSession,
+    global_torch_device,
+)
 from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import CloudSegmentationDataset
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
@@ -17,16 +27,6 @@ from neodroidvision.segmentation import (
     mask_to_run_length,
 )
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr.numpy_utilities import chw_to_hwc, float_chw_to_hwc_uint, Split
-from draugr.torch_utilities import (
-    TorchEvalSession,
-    TorchTrainSession,
-    global_torch_device,
-)
-from draugr.random_utilities import seed_stack
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -156,7 +156,7 @@ def train_model(
 
 
 def threshold_grid_search(model, valid_loader, max_samples=2000):
-    """ Grid Search for best Threshold """
+    """Grid Search for best Threshold"""
 
     valid_masks = []
     count = 0

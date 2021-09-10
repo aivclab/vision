@@ -12,10 +12,9 @@ __all__ = ["PairRankingSiamese"]
 from typing import Tuple, Union
 
 import torch
+from draugr.torch_utilities import conv2d_hw_shape, pad2d_hw_shape
 from numpy import product
 from torch import nn
-
-from draugr.torch_utilities import conv2d_hw_shape, pad2d_hw_shape
 
 
 class PairRankingSiamese(nn.Module):

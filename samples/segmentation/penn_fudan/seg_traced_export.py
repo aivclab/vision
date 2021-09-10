@@ -3,21 +3,20 @@ from pathlib import Path
 import cv2
 import torch
 from apppath import ensure_existence
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities import OutputActivationModule
-from torchvision import transforms
-from tqdm import tqdm
-
 from draugr import sprint
 from draugr.opencv_utilities import frame_generator
+from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
 )
-from draugr.random_utilities import seed_stack
+from torchvision import transforms
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities import OutputActivationModule
 
 
 @torch.no_grad()

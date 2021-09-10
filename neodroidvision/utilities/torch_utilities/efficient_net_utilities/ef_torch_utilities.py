@@ -8,7 +8,7 @@ from warg import Number
 
 
 def round_filters(filters: Number, global_params: object) -> int:
-    """ Calculate and round number of filters based on depth multiplier. """
+    """Calculate and round number of filters based on depth multiplier."""
     multiplier = global_params.width_coefficient
     if not multiplier:
         return filters
@@ -23,7 +23,7 @@ def round_filters(filters: Number, global_params: object) -> int:
 
 
 def round_repeats(repeats: Number, global_params: object) -> int:
-    """ Round number of filters based on depth multiplier. """
+    """Round number of filters based on depth multiplier."""
     multiplier = global_params.depth_coefficient
     if not multiplier:
         return repeats
@@ -31,7 +31,7 @@ def round_repeats(repeats: Number, global_params: object) -> int:
 
 
 def drop_connect(inputs: torch.Tensor, p: float, training: bool) -> torch.Tensor:
-    """ Drop connect. """
+    """Drop connect."""
     if not training:
         return inputs
     batch_size = inputs.shape[0]

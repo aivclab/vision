@@ -52,7 +52,7 @@ def spectral_norm_embedding(num_embeddings, embedding_dim):
 
 
 class SelfAttentionModule(nn.Module):
-    """ Self attention Layer"""
+    """Self attention Layer"""
 
     def __init__(self, in_channels):
         super().__init__()

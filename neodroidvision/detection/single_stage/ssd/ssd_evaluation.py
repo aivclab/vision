@@ -4,6 +4,11 @@ from typing import Any, List
 
 import torch
 import torch.utils.data
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+from warg import NOD
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.detection.coco import COCODataset, coco_evaluation
 from neodroidvision.data.detection.voc import VOCDataset, voc_evaluation
@@ -15,10 +20,6 @@ from neodroidvision.utilities import (
     is_main_process,
     synchronise_torch_barrier,
 )
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-from warg import NOD
 
 __all__ = ["do_ssd_evaluation"]
 
@@ -73,7 +74,7 @@ def accumulate_predictions_from_cuda_devices(predictions_per_gpu: Any) -> list:
     return [predictions[i] for i in image_ids]
 
 
-def evaluate_dataset(dataset, predictions, output_dir, **kwargs) -> dict:
+def evaluate_dataset(dataset, predictions, output_dir: Path, **kwargs) -> dict:
     """evaluate dataset using different methods based on dataset type.
     Args:
     dataset: Dataset object

@@ -7,19 +7,19 @@ import numpy
 import torch
 from apppath import ensure_existence
 from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_byte
+from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
+from tqdm import tqdm
+from warg import NOD
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
-from tqdm import tqdm
-from warg import NOD
-
-from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_byte
-from draugr.torch_utilities import TorchEvalSession, global_torch_device
 
 
 @torch.no_grad()

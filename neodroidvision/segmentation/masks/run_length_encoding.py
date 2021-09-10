@@ -8,7 +8,6 @@ __doc__ = r"""
            Created on 20/10/2019
            """
 
-
 __all__ = ["run_length_to_mask", "mask_to_run_length"]
 
 

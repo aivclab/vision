@@ -1,8 +1,9 @@
 import argparse
 from pathlib import Path
 
-from neodroidvision import PROJECT_APP_PATH
 from warg import NOD
+
+from neodroidvision import PROJECT_APP_PATH
 
 arg_lists = []
 parser = argparse.ArgumentParser(description="RAM")

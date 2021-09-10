@@ -15,9 +15,6 @@ import numpy
 import torch
 from PIL import Image
 from draugr.numpy_utilities import Split
-from matplotlib import pyplot
-from torchvision.transforms import Compose, Resize, ToTensor
-
 from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
     SupervisedDataset,
@@ -26,6 +23,8 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
+from matplotlib import pyplot
+from torchvision.transforms import Compose, Resize, ToTensor
 
 __all__ = ["PennFudanDataset"]
 
@@ -37,7 +36,7 @@ from neodroidvision.utilities import (
 
 
 class ReturnVariantEnum(Enum):
-    """"""
+    """ """
 
     binary = "binary"
     instanced = "instanced"
@@ -45,7 +44,7 @@ class ReturnVariantEnum(Enum):
 
 
 class PennFudanDataset(SupervisedDataset):
-    """"""
+    """ """
 
     predictor_channels = 3  # RGB input
     response_channels = 2  # our dataset has two classes only - background and person

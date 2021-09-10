@@ -9,9 +9,9 @@ __doc__ = r"""
 
 import itertools
 import logging
-import os
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 from typing import Tuple
 
 import numpy
@@ -384,7 +384,7 @@ def calc_detection_voc_ap(prec, rec, use_07_metric=False):
     return ap
 
 
-def voc_evaluation(dataset, predictions, output_dir, iteration=None):
+def voc_evaluation(dataset, predictions, output_dir: Path, iteration=None):
     class_names = dataset.class_names
 
     pred_boxes_list = []
@@ -434,10 +434,10 @@ def voc_evaluation(dataset, predictions, output_dir, iteration=None):
     logger.info(result_str)
 
     if iteration is not None:
-        result_path = os.path.join(output_dir, f"result_{iteration:07d}.txt")
+        result_path = str(output_dir / f"result_{iteration:07d}.txt")
     else:
-        result_path = os.path.join(
-            output_dir, f'result_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.txt'
+        result_path = str(
+            output_dir / f'result_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.txt'
         )
     with open(result_path, "w") as f:
         f.write(result_str)

@@ -9,23 +9,21 @@ __doc__ = r"""
            Created on 14-02-2021
            """
 
-from pathlib import Path
-import torch
 import argparse
+from pathlib import Path
+from typing import Sequence
+
 import cv2
 import numpy
 import torch
-from torch.autograd import Function
-from torchvision import models, transforms
-
 from draugr.torch_utilities import GuidedBackPropReLUModel
+from torchvision import models
+
 from neodroidvision.utilities.processing import (
+    overlay_cam_on_image,
     preprocess_image,
     unstandardise_image,
-    overlay_cam_on_image,
 )
-
-from typing import Sequence
 
 
 class GradientClassActivationMapping:

@@ -7,6 +7,6 @@ __doc__ = r"""
            Created on 24/03/2020
            """
 
+from .ef_torch_utilities import *
 from .mobile_inverted import *
 from .tf_like_modules import *
-from .ef_torch_utilities import *

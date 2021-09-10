@@ -1,4 +1,3 @@
-import os
 import time
 
 from draugr.python_utilities.datetimes import now_repr
@@ -6,11 +5,9 @@ from draugr.visualisation.pillow_utilities import (
     byte_array_to_pil_image,
     pil_image_to_byte_array,
 )
-
-
-from config import MQTT_CAM_CONFIG
 from samples.misc.opencv_samples.mqtt_cam.mqtt_callbacks import get_mqtt_client
 
+from config import MQTT_CAM_CONFIG
 
 MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]
 MQTT_PORT = MQTT_CAM_CONFIG["mqtt"]["port"]

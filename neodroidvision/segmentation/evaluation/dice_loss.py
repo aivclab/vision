@@ -2,8 +2,9 @@ from typing import Any
 
 import numpy
 import torch
-from neodroidvision.segmentation.evaluation.f_score import f_score
 from torch import nn
+
+from neodroidvision.segmentation.evaluation.f_score import f_score
 
 __all__ = ["dice_loss", "dice_coefficient", "DiceLoss", "BCEDiceLoss"]
 

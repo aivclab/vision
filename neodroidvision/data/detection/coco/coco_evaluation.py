@@ -10,10 +10,10 @@ __doc__ = r"""
 import copy
 import json
 import logging
-import os
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple
 
 import numpy
@@ -58,7 +58,7 @@ class IouType(Enum):
 
 
 class CocoEvaluator(object):
-    """"""
+    """ """
 
     def __init__(self, coco_api: COCO, iou_types: Sequence[IouType]):
         assert isinstance(iou_types, (list, tuple))
@@ -93,7 +93,7 @@ class CocoEvaluator(object):
             self.eval_imgs[iou_type].append(eval_imgs)
 
     def synchronize_between_processes(self):
-        """"""
+        """ """
         for iou_type in self.iou_types:
             self.eval_imgs[iou_type] = numpy.concatenate(self.eval_imgs[iou_type], 2)
             create_common_coco_eval(
@@ -101,12 +101,12 @@ class CocoEvaluator(object):
             )
 
     def accumulate(self):
-        """"""
+        """ """
         for coco_eval in self.coco_eval.values():
             coco_eval.accumulate()
 
     def summarize(self):
-        """"""
+        """ """
         for iou_type, coco_eval in self.coco_eval.items():
             print(f"IoU metric: {iou_type}")
             coco_eval.summarize()
@@ -448,7 +448,7 @@ def load_results(self, resFile) -> COCO:
 #################################################################
 # end of straight copy from pycocotools, just removing the prints
 #################################################################
-def coco_evaluation(dataset, predictions, output_dir, iteration=None):
+def coco_evaluation(dataset, predictions, output_dir: Path, iteration=None):
     """
 
     :param dataset:
@@ -496,7 +496,7 @@ def coco_evaluation(dataset, predictions, output_dir, iteration=None):
             ]
         )
     iou_type = "bbox"
-    json_result_file = os.path.join(output_dir, f"{iou_type}.json")
+    json_result_file = str(output_dir / f"{iou_type}.json")
     logger = logging.getLogger("SSD.inference")
     logger.info(f"Writing results to {json_result_file}...")
     with open(json_result_file, "w") as f:
@@ -518,10 +518,10 @@ def coco_evaluation(dataset, predictions, output_dir, iteration=None):
         result_strings.append(f"{key:<10}: {round(coco_eval.stats[i], 3)}")
 
     if iteration is not None:
-        result_path = os.path.join(output_dir, f"result_{iteration:07d}.txt")
+        result_path = str(output_dir / f"result_{iteration:07d}.txt")
     else:
-        result_path = os.path.join(
-            output_dir, f"result_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+        result_path = str(
+            output_dir / f"result_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
         )
     with open(result_path, "w") as f:
         f.write("\n".join(result_strings))

@@ -14,18 +14,19 @@ from typing import Tuple, Union
 import numpy
 import torch
 from draugr.numpy_utilities import Split
+from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
-from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 from warg import drop_unused_kws, passes_kws_to
 
-from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
+from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 
 __all__ = ["PairDataset"]
 
 
 class PairDataset(
     SupervisedDataset
-):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a general torch lib.
+):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a
+    # general torch lib.
     """
     # This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair"""
 
@@ -49,7 +50,8 @@ class PairDataset(
 
     def __getitem__(self, idx1: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-        returns torch.tensors for img pair and a label for whether the pair is of the same class (1 if not the same)
+        returns torch.tensors for img pair and a label for whether the pair is of the same class (1 if not the
+        same)
 
 
 
@@ -103,7 +105,7 @@ class PairDataset(
         return len(self._dataset)
 
     def sample(self, horizontal_merge: bool = False) -> None:
-        """"""
+        """ """
         dl = iter(
             torch.utils.data.DataLoader(
                 self,

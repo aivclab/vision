@@ -5,16 +5,6 @@ import os
 import time
 
 import torchvision
-from matplotlib import pyplot
-from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
-    MixedObservationWrapper,
-)
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import squeezenet_retrain
-from neodroidvision.classification.procedures.deprec.procedures import (
-    predictor_response_train_model_neodroid_observations,
-)
-
 from draugr import (
     batch_generator,
     horizontal_imshow,
@@ -27,6 +17,16 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_tensor,
     uint_hwc_to_chw_float_tensor,
+)
+from matplotlib import pyplot
+from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
+    MixedObservationWrapper,
+)
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import squeezenet_retrain
+from neodroidvision.classification.procedures.deprec.procedures import (
+    predictor_response_train_model_neodroid_observations,
 )
 
 # from warg.pooled_queue_processor import PooledQueueTask

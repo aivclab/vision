@@ -6,15 +6,6 @@ from pathlib import Path
 import numpy
 import torch
 import tqdm
-from matplotlib import pyplot
-from munin.generate_report import ReportEntry, generate_html, generate_pdf
-from munin.utilities.html_embeddings import generate_math_html, plt_html
-from neodroidvision.data.neodroid_environments.classification.data import (
-    default_torch_retransform,
-)
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from warg import NOD
-
 from draugr import (
     confusion_matrix_plot,
     rgb_drop_alpha_batch_nhwc,
@@ -27,6 +18,15 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_tensor,
     uint_hwc_to_chw_float_tensor,
+)
+from matplotlib import pyplot
+from munin.generate_report import ReportEntry, generate_html, generate_pdf
+from munin.utilities.html_embeddings import generate_math_html, plt_html
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from warg import NOD
+
+from neodroidvision.data.neodroid_environments.classification.data import (
+    default_torch_retransform,
 )
 
 __all__ = ["test_model", "predictor_response_train_model_neodroid_observations"]

@@ -8,9 +8,10 @@ __doc__ = r"""
            """
 
 __all__ = ["unstandardise_image", "preprocess_image", "overlay_cam_on_image"]
-from torchvision import models, transforms
+
 import cv2
 import numpy
+from torchvision import transforms
 
 
 def overlay_cam_on_image(img, mask):

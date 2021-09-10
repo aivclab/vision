@@ -6,7 +6,6 @@ __doc__ = r"""
 
 import math
 import time
-from contextlib import suppress
 from itertools import count
 from pathlib import Path
 from typing import Tuple
@@ -15,20 +14,6 @@ import torch
 import torchvision
 from draugr.numpy_utilities import Split
 from draugr.stopping import IgnoreInterruptSignal
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.nlet import PairDataset
-from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankingSiamese
-from neodroidvision.utilities.visualisation.similarity_utilities import (
-    boxed_text_overlay_plot,
-)
-from torch import nn, optim
-from torch.nn import Module
-from torch.optim import Optimizer
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from tqdm import tqdm
-
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -39,6 +24,19 @@ from draugr.torch_utilities import (
     to_tensor,
 )
 from draugr.writers import MockWriter, Writer
+from torch import nn, optim
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.nlet import PairDataset
+from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankingSiamese
+from neodroidvision.utilities.visualisation.similarity_utilities import (
+    boxed_text_overlay_plot,
+)
 
 
 def accuracy(*, distances, is_diff, threshold: float = 0.5):
@@ -177,7 +175,8 @@ def train_siamese(
                                     save_directory=save_path,
                                 )
             E.set_description(
-                f"Epoch number {epoch}, Current train loss {train_loss}, valid loss {valid_loss}, valid_accuracy {valid_accuracy}"
+                f"Epoch number {epoch}, Current train loss {train_loss}, valid loss {valid_loss}, valid_accuracy "
+                f"{valid_accuracy}"
             )
 
     return model

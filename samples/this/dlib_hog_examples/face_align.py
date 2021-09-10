@@ -7,16 +7,14 @@ __doc__ = r"""
            Created on 03-05-2021
            """
 
+import cv2
+import dlib
 import numpy
 from draugr.opencv_utilities import AsyncVideoStream, cv2_resize
-
-import dlib
-import cv2
 from draugr.opencv_utilities.dlib.facealigner import align_face
 
 
 def aushda():
-
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
     face_size = (256, 256)

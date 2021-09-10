@@ -2,6 +2,10 @@ from collections import namedtuple
 from typing import Any, Tuple
 
 import torch
+from draugr.torch_utilities import to_tensor
+from torch import nn
+from torch.nn import Parameter, functional
+
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
@@ -9,10 +13,6 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes import conversion
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
 )
-from torch import nn
-from torch.nn import Parameter, functional
-
-from draugr.torch_utilities import to_tensor
 
 __all__ = ["SSDNmsBoxHead", "SSDOut"]
 
@@ -25,7 +25,7 @@ SSDOut = namedtuple("SSDOut", ("boxes", "labels", "scores", "img_width", "img_he
 
 
 class SSDNmsBoxHead(nn.Module):
-    """"""
+    """ """
 
     @drop_unused_kws
     def __init__(
@@ -139,9 +139,9 @@ class SSDNmsBoxHead(nn.Module):
 
             """ WILL NOT WORK FOR TRACED MODELS!
 scores, boxes, labels = self.keep_above(scores,
-                            boxes,
-                            labels,
-                            threshold=self.confidence_threshold)
+                      boxes,
+                      labels,
+                      threshold=self.confidence_threshold)
 """
             scores, boxes, labels = self.sort_keep_top_k(
                 scores, boxes, labels, k=self.max_candidates

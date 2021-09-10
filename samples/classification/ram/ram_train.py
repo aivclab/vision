@@ -1,13 +1,12 @@
-import os
 import pickle
 import shutil
 import time
+from pathlib import Path
 
 import torch
 from apppath import ensure_existence
+from draugr import AverageMeter
 from draugr.writers import MockWriter, Writer
-
-from neodroidvision.data.classification import MNISTDataset
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
 
@@ -16,7 +15,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
-from draugr import AverageMeter
+from neodroidvision.data.classification import MNISTDataset
 
 
 class Trainer:
@@ -73,11 +72,14 @@ class Trainer:
         self.lr = config.init_lr
 
         # misc params
-        self.model_name = f"ram_{config.num_glimpses}_{config.patch_size}x{config.patch_size}_{config.glimpse_scale}"
+        self.model_name = (
+            f"ram_{config.num_glimpses}_{config.patch_size}x{config.patch_size}_"
+            f"{config.glimpse_scale}"
+        )
         self.best = config.best
-        self.ckpt_dir = config.ckpt_dir
-        self.logs_dir = config.logs_dir
-        self.plot_dir = config.plot_dir / self.model_name
+        self.ckpt_dir = Path(config.ckpt_dir)
+        self.logs_dir = Path(config.logs_dir)
+        self.plot_dir = Path(config.plot_dir) / self.model_name
         self.best_valid_acc = 0.0
         self.counter = 0
         self.lr_patience = config.lr_patience
@@ -93,13 +95,13 @@ class Trainer:
 
         # configure tensorboard logging
         """
-        if self.use_tensorboard:
-            tensorboard_dir = self.logs_dir / self.model_name
-            print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
-            if not os.path.exists(tensorboard_dir):
-                os.makedirs(tensorboard_dir)
-            configure(tensorboard_dir)
-        """
+    if self.use_tensorboard:
+        tensorboard_dir = self.logs_dir / self.model_name
+        print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
+        if not os.path.exists(tensorboard_dir):
+            os.makedirs(tensorboard_dir)
+        configure(tensorboard_dir)
+    """
 
         self.model = RecurrentAttention(
             self.patch_size,
@@ -429,12 +431,12 @@ class Trainer:
 
         If this model has reached the best validation accuracy thus
         far, a seperate file with the suffix `best` is created."""
-        ckpt_path = os.path.join(self.ckpt_dir, f"{self.model_name}_ckpt.pth.tar")
+        ckpt_path = str(self.ckpt_dir / f"{self.model_name}_ckpt.pth.tar")
         torch.save(state, ckpt_path)
         if is_best:
             shutil.copyfile(
                 ckpt_path,
-                os.path.join(self.ckpt_dir, f"{self.model_name}_model_best.pth.tar"),
+                str(self.ckpt_dir / f"{self.model_name}_model_best.pth.tar"),
             )
 
     def load_checkpoint(self, best=False):
@@ -455,8 +457,7 @@ class Trainer:
         filename = f"{self.model_name}_ckpt.pth.tar"
         if best:
             filename = f"{self.model_name}_model_best.pth.tar"
-        ckpt_path = os.path.join(self.ckpt_dir, filename)
-        ckpt = torch.load(ckpt_path)
+        ckpt = torch.load(str(self.ckpt_dir / filename))
 
         # load variables from checkpoint
         self.start_epoch = ckpt["epoch"]
@@ -466,7 +467,8 @@ class Trainer:
 
         if best:
             print(
-                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with best valid acc of {ckpt['best_valid_acc']:.3f}"
+                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with "
+                f"best valid acc of {ckpt['best_valid_acc']:.3f}"
             )
         else:
             print(f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']}")
