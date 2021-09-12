@@ -1,7 +1,7 @@
-import os
 import pickle
 import shutil
 import time
+from pathlib import Path
 
 import torch
 from apppath import ensure_existence
@@ -72,11 +72,14 @@ class Trainer:
         self.lr = config.init_lr
 
         # misc params
-        self.model_name = f"ram_{config.num_glimpses}_{config.patch_size}x{config.patch_size}_{config.glimpse_scale}"
+        self.model_name = (
+            f"ram_{config.num_glimpses}_{config.patch_size}x{config.patch_size}_"
+            f"{config.glimpse_scale}"
+        )
         self.best = config.best
-        self.ckpt_dir = config.ckpt_dir
-        self.logs_dir = config.logs_dir
-        self.plot_dir = config.plot_dir / self.model_name
+        self.ckpt_dir = Path(config.ckpt_dir)
+        self.logs_dir = Path(config.logs_dir)
+        self.plot_dir = Path(config.plot_dir) / self.model_name
         self.best_valid_acc = 0.0
         self.counter = 0
         self.lr_patience = config.lr_patience
@@ -428,12 +431,12 @@ class Trainer:
 
         If this model has reached the best validation accuracy thus
         far, a seperate file with the suffix `best` is created."""
-        ckpt_path = os.path.join(self.ckpt_dir, f"{self.model_name}_ckpt.pth.tar")
+        ckpt_path = str(self.ckpt_dir / f"{self.model_name}_ckpt.pth.tar")
         torch.save(state, ckpt_path)
         if is_best:
             shutil.copyfile(
                 ckpt_path,
-                os.path.join(self.ckpt_dir, f"{self.model_name}_model_best.pth.tar"),
+                str(self.ckpt_dir / f"{self.model_name}_model_best.pth.tar"),
             )
 
     def load_checkpoint(self, best=False):
@@ -454,8 +457,7 @@ class Trainer:
         filename = f"{self.model_name}_ckpt.pth.tar"
         if best:
             filename = f"{self.model_name}_model_best.pth.tar"
-        ckpt_path = os.path.join(self.ckpt_dir, filename)
-        ckpt = torch.load(ckpt_path)
+        ckpt = torch.load(str(self.ckpt_dir / filename))
 
         # load variables from checkpoint
         self.start_epoch = ckpt["epoch"]
@@ -465,7 +467,8 @@ class Trainer:
 
         if best:
             print(
-                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with best valid acc of {ckpt['best_valid_acc']:.3f}"
+                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with "
+                f"best valid acc of {ckpt['best_valid_acc']:.3f}"
             )
         else:
             print(f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']}")

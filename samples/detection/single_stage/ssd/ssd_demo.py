@@ -20,7 +20,9 @@ from neodroidvision.utilities import CheckPointer
 
 
 @torch.no_grad()
-def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_dir):
+def run_demo(
+    cfg, categories, model_ckpt, score_threshold, images_dir, output_dir: Path
+):
     model = SingleShotDetection(cfg)
 
     checkpointer = CheckPointer(
@@ -80,13 +82,13 @@ def run_demo(cfg, class_names, model_ckpt, score_threshold, images_dir, output_d
             boxes,
             labels=labels,
             scores=scores,
-            categories=class_names,
+            categories=categories,
             score_font=ImageFont.truetype(
                 PACKAGE_DATA_PATH / "Lato-Regular.ttf",
                 24,
             ),
         ).astype(numpy.uint8)
-        Image.fromarray(drawn_image).save(os.path.join(output_dir, image_name))
+        Image.fromarray(drawn_image).save(str(output_dir / image_name))
 
 
 def main():
@@ -118,11 +120,11 @@ def main():
 
     run_demo(
         cfg=base_cfg,
-        class_names=base_cfg.dataset_type.category_sizes,
+        categories=base_cfg.dataset_type.categories,
         model_ckpt=args.ckpt,
         score_threshold=args.score_threshold,
         images_dir=Path(args.images_dir),
-        output_dir=base_cfg.OUTPUT_DIR,
+        output_dir=Path(base_cfg.OUTPUT_DIR),
     )
 
 

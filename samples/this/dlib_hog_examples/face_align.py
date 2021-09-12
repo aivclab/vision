@@ -15,7 +15,6 @@ from draugr.opencv_utilities.dlib.facealigner import align_face
 
 
 def aushda():
-
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
     face_size = (256, 256)

@@ -19,6 +19,7 @@ from neodroidvision.utilities.torch_utilities.distributing.distributing_utilitie
 
 
 def main():
+    """ """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(

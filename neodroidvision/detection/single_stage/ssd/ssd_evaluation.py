@@ -74,7 +74,7 @@ def accumulate_predictions_from_cuda_devices(predictions_per_gpu: Any) -> list:
     return [predictions[i] for i in image_ids]
 
 
-def evaluate_dataset(dataset, predictions, output_dir, **kwargs) -> dict:
+def evaluate_dataset(dataset, predictions, output_dir: Path, **kwargs) -> dict:
     """evaluate dataset using different methods based on dataset type.
     Args:
     dataset: Dataset object

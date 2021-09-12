@@ -133,7 +133,7 @@ class COCODataset(ObjectDetectionDataset):
 
     @property
     def predictor_shape(self) -> Tuple[int, ...]:
-        """"""
+        """ """
         return (-1, -1, 3)
 
     def __init__(

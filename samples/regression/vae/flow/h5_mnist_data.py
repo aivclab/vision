@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+from pathlib import Path
+
 """Get the binarized MNIST dataset and convert to hdf5.
 From https://github.com/yburda/iwae/blob/master/datasets.py
 """
-import os
 import urllib.request
 
 import h5py
@@ -19,17 +20,17 @@ import numpy
 from neodroidvision import PROJECT_APP_PATH
 
 
-def parse_binary_mnist(data_dir):
+def parse_binary_mnist(data_dir: Path):
     def lines_to_np_array(lines):
         return numpy.array([[int(i) for i in line.split()] for line in lines])
 
-    with open(os.path.join(data_dir, "binarized_mnist_train.amat")) as f:
+    with open(str(data_dir / "binarized_mnist_train.amat")) as f:
         lines = f.readlines()
     train_data = lines_to_np_array(lines).astype("float32")
-    with open(os.path.join(data_dir, "binarized_mnist_valid.amat")) as f:
+    with open(str(data_dir / "binarized_mnist_valid.amat")) as f:
         lines = f.readlines()
     validation_data = lines_to_np_array(lines).astype("float32")
-    with open(os.path.join(data_dir, "binarized_mnist_test.amat")) as f:
+    with open(str(data_dir / "binarized_mnist_test.amat")) as f:
         lines = f.readlines()
     test_data = lines_to_np_array(lines).astype("float32")
     return train_data, validation_data, test_data

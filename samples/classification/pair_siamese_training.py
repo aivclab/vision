@@ -175,7 +175,8 @@ def train_siamese(
                                     save_directory=save_path,
                                 )
             E.set_description(
-                f"Epoch number {epoch}, Current train loss {train_loss}, valid loss {valid_loss}, valid_accuracy {valid_accuracy}"
+                f"Epoch number {epoch}, Current train loss {train_loss}, valid loss {valid_loss}, valid_accuracy "
+                f"{valid_accuracy}"
             )
 
     return model

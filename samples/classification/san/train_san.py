@@ -3,6 +3,7 @@ import os
 import random
 import shutil
 import time
+from pathlib import Path
 
 import numpy
 import torch
@@ -121,7 +122,7 @@ def main_worker(gpu, ngpus_per_node, config):
         model = torch.nn.DataParallel(model.cuda())
 
     if CONFIG.weight:
-        if os.path.isfile(CONFIG.weight):
+        if Path(CONFIG.weight).is_file():
             if is_main_process():
                 global logger
                 logger.info(f"=> loading weight '{CONFIG.weight}'")
@@ -136,7 +137,7 @@ def main_worker(gpu, ngpus_per_node, config):
                 logger.info(f"=> no weight found at '{CONFIG.weight}'")
 
     if CONFIG.resume:
-        if os.path.isfile(CONFIG.resume):
+        if Path(CONFIG.resume).is_file():
             if is_main_process():
                 global logger
                 logger.info(f"=> loading checkpoint '{CONFIG.resume}'")
@@ -432,7 +433,8 @@ def validate(val_loader, model, criterion):
         for i in range(val_loader.dataset.response_shape[0]):
             if target_meter.sum[i] > 0:
                 logger.info(
-                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:{target_meter.sum[i]}"
+                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:"
+                    f"{target_meter.sum[i]}"
                 )
         logger.info("<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<")
     return loss_meter.avg, mIoU, mAcc, allAcc, top1_meter.avg, top5_meter.avg

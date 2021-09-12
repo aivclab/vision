@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from itertools import count
+from pathlib import Path
 
 import numpy
 import torch
@@ -54,7 +55,7 @@ if __name__ == "__main__":
         logger.info(model)
         model = torch.nn.DataParallel(model.cuda())
 
-        if os.path.isdir(SAN_CONFIG.save_path):
+        if Path(SAN_CONFIG.save_path).is_dir():
             logger.info(f"=> loading checkpoint '{SAN_CONFIG.model_path}'")
             checkpoint = torch.load(SAN_CONFIG.model_path)
             model.load_state_dict(checkpoint["state_dict"], strict=True)
@@ -99,7 +100,8 @@ if __name__ == "__main__":
                 output = model(input)
                 pyplot.imshow(dataset.inverse_base_transform(input[0].cpu()))
                 pyplot.title(
-                    f"pred:{dataset.category_names[output.max(1)[1][0].item()]} truth:{dataset.category_names[target[0].item()]}"
+                    f"pred:{dataset.category_names[output.max(1)[1][0].item()]} truth:"
+                    f"{dataset.category_names[target[0].item()]}"
                 )
                 pyplot.show()
 
@@ -150,7 +152,8 @@ if __name__ == "__main__":
         for i in range(dataset.response_shape[0]):
             if target_meter.sum[i] > 0:
                 logger.info(
-                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:{target_meter.sum[i]}"
+                    f"Class_{i} Result: iou/accuracy {iou_class[i]:.4f}/{accuracy_class[i]:.4f} Count:"
+                    f"{target_meter.sum[i]}"
                 )
         logger.info("<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<")
         print(loss_meter.avg, mIoU, mAcc, allAcc, top1_meter.avg, top5_meter.avg)

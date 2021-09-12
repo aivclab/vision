@@ -1,4 +1,3 @@
-
 <!--![header](.github/images/header.png)-->
 
 <p align="center">
@@ -11,14 +10,16 @@
 
 
 This repository will host implementations of computer vision algorithms, this repository hosts a general
- toolbox in
- library format under [neodroidvision](neodroidvision), while also comprising a range of sample usages in
-  [samples](samples), many of them utilising the
- [Neodroid](https://github.com/sintefneodroid/) platform.
+toolbox in library format under [neodroidvision](neodroidvision), while also comprising a range of sample
+usages in
+[samples](samples), many of them utilising the
+[Neodroid](https://github.com/sintefneodroid/) platform.
 
 ---
 
-_[Neodroid](https://github.com/sintefneodroid) is developed with support from Research Council of Norway Grant #262900. ([https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900](https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900))_
+_[Neodroid](https://github.com/sintefneodroid) is developed with support from Research Council of Norway Grant
+
+# 262900. ([https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900](https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900))_
 
 ---
 
@@ -43,32 +44,40 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 </p>
 
 # Contents Of This Readme
+
 - [Algorithms](#algorithms)
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [Results](#results)
-  - [Segmentation](#segmentation)
+    - [Segmentation](#segmentation)
 - [Contributing](#contributing)
 - [Other Components](#other-components-of-the-neodroid-platform)
 
 # Computer Vision Algorithms
+
 ### Classification
 -
 
 ### Segmentation
-- [UNET](neodroidvision/segmentation/instance_segmentation_model.py) -  Segmentation model
+
+- [UNET](neodroidvision/segmentation/instance_segmentation_model.py) - Segmentation model
 - [AUX-UNET](neodroidvision/multitask/fission/skip_hourglass/skip_hourglass_fission.py) - Instance
- Segmentation model + Auxilary ouputs
+  Segmentation model + Auxilary ouputs
+
 ### Detection
+
 - [SSD](neodroidvision/detection/single_stage/ssd) - Object Detection Model
 - [MASK-RCNN](neodroidvision/detection/two_stage/mask_rcnn) - Object Detection Model
 
 ### Regression
+
 #### Generative
+
 - [SAGAN](neodroidvision/regression/generative) - Generative model
 - [VAE](neodroidvision/regression/vae) - Generative model
 
 # Requirements
+
 - pytorch
 - tqdm
 - Pillow
@@ -80,20 +89,27 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 - pynput
 
 To install these use the command:
+
 ````bash
 pip3 install -r requirements.txt
 ````
 
 # Usage
+
 Export python path to the repo root so we can use the utilities module
+
 ````bash
 export PYTHONPATH=/path-to-repo/
 ````
+
 For training a agent use:
+
 ````bash
 python3 procedures/train_agent.py
 ````
+
 For testing a trained agent use:
+
 ````bash
 python3 procedures/test_agent.py
 ````
@@ -105,9 +121,11 @@ python3 procedures/test_agent.py
 [Code](samples/regression/segmentation/run.py)
 
 ### Screenshots
+
 ![Segmentation](.github/images/results/ori_mask_seg_recon.png)
 
 # Contributing
+
 See guidelines for contributing [here](CONTRIBUTING.md).
 
 # Citation

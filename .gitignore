@@ -146,6 +146,10 @@ logs/*.csv
 .externalNativeBuild
 .ipynb_checkpoints/
 
+samples/misc/.polyscope.ini
+
+samples/misc/imgui.ini
+
 
 *~develop
 *~HEAD

@@ -37,7 +37,8 @@ SAN_CONFIG = NOD(
     batch_size=256,  # batch size for training
     batch_size_val=128,  # batch size for validation during training, memory and speed tradeoff
     batch_size_test=10,  # 100,
-    evaluate=True,  # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
+    evaluate=True,
+    # evaluate on validation set, extra gpu memory needed and small batch_size_val is recommend
     dist_url="tcp://127.0.0.1:6789",
     dist_backend="nccl",
     multiprocessing_distributed=True,
