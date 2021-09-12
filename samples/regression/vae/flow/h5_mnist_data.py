@@ -15,6 +15,7 @@ import urllib.request
 
 import h5py
 import numpy
+
 from neodroidvision import PROJECT_APP_PATH
 
 

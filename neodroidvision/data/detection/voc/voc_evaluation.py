@@ -18,7 +18,7 @@ import numpy
 import six
 
 __all__ = [
-    "bbox_iou",
+    "bbox_intersection_over_union",
     "eval_detection_voc",
     "calc_detection_voc_ap",
     "calc_detection_voc_prec_rec",
@@ -26,7 +26,9 @@ __all__ = [
 ]
 
 
-def bbox_iou(bbox_a: numpy.ndarray, bbox_b: numpy.ndarray) -> numpy.ndarray:
+def bbox_intersection_over_union(
+    bbox_a: numpy.ndarray, bbox_b: numpy.ndarray
+) -> numpy.ndarray:
     """Calculate the Intersection of Unions (IoUs) between bounding boxes.
 IoU is calculated as a ratio of area of the intersection
 and area of the union.
@@ -51,10 +53,9 @@ box in :obj:`bbox_b`.
     if bbox_a.shape[1] != 4 or bbox_b.shape[1] != 4:
         raise IndexError
 
-    # top left
-    tl = numpy.maximum(bbox_a[:, None, :2], bbox_b[:, :2])
-    # bottom right
-    br = numpy.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])
+    tl = numpy.maximum(bbox_a[:, None, :2], bbox_b[:, :2])  # top left
+
+    br = numpy.minimum(bbox_a[:, None, 2:], bbox_b[:, 2:])  # bottom right
 
     area_i = numpy.prod(br - tl, axis=2) * (tl < br).all(axis=2)
     area_a = numpy.prod(bbox_a[:, 2:] - bbox_a[:, :2], axis=1)
@@ -69,7 +70,7 @@ def eval_detection_voc(
     gt_bboxes,
     gt_labels,
     gt_difficults=None,
-    iou_thresh=0.5,
+    iou_thresh: float = 0.5,
     use_07_metric=False,
 ) -> Tuple:
     """Calculate average precisions based on evaluation code of PASCAL VOC.
@@ -243,8 +244,8 @@ set to :obj:`None`.
             pred_mask_l = pred_label == l
             pred_bbox_l = pred_bbox[pred_mask_l]
             pred_score_l = pred_score[pred_mask_l]
-            # sort by score
-            order = pred_score_l.argsort()[::-1]
+
+            order = pred_score_l.argsort()[::-1]  # sort by score
             pred_bbox_l = pred_bbox_l[order]
             pred_score_l = pred_score_l[order]
 
@@ -267,10 +268,11 @@ set to :obj:`None`.
             gt_bbox_l = gt_bbox_l.copy()
             gt_bbox_l[:, 2:] += 1
 
-            iou = bbox_iou(pred_bbox_l, gt_bbox_l)
+            iou = bbox_intersection_over_union(pred_bbox_l, gt_bbox_l)
             gt_index = iou.argmax(axis=1)
-            # set -1 if there is no matching ground truth
-            gt_index[iou.max(axis=1) < iou_thresh] = -1
+            gt_index[
+                iou.max(axis=1) < iou_thresh
+            ] = -1  # set -1 if there is no matching ground truth
             del iou
 
             selec = numpy.zeros(gt_bbox_l.shape[0], dtype=bool)

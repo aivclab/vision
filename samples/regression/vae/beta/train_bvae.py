@@ -7,16 +7,6 @@ from pathlib import Path
 import torch
 import torch.utils.data
 from draugr.numpy_utilities import Split
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
-from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
-from neodroidvision.regression.vae.architectures.vae import VAE
-from torch import optim
-from torch.utils.data import DataLoader
-from torchvision.utils import save_image
-from tqdm import tqdm
-
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -24,6 +14,15 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from draugr.writers import Writer
+from torch import optim
+from torch.utils.data import DataLoader
+from torchvision.utils import save_image
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
+from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
+from neodroidvision.regression.vae.architectures.vae import VAE
 from .objectives import kl_divergence, reconstruction_loss
 
 __author__ = "Christian Heider Nielsen"
@@ -33,7 +32,6 @@ __doc__ = r"""
 
 torch.manual_seed(82375329)
 LOWEST_L = inf
-import multiprocessing
 
 core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
 

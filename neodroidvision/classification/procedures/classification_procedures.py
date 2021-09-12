@@ -6,11 +6,11 @@ from pathlib import Path
 import numpy
 import torch
 import tqdm
+from draugr.numpy_utilities import Split
 from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
-from draugr.numpy_utilities import Split
 from draugr.torch_utilities import (
     TorchEvalSession,
     TorchTrainSession,

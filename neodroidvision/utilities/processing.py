@@ -8,12 +8,14 @@ __doc__ = r"""
            """
 
 __all__ = ["unstandardise_image", "preprocess_image", "overlay_cam_on_image"]
-from torchvision import models, transforms
+
+import PIL
 import cv2
 import numpy
+from torchvision import transforms
 
 
-def overlay_cam_on_image(img, mask):
+def overlay_cam_on_image(img: PIL.Image, mask: PIL.Image) -> numpy.ndarray:
     heatmap = cv2.applyColorMap(numpy.uint8(255 * mask), cv2.COLORMAP_JET)
     heatmap = numpy.float32(heatmap) / 255
     cam = heatmap + numpy.float32(img)
@@ -21,7 +23,7 @@ def overlay_cam_on_image(img, mask):
     return numpy.uint8(255 * cam)
 
 
-def preprocess_image(img):
+def preprocess_image(img: PIL.Image) -> numpy.ndarray:
     """Preprocesses it for VGG19"""
     normalize = transforms.Normalize(
         mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
@@ -35,7 +37,7 @@ def preprocess_image(img):
     return preprocessing(img.copy()).unsqueeze(0)
 
 
-def unstandardise_image(img):
+def unstandardise_image(img: PIL.Image) -> numpy.ndarray:
     img = img - numpy.mean(img)
     img /= numpy.std(img) + 1e-5
     return numpy.uint8(numpy.clip(img * 0.1 + 0.5, 0, 1) * 255)

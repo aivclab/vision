@@ -8,6 +8,17 @@ from pathlib import Path
 import torch
 from apppath import ensure_existence
 from draugr.numpy_utilities import Split
+from draugr.torch_utilities import (
+    TorchCacheSession,
+    TorchEvalSession,
+    TorchTrainSession,
+    WarmupMultiStepLR,
+)
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
+from warg import NOD
+from warg.arguments import str2bool
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd import (
@@ -24,18 +35,6 @@ from neodroidvision.utilities import (
     set_benchmark_device_dist,
     setup_distributed_logger,
     write_metrics_recursive,
-)
-from torch.nn import Module
-from torch.optim import Optimizer
-from torch.utils.data import DataLoader
-from warg import NOD
-from warg.arguments import str2bool
-
-from draugr.torch_utilities import (
-    TorchCacheSession,
-    TorchEvalSession,
-    TorchTrainSession,
-    WarmupMultiStepLR,
 )
 
 

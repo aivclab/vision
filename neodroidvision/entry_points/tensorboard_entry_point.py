@@ -5,12 +5,11 @@ from shutil import rmtree
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from draugr.stopping import IgnoreInterruptSignal
+from draugr import IgnoreInterruptSignal
 
 
-def main(keep_alive=True):
+def main(keep_alive: bool = True) -> str:
     from draugr.torch_utilities.writers.tensorboard.launcher import launch_tensorboard
-    from contextlib import suppress
     from time import sleep
 
     from neodroidvision import PROJECT_APP_PATH

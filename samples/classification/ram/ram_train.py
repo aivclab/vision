@@ -5,9 +5,8 @@ import time
 
 import torch
 from apppath import ensure_existence
+from draugr import AverageMeter
 from draugr.writers import MockWriter, Writer
-
-from neodroidvision.data.classification import MNISTDataset
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
 
@@ -16,7 +15,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
-from draugr import AverageMeter
+from neodroidvision.data.classification import MNISTDataset
 
 
 class Trainer:

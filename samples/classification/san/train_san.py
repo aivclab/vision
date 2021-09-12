@@ -7,12 +7,16 @@ import time
 import numpy
 import torch
 from draugr import AverageMeter
+from draugr.numpy_utilities import Split
 from draugr.torch_utilities import TensorBoardPytorchWriter
+from torch import distributed, multiprocessing, nn
+from torch.backends import cudnn
+from torch.optim import lr_scheduler
+
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
 )
-from draugr.numpy_utilities import Split
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,
@@ -20,9 +24,6 @@ from san_utilities import (
     mixup_loss,
     smooth_loss,
 )
-from torch import distributed, multiprocessing, nn
-from torch.backends import cudnn
-from torch.optim import lr_scheduler
 
 
 def find_unclaimed_port():

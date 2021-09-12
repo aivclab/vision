@@ -4,8 +4,8 @@ from torch.nn.modules.utils import _pair
 
 from .self_attention_utilities import (
     CUDA_NUM_THREADS,
-    get_blocks_,
     Stream,
+    get_blocks_,
     get_dtype_str,
     kernel_loop,
     load_kernel,

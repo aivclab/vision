@@ -6,9 +6,10 @@ __doc__ = ""
 
 import torch
 import torch.utils.data
-from neodroidvision.regression.vae.architectures.vae import VAE
 from torch import nn
 from torch.nn.functional import binary_cross_entropy
+
+from neodroidvision.regression.vae.architectures.vae import VAE
 
 __all__ = ["VanillaVAE"]
 

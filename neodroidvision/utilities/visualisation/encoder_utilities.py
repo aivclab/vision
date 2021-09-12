@@ -8,8 +8,10 @@ from imageio import imwrite
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
+from warg import Number
 
-def compile_encoding_image(images, size, resize_factor=1.0):
+
+def compile_encoding_image(images, size, resize_factor: Number = 1.0):
     """
 
     :param images:
@@ -56,7 +58,13 @@ def sample_2d_latent_vectors(encoding_space, n_img_x, n_img_y):
 
 
 def plot_manifold(
-    model, out_path, n_img_x=20, n_img_y=20, img_h=28, img_w=28, sample_range=1
+    model,
+    out_path,
+    n_img_x: int = 20,
+    n_img_y: int = 20,
+    img_h: int = 28,
+    img_w: int = 28,
+    sample_range: Number = 1,
 ):
     """
 

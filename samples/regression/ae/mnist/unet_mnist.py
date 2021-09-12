@@ -8,21 +8,21 @@ from pathlib import Path
 from typing import Iterator
 
 from draugr.numpy_utilities import Split
-from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
-from torch.nn.modules.module import Module
-from torch.optim.optimizer import Optimizer
-from torch.utils.data import DataLoader
-from torchvision import transforms
-
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     global_torch_device,
     to_device_iterator,
 )
 from draugr.writers import Writer
+from matplotlib import pyplot
+from torch.nn.modules.module import Module
+from torch.optim.optimizer import Optimizer
+from torch.utils.data import DataLoader
+from torchvision import transforms
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
 __author__ = "Christian Heider Nielsen"
 

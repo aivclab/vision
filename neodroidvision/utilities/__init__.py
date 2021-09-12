@@ -7,8 +7,8 @@ __doc__ = r"""
 
 from .metric_utilities import *
 from .metric_utilities import *
+from .processing import *
 from .torch_utilities import *
 
 # from .tf_utilities import *
 from .visualisation import *
-from .processing import *

@@ -5,10 +5,10 @@ from typing import Iterable
 
 import numpy
 import torchvision
-from neodroidvision import PROJECT_APP_PATH
+from draugr.torch_utilities import TensorBoardPytorchWriter
 from torch import nn
 
-from draugr.torch_utilities import TensorBoardPytorchWriter
+from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

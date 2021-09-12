@@ -1,5 +1,5 @@
 import torch
-import torch.nn as nn
+from torch import nn
 
 from neodroidvision.regression.vae.architectures.vae import VAE
 

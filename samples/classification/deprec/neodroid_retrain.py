@@ -4,20 +4,10 @@ import argparse
 import os
 import time
 
+import torch
 import torchvision
-from matplotlib import pyplot
-from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
-    MixedObservationWrapper,
-)
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import squeezenet_retrain
-from neodroidvision.classification.procedures.deprec.procedures import (
-    predictor_response_train_model_neodroid_observations,
-)
-
 from draugr import (
     batch_generator,
-    horizontal_imshow,
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
@@ -28,14 +18,24 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
+from draugr.visualisation import horizontal_imshow
+from matplotlib import pyplot
+from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
+    MixedObservationWrapper,
+)
+from torch import optim
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import squeezenet_retrain
+from neodroidvision.classification.procedures.deprec.procedures import (
+    predictor_response_train_model_neodroid_observations,
+)
 
 # from warg.pooled_queue_processor import PooledQueueTask
 
 __author__ = "Christian Heider Nielsen"
 
-import torch
-import torch.optim as optim
-from tqdm import tqdm
 
 seed = 34874312
 batch_size = 16

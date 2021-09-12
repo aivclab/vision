@@ -4,7 +4,9 @@ import os
 
 import torch
 import torch.utils.data
+from draugr.torch_utilities import global_torch_device
 from draugr.torch_utilities.sessions import TorchCacheSession
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.ssd_evaluation import do_ssd_evaluation
@@ -14,8 +16,6 @@ from neodroidvision.utilities.torch_utilities.distributing.distributing_utilitie
     set_benchmark_device_dist,
     setup_distributed_logger,
 )
-
-from draugr.torch_utilities import global_torch_device
 
 
 def main():
@@ -64,7 +64,10 @@ def main():
         )
         checkpointer.load(args.ckpt, use_latest=args.ckpt is None)
         do_ssd_evaluation(
-            base_cfg, model.to(torch.device(base_cfg.MODEL.DEVICE)), distributed
+            base_cfg.data_dir,
+            base_cfg,
+            model.to(torch.device(base_cfg.MODEL.DEVICE)),
+            distributed,
         )
 
 

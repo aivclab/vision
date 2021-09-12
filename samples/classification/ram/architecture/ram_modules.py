@@ -1,9 +1,9 @@
 from typing import Tuple
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from torch import nn
 from torch.distributions import Normal
+from torch.nn import functional
 
 
 class GlimpseSensor(nn.Module):
@@ -94,7 +94,7 @@ class GlimpseSensor(nn.Module):
             # resize the patches to squares of size g
             for i in range(1, len(phi)):
                 k = phi[i].shape[-1] // self.g
-                phi[i] = F.avg_pool2d(phi[i], k)
+                phi[i] = functional.avg_pool2d(phi[i], k)
 
             # concatenate into a single tensor and flatten
             phi = torch.cat(phi, 1)
@@ -119,7 +119,7 @@ class GlimpseSensor(nn.Module):
             end = start + size
 
             # pad with zeros
-            x = F.pad(x, (size // 2, size // 2, size // 2, size // 2))
+            x = functional.pad(x, (size // 2, size // 2, size // 2, size // 2))
 
             # loop through mini-batch and extract patches
             patch = []
@@ -164,11 +164,13 @@ class GlimpseSensor(nn.Module):
         :return:
         :rtype:"""
 
-        return F.relu(
+        return functional.relu(
             self.fc3(
-                F.relu(self.fc1(self.retina.foveate(x, l_t_prev)))
+                functional.relu(self.fc1(self.retina.foveate(x, l_t_prev)))
             )  # what # generate glimpse phi from image x
-            + self.fc4(F.relu(self.fc2(l_t_prev.view(l_t_prev.size(0), -1))))  # where
+            + self.fc4(
+                functional.relu(self.fc2(l_t_prev.view(l_t_prev.size(0), -1)))
+            )  # where
         )
 
 
@@ -222,7 +224,7 @@ class CoreRNN(nn.Module):
         :rtype:"""
         h1 = self.i2h(g_t)
         h2 = self.h2h(h_t_prev)
-        h_t = F.relu(h1 + h2)
+        h_t = functional.relu(h1 + h2)
         return h_t
 
 
@@ -262,7 +264,7 @@ class Actor(nn.Module):
         :type h_t:
         :return:
         :rtype:"""
-        return F.log_softmax(self.fc(h_t), dim=1)
+        return functional.log_softmax(self.fc(h_t), dim=1)
 
 
 class Locator(nn.Module):
@@ -311,7 +313,7 @@ class Locator(nn.Module):
         :return:
         :rtype:"""
         # compute mean
-        mu = torch.tanh(self.fc_lt(F.relu(self.fc(h_t.detach()))))
+        mu = torch.tanh(self.fc_lt(functional.relu(self.fc(h_t.detach()))))
 
         # reparametrization trick
         l_t = torch.distributions.Normal(mu, self.std).rsample()

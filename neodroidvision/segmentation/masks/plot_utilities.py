@@ -40,7 +40,13 @@ def masks_to_color_img(masks: numpy.ndarray) -> numpy.ndarray:
     return color_image.astype(numpy.uint8)
 
 
-def plot_prediction(img_array, labels, max_pred, pred, n_col: int = 3) -> None:
+def plot_prediction(
+    img_array: numpy.ndarray,
+    labels: Sequence,
+    max_pred: Sequence,
+    pred: Sequence,
+    n_col: int = 3,
+) -> None:
     n_row = len(img_array) // n_col
 
     f, plots = pyplot.subplots(

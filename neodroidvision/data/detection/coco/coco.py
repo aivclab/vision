@@ -13,12 +13,11 @@ from typing import Tuple
 import numpy
 from PIL import Image
 from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import xywh_to_minmax
 
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
-
-from draugr.opencv_utilities import xywh_to_minmax
 
 __all__ = ["COCODataset"]
 
@@ -26,7 +25,9 @@ from draugr.torch_utilities import NamedTensorTuple
 
 
 class COCODataset(ObjectDetectionDataset):
-    """"""
+    """
+    2014
+    """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
@@ -158,7 +159,7 @@ class COCODataset(ObjectDetectionDataset):
         :param remove_empty:
         :type remove_empty:"""
         super().__init__(
-            data_root, dataset_name, split, img_transform, annotation_transform
+            # data_root, dataset_name, split, img_transform, annotation_transform
         )
         from pycocotools.coco import COCO
 

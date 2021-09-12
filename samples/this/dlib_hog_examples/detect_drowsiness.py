@@ -2,7 +2,6 @@ from threading import Thread
 
 import cv2
 import dlib
-
 import playsound
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib_utilities import (

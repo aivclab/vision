@@ -13,14 +13,12 @@ from typing import Sequence, Tuple
 import numpy
 import torch
 from draugr.numpy_utilities import Split, SplitIndexer
+from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 from matplotlib import pyplot
 from torch.utils.data import Subset
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
-
 from torchvision.datasets import MNIST
-
-from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 
 __all__ = ["MNISTDataset", "MNISTDataset2"]
 

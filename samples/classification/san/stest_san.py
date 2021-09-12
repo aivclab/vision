@@ -5,19 +5,19 @@ from itertools import count
 
 import numpy
 import torch
-from torch import nn
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
+from draugr import AverageMeter
+from draugr.numpy_utilities import Split
 from matplotlib import pyplot
+from torch import nn
+
 from neodroidvision.classification.architectures.self_attention_network import (
     SelfAttentionTypeEnum,
     make_san,
 )
 from san_utilities import cal_accuracy, intersection_and_union_gpu
-
-from draugr import AverageMeter
-from draugr.numpy_utilities import Split
 
 if __name__ == "__main__":
 

@@ -4,11 +4,10 @@ from typing import Tuple, Union
 
 import neodroid
 from PIL import Image
+from draugr.torch_utilities import global_torch_device
 from torch.utils.data import Dataset
 from torchvision import transforms
 from warg.pooled_queue_processor import PooledQueueProcessor, PooledQueueTask
-
-from draugr.torch_utilities import global_torch_device
 
 __author__ = "Christian Heider Nielsen"
 

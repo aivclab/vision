@@ -12,6 +12,8 @@ from typing import List, Optional, Union
 
 import torch
 from draugr.numpy_utilities import Split
+from torch.utils.data import ConcatDataset, DataLoader
+from warg import NOD
 
 from neodroidvision.data.detection.multi_dataset import MultiDataset
 from neodroidvision.utilities import (
@@ -19,8 +21,6 @@ from neodroidvision.utilities import (
     DistributedSampler,
     LimitedBatchResampler,
 )
-from torch.utils.data import ConcatDataset, DataLoader
-from warg import NOD
 
 __all__ = ["object_detection_data_loaders"]
 

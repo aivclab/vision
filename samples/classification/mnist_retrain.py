@@ -7,15 +7,8 @@ import time
 
 import torch
 import torchvision
+from draugr import recycle
 from draugr.numpy_utilities import Split
-from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import squeezenet_retrain
-from torch import optim
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-
-from draugr import horizontal_imshow, recycle
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -26,6 +19,14 @@ from draugr.torch_utilities import (
     to_tensor,
     torch_clean_up,
 )
+from draugr.visualisation import horizontal_imshow
+from matplotlib import pyplot
+from torch import optim
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import squeezenet_retrain
 
 __author__ = "Christian Heider Nielsen"
 __all__ = []

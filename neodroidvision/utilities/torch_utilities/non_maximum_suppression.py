@@ -8,11 +8,10 @@ __all__ = ["non_maximum_suppression", "batched_non_maximum_suppression"]
 
 __doc__ = """This file is merily a wrapper to provide a custom implementation of NMS"""
 
-if torchvision.__version__ >= "0.3.0":
+if [int(i) for i in torchvision.__version__.split(".")] >= [0, 3, 0]:
     nms_support = torchvision.ops.nms
 else:
     try:
-
         import ssd_torch_extension
 
         nms_support = ssd_torch_extension.nms  # non_maximum_suppression

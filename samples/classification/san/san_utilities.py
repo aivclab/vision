@@ -1,8 +1,8 @@
 import numpy
 import torch
-from torch.nn import init
 from PIL import Image
 from torch import log_softmax, nn
+from torch.nn import init
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.conv import _ConvNd
 

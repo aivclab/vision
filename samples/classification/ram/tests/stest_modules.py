@@ -1,5 +1,6 @@
 import sys
 
+from draugr import pil_img_to_np_array
 from samples.classification.ram.architecture.ram_modules import (
     Actor,
     CoreRNN,
@@ -8,8 +9,6 @@ from samples.classification.ram.architecture.ram_modules import (
     SignalBaseline,
 )
 from samples.classification.ram.ram_params import get_ram_config
-
-from draugr import pil_img_to_np_array
 
 sys.path.append("..")
 

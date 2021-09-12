@@ -3,7 +3,6 @@ import sys
 import time
 
 import torch
-import torchvision
 import tqdm
 from draugr.torch_utilities import (
     TorchEvalSession,
@@ -25,7 +24,7 @@ from neodroidvision.utilities import reduce_dict
 
 def maskrcnn_train_single_epoch(
     *,
-    model: torchvision.models.detection.mask_rcnn.MaskRCNN,
+    model: Module,
     optimiser: Optimizer,
     data_loader: DataLoader,
     device: torch.device = global_torch_device(),

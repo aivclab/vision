@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from draugr.torch_utilities import global_torch_device
 from warg import NOD
 
-from draugr.torch_utilities import global_torch_device
 from .architectures import Generator, VariationalFlow, VariationalMeanField
 from .data_loader import load_binary_mnist
 

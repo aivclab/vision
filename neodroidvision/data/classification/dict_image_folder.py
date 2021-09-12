@@ -10,13 +10,12 @@ __doc__ = r"""
 __all__ = ["SplitDictImageFolder", "DictImageFolder"]
 
 from draugr.numpy_utilities import Split
-from torchvision.datasets.folder import IMG_EXTENSIONS, default_loader
-from torchvision.transforms import transforms
-
 from draugr.torch_utilities import (
     DictDatasetFolder,
     SplitDictDatasetFolder,
 )
+from torchvision.datasets.folder import IMG_EXTENSIONS, default_loader
+from torchvision.transforms import transforms
 
 
 class SplitDictImageFolder(SplitDictDatasetFolder):

@@ -9,16 +9,15 @@ __doc__ = r"""
 
 import cv2
 import torch
-from matplotlib.pyplot import show
-from torchvision import transforms
-from tqdm import tqdm
-
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import (
     TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
 )
+from matplotlib.pyplot import show
+from torchvision import transforms
+from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 

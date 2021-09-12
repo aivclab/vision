@@ -1,8 +1,8 @@
 from typing import Tuple
 
 import torch
-import torch.nn as nn
 from samples.classification.ram.architecture import ram_modules
+from torch import nn
 
 
 class RecurrentAttention(nn.Module):

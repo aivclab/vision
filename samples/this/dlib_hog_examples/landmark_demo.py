@@ -8,8 +8,8 @@ __doc__ = r"""
            """
 
 
-import dlib
 import cv2
+import dlib
 
 # initialize dlib's face detector (HOG-based) and then create
 # the facial landmark predictor

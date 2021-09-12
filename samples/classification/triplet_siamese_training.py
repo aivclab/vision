@@ -5,7 +5,6 @@ __doc__ = r"""
 """
 
 import math
-from contextlib import suppress
 from itertools import count
 from pathlib import Path
 
@@ -13,21 +12,8 @@ import numpy
 import torch
 import torch.nn.functional as F
 import torchvision.utils
+from draugr import IgnoreInterruptSignal
 from draugr.numpy_utilities import Split
-from draugr.stopping import IgnoreInterruptSignal
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.nlet import PairDataset, TripletDataset
-from neodroidvision.regression import NLetConvNet
-from neodroidvision.utilities.visualisation.similarity_utilities import (
-    boxed_text_overlay_plot,
-)
-from torch import optim
-from torch.nn import TripletMarginLoss
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from tqdm import tqdm
-
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -38,6 +24,18 @@ from draugr.torch_utilities import (
     to_tensor,
 )
 from draugr.writers import MockWriter, Writer
+from torch import optim
+from torch.nn import TripletMarginLoss
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from tqdm import tqdm
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.nlet import PairDataset, TripletDataset
+from neodroidvision.regression import NLetConvNet
+from neodroidvision.utilities.visualisation.similarity_utilities import (
+    boxed_text_overlay_plot,
+)
 
 
 def accuracy(*, distances, is_diff, threshold: float = 0.5):

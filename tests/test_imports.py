@@ -9,11 +9,6 @@ __doc__ = r"""
 
 __all__ = []
 
-from pathlib import Path
-
-import pkg_resources
-from neodroidvision import PROJECT_NAME
-
 
 def test_import():
     import neodroidvision

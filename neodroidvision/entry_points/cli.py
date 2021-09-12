@@ -7,11 +7,11 @@ __doc__ = r"""
            Created on 09/02/2020
            """
 
+import draugr
 import fire
-from neodroidvision import get_version
 from pyfiglet import Figlet
 
-import draugr
+from neodroidvision import get_version
 
 sponsors = "SINTEF Ocean, Alexandra Institute, Norges Forskningsråd"
 margin_percentage = 0 / 6
@@ -38,14 +38,14 @@ class NeodroidVisionCLI(object):
         print(sponsors)
 
 
-def draw_cli_header(*, title="Neodroid Vision", font="big"):
+def draw_cli_header(*, title: str = "Neodroid Vision", font: str = "big") -> None:
     figlet = Figlet(font=font, justify="center", width=terminal_width)
     description = figlet.renderText(title)
 
     print(f"{description}{underline}\n")
 
 
-def main(*, always_draw_header=False):
+def main(*, always_draw_header: bool = False) -> None:
     if always_draw_header:
         draw_cli_header()
     fire.Fire(NeodroidVisionCLI, name="neodroid-vision")

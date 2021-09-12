@@ -11,7 +11,7 @@ __doc__ = r"""
 https://github.com/ikostrikov/pytorch-flows"""
 import numpy
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.nn import functional as F
 
 

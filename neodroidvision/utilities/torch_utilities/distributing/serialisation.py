@@ -6,7 +6,7 @@ import torch
 __all__ = ["to_byte_tensor", "serialise_byte_tensor", "deserialise_byte_tensor"]
 
 
-def to_byte_tensor(data: Any, *, device="cuda") -> torch.ByteTensor:
+def to_byte_tensor(data: Any, *, device: str = "cuda") -> torch.ByteTensor:
     return torch.ByteTensor(
         torch.ByteStorage.from_buffer(
             pickle.dumps(data)  # gets a byte representation for the data
@@ -16,7 +16,9 @@ def to_byte_tensor(data: Any, *, device="cuda") -> torch.ByteTensor:
     )  # convert this byte string into a byte tensor
 
 
-def serialise_byte_tensor(encoded_data, data, *, device="cuda") -> None:
+def serialise_byte_tensor(
+    encoded_data: Any, data: Any, *, device: str = "cuda"
+) -> None:
     """
 
     :param encoded_data:

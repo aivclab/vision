@@ -1,4 +1,3 @@
-import os
 import time
 
 from draugr.python_utilities.datetimes import now_repr

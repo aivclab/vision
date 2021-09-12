@@ -6,17 +6,17 @@ import os
 import time
 from pathlib import Path
 
-from draugr.writers import ImageWriterMixin
-from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.segmentation.masks import plot_utilities
-
 import draugr.visualisation.matplotlib_utilities
 from draugr.numpy_utilities import Split, hwc_to_chw
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     global_torch_device,
 )
+from draugr.writers import ImageWriterMixin
+from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
+
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.segmentation.masks import plot_utilities
 
 __author__ = "Christian Heider Nielsen"
 

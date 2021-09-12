@@ -2,6 +2,10 @@ from collections import namedtuple
 from typing import Any, Tuple
 
 import torch
+from draugr.torch_utilities import to_tensor
+from torch import nn
+from torch.nn import Parameter, functional
+
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
@@ -9,10 +13,6 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes import conversion
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
 )
-from torch import nn
-from torch.nn import Parameter, functional
-
-from draugr.torch_utilities import to_tensor
 
 __all__ = ["SSDNmsBoxHead", "SSDOut"]
 

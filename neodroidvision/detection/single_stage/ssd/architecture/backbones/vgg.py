@@ -1,13 +1,13 @@
 from enum import Enum
 from typing import List, Union
 
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import Tensor, nn
+
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
 from neodroidvision.utilities.torch_utilities import L2Norm
-from torch import Tensor
 
 
 class VGG(SSDBackbone):

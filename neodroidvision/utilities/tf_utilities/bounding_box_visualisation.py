@@ -1,6 +1,8 @@
 import functools
+from pathlib import Path
 from typing import Sequence, Tuple, Union
 
+import PIL
 import numpy
 import six
 import tensorflow
@@ -181,7 +183,7 @@ STANDARD_COLORS = [
 ]
 
 
-def save_image_array_as_png(image, output_path):
+def save_image_array_as_png(image: PIL.Image, output_path: Path):
     """Saves an image (represented as a numpy array) to PNG.
 
     Args:
@@ -192,7 +194,7 @@ def save_image_array_as_png(image, output_path):
         image_pil.save(fid, "PNG")
 
 
-def encode_image_array_as_png_str(image):
+def encode_image_array_as_png_str(image: PIL.Image):
     """Encodes a numpy array into a PNG string.
 
     Args:
@@ -209,17 +211,17 @@ def encode_image_array_as_png_str(image):
 
 
 def draw_bounding_box_on_image_array(
-    image,
-    y_min,
-    x_min,
-    y_max,
-    x_max,
-    labels=(),
+    image: numpy.ndarray,
+    y_min: int,
+    x_min: int,
+    y_max: int,
+    x_max: int,
+    labels: tuple = (),
     *,
-    color="red",
-    thickness=2,
-    use_normalized_coordinates=True,
-    mode="RGBA",
+    color: str = "red",
+    thickness: int = 2,
+    use_normalized_coordinates: bool = True,
+    mode: str = "RGBA",
 ) -> None:
     """Adds a bounding box to an image (numpy array).
 

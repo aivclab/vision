@@ -1,18 +1,18 @@
 devpack # warg, draugr, apppath
 neodroid
-numpy
+numpy>=1.20.2
 scipy
 scikit-image
 tqdm
 Pillow
-matplotlib
+matplotlib>=3.4.1
 pip
 h5py
-torch
+torch>=1.8.1
 torchvision
-pycocotools
-albumentations
-opencv-python
+pycocotools>=2.0.2
+albumentations>=0.5.2
+opencv-python>=4.5.1.48
 seaborn
 munin
 PyWavelets

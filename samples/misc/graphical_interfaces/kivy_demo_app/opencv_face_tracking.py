@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from functools import partial
+
 import cv2
 import imageio
 from kivy.app import App
@@ -13,7 +15,6 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from functools import partial
 
 from neodroidvision import PROJECT_APP_PATH
 

@@ -17,18 +17,17 @@ import torch
 from PIL import ImageFont
 from apppath import ensure_existence
 from draugr.numpy_utilities import Split
+from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
+from draugr.torch_utilities import TorchEvalSession, global_torch_device
+from tqdm import tqdm
+from warg import NOD
 
-from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH, PROJECT_NAME
+from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDetectionNms
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
-from tqdm import tqdm
-from warg import NOD
-
-from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
-from draugr.torch_utilities import TorchEvalSession, global_torch_device
 
 
 @torch.no_grad()
@@ -97,7 +96,8 @@ def run_webcam_demo(
                     scores=scores[indices],
                     categories=categories,
                     score_font=ImageFont.truetype(
-                        PACKAGE_DATA_PATH / "Lato-Regular.ttf", 24,
+                        PACKAGE_DATA_PATH / "Lato-Regular.ttf",
+                        24,
                     ),
                 ).astype(numpy.uint8),
             )

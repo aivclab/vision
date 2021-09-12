@@ -7,15 +7,14 @@ __doc__ = r"""
            Created on 03-05-2021
            """
 
+import cv2
+import dlib
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib_utilities import (
     dlib68FacialLandmarksIndices,
     eye_aspect_ratio,
     shape_to_ndarray,
 )
-
-import dlib
-import cv2
 
 
 def aushdas():

@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 03-05-2021
            """
 
+import cv2
+import dlib
 import numpy
 from draugr.opencv_utilities import AsyncVideoStream, cv2_resize
-
-import dlib
-import cv2
 from draugr.opencv_utilities.dlib.facealigner import align_face
 
 

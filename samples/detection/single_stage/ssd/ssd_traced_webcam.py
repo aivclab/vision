@@ -15,22 +15,20 @@ import numpy
 import torch
 from PIL import ImageFont
 from draugr.numpy_utilities import Split
-
-from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH, PROJECT_NAME
-from neodroidvision.detection import SSDOut
-from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
-    SSDTransform,
-)
-from tqdm import tqdm
-from warg import NOD
-
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
 from draugr.torch_utilities import (
     TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
 )
-import pkg_resources
+from tqdm import tqdm
+from warg import NOD
+
+from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
+from neodroidvision.detection import SSDOut
+from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
+    SSDTransform,
+)
 
 
 @torch.no_grad()
