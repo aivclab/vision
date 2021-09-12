@@ -145,3 +145,7 @@ logs/*.csv
 /captures
 .externalNativeBuild
 .ipynb_checkpoints/
+
+
+*~develop
+*~HEAD
