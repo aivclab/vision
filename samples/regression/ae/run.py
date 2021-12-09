@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 import argparse
 import copy
+import draugr.visualisation.matplotlib_utilities
 import os
 import time
-from pathlib import Path
-
-import draugr.visualisation.matplotlib_utilities
 from draugr.numpy_utilities import Split, hwc_to_chw
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
@@ -14,6 +12,7 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import ImageWriterMixin
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
+from pathlib import Path
 
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities
@@ -33,6 +32,16 @@ from samples.segmentation.neodroid_dmr.dmr_data import (
 
 
 def get_metric_str(metrics, writer: ImageWriterMixin, update_i):
+    """
+
+    Args:
+      metrics:
+      writer:
+      update_i:
+
+    Returns:
+
+    """
     outputs = []
     for k, v in metrics:
         a = v.data.cpu().numpy()
@@ -43,14 +52,28 @@ def get_metric_str(metrics, writer: ImageWriterMixin, update_i):
 
 
 def train_model(
-    model,
-    data_iterator,
-    optimizer,
-    scheduler,
-    writer: ImageWriterMixin,
-    interrupted_path,
-    num_updates=25000,
+        model,
+        data_iterator,
+        optimizer,
+        scheduler,
+        writer: ImageWriterMixin,
+        interrupted_path,
+        num_updates=25000,
 ):
+    """
+
+    Args:
+      model:
+      data_iterator:
+      optimizer:
+      scheduler:
+      writer:
+      interrupted_path:
+      num_updates:
+
+    Returns:
+
+    """
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
     since = time.time()
@@ -152,6 +175,9 @@ def test_model(model, data_iterator, load_path=None):
 
 
 def main():
+    """
+
+    """
     args = argparse.ArgumentParser()
     args.add_argument("-i", action="store_false")
     options = args.parse_args()
@@ -208,7 +234,7 @@ def main():
     else:
         _list_of_files = list(home_path.glob("*"))
         latest_model_path = (
-            str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
+                str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
         )
         print("loading previous model: " + latest_model_path)
         test_model(aeu_model, data_iter, load_path=latest_model_path)

@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
-import math
-import time
-
 import cv2
+import math
 import numpy
+import time
 import torch
 from PIL import Image, ImageDraw
 from matplotlib import animation, pyplot
@@ -110,6 +109,14 @@ def to_dict_detections(preds):
 
 
 def grab_video_frame(cap):
+    """
+
+    Args:
+      cap:
+
+    Returns:
+
+    """
     ret, frame = cap.read()
     return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -125,6 +132,11 @@ print_obs = False
 
 
 def update_figures(i):
+    """
+
+    Args:
+      i:
+    """
     global time_s, frame_i, image_axs
 
     sample = env.action_space.sample()
@@ -174,6 +186,9 @@ def update_figures(i):
 
 
 def main():
+    """
+
+    """
     global image_axs
 
     env.reset()

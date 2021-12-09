@@ -17,21 +17,31 @@ class Conv2dSamePadding(nn.Conv2d):
     """2D Convolutions like TensorFlow"""
 
     def __init__(
-        self,
-        in_channels,
-        out_channels,
-        kernel_size,
-        stride=1,
-        dilation=1,
-        groups=1,
-        bias=True,
+            self,
+            in_channels: int,
+            out_channels: int,
+            kernel_size: int,
+            stride: int = 1,
+            dilation: int = 1,
+            groups: int = 1,
+            bias: bool = True,
     ):
         super().__init__(
             in_channels, out_channels, kernel_size, stride, 0, dilation, groups, bias
+
         )
         self.stride = self.stride if len(self.stride) == 2 else [self.stride[0]] * 2
 
     def forward(self, x):
+        """
+
+        Args:
+          self:
+          x:
+
+        Returns:
+
+        """
         ih, iw = x.size()[-2:]
         kh, kw = self.weight.size()[-2:]
         sh, sw = self.stride

@@ -10,14 +10,13 @@ __doc__ = r"""
 import cv2
 import dlib
 from draugr.opencv_utilities import AsyncVideoStream
-from draugr.opencv_utilities.dlib_utilities import (
-    dlib68FacialLandmarksIndices,
-    eye_aspect_ratio,
-    shape_to_ndarray,
-)
+from draugr.opencv_utilities.dlib import shape_to_ndarray, Dlib68faciallandmarksindices, eye_aspect_ratio
 
 
 def aushdas():
+    """
+
+    """
     # define two constants, one for the eye aspect ratio to indicate
     # blink and then a second constant for the number of consecutive
     # frames the eye must be below the threshold
@@ -40,11 +39,11 @@ def aushdas():
             # array
 
             eye_shape = shape_to_ndarray(predictor(gray, rect))
-            left_eye = dlib68FacialLandmarksIndices.slice(
-                eye_shape, dlib68FacialLandmarksIndices.left_eye
+            left_eye = Dlib68faciallandmarksindices.slice(
+                eye_shape, Dlib68faciallandmarksindices.left_eye
             )
-            right_eye = dlib68FacialLandmarksIndices.slice(
-                eye_shape, dlib68FacialLandmarksIndices.right_eye
+            right_eye = Dlib68faciallandmarksindices.slice(
+                eye_shape, Dlib68faciallandmarksindices.right_eye
             )
 
             cv2.drawContours(frame, [cv2.convexHull(left_eye)], -1, (0, 255, 0), 1)
@@ -54,7 +53,7 @@ def aushdas():
             right_eye_ar = eye_aspect_ratio(right_eye)
 
             if (
-                left_eye_ar < EYE_AR_THRESH or right_eye_ar < EYE_AR_THRESH
+                    left_eye_ar < EYE_AR_THRESH or right_eye_ar < EYE_AR_THRESH
             ):  # check to see if the eye aspect ratio is below the blink    # threshold, and if so, increment
                 # the blink frame counter
                 COUNTER += 1
@@ -95,7 +94,7 @@ def aushdas():
 
         cv2.imshow("Frame", frame)
         if cv2.waitKey(1) & 0xFF == ord(
-            "q"
+                "q"
         ):  # if the `q` key was pressed, break from the loop
             break
 

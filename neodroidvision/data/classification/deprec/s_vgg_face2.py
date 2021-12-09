@@ -8,19 +8,23 @@ __doc__ = r"""
            """
 
 import csv
-from pathlib import Path
-from typing import Tuple
-
 import torch
 from PIL import Image
 from draugr.numpy_utilities import Split
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
+from typing import Tuple
 
 __all__ = ["VggFaces2"]
 
 from draugr.torch_utilities import SupervisedDataset
+
+import pandas
+
+N_IDENTITY = 9131  # total number of identities in VGG Face2
+N_IDENTITY_PRETRAIN = 8631  # the number of identities used in training by Caffe
 
 
 class VggFaces2(SupervisedDataset):
@@ -60,13 +64,11 @@ class VggFaces2(SupervisedDataset):
         :type meta_file:
         :return:
         :rtype:"""
-        import pandas
 
-        N_IDENTITY = 9131  # total number of identities in VGG Face2
-        N_IDENTITY_PRETRAIN = 8631  # the number of identities used in training by Caffe
         identity_list = meta_file
         df = pandas.read_csv(
             identity_list, sep=",\s+", quoting=csv.QUOTE_ALL, encoding="utf-8"
+
         )
         df["class"] = -1
         df.loc[df["Flag"] == 1, "class"] = range(N_IDENTITY_PRETRAIN)
@@ -86,11 +88,11 @@ class VggFaces2(SupervisedDataset):
         return "train", "validation", "test"
 
     def __init__(
-        self,
-        dataset_path: Path,
-        split: Split = Split.Training,
-        resize_s: int = 256,
-        raw_images: bool = False,
+            self,
+            dataset_path: Path,
+            split: Split = Split.Training,
+            resize_s: int = 256,
+            raw_images: bool = False,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -181,11 +183,11 @@ if __name__ == "__main__":
     # test_loader = dt
 
     for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
-        enumerate(test_loader),
-        total=len(test_loader),
-        desc="Bro",
-        ncols=80,
-        leave=False,
+            enumerate(test_loader),
+            total=len(test_loader),
+            desc="Bro",
+            ncols=80,
+            leave=False,
     ):
         pyplot.imshow(dt.inverse_transform(imgs[0]))
         # pyplot.imshow(imgs)

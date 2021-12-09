@@ -33,7 +33,7 @@ def run_seg_traced_webcam_demo():
     import io
 
     load_path = (
-        PROJECT_APP_PATH.user_data / "penn_fudan_segmentation" / "seg_skip_fis"
+            PROJECT_APP_PATH.user_data / "penn_fudan_segmentation" / "seg_skip_fis"
     ).with_suffix(".traced")
     # print(load_path)
     # torch.jit.load(str(load_path))
@@ -63,6 +63,9 @@ def run_seg_traced_webcam_demo():
 
 
 def main():
+    """
+
+    """
     global_torch_device(override=global_torch_device("cpu"))
 
     run_seg_traced_webcam_demo()

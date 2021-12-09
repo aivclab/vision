@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 
 PACKAGE_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, PACKAGE_ROOT.absolute())
+sys.path.insert(0, str(PACKAGE_ROOT.absolute()))
 
 from neodroidvision import PROJECT_AUTHOR, PROJECT_NAME, PROJECT_YEAR, PROJECT_VERSION
 
@@ -217,10 +217,32 @@ from sphinx.util.docfields import TypedField
 
 
 def patched_make_field(self, types, domain, items, **kw):
+    """
+
+    Args:
+      self:
+      types:
+      domain:
+      items:
+      **kw:
+
+    Returns:
+
+    """
+
     # `kw` catches `env=None` needed for newer sphinx while maintaining
     #  backwards compatibility when passed along further down!
     # #type: (List, unicode, Tuple) -> nodes.field
     def handle_item(fieldarg, content):
+        """
+
+        Args:
+          fieldarg:
+          content:
+
+        Returns:
+
+        """
         par = nodes.paragraph()
         par += addnodes.literal_strong("", fieldarg)  # Patch: this line added
         # par.extend(self.make_xrefs(self.rolename, domain, fieldarg,

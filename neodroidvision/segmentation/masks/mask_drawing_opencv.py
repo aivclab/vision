@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from enum import Enum
-from typing import List
-
 import cv2
 import numpy
+from enum import Enum
+from typing import List
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -16,6 +15,15 @@ __all__ = ["draw_masks", "ConvexHullEnum", "draw_convex_hull"]
 
 
 def draw_masks(img2: numpy.ndarray, img_mask_list: List) -> numpy.ndarray:
+    """
+
+    Args:
+      img2:
+      img_mask_list:
+
+    Returns:
+
+    """
     img = img2.copy()
     for ii in range(4):  # for each of the 4 masks
         color_mask = numpy.zeros(img2.shape)
@@ -41,8 +49,17 @@ class ConvexHullEnum(Enum):
 
 
 def draw_convex_hull(
-    mask: numpy.ndarray, mode: ConvexHullEnum = ConvexHullEnum.convex
+        mask: numpy.ndarray, mode: ConvexHullEnum = ConvexHullEnum.convex
 ) -> numpy.ndarray:
+    """
+
+    Args:
+      mask:
+      mode:
+
+    Returns:
+
+    """
     img = numpy.zeros(mask.shape)
     contours, hier = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 

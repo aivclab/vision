@@ -2,11 +2,16 @@ import torch
 from torch import nn
 
 __all__ = ["SingleShotDetection"]
+__doc__ = r""""""
 
 from warg import NOD
 
 
 class SingleShotDetection(nn.Module):
+    """
+
+    """
+
     def __init__(self, cfg: NOD):
         super().__init__()
         self.backbone = cfg.model.backbone.name(
@@ -20,4 +25,12 @@ class SingleShotDetection(nn.Module):
         )
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          images:
+
+        Returns:
+
+        """
         return self.backbone(images)

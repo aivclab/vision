@@ -10,20 +10,19 @@ __doc__ = r"""
 import copy
 import json
 import logging
-from collections import defaultdict, namedtuple
-from datetime import datetime
-from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple
-
 import numpy
 import pycocotools.mask
 import torch
 import torch._six
 import torchvision
+from collections import defaultdict, namedtuple
+from datetime import datetime
 from draugr.python_utilities.exceptions import IncompatiblePackageVersions
+from enum import Enum
+from pathlib import Path
 from pycocotools.coco import COCO  # Version 2.0 REQUIRES numpy 1.17
 from pycocotools.cocoeval import COCOeval
+from typing import Any, Dict, List, Sequence, Tuple
 
 if pycocotools.coco.__version__ == "2.0" and "1.18" in numpy.__version__:
     print("Hint: downgrade numpy to 1.17.x")
@@ -112,7 +111,7 @@ class CocoEvaluator(object):
             coco_eval.summarize()
 
     def prepare_data(
-        self, predictions: Sequence, iou_type: IouType
+            self, predictions: Sequence, iou_type: IouType
     ) -> List[Dict[str, Any]]:
         """
 
@@ -398,7 +397,7 @@ def load_results(self, resFile) -> COCO:
     assert type(anns) == list, "results in not an array of objects"
     annsImgIds = [ann["image_id"] for ann in anns]
     assert set(annsImgIds) == (
-        set(annsImgIds) & set(self.getImgIds())
+            set(annsImgIds) & set(self.getImgIds())
     ), "Results do not correspond to current coco set"
     if "caption" in anns[0]:
         imgIds = set([img["id"] for img in res.dataset["images"]]) & set(

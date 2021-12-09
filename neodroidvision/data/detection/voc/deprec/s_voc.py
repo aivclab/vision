@@ -7,12 +7,11 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+import numpy
+from PIL import Image
 from pathlib import Path
 from typing import Tuple
 from xml.etree import ElementTree
-
-import numpy
-from PIL import Image
 
 __all__ = ["VOCDataset"]
 
@@ -34,6 +33,11 @@ class VOCDataset(ObjectDetectionDataset):
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
+        """
+
+        Args:
+          self:
+        """
         raise NotImplementedError
 
     categories = (
@@ -83,12 +87,12 @@ class VOCDataset(ObjectDetectionDataset):
     }
 
     def __init__(
-        self,
-        data_root: Path,
-        dataset_name: str,
-        split: Split,
-        img_transform: callable = None,
-        annotation_transform: callable = None,
+            self,
+            data_root: Path,
+            dataset_name: str,
+            split: Split,
+            img_transform: callable = None,
+            annotation_transform: callable = None,
     ):
         """
 
@@ -113,6 +117,7 @@ class VOCDataset(ObjectDetectionDataset):
 
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
+
         )
         self._data_dir = data_root / self.data_dirs[dataset_name]
         self._img_transforms = img_transform

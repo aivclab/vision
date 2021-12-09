@@ -1,5 +1,5 @@
 import torch
-import torch.nn as nn
+from torch import nn
 
 from neodroidvision.regression.vae.architectures.vae import VAE
 
@@ -7,8 +7,11 @@ __all__ = ["ConditionalVAE"]
 
 
 class Encoder(nn.Module):
-    def __init__(self, layer_sizes, latent_size, num_conditions):
+    """
 
+    """
+
+    def __init__(self, layer_sizes, latent_size, num_conditions):
         super().__init__()
 
         self.input_size = layer_sizes[0]
@@ -25,6 +28,15 @@ class Encoder(nn.Module):
         self.linear_log_var = nn.Linear(layer_sizes[-1], latent_size)
 
     def forward(self, x, condition):
+        """
+
+        Args:
+          x:
+          condition:
+
+        Returns:
+
+        """
         x = torch.cat((x.reshape(-1, self.input_size), condition), dim=-1)
 
         x = self.multi_layer_perceptron(x)
@@ -36,6 +48,10 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
+    """
+
+    """
+
     def __init__(self, layer_sizes, latent_size, num_conditions):
 
         super().__init__()
@@ -43,7 +59,7 @@ class Decoder(nn.Module):
         self.MLP = nn.Sequential()
 
         for i, (in_size, out_size) in enumerate(
-            zip([latent_size + num_conditions] + layer_sizes[:-1], layer_sizes)
+                zip([latent_size + num_conditions] + layer_sizes[:-1], layer_sizes)
         ):
             self.MLP.add_module(name=f"L{i:d}", module=nn.Linear(in_size, out_size))
             if i + 1 < len(layer_sizes):
@@ -52,20 +68,49 @@ class Decoder(nn.Module):
                 self.MLP.add_module(name="sigmoid", module=nn.Sigmoid())
 
     def forward(self, z, condition):
+        """
+
+        Args:
+          z:
+          condition:
+
+        Returns:
+
+        """
         z_cat = torch.cat((z, condition), dim=-1)
         x = self.MLP(z_cat)
         return x.view(-1, 28, 28)
 
 
 class ConditionalVAE(VAE):
+    """
+
+    """
+
     def encode(self, *x: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          *x:
+
+        Returns:
+
+        """
         return self.encoder(*x)
 
     def decode(self, *x: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          *x:
+
+        Returns:
+
+        """
         return self.decoder(*x)
 
     def __init__(
-        self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
+            self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
     ):
         super().__init__(latent_size)
 
@@ -80,6 +125,15 @@ class ConditionalVAE(VAE):
         self.decoder = Decoder(decoder_layer_sizes, latent_size, num_conditions)
 
     def forward(self, x: torch.Tensor, condition: torch.Tensor):
+        """
+
+        Args:
+          x:
+          condition:
+
+        Returns:
+
+        """
         mean, log_var = self.encode(x, condition)
 
         z = self.reparameterise(mean, log_var)

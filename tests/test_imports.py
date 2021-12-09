@@ -38,10 +38,3 @@ def test_import_regression():
     print(segmentation.__doc__)
     print(detection.__doc__)
     print(data.__doc__)
-
-
-@pytest.mark.skip
-def test_import_samples():
-    from samples.segmentation import fcn8
-
-    print(fcn8.__doc__)

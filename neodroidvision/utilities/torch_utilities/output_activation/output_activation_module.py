@@ -9,10 +9,9 @@ __doc__ = r"""
 
 __all__ = ["OutputActivationModule"]
 
-from typing import Tuple, Union
-
 import torch
 from torch.nn import Module
+from typing import Tuple, Union
 
 
 class OutputActivationModule(Module):
@@ -25,6 +24,15 @@ class OutputActivationModule(Module):
         self._output_activation = output_activation
 
     def forward(self, *args, **kwargs) -> Union[Tuple[torch.Tensor, ...], torch.Tensor]:
+        """
+
+        Args:
+          *args:
+          **kwargs:
+
+        Returns:
+
+        """
         out = self._model(*args, **kwargs)
         if isinstance(out, tuple):
             return (*[self._output_activation(a) for a in out],)

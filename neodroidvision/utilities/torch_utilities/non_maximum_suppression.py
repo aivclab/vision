@@ -1,8 +1,7 @@
 import sys
-import warnings
-
 import torch
 import torchvision
+import warnings
 
 __all__ = ["non_maximum_suppression", "batched_non_maximum_suppression"]
 
@@ -11,6 +10,7 @@ __doc__ = """This file is merily a wrapper to provide a custom implementation of
 if int(torchvision.__version__.split(".")[1]) >= int("0.3.0".split(".")[1]):
     nms_support = torchvision.ops.nms
 else:
+
     print(f"torchvision version: {torchvision.__version__}" "\n nms not supported")
     try:
 

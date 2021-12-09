@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from pathlib import Path
-
 import cv2
 import torch
+from pathlib import Path
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -31,6 +30,12 @@ from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
 if __name__ == "__main__":
 
     def main(model_name: str = "maskrcnn_pennfudanped", score_threshold=0.55):
+        """
+
+        Args:
+          model_name:
+          score_threshold:
+        """
         base_path = PROJECT_APP_PATH.user_data / "maskrcnn"
         dataset_root = Path.home() / "Data"
 
@@ -54,10 +59,10 @@ if __name__ == "__main__":
         with torch.no_grad():
             with TorchEvalSession(model):
                 for image in tqdm(
-                    to_tensor_generator(
-                        frame_generator(cv2.VideoCapture(0)),
-                        device=global_torch_device(),
-                    )
+                        to_tensor_generator(
+                            frame_generator(cv2.VideoCapture(0)),
+                            device=global_torch_device(),
+                        )
                 ):
                     prediction = model(
                         # torch_vision_normalize_batch_nchw(
@@ -87,5 +92,6 @@ if __name__ == "__main__":
 
                     if cv2.waitKey(1) == 27:
                         break  # esc to quit
+
 
     main()

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 import json
+import numpy
 import random
 import warnings
+from PIL import Image, ImageEnhance
 from datetime import datetime
 from pathlib import Path
-
-import numpy
-from PIL import Image, ImageEnhance
-from samples.misc.synthesis.mask_json_utilities import MaskJsonUtils
 from tqdm import tqdm
+
+from samples.misc.synthesis.mask_json_utilities import MaskJsonUtils
 
 
 class ImageComposition:
@@ -24,7 +24,7 @@ class ImageComposition:
         self.max_foregrounds = 3
         self.mask_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
         assert (
-            len(self.mask_colors) >= self.max_foregrounds
+                len(self.mask_colors) >= self.max_foregrounds
         ), "length of mask_colors should be >= max_foregrounds"
 
     def _validate_and_process_args(self, args):
@@ -90,10 +90,10 @@ class ImageComposition:
                 self.backgrounds_dir = x
 
         assert (
-            self.foregrounds_dir is not None
+                self.foregrounds_dir is not None
         ), "foregrounds sub-directory was not found in the input_dir"
         assert (
-            self.backgrounds_dir is not None
+                self.backgrounds_dir is not None
         ), "backgrounds sub-directory was not found in the input_dir"
 
         self._validate_and_process_foregrounds()
@@ -230,7 +230,7 @@ class ImageComposition:
             # Save the mask image to the masks sub-directory
             mask_filename = f"{save_filename}.png"  # masks are always png to avoid lossy compression
             mask_path = (
-                self.output_dir / "masks" / mask_filename
+                    self.output_dir / "masks" / mask_filename
             )  # e.g. my_output_dir/masks/00000023.png
             mask.save(mask_path)
 
@@ -363,7 +363,7 @@ class ImageComposition:
 
         # Adjust foreground brightness
         brightness_factor = (
-            random.random() * 0.4 + 0.7
+                random.random() * 0.4 + 0.7
         )  # Pick something between .7 and 1.1
         enhancer = ImageEnhance.Brightness(fg_image)
         fg_image = enhancer.enhance(brightness_factor)
@@ -437,17 +437,11 @@ if __name__ == "__main__":
         type=str,
         dest="input_dir",
         required=True,
-        help="The input directory. \
-                        This contains a 'backgrounds' directory of pngs or jpgs, and a 'foregrounds' "
-        "directory which \
-                                    contains supercategory directories (e.g. 'animal', 'vehicle'), "
-        "each of which "
-        "contain category \
-                                    directories (e.g. 'horse', 'bear'). Each category directory contains png "
-        "images of "
-        "that item on a \
-                                    transparent background (e.g. a grizzly bear on a transparent "
-        "background).",
+        help=(
+            "The input directory. This contains a \'backgrounds\' directory of pngs or jpgs, and a \'foregrounds\' "
+            "directory which contains supercategory directories (e.g. \'animal\', \'vehicle\'), each of which contain "
+            "category directories (e.g. \'horse\', \'bear\'). Each category directory contains png images of that item on "
+            "a transparent background (e.g. a grizzly bear on a transparent background)."),
     )
     parser.add_argument(
         "--output_dir",
@@ -455,8 +449,8 @@ if __name__ == "__main__":
         dest="output_dir",
         required=True,
         help="The directory where "
-        "images, masks, \
-                                    and json files will be placed",
+             "images, masks, \
+                                         and json files will be placed",
     )
     parser.add_argument(
         "--count",
@@ -485,8 +479,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--silent",
         action="store_true",
-        help="silent mode; doesn't prompt the user for input, \
-                        automatically overwrites files",
+        help="silent mode; doesn't prompt the user for input, automatically overwrites files",
     )
 
     config = parser.parse_args()

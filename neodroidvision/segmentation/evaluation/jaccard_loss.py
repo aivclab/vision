@@ -10,8 +10,18 @@ __all__ = ["jaccard_similarity_score", "jaccard_loss"]
 
 
 def jaccard_similarity_score(
-    pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
+        pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
+    """
+
+    Args:
+      pred:
+      target:
+      epsilon:
+
+    Returns:
+
+    """
     pred_flat = pred.reshape(-1)
     target_flat = target.reshape(-1)
 
@@ -24,8 +34,18 @@ def jaccard_similarity_score(
 
 
 def jaccard_loss(
-    pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
+        pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
+    """
+
+    Args:
+      pred:
+      target:
+      epsilon:
+
+    Returns:
+
+    """
     return 1 - jaccard_similarity_score(pred, target, epsilon=epsilon)
 
 

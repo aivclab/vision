@@ -1,10 +1,9 @@
-from typing import Dict, Iterable, Sequence, Tuple, Union
-
 import numpy
 import torch
 from draugr.torch_utilities import to_tensor
 from torch import nn
 from torch.nn import init
+from typing import Dict, Iterable, Sequence, Tuple, Union
 
 from neodroidvision.multitask.fission.skip_hourglass.factory import (
     fcn_decoder,
@@ -35,6 +34,12 @@ class SkipHourglassFission(nn.Module):
     the tranpose convolution (specified by upmode='fractional')"""
 
     def parse_arguments(self, up_mode: UpscaleMode, merge_mode: MergeMode):
+        """
+
+        Args:
+          up_mode:
+          merge_mode:
+        """
         if up_mode in UpscaleMode:
             self.up_mode = up_mode
         else:
@@ -59,14 +64,14 @@ class SkipHourglassFission(nn.Module):
             )
 
     def __init__(
-        self,
-        *,
-        input_channels: int,
-        output_heads: Union[Dict, Iterable],
-        encoding_depth: int = 5,
-        start_channels: int = 32,
-        up_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
-        merge_mode: MergeMode = MergeMode.Add,
+            self,
+            *,
+            input_channels: int,
+            output_heads: Union[Dict, Iterable],
+            encoding_depth: int = 5,
+            start_channels: int = 32,
+            up_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
+            merge_mode: MergeMode = MergeMode.Add,
     ):
         """
         :type input_channels: int
@@ -125,21 +130,37 @@ class SkipHourglassFission(nn.Module):
 
     @staticmethod
     def weight_init(m: nn.Module) -> None:
+        """
+
+        Args:
+          m:
+        """
         if isinstance(m, nn.Conv2d):
             init.xavier_normal_(m.weight)
             init.constant_(m.bias, 0)
 
     def reset_params(self) -> None:
+        """
+
+        """
         for i, m in enumerate(self.modules()):
             self.weight_init(m)
 
     def forward(
-        self, x_enc: torch.Tensor
+            self, x_enc: torch.Tensor
     ) -> Union[Tuple[torch.Tensor], Dict[str, torch.Tensor]]:
+        """
+
+        Args:
+          x_enc:
+
+        Returns:
+
+        """
         encoder_skips = []
 
         for i, module in enumerate(
-            self.down_convolutions
+                self.down_convolutions
         ):  # encoder pathway, keep outputs for merging
             x_enc, before_pool = module(x_enc)
             encoder_skips.append(before_pool)
@@ -158,6 +179,11 @@ class SkipHourglassFission(nn.Module):
         return (*out.values(),)
 
     def trim(self, idx: Sequence[Union[str, int]]) -> None:
+        """
+
+        Args:
+          idx:
+        """
         if not isinstance(idx, Sequence):
             idx = list(idx)
         for a in idx:

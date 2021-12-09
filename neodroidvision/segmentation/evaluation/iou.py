@@ -13,6 +13,15 @@ __all__ = ["intersection_over_union"]
 
 
 def intersection_over_union(img1, img2) -> float:
+    """
+
+    Args:
+      img1:
+      img2:
+
+    Returns:
+
+    """
     img1 = numpy.asarray(img1).astype(numpy.bool)
     img2 = numpy.asarray(img2).astype(numpy.bool)
 

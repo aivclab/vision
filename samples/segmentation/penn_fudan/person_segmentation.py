@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from pathlib import Path
-
 import numpy
 import torch
 from draugr.numpy_utilities import Split
 from draugr.random_utilities import seed_stack
-
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
     TorchCacheSession,
@@ -16,6 +13,7 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -32,7 +30,7 @@ __doc__ = r"""
 
 
 def reschedule_learning_rate(
-    model: torch.nn.Module, epoch: int, scheduler: torch.optim.lr_scheduler
+        model: torch.nn.Module, epoch: int, scheduler: torch.optim.lr_scheduler
 ):
     r"""This may be improved its just a hacky way to write SGDWR"""
     if epoch == 7:
@@ -64,14 +62,14 @@ def reschedule_learning_rate(
 
 
 def train_person_segmentor(
-    model: torch.nn.Module,
-    train_loader: torch.utils.data.DataLoader,
-    valid_loader: torch.utils.data.DataLoader,
-    criterion: callable,
-    optimizer: torch.optim.optimizer,
-    scheduler: torch.optim.lr_scheduler,
-    save_model_path: Path,
-    n_epochs: int = 100,
+        model: torch.nn.Module,
+        train_loader: torch.utils.data.DataLoader,
+        valid_loader: torch.utils.data.DataLoader,
+        criterion: callable,
+        optimizer: torch.optim.optimizer,
+        scheduler: torch.optim.lr_scheduler,
+        save_model_path: Path,
+        n_epochs: int = 100,
 ):
     """
 
@@ -163,6 +161,9 @@ def train_person_segmentor(
 
 
 def main():
+    """
+
+    """
     pyplot.style.use("bmh")
     base_path = Path.home() / "/Data" / "PennFudanPed"
 
@@ -236,12 +237,12 @@ def main():
                             for p in range(data.shape[0]):
                                 output, mask = outpu[p], target[p]
                                 """
-for m in mask:
-valid_masks.append(cv2_resize(m, a))
-for probability in output:
-probabilities[sample_i, :, :] = cv2_resize(probability, a)
-sample_i += 1
-"""
+                for m in mask:
+                valid_masks.append(cv2_resize(m, a))
+                for probability in output:
+                probabilities[sample_i, :, :] = cv2_resize(probability, a)
+                sample_i += 1
+                """
                                 if sample_i >= tr - 1:
                                     break
                             if sample_i >= tr - 1:

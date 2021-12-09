@@ -12,8 +12,8 @@ from .self_attention_utilities import (
 )
 
 _aggregation_refpad_forward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void aggregation_refpad_forward_kernel(
 const ${Dtype}* bottom_data, const ${Dtype}* weight_data, ${Dtype}* top_data) {
@@ -50,8 +50,8 @@ const ${Dtype}* bottom_data, const ${Dtype}* weight_data, ${Dtype}* top_data) {
 )
 
 _aggregation_refpad_input_backward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void aggregation_refpad_input_backward_kernel(
     const ${Dtype}* const top_diff, const ${Dtype}* const weight_data, ${Dtype}* bottom_diff) {
@@ -88,8 +88,8 @@ __global__ void aggregation_refpad_input_backward_kernel(
 )
 
 _aggregation_refpad_weight_backward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void aggregation_refpad_weight_backward_kernel(
     const ${Dtype}* const top_diff, const ${Dtype}* const bottom_data, ${Dtype}* weight_diff) {
@@ -277,25 +277,25 @@ class AggregationRefpad(Function):
                     ],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )
-                grad_input[..., padding[0] + 1 : 2 * padding[0] + 1, :] += torch.flip(
+                grad_input[..., padding[0] + 1: 2 * padding[0] + 1, :] += torch.flip(
                     grad_input[..., : padding[0], :], dims=[2]
                 )
                 grad_input[
-                    ..., input_height - 1 : input_height + padding[0] - 1, :
+                ..., input_height - 1: input_height + padding[0] - 1, :
                 ] += torch.flip(
-                    grad_input[..., input_height + padding[0] :, :], dims=[2]
+                    grad_input[..., input_height + padding[0]:, :], dims=[2]
                 )
-                grad_input[..., padding[1] + 1 : 2 * padding[1] + 1] += torch.flip(
+                grad_input[..., padding[1] + 1: 2 * padding[1] + 1] += torch.flip(
                     grad_input[..., : padding[1]], dims=[3]
                 )
                 grad_input[
-                    ..., input_width - 1 : input_width + padding[1] - 1
-                ] += torch.flip(grad_input[..., input_width + padding[1] :], dims=[3])
+                ..., input_width - 1: input_width + padding[1] - 1
+                ] += torch.flip(grad_input[..., input_width + padding[1]:], dims=[3])
                 grad_input = grad_input[
-                    ...,
-                    padding[0] : padding[0] + input_height,
-                    padding[1] : padding[1] + input_width,
-                ]
+                             ...,
+                             padding[0]: padding[0] + input_height,
+                             padding[1]: padding[1] + input_width,
+                             ]
 
             if ctx.needs_input_grad[1]:
                 grad_weight = weight.new(weight.size())
@@ -347,7 +347,6 @@ def aggregation_refpad(input, weight, kernel_size=3, stride=1, padding=0, dilati
 
 
 if __name__ == "__main__":
-
     def test_aggregation_refpad():
         import os
 
@@ -366,8 +365,8 @@ if __name__ == "__main__":
             torch.randn(
                 n, c_w, kernel_size ** 2, out_height * out_width, requires_grad=True
             )
-            .double()
-            .cuda()
+                .double()
+                .cuda()
         )
 
         y1 = aggregation_refpad(
@@ -409,5 +408,6 @@ if __name__ == "__main__":
             (x, w),
         )
         print("test case passed")
+
 
     test_aggregation_refpad()

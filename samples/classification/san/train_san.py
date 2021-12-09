@@ -1,15 +1,14 @@
 import logging
+import numpy
 import os
 import random
 import shutil
 import time
-from pathlib import Path
-
-import numpy
 import torch
-from draugr import AverageMeter
+from draugr import AverageMeter, find_unclaimed_port
 from draugr.numpy_utilities import Split
 from draugr.torch_utilities import TensorBoardPytorchWriter
+from pathlib import Path
 from torch import distributed, multiprocessing, nn
 from torch.backends import cudnn
 from torch.optim import lr_scheduler
@@ -27,23 +26,12 @@ from san_utilities import (
 )
 
 
-def find_unclaimed_port():
-    """
-    # NOTE: there is still a chance the port could be taken by other processes.
-    :return:
-    :rtype:"""
-    import socket
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(
-        ("", 0)
-    )  # Binding to port 0 will cause the OS to find an available port for us
-    port = sock.getsockname()[1]
-    sock.close()
-    return port
-
-
 def get_logger():
+    """
+
+    Returns:
+
+    """
     logger_name = "main-logger"
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.INFO)
@@ -55,16 +43,33 @@ def get_logger():
 
 
 def worker_init_fn(worker_id):
+    """
+
+    Args:
+      worker_id:
+    """
     random.seed(CONFIG.manual_seed + worker_id)
 
 
 def is_main_process():
+    """
+
+    Returns:
+
+    """
     return not CONFIG.multiprocessing_distributed or (
-        CONFIG.multiprocessing_distributed and CONFIG.rank % CONFIG.ngpus_per_node == 0
+            CONFIG.multiprocessing_distributed and CONFIG.rank % CONFIG.ngpus_per_node == 0
     )
 
 
 def main_worker(gpu, ngpus_per_node, config):
+    """
+
+    Args:
+      gpu:
+      ngpus_per_node:
+      config:
+    """
     global CONFIG, best_acc1
     CONFIG, best_acc1 = config, 0
     train_set = config.dataset_type(CONFIG.dataset_path, Split.Training)
@@ -234,13 +239,25 @@ def main_worker(gpu, ngpus_per_node, config):
                 shutil.copyfile(filename, CONFIG.save_path / "model_best.pth")
             if epoch_log / CONFIG.save_freq > 2:
                 deletename = (
-                    CONFIG.save_path
-                    / f"train_epoch_{str(epoch_log - CONFIG.save_freq * 2)}.pth"
+                        CONFIG.save_path
+                        / f"train_epoch_{str(epoch_log - CONFIG.save_freq * 2)}.pth"
                 )
                 os.remove(deletename)
 
 
 def train(train_loader, model, criterion, optimizer, epoch):
+    """
+
+    Args:
+      train_loader:
+      model:
+      criterion:
+      optimizer:
+      epoch:
+
+    Returns:
+
+    """
     batch_time = AverageMeter()
     data_time = AverageMeter()
     loss_meter = AverageMeter()
@@ -356,6 +373,16 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
 
 def validate(val_loader, model, criterion):
+    """
+
+    Args:
+      val_loader:
+      model:
+      criterion:
+
+    Returns:
+
+    """
     if is_main_process():
         logger.info(">>>>>>>>>>>>>>>> Start Evaluation >>>>>>>>>>>>>>>>")
     batch_time = AverageMeter()
@@ -443,6 +470,9 @@ def validate(val_loader, model, criterion):
 if __name__ == "__main__":
 
     def main():
+        """
+
+        """
         from samples.classification.san.configs.imagenet_san10_pairwise import (
             SAN_CONFIG,
         )
@@ -461,7 +491,7 @@ if __name__ == "__main__":
         if SAN_CONFIG.dist_url == "env://" and SAN_CONFIG.world_size == -1:
             SAN_CONFIG.world_size = int(os.environ["WORLD_SIZE"])
         SAN_CONFIG.distributed = (
-            SAN_CONFIG.world_size > 1 or SAN_CONFIG.multiprocessing_distributed
+                SAN_CONFIG.world_size > 1 or SAN_CONFIG.multiprocessing_distributed
         )
         SAN_CONFIG.ngpus_per_node = len(SAN_CONFIG.train_gpu)
         if len(SAN_CONFIG.train_gpu) == 1:
@@ -479,5 +509,6 @@ if __name__ == "__main__":
             )
         else:
             main_worker(SAN_CONFIG.train_gpu, SAN_CONFIG.ngpus_per_node, SAN_CONFIG)
+
 
     main()

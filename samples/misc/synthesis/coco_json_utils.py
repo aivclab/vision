@@ -1,10 +1,9 @@
 #!/usr/bin/python
 
 import json
-from pathlib import Path
-
 import numpy
 from PIL import Image
+from pathlib import Path
 from shapely.geometry import MultiPolygon, Polygon
 from skimage import measure
 from tqdm import tqdm
@@ -139,7 +138,7 @@ class AnnotationJsonUtils:
                         poly = poly.convex_hull
 
                     if (
-                        poly.geom_type == "Polygon"
+                            poly.geom_type == "Polygon"
                     ):  # Ignore if still not a Polygon (could be a line or point)
                         polygons.append(poly)
                         segmentation = (
@@ -205,7 +204,7 @@ class CocoJsonCreator:
 
         assert "info" in self._dataset_info, 'dataset_info JSON was missing "info"'
         assert (
-            "license" in self._dataset_info
+                "license" in self._dataset_info
         ), 'dataset_info JSON was missing "license"'
 
     def create_info(self):

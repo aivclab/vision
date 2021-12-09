@@ -19,7 +19,9 @@ from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
 from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
 
 __author__ = "Christian Heider Nielsen"
-__doc__ = ""
+__doc__ = r"""
+pip install kivy -U
+"""
 
 Config.set("graphics", "resizable", 0)
 
@@ -373,5 +375,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

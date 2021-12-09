@@ -3,8 +3,6 @@ import datetime
 import logging
 import os
 import time
-from pathlib import Path
-
 import torch
 from apppath import ensure_existence
 from draugr.numpy_utilities import Split
@@ -14,6 +12,7 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     WarmupMultiStepLR,
 )
+from pathlib import Path
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
@@ -39,17 +38,17 @@ from neodroidvision.utilities import (
 
 
 def inner_train_ssd(
-    *,
-    data_root: Path,
-    cfg: NOD,
-    model: Module,
-    data_loader: DataLoader,
-    optimiser: Optimizer,
-    scheduler: WarmupMultiStepLR,
-    check_pointer: callable,
-    device: callable,
-    arguments: callable,
-    kws: NOD,
+        *,
+        data_root: Path,
+        cfg: NOD,
+        model: Module,
+        data_loader: DataLoader,
+        optimiser: Optimizer,
+        scheduler: WarmupMultiStepLR,
+        check_pointer: callable,
+        device: callable,
+        arguments: callable,
+        kws: NOD,
 ) -> Module:
     """
 
@@ -154,9 +153,9 @@ def inner_train_ssd(
                 check_pointer.save(f"model_{iteration:06d}", **arguments)
 
             if (
-                kws.eval_step > 0
-                and iteration % kws.eval_step == 0
-                and not iteration == max_iter
+                    kws.eval_step > 0
+                    and iteration % kws.eval_step == 0
+                    and not iteration == max_iter
             ):
                 with TorchEvalSession(model):
                     eval_results = do_ssd_evaluation(
@@ -168,7 +167,7 @@ def inner_train_ssd(
                     )
                     if global_distribution_rank() == 0 and writer:
                         for eval_result, dataset in zip(
-                            eval_results, cfg.datasets.test
+                                eval_results, cfg.datasets.test
                         ):
                             write_metrics_recursive(
                                 eval_result["metrics"],
@@ -190,6 +189,17 @@ def inner_train_ssd(
 
 
 def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
+    """
+
+    Args:
+      data_root:
+      cfg:
+      solver_cfg:
+      kws:
+
+    Returns:
+
+    """
     logger = logging.getLogger("SSD.trainer")
     model = SingleShotDetectionNms(cfg)
     device = torch.device(cfg.model.device)
@@ -250,6 +260,9 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
 
 
 def main():
+    """
+
+    """
     from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
 
     # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg

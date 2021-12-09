@@ -172,10 +172,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Filter COCO JSON: "
-        "Filters a COCO Instances JSON file to only include "
-        "specified categories. "
-        "This includes images, and annotations. Does not modify "
-        "'info' or 'licenses'."
+                    "Filters a COCO Instances JSON file to only include "
+                    "specified categories. "
+                    "This includes images, and annotations. Does not modify "
+                    "'info' or 'licenses'."
     )
 
     parser.add_argument(

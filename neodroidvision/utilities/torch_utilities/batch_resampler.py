@@ -1,8 +1,7 @@
-from typing import Iterable, Tuple
-
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data.sampler import BatchSampler
+from typing import Iterable, Tuple
 
 __all__ = ["LimitedBatchResampler", "BatchCollator"]
 
@@ -12,7 +11,7 @@ class LimitedBatchResampler(BatchSampler):
     Wraps a BatchSampler, re-sampling from it until
     a specified number of iterations have been sampled"""
 
-    def __init__(self, batch_sampler, num_iterations, start_iter=0):
+    def __init__(self, batch_sampler, num_iterations, start_iter: int = 0):
         self.batch_sampler = batch_sampler
         self.num_iterations = num_iterations
         self.start_iter = start_iter
@@ -36,6 +35,10 @@ class LimitedBatchResampler(BatchSampler):
 
 
 class BatchCollator:
+    """
+
+    """
+
     def __init__(self, wrap: bool = True):
         self.wrap = wrap
 

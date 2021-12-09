@@ -9,9 +9,8 @@ __doc__ = r"""
 
 import os
 import sys
-from pathlib import Path
-
 import torch
+from pathlib import Path
 
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     is_main_process,
@@ -48,7 +47,8 @@ def custom_cache_url(url: str, model_dir: Path = None, progress: bool = True) ->
     progress (bool, optional): whether or not to display a progress bar to stderr
     Example:
     >>> cached_file = maskrcnn_benchmark.utils.model_zoo.custom_cache_url(
-    'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth')"""
+    'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth')
+    """
     if model_dir is None:
         model_dir = os.getenv(
             "TORCH_MODEL_ZOO",
@@ -79,5 +79,14 @@ def custom_cache_url(url: str, model_dir: Path = None, progress: bool = True) ->
 
 
 def load_state_dict_from_url(url, map_location="cpu"):
+    """
+
+    Args:
+      url:
+      map_location:
+
+    Returns:
+
+    """
     cached_file = custom_cache_url(url)
     return torch.load(cached_file, map_location=map_location)

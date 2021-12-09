@@ -3,11 +3,10 @@
 
 import datetime
 import os
-from pathlib import Path
-from warnings import warn
-
 import pkg_resources
 from apppath import AppPath
+from pathlib import Path
+from warnings import warn
 
 __project__ = "NeodroidVision"
 __author__ = "Christian Heider Nielsen"
@@ -60,6 +59,14 @@ else:
 
 
 def get_version(append_time: Any = DEVELOP) -> str:
+    """
+
+    Args:
+      append_time:
+
+    Returns:
+
+    """
     version = __version__
     if not version:
         version = os.getenv("VERSION", "0.0.0")

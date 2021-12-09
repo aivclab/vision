@@ -9,10 +9,24 @@ __doc__ = r"""
 
 __all__ = ["plot_kernels"]
 
+from enum import Enum
+
 from matplotlib import pyplot
 
 
-def plot_kernels(tensor, number_cols=5, m_interpolation="bilinear"):
+class cmapEnum(Enum):
+    gray = "gray"
+
+
+class interpolationEnum(Enum):
+    bilinear = "bilinear"
+
+
+def plot_kernels(
+        tensor,
+        number_cols: int = 5,
+        m_interpolation: interpolationEnum = interpolationEnum.bilinear,
+):
     """
     Function to visualize the kernels.
 
@@ -28,5 +42,9 @@ def plot_kernels(tensor, number_cols=5, m_interpolation="bilinear"):
     fig = pyplot.figure(figsize=(number_cols, number_rows))
     for i in range(number_kernels):
         ax1 = fig.add_subplot(number_rows, number_cols, i + 1)
-        ax1.imshow(tensor[i][0, :, :], interpolation=m_interpolation, cmap="gray")
+        ax1.imshow(
+            tensor[i][0, :, :],
+            interpolation=m_interpolation.value,
+            cmap=cmapEnum.gray.value,
+        )
         ax1.axis("off")

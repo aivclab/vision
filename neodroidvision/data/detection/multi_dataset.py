@@ -8,11 +8,10 @@ __doc__ = r"""
            """
 
 from abc import abstractmethod
-from pathlib import Path
-from typing import Sequence, Tuple
-
 from draugr.numpy_utilities import Split
+from pathlib import Path
 from torch.utils.data import ConcatDataset
+from typing import Sequence, Tuple
 
 __all__ = ["MultiDataset"]
 
@@ -41,13 +40,13 @@ class MultiDataset(SupervisedDataset):
         return (len(self.categories),)
 
     def __init__(
-        self,
-        *,
-        cfg,
-        dataset_type: callable,
-        data_root: Path,
-        sub_datasets: Tuple,
-        split: Split = Split.Training
+            self,
+            *,
+            cfg,
+            dataset_type: callable,
+            data_root: Path,
+            sub_datasets: Tuple,
+            split: Split = Split.Training
     ):
         """
 
@@ -69,6 +68,7 @@ class MultiDataset(SupervisedDataset):
             image_size=cfg.input.image_size,
             pixel_mean=cfg.input.pixel_mean,
             split=split,
+
         )
 
         if split == Split.Training:

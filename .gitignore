@@ -150,5 +150,21 @@ logs/*.csv
 .ipynb_checkpoints/
 
 samples/misc/.polyscope.ini
-
+samples/misc/libtorch_samples/py2cpp/build/
+samples/misc/libtorch_samples/linear/build/
 samples/misc/imgui.ini
+
+*[Bb]uild*
+*.out
+.cxx
+
+*~develop
+*~HEAD
+
+*~develop_*
+*~HEAD_*
+
+
+samples/misc/libtorch_samples/eye/build/
+
+samples/misc/libtorch_samples/example-app/build/

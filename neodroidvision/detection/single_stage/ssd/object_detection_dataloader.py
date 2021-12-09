@@ -7,12 +7,11 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from pathlib import Path
-from typing import List, Optional, Union
-
 import torch
 from draugr.numpy_utilities import Split
+from pathlib import Path
 from torch.utils.data import ConcatDataset, DataLoader
+from typing import List, Optional, Union
 from warg import NOD
 
 from neodroidvision.data.detection.multi_dataset import MultiDataset
@@ -26,13 +25,13 @@ __all__ = ["object_detection_data_loaders"]
 
 
 def object_detection_data_loaders(
-    *,
-    data_root: Path,
-    cfg: NOD,
-    split: Split = Split.Training,
-    distributed: bool = False,
-    max_iter: Optional[int] = None,
-    start_iter: int = 0
+        *,
+        data_root: Path,
+        cfg: NOD,
+        split: Split = Split.Training,
+        distributed: bool = False,
+        max_iter: Optional[int] = None,
+        start_iter: int = 0
 ) -> Union[List[DataLoader], DataLoader]:
     """
 
@@ -55,13 +54,13 @@ def object_detection_data_loaders(
     data_loaders = []
 
     for dataset in MultiDataset(
-        cfg=cfg,
-        dataset_type=cfg.dataset_type,
-        data_root=data_root,
-        sub_datasets=cfg.datasets.train
-        if split == Split.Training
-        else cfg.datasets.test,
-        split=split,
+            cfg=cfg,
+            dataset_type=cfg.dataset_type,
+            data_root=data_root,
+            sub_datasets=cfg.datasets.train
+            if split == Split.Training
+            else cfg.datasets.test,
+            split=split,
     ).sub_datasets:
         if distributed:
             sampler = DistributedSampler(dataset, shuffle=shuffle)

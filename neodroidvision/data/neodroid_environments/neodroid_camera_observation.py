@@ -88,11 +88,11 @@ if __name__ == "__main__":
     )
 
     for batch_idx, (imgs, label) in tqdm.tqdm(
-        enumerate(test_loader),
-        total=len(test_loader),
-        desc="Bro",
-        ncols=80,
-        leave=False,
+            enumerate(test_loader),
+            total=len(test_loader),
+            desc="Bro",
+            ncols=80,
+            leave=False,
     ):
         print(label[0])
         pyplot.imshow(dateset.inverse_transform(imgs[0]))

@@ -1,6 +1,5 @@
-import time
-
 import cv2
+import time
 from PIL import Image
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.python_utilities.datetimes import now_repr
@@ -19,6 +18,9 @@ FPS = MQTT_CAM_CONFIG["camera"]["fps"]
 
 
 def main():
+    """
+
+    """
     client = get_mqtt_client()
     client.connect(MQTT_BROKER, port=MQTT_PORT)
     time.sleep(4)  # Wait for connection setup to complete

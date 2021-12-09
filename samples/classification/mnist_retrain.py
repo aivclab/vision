@@ -4,12 +4,12 @@ import argparse
 import copy
 import os
 import time
-
 import torch
 import torchvision
-from draugr import horizontal_imshow, recycle
+from draugr import recycle
 from draugr.numpy_utilities import Split
 from draugr.torch_utilities import (
+
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
@@ -19,6 +19,8 @@ from draugr.torch_utilities import (
     to_tensor,
     torch_clean_up,
 )
+
+from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from torch import optim
 from torch.utils.data import DataLoader
@@ -27,11 +29,11 @@ from tqdm import tqdm
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
 
+from neodroidvision.data.classification import MNISTDataset2
+
 __author__ = "Christian Heider Nielsen"
 __all__ = []
 __doc__ = r""""""
-
-from neodroidvision.data.classification import MNISTDataset2
 
 seed = 34874312
 batch_size = 16
@@ -51,18 +53,18 @@ normalise = torchvision.transforms.Normalize(
 
 
 def predictor_response_train_model(
-    model,
-    *,
-    train_iterator,
-    criterion,
-    optimizer,
-    scheduler,
-    writer,
-    interrupted_path,
-    val_data_iterator=None,
-    num_updates: int = 250000,
-    device=global_torch_device(),
-    early_stop=None,
+        model,
+        *,
+        train_iterator,
+        criterion,
+        optimizer,
+        scheduler,
+        writer,
+        interrupted_path,
+        val_data_iterator=None,
+        num_updates: int = 250000,
+        device=global_torch_device(),
+        early_stop=None,
 ):
     """
 
@@ -171,6 +173,9 @@ def predictor_response_train_model(
 
 
 def main():
+    """
+
+    """
     args = argparse.ArgumentParser()
     args.add_argument("--inference", "-i", action="store_true")
     args.add_argument("--continue_training", "-c", action="store_true")

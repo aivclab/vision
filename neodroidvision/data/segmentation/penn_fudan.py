@@ -24,6 +24,7 @@ from draugr.torch_utilities import (
     uint_hwc_to_chw_float_tensor,
 )
 from matplotlib import pyplot
+from sorcery import assigned_names
 from torchvision.transforms import Compose, Resize, ToTensor
 
 __all__ = ["PennFudanDataset"]
@@ -38,9 +39,7 @@ from neodroidvision.utilities import (
 class ReturnVariantEnum(Enum):
     """ """
 
-    binary = "binary"
-    instanced = "instanced"
-    all = "all"
+    binary, instanced, all = assigned_names()
 
 
 class PennFudanDataset(SupervisedDataset):
@@ -64,8 +63,8 @@ class PennFudanDataset(SupervisedDataset):
         if self._return_variant == ReturnVariantEnum.binary:
             return (*self.image_size_T, self.response_channels_binary)
         elif (
-            self._return_variant == ReturnVariantEnum.instanced
-            or self._return_variant == ReturnVariantEnum.all
+                self._return_variant == ReturnVariantEnum.instanced
+                or self._return_variant == ReturnVariantEnum.all
         ):
             return (*self.image_size_T, self.response_channels)
         raise NotImplementedError
@@ -112,10 +111,10 @@ class PennFudanDataset(SupervisedDataset):
         return TupleCompose(transforms)
 
     def __init__(
-        self,
-        root: Union[str, Path],
-        split: Split = Split.Training,
-        return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
+            self,
+            root: Union[str, Path],
+            split: Split = Split.Training,
+            return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
     ):
         """
 

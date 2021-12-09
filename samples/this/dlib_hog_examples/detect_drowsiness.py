@@ -1,17 +1,19 @@
-from threading import Thread
-
 import cv2
 import dlib
 import playsound
 from draugr.opencv_utilities import AsyncVideoStream
-from draugr.opencv_utilities.dlib_utilities import (
-    dlib68FacialLandmarksIndices,
-    eye_aspect_ratio,
-    shape_to_ndarray,
-)
+
+from threading import Thread
+
+from draugr.opencv_utilities.dlib import shape_to_ndarray, Dlib68faciallandmarksindices, eye_aspect_ratio
 
 
 def sound_alarm(path):
+    """
+
+    Args:
+      path:
+    """
     playsound.playsound(path)
 
 
@@ -53,11 +55,11 @@ for frame in AsyncVideoStream():
 
         # extract the left and right eye coordinates, then use the
         # coordinates to compute the eye aspect ratio for both eyes
-        left_eye = dlib68FacialLandmarksIndices.slice(
-            shape, dlib68FacialLandmarksIndices.left_eye
+        left_eye = Dlib68faciallandmarksindices.slice(
+            shape, Dlib68faciallandmarksindices.left_eye
         )
-        right_eye = dlib68FacialLandmarksIndices.slice(
-            shape, dlib68FacialLandmarksIndices.right_eye
+        right_eye = Dlib68faciallandmarksindices.slice(
+            shape, Dlib68faciallandmarksindices.right_eye
         )
 
         leftEAR = eye_aspect_ratio(left_eye)

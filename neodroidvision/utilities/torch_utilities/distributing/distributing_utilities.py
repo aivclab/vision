@@ -10,12 +10,11 @@ __doc__ = r"""
 import logging
 import os
 import sys
-from pathlib import Path
-from typing import Any, List
-
 import torch
 import torch.utils.data
+from pathlib import Path
 from torch import distributed
+from typing import Any, List
 
 from neodroidvision.utilities.torch_utilities.distributing.serialisation import (
     deserialise_byte_tensor,
@@ -92,6 +91,12 @@ def setup_for_distributed(is_master: bool) -> None:
     builtin_print = __builtin__.print
 
     def print(*args, **kwargs):
+        """
+
+        Args:
+          *args:
+          **kwargs:
+        """
         force = kwargs.pop("force", False)
         if is_master or force:
             builtin_print(*args, **kwargs)
@@ -162,6 +167,14 @@ def reduce_dict(input_dict: dict, average: bool = True) -> dict:
 
 
 def init_distributed_mode(args: Any) -> None:
+    """
+
+    Args:
+      args:
+
+    Returns:
+
+    """
     if "RANK" in os.environ and "WORLD_SIZE" in os.environ:
         args.rank = int(os.environ["RANK"])
         args.world_size = int(os.environ["WORLD_SIZE"])
@@ -202,7 +215,7 @@ def synchronise_torch_barrier() -> None:
 
 
 def setup_distributed_logger(
-    name: str, distributed_rank: int, save_dir: Path = None
+        name: str, distributed_rank: int, save_dir: Path = None
 ) -> logging.Logger:
     """
 

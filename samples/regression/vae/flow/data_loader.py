@@ -6,15 +6,27 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
+from typing import MutableMapping, Any
+
 import h5py
 import torch
 import torch.utils
 import torch.utils.data
+from warg import Triple
 
 from .h5_mnist_data import download_binary_mnist
 
 
-def load_binary_mnist(cfg, **kwcfg):
+def load_binary_mnist(cfg: Any, **kwcfg: MutableMapping) -> Triple:
+    """
+
+    Args:
+      cfg:
+      **kwcfg:
+
+    Returns:
+
+    """
     fname = cfg.data_dir / "binary_mnist.h5"
     if not fname.exists():
         print("Downloading binary MNIST data...")

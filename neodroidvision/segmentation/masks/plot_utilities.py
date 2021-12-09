@@ -1,8 +1,7 @@
 import itertools
-from typing import Dict, Tuple
-
 import numpy
 from matplotlib import pyplot
+from typing import Dict, Sequence, Tuple
 from warg import Number
 
 __all__ = [
@@ -14,6 +13,12 @@ __all__ = [
 
 
 def plot_errors(results_dict: Dict, title: str) -> None:
+    """
+
+    Args:
+      results_dict:
+      title:
+    """
     markers = itertools.cycle(("+", "x", "o"))
 
     pyplot.title(f"{title}")
@@ -28,6 +33,14 @@ def plot_errors(results_dict: Dict, title: str) -> None:
 
 
 def masks_to_color_img(masks: numpy.ndarray) -> numpy.ndarray:
+    """
+
+    Args:
+      masks:
+
+    Returns:
+
+    """
     height, width, mask_channels = masks.shape
     color_channels = 3
     color_image = numpy.zeros((height, width, color_channels), dtype=numpy.uint8) * 255
@@ -40,7 +53,22 @@ def masks_to_color_img(masks: numpy.ndarray) -> numpy.ndarray:
     return color_image.astype(numpy.uint8)
 
 
-def plot_prediction(img_array, labels, max_pred, pred, n_col: int = 3) -> None:
+def plot_prediction(
+        img_array: numpy.ndarray,
+        labels: Sequence,
+        max_pred: Sequence,
+        pred: Sequence,
+        n_col: int = 3,
+) -> None:
+    """
+
+    Args:
+      img_array:
+      labels:
+      max_pred:
+      pred:
+      n_col:
+    """
     n_row = len(img_array) // n_col
 
     f, plots = pyplot.subplots(
@@ -55,7 +83,15 @@ def plot_prediction(img_array, labels, max_pred, pred, n_col: int = 3) -> None:
 
 
 def bounding_box_from_mask(
-    hard_mask: numpy.ndarray,
+        hard_mask: numpy.ndarray,
 ) -> Tuple[Number, Number, Number, Number]:
+    """
+
+    Args:
+      hard_mask:
+
+    Returns:
+
+    """
     nz = numpy.nonzero(hard_mask)
     return numpy.min(nz[0]), numpy.min(nz[1]), numpy.max(nz[0]), numpy.max(nz[1])

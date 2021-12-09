@@ -1,8 +1,7 @@
-from typing import Any
-
 import numpy
 import torch
 from torch import nn
+from typing import Any
 
 from neodroidvision.segmentation.evaluation.f_score import f_score
 
@@ -10,7 +9,7 @@ __all__ = ["dice_loss", "dice_coefficient", "DiceLoss", "BCEDiceLoss"]
 
 
 def dice_coefficient(
-    pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
+        pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
     """
     This definition generalize to real valued pred and target vector.
@@ -28,18 +27,41 @@ def dice_coefficient(
 
 
 def dice_loss(
-    prediction: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
+        prediction: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
+    """
+
+    Args:
+      prediction:
+      target:
+      epsilon:
+
+    Returns:
+
+    """
     return 1 - dice_coefficient(prediction, target, epsilon=epsilon)
 
 
 class DiceLoss(nn.Module):
+    """
+
+    """
+
     def __init__(self, *, eps: float = 1e-7, activation: callable = torch.sigmoid):
         super().__init__()
         self.activation = activation
         self.eps = eps
 
     def forward(self, y_pr: torch.Tensor, y_gt: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          y_pr:
+          y_gt:
+
+        Returns:
+
+        """
         return 1 - f_score(
             y_pr,
             y_gt,
@@ -51,12 +73,16 @@ class DiceLoss(nn.Module):
 
 
 class BCEDiceLoss(DiceLoss):
+    """
+
+    """
+
     def __init__(
-        self,
-        eps: float = 1e-7,
-        activation: Any = None,
-        lambda_dice: float = 1.0,
-        lambda_bce: float = 1.0,
+            self,
+            eps: float = 1e-7,
+            activation: Any = None,
+            lambda_dice: float = 1.0,
+            lambda_bce: float = 1.0,
     ):
         super().__init__(eps=eps, activation=activation)
 
@@ -69,6 +95,15 @@ class BCEDiceLoss(DiceLoss):
         self.lambda_bce = lambda_bce
 
     def forward(self, y_pr: torch.Tensor, y_gt: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          y_pr:
+          y_gt:
+
+        Returns:
+
+        """
         dice = super().forward(y_pr, y_gt)
         bce = self.bce(y_pr, y_gt)
         return (self.lambda_dice * dice) + (self.lambda_bce * bce)

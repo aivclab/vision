@@ -1,11 +1,10 @@
 import datetime
 import time
-from collections import defaultdict, deque
-from typing import Optional
-
 import torch
 import torch.utils.data
+from collections import defaultdict, deque
 from torch import distributed
+from typing import Optional
 
 __all__ = ["SmoothedValue", "MetricLogger"]
 
@@ -28,6 +27,12 @@ class SmoothedValue(object):
         self.count = 0
 
     def update(self, value, n=1):
+        """
+
+        Args:
+          value:
+          n:
+        """
         self.deque.append(value)
         self.count += n
         self.total += value * n
@@ -46,24 +51,49 @@ class SmoothedValue(object):
 
     @property
     def median(self):
+        """
+
+        Returns:
+
+        """
         d = torch.tensor(list(self.deque))
         return d.median().item()
 
     @property
     def avg(self):
+        """
+
+        Returns:
+
+        """
         d = torch.tensor(list(self.deque), dtype=torch.float32)
         return d.mean().item()
 
     @property
     def global_avg(self):
+        """
+
+        Returns:
+
+        """
         return self.total / self.count
 
     @property
     def max(self):
+        """
+
+        Returns:
+
+        """
         return max(self.deque)
 
     @property
     def value(self):
+        """
+
+        Returns:
+
+        """
         return self.deque[-1]
 
     def __str__(self):
@@ -77,6 +107,9 @@ class SmoothedValue(object):
 
 
 class MetricLogger(object):
+    """
+
+    """
     MB = 1024.0 * 1024.0
 
     def __init__(self, delimiter="\t"):
@@ -84,6 +117,11 @@ class MetricLogger(object):
         self.delimiter = delimiter
 
     def update(self, **kwargs):
+        """
+
+        Args:
+          **kwargs:
+        """
         for k, v in kwargs.items():
             if isinstance(v, torch.Tensor):
                 v = v.item()
@@ -106,13 +144,29 @@ class MetricLogger(object):
         return self.delimiter.join(loss_str)
 
     def synchronise_meters_between_processes(self):
+        """
+
+        """
         for meter in self.meters.values():
             meter.synchronise_between_processes_torch()
 
     def add_meter(self, name, meter):
+        """
+
+        Args:
+          name:
+          meter:
+        """
         self.meters[name] = meter
 
     def log_every(self, iterable, print_freq, header=None):
+        """
+
+        Args:
+          iterable:
+          print_freq:
+          header:
+        """
         i = 0
         if not header:
             header = ""

@@ -1,9 +1,7 @@
 import copy
+import numpy
 import string
 import time
-from pathlib import Path
-
-import numpy
 import torch
 import tqdm
 from draugr import (
@@ -22,6 +20,7 @@ from draugr.torch_utilities import (
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
+from pathlib import Path
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
 
@@ -120,19 +119,37 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
 
 def predictor_response_train_model_neodroid_observations(
-    model,
-    *,
-    train_iterator,
-    criterion,
-    optimizer,
-    scheduler,
-    writer,
-    interrupted_path,
-    val_data_iterator=None,
-    num_updates: int = 250000,
-    device=global_torch_device(),
-    early_stop=None,
+        model,
+        *,
+        train_iterator,
+        criterion,
+        optimizer,
+        scheduler,
+        writer,
+        interrupted_path,
+        val_data_iterator=None,
+        num_updates: int = 250000,
+        device=global_torch_device(),
+        early_stop=None,
 ):
+    """
+
+    Args:
+      model:
+      train_iterator:
+      criterion:
+      optimizer:
+      scheduler:
+      writer:
+      interrupted_path:
+      val_data_iterator:
+      num_updates:
+      device:
+      early_stop:
+
+    Returns:
+
+    """
     best_model_wts = copy.deepcopy(model.state_dict())
     best_val_loss = 1e10
     since = time.time()

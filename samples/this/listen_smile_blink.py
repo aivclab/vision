@@ -11,16 +11,15 @@ import cv2
 import dlib
 from _dlib_pybind11 import rectangle
 from draugr.opencv_utilities import AsyncVideoStream
+from draugr.opencv_utilities.dlib import shape_to_ndarray, mouth_aspect_ratio, eye_aspect_ratio, \
+    Dlib68faciallandmarksindices
 from draugr.opencv_utilities.dlib.facealigner import align_face
-from draugr.opencv_utilities.dlib_utilities import (
-    dlib68FacialLandmarksIndices,
-    eye_aspect_ratio,
-    mouth_aspect_ratio,
-    shape_to_ndarray,
-)
 
 
 def aushdas():
+    """
+
+    """
     cv2.namedWindow("test")
     cv2.namedWindow("rect")
 
@@ -45,18 +44,18 @@ def aushdas():
                 detail_predictor(aligned, rect_aligned)
             )
 
-            mouth = dlib68FacialLandmarksIndices.slice(
-                aligned_landmarks, dlib68FacialLandmarksIndices.mouth
+            mouth = Dlib68faciallandmarksindices.slice(
+                aligned_landmarks, Dlib68faciallandmarksindices.mouth
             )
             mouth_ar = mouth_aspect_ratio(mouth)
 
-            left_eye = dlib68FacialLandmarksIndices.slice(
-                aligned_landmarks, dlib68FacialLandmarksIndices.left_eye
+            left_eye = Dlib68faciallandmarksindices.slice(
+                aligned_landmarks, Dlib68faciallandmarksindices.left_eye
             )
             left_eye_ar = eye_aspect_ratio(left_eye)
 
-            right_eye = dlib68FacialLandmarksIndices.slice(
-                aligned_landmarks, dlib68FacialLandmarksIndices.right_eye
+            right_eye = Dlib68faciallandmarksindices.slice(
+                aligned_landmarks, Dlib68faciallandmarksindices.right_eye
             )
             right_eye_ar = eye_aspect_ratio(right_eye)
 
@@ -104,7 +103,7 @@ def aushdas():
 
         cv2.imshow("test", frame)
         if cv2.waitKey(1) & 0xFF == ord(
-            "q"
+                "q"
         ):  # if the `q` key was pressed, break from the loop
             break
 

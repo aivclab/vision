@@ -24,6 +24,9 @@ indent = " " * margin
 
 class NeodroidVisionCLI(object):
     def run(self) -> None:
+        """
+
+        """
         pass
 
     @staticmethod
@@ -35,17 +38,31 @@ class NeodroidVisionCLI(object):
 
     @staticmethod
     def sponsors() -> None:
+        """
+
+        """
         print(sponsors)
 
 
-def draw_cli_header(*, title="Neodroid Vision", font="big"):
+def draw_cli_header(*, title: str = "Neodroid Vision", font: str = "big") -> None:
+    """
+
+    Args:
+      title:
+      font:
+    """
     figlet = Figlet(font=font, justify="center", width=terminal_width)
     description = figlet.renderText(title)
 
     print(f"{description}{underline}\n")
 
 
-def main(*, always_draw_header=False):
+def main(*, always_draw_header: bool = False) -> None:
+    """
+
+    Args:
+      always_draw_header:
+    """
     if always_draw_header:
         draw_cli_header()
     fire.Fire(NeodroidVisionCLI, name="neodroid-vision")

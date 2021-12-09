@@ -7,18 +7,17 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
-from pathlib import Path
-from typing import Sequence, Tuple
-
 import numpy
 import torch
 from draugr.numpy_utilities import Split, SplitIndexer
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils.data import Subset
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
 from torchvision.datasets import MNIST
+from typing import Sequence, Tuple
 
 __all__ = ["MNISTDataset", "MNISTDataset2"]
 
@@ -43,13 +42,13 @@ class MNISTDataset2(SupervisedDataset):
         return self._resize_shape
 
     def __init__(
-        self,
-        dataset_path: Path,
-        split: Split = Split.Training,
-        validation: float = 0.3,
-        resize_s: int = 28,
-        seed: int = 42,
-        download=True,
+            self,
+            dataset_path: Path,
+            split: Split = Split.Training,
+            validation: float = 0.3,
+            resize_s: int = 28,
+            seed: int = 42,
+            download: bool = True,
     ):
         """
         :param dataset_path: dataset directory
@@ -111,11 +110,7 @@ class MNISTDataset2(SupervisedDataset):
 
 
 class MNISTDataset(SupervisedDataset):
-    """ """
-
-    trans = transforms.Compose(
-        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
-    )
+    """"""
 
     def __init__(self, data_dir: Path, split: Split = Split.Training):
         super().__init__()
@@ -150,17 +145,28 @@ class MNISTDataset(SupervisedDataset):
         :rtype:"""
         return (10,)
 
+    trans = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+    )
+
+    inverse_transform = transforms.Compose(
+        [
+            # transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist()), # TODO: imp
+            transforms.ToPILImage()
+        ]
+    )
+
     @staticmethod
     def get_train_valid_loader(
-        data_dir: Path,
-        batch_size: int,
-        random_seed: int,
-        *,
-        valid_size: float = 0.1,
-        shuffle: bool = True,
-        num_workers: int = 0,
-        pin_memory: bool = False,
-        using_cuda: bool = True,
+            data_dir: Path,
+            batch_size: int,
+            random_seed: int,
+            *,
+            valid_size: float = 0.1,
+            shuffle: bool = True,
+            num_workers: int = 0,
+            pin_memory: bool = False,
+            using_cuda: bool = True,
     ) -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
         """Train and validation data loaders.
 
@@ -236,12 +242,12 @@ class MNISTDataset(SupervisedDataset):
 
     @staticmethod
     def get_test_loader(
-        data_dir: Path,
-        batch_size: int,
-        *,
-        num_workers: int = 0,
-        pin_memory: bool = False,
-        using_cuda: bool = True,
+            data_dir: Path,
+            batch_size: int,
+            *,
+            num_workers: int = 0,
+            pin_memory: bool = False,
+            using_cuda: bool = True,
     ) -> torch.utils.data.DataLoader:
         """Test datalaoder.
 
@@ -283,7 +289,7 @@ class MNISTDataset(SupervisedDataset):
         return data_loader
 
     def sample(self) -> None:
-        """ """
+        """"""
         images, labels = next(
             iter(
                 torch.utils.data.DataLoader(
@@ -327,6 +333,7 @@ if __name__ == "__main__":
         MNISTDataset(Path.home() / "Data" / "MNIST").sample()
         pyplot.show()
 
+
     def siuadyh():
         import tqdm
 
@@ -351,16 +358,17 @@ if __name__ == "__main__":
         )
 
         for batch_idx, (imgs, label) in tqdm.tqdm(
-            enumerate(data_loader),
-            total=len(data_loader),
-            desc="Bro",
-            ncols=80,
-            leave=False,
+                enumerate(data_loader),
+                total=len(data_loader),
+                desc="Bro",
+                ncols=80,
+                leave=False,
         ):
             # pyplot.imshow(dt.inverse_transform(imgs[0]))
             # pyplot.imshow(imgs)
             # pyplot.show()
             print(imgs.shape)
             break
+
 
     siuadyh()

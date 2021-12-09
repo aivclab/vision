@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-
 import cv2
 import numpy
 import pandas
@@ -15,6 +13,7 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -68,15 +67,30 @@ def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
 
 
 def train_model(
-    model,
-    train_loader,
-    valid_loader,
-    criterion,
-    optimizer,
-    scheduler,
-    save_model_path: Path,
-    n_epochs=99,
+        model,
+        train_loader,
+        valid_loader,
+        criterion,
+        optimizer,
+        scheduler,
+        save_model_path: Path,
+        n_epochs=99,
 ):
+    """
+
+    Args:
+      model:
+      train_loader:
+      valid_loader:
+      criterion:
+      optimizer:
+      scheduler:
+      save_model_path:
+      n_epochs:
+
+    Returns:
+
+    """
     valid_loss_min = numpy.Inf  # track change in validation loss
     E = tqdm(range(1, n_epochs + 1))
     for epoch in E:
@@ -213,8 +227,16 @@ def threshold_grid_search(model, valid_loader, max_samples=2000):
 
 
 def prepare_submission(
-    model, class_params, test_loader, submission_file_path="submission.csv"
+        model, class_params, test_loader, submission_file_path="submission.csv"
 ):
+    """
+
+    Args:
+      model:
+      class_params:
+      test_loader:
+      submission_file_path:
+    """
     # encoded_pixels = []
     submission_i = 0
     number_of_pixels_saved = 0
@@ -257,6 +279,9 @@ def prepare_submission(
 
 
 def main():
+    """
+
+    """
     pyplot.style.use("bmh")
 
     base_dataset_path = Path.home() / "Data" / "Datasets" / "Clouds"

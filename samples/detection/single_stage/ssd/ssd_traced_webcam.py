@@ -8,8 +8,6 @@ __doc__ = r"""
            """
 
 import argparse
-from typing import List
-
 import cv2
 import numpy
 import torch
@@ -22,6 +20,7 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from tqdm import tqdm
+from typing import List
 from warg import NOD
 
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
@@ -33,11 +32,11 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 
 @torch.no_grad()
 def run_traced_webcam_demo(
-    input_cfg: NOD,
-    categories: List,
-    score_threshold: float = 0.7,
-    window_name: str = "SSD",
-    onnx_exported: bool = False,
+        input_cfg: NOD,
+        categories: List,
+        score_threshold: float = 0.7,
+        window_name: str = "SSD",
+        onnx_exported: bool = False,
 ):
     """
 
@@ -74,6 +73,14 @@ def run_traced_webcam_demo(
         ort_session = onnxruntime.InferenceSession("torch_model.onnx")
 
         def to_numpy(tensor):
+            """
+
+            Args:
+              tensor:
+
+            Returns:
+
+            """
             return (
                 tensor.detach().cpu().numpy()
                 if tensor.requires_grad
@@ -92,28 +99,28 @@ def run_traced_webcam_demo(
         torch.jit.load("torch_model.traced")
 
         with open(
-            "torch_model.traced", "rb"
+                "torch_model.traced", "rb"
         ) as f:  # Load ScriptModule from io.BytesIO object
             buffer = io.BytesIO(f.read())
 
         model = torch.jit.load(buffer)  # Load all tensors to the original device
 
         """
-
-buffer.seek(0)
-torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
-
-
-buffer.seek(0)
-model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
-
-# Load with extra files.
-extra_files = torch._C.ExtraFilesMap()
-extra_files['foo.txt'] = 'bar'
-torch.jit.load('torch_model.traced', _extra_files=extra_files)
-print(extra_files['foo.txt'])
-#exit(0)
-"""
+    
+    buffer.seek(0)
+    torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
+    
+    
+    buffer.seek(0)
+    model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
+    
+    # Load with extra files.
+    extra_files = torch._C.ExtraFilesMap()
+    extra_files['foo.txt'] = 'bar'
+    torch.jit.load('torch_model.traced', _extra_files=extra_files)
+    print(extra_files['foo.txt'])
+    #exit(0)
+    """
 
     with TorchDeviceSession(device=global_torch_device("cpu"), model=model):
         with TorchEvalSession(model):
@@ -153,6 +160,9 @@ print(extra_files['foo.txt'])
 
 
 def main():
+    """
+
+    """
     from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
 
     # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
@@ -166,9 +176,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-        / "ssd"
-        / "models"
-        / "mobilenet_v2_ssd320_voc0712.pth"
+                / "ssd"
+                / "models"
+                / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

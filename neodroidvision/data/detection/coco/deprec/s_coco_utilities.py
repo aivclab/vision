@@ -8,19 +8,18 @@ __doc__ = r"""
            """
 
 import copy
-from collections import namedtuple
-from enum import Enum
-from pathlib import Path
-from typing import Any, List, Mapping, Sequence, Tuple, Union
-
 import torch
 import torch.utils.data
 import torchvision
+from collections import namedtuple
+from enum import Enum
 from numpy.core.multiarray import ndarray
+from pathlib import Path
 from pycocotools import mask
 from pycocotools.coco import COCO
 from torch.utils.data import Dataset
 from torchvision.transforms import Compose
+from typing import Any, List, Mapping, Sequence, Tuple, Union
 
 __all__ = [
     "FilterAndRemapCocoCategories",
@@ -86,7 +85,7 @@ class FilterAndRemapCocoCategories(object):
 
 
 def convert_coco_poly_to_mask(
-    segmentations: Sequence, height: int, width: int
+        segmentations: Sequence, height: int, width: int
 ) -> NamedTensorTuple:
     """
 
@@ -160,9 +159,9 @@ class ConvertCocoPolysToMask(object):
 
 
 def _coco_remove_images_without_annotations(
-    dataset: Dataset,
-    category_list: Sequence[CocoPolyAnnotation] = None,
-    min_keypoints_per_image: int = 10,
+        dataset: Dataset,
+        category_list: Sequence[CocoPolyAnnotation] = None,
+        min_keypoints_per_image: int = 10,
 ) -> Dataset:
     def _has_only_empty_bbox(anno: List[CocoPolyAnnotation]) -> bool:
         return all(any(o <= 1 for o in obj.bbox[2:]) for obj in anno)
@@ -261,7 +260,7 @@ def convert_to_coco_api(ds):
 
 
 def get_coco_api_from_dataset(
-    dataset: Union[torch.utils.data.Subset, torchvision.datasets.CocoDetection]
+        dataset: Union[torch.utils.data.Subset, torchvision.datasets.CocoDetection]
 ) -> COCO:
     """
 
@@ -296,10 +295,10 @@ class CocoDetection(torchvision.datasets.CocoDetection):
 
 
 def get_coco_ins(
-    root_path: Path,
-    image_set: Split,
-    transforms,
-    mode: CocoModeEnum = CocoModeEnum.instances,
+        root_path: Path,
+        image_set: Split,
+        transforms,
+        mode: CocoModeEnum = CocoModeEnum.instances,
 ):
     """
 

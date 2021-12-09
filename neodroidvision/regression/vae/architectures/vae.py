@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from abc import abstractmethod
-
 import torch
+from abc import abstractmethod
 from torch import nn
 from torch.nn.init import kaiming_normal_
 
@@ -16,16 +15,37 @@ __all__ = ["VAE"]
 
 
 class VAE(torch.nn.Module):
+    """
+
+    """
+
     class View(nn.Module):
+        """
+
+        """
+
         def __init__(self, size):
             super().__init__()
             self.size = size
 
         def forward(self, tensor):
+            """
+
+            Args:
+              tensor:
+
+            Returns:
+
+            """
             return tensor.reshape(self.size)
 
     @staticmethod
     def kaiming_init(m):
+        """
+
+        Args:
+          m:
+        """
         if isinstance(m, (nn.Linear, nn.Conv2d)):
             kaiming_normal_(m.weight)
             if m.bias is not None:
@@ -36,6 +56,9 @@ class VAE(torch.nn.Module):
                 m.bias.data.fill_(0)
 
     def weight_init(self):
+        """
+
+        """
         for m in self.modules():
             self.kaiming_init(m)
 
@@ -45,10 +68,20 @@ class VAE(torch.nn.Module):
 
     @abstractmethod
     def encode(self, *x: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          *x:
+        """
         raise NotImplementedError
 
     @abstractmethod
     def decode(self, *x: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          *x:
+        """
         raise NotImplementedError
 
     def sample(self, *x, num=1) -> torch.Tensor:
@@ -82,6 +115,14 @@ class VAE(torch.nn.Module):
         return z
 
     def sample_from(self, *encoding) -> torch.Tensor:
+        """
+
+        Args:
+          *encoding:
+
+        Returns:
+
+        """
         sample = to_tensor(*encoding).to(device=next(self.parameters()).device)
         assert sample.shape[-1] == self._latent_size, (
             f"sample.shape[-1]:{sample.shape[-1]} !="

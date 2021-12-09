@@ -2,6 +2,14 @@ from paho.mqtt import client
 
 
 def on_connect(c, userdata, flags, rc):
+    """
+
+    Args:
+      c:
+      userdata:
+      flags:
+      rc:
+    """
     # print(f"CONNACK received with code {rc}")
     if rc == 0:
         print("connected to MQTT broker")
@@ -11,6 +19,13 @@ def on_connect(c, userdata, flags, rc):
 
 
 def on_publish(c, userdata, mid):
+    """
+
+    Args:
+      c:
+      userdata:
+      mid:
+    """
     print(f"mid: {str(mid)}")
 
 

@@ -7,34 +7,43 @@ __doc__ = r"""
            Created on 03-05-2021
            """
 
-from itertools import cycle
-
 import cv2
 import dlib
 from draugr.opencv_utilities import AsyncVideoStream
-from draugr.opencv_utilities.dlib_utilities import (
-    dlib68FacialLandmarksIndices,
-    shape_to_ndarray,
-)
+
+from itertools import cycle
+
+from draugr.opencv_utilities.dlib import Dlib68faciallandmarksindices
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
 
 def visualize_facial_landmarks(
-    image,
-    shape,
-    colors=(
-        (19, 199, 109),
-        (79, 76, 240),
-        (230, 159, 23),
-        (168, 100, 168),
-        (158, 163, 32),
-        (163, 38, 32),
-        (180, 42, 220),
-    ),
-    alpha=0.75,
+        image,
+        shape,
+        colors=(
+                (19, 199, 109),
+                (79, 76, 240),
+                (230, 159, 23),
+                (168, 100, 168),
+                (158, 163, 32),
+                (163, 38, 32),
+                (180, 42, 220),
+        ),
+        alpha=0.75,
 ):
+    """
+
+    Args:
+      image:
+      shape:
+      colors:
+      alpha:
+
+    Returns:
+
+    """
     # create two copies of the input image -- one for the
     # overlay and one for the final output image
     overlay = image.copy()
@@ -43,9 +52,9 @@ def visualize_facial_landmarks(
     colors = iter(cycle(colors))
 
     for (
-        name
+            name
     ) in (
-        dlib68FacialLandmarksIndices
+            Dlib68faciallandmarksindices
     ):  # loop over the facial landmark regions individually
         # grab the (x, y)-coordinates associated with the
         # face landmark
@@ -55,7 +64,7 @@ def visualize_facial_landmarks(
         col = next(colors)
 
         # check if are supposed to draw the jawline
-        if name == dlib68FacialLandmarksIndices.jaw:
+        if name == Dlib68faciallandmarksindices.jaw:
             # since the jawline is a non-enclosed facial region,
             # just draw lines between the (x, y)-coordinates
             for l in range(1, len(pts)):
@@ -79,6 +88,9 @@ def visualize_facial_landmarks(
 if __name__ == "__main__":
 
     def asijdas():
+        """
+
+        """
         upsample = 0
         for image in AsyncVideoStream():
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -90,9 +102,9 @@ if __name__ == "__main__":
 
                 if False:
                     for (
-                        name
+                            name
                     ) in (
-                        dlib68FacialLandmarksIndices
+                            Dlib68faciallandmarksindices
                     ):  # loop over the face parts individually
                         # clone the original image so we can draw on it, then
                         # display the name of the face part on the image
@@ -121,7 +133,7 @@ if __name__ == "__main__":
                             cv2.imshow(
                                 "ROI",
                                 cv2_resize(
-                                    image[y : y + h, x : x + w],
+                                    image[y: y + h, x: x + w],
                                     size=(250, 250),
                                     inter=cv2.INTER_CUBIC,
                                 ),
@@ -132,5 +144,6 @@ if __name__ == "__main__":
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
+
 
     asijdas()

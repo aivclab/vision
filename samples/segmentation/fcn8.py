@@ -15,6 +15,9 @@ from neodroidvision.segmentation.fully_convolutional import FCN
 if __name__ == "__main__":
 
     def a():
+        """
+
+        """
         img_size = 224
         in_channels = 5
         n_classes = 2
@@ -34,5 +37,6 @@ if __name__ == "__main__":
 
         pred = model(torch.ones((4, in_channels, img_size, img_size)))
         print(pred)
+
 
     a()
