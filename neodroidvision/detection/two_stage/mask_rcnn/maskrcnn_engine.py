@@ -1,9 +1,7 @@
 import math
 import sys
 import time
-
 import torch
-import torchvision
 import tqdm
 from draugr.torch_utilities import (
     TorchEvalSession,
@@ -24,12 +22,12 @@ from neodroidvision.utilities import reduce_dict
 
 
 def maskrcnn_train_single_epoch(
-    *,
-    model: torchvision.models.detection.mask_rcnn.MaskRCNN,
-    optimiser: Optimizer,
-    data_loader: DataLoader,
-    device: torch.device = global_torch_device(),
-    writer: Writer = None,
+        *,
+        model: Module,
+        optimiser: Optimizer,
+        data_loader: DataLoader,
+        device: torch.device = global_torch_device(),
+        writer: Writer = None,
 ):
     """
 
@@ -78,12 +76,23 @@ def maskrcnn_train_single_epoch(
 
 
 def maskrcnn_evaluate(
-    model: Module,
-    data_loader: DataLoader,
-    *,
-    device=global_torch_device(),
-    writer: Writer = None,
+        model: Module,
+        data_loader: DataLoader,
+        *,
+        device=global_torch_device(),
+        writer: Writer = None,
 ):
+    """
+
+    Args:
+      model:
+      data_loader:
+      device:
+      writer:
+
+    Returns:
+
+    """
     n_threads = torch.get_num_threads()
     # FIXME remove this and make paste_masks_in_image run on the GPU
     torch.set_num_threads(1)

@@ -7,17 +7,16 @@ __doc__ = r"""
            Created on 27/06/2020
            """
 
-from pathlib import Path
-from typing import Dict, Tuple
-
 import numpy
 import torch
 import torchvision
 from draugr.numpy_utilities import Split
 from draugr.torch_utilities import SupervisedDataset
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
+from typing import Dict, Tuple
 
 from neodroidvision.data.classification.imagenet.imagenet_2012_id import categories_id
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
@@ -72,11 +71,11 @@ class ImageNet2012(SupervisedDataset):
         return {Split.Training: "train", Split.Validation: "val", Split.Testing: "test"}
 
     def __init__(
-        self,
-        dataset_path: Path,
-        split: Split = Split.Training,
-        resize_s: int = 256,
-        crop_size: int = 224,
+            self,
+            dataset_path: Path,
+            split: Split = Split.Training,
+            resize_s: int = 256,
+            crop_size: int = 224,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -95,6 +94,7 @@ class ImageNet2012(SupervisedDataset):
         self._dataset_path = dataset_path / self.split_names[split]
 
         self.train_trans = transforms.Compose(
+
             [
                 transforms.RandomResizedCrop(crop_size),
                 transforms.RandomHorizontalFlip(),
@@ -131,6 +131,9 @@ class ImageNet2012(SupervisedDataset):
 if __name__ == "__main__":
 
     def main():
+        """
+
+        """
         import tqdm
 
         batch_size = 32
@@ -144,15 +147,16 @@ if __name__ == "__main__":
         )
 
         for batch_idx, (imgs, categories) in tqdm.tqdm(
-            enumerate(val_loader),
-            total=len(val_loader),
-            desc="Bro",
-            ncols=80,
-            leave=False,
+                enumerate(val_loader),
+                total=len(val_loader),
+                desc="Bro",
+                ncols=80,
+                leave=False,
         ):
             pyplot.imshow(dt.inverse_base_transform(imgs[0]))
             pyplot.title(dt.category_names[categories[0].item()])
             pyplot.show()
             break
+
 
     main()

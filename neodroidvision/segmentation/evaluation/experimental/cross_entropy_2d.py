@@ -9,6 +9,17 @@ __all__ = [
 
 
 def cross_entropy2d(input, target, weight=None, size_average=True):
+    """
+
+    Args:
+      input:
+      target:
+      weight:
+      size_average:
+
+    Returns:
+
+    """
     n, c, h, w = input.size()
     nt, ht, wt = target.size()
 
@@ -26,8 +37,20 @@ def cross_entropy2d(input, target, weight=None, size_average=True):
 
 
 def multi_scale_cross_entropy2d(
-    input, target, weight=None, size_average=True, scale_weight=None
+        input, target, weight=None, size_average=True, scale_weight=None
 ):
+    """
+
+    Args:
+      input:
+      target:
+      weight:
+      size_average:
+      scale_weight:
+
+    Returns:
+
+    """
     if not isinstance(input, tuple):
         return cross_entropy2d(
             input=input, target=target, weight=weight, size_average=size_average
@@ -51,10 +74,21 @@ def multi_scale_cross_entropy2d(
 
 
 def bootstrapped_cross_entropy2d(input, target, K: int, weight=None, size_average=True):
+    """
+
+    Args:
+      input:
+      target:
+      K:
+      weight:
+      size_average:
+
+    Returns:
+
+    """
     batch_size = input.size()[0]
 
     def _bootstrap_xentropy_single(input, target, K, weight=None, size_average=True):
-
         n, c, h, w = input.size()
         loss = cross_entropy(
             input.transpose(1, 2).transpose(2, 3).reshape(-1, c),

@@ -52,9 +52,9 @@ def fft_im_denoise(img: numpy.ndarray, keep_fraction: float = 0.1) -> numpy.ndar
 
     # Set to zero all rows with indices between r*keep_fraction and
     # r*(1-keep_fraction):
-    im_fft_cp[int(num_row * keep_fraction) : int(num_row * (1 - keep_fraction))] = 0
+    im_fft_cp[int(num_row * keep_fraction): int(num_row * (1 - keep_fraction))] = 0
     im_fft_cp[
-        :, int(num_columns * keep_fraction) : int(num_columns * (1 - keep_fraction))
+    :, int(num_columns * keep_fraction): int(num_columns * (1 - keep_fraction))
     ] = 0
 
     # plt.figure()

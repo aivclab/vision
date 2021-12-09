@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
-from math import inf
-from pathlib import Path
-
 import torch
 import torch.utils.data
 from draugr.numpy_utilities import Split
@@ -14,6 +11,8 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from draugr.writers import Writer
+from math import inf
+from pathlib import Path
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
@@ -58,19 +57,41 @@ BETA = 4
 
 
 def loss_function(reconstruction, original, mean, log_var, beta=1):
+    """
+
+    Args:
+      reconstruction:
+      original:
+      mean:
+      log_var:
+      beta:
+
+    Returns:
+
+    """
     return reconstruction_loss(reconstruction, original) + beta * kl_divergence(
         mean, log_var
     )
 
 
 def train_model(
-    model,
-    optimiser,
-    epoch_i: int,
-    metric_writer: Writer,
-    loader: DataLoader,
-    log_interval=10,
+        model,
+        optimiser,
+        epoch_i: int,
+        metric_writer: Writer,
+        loader: DataLoader,
+        log_interval=10,
 ):
+    """
+
+    Args:
+      model:
+      optimiser:
+      epoch_i:
+      metric_writer:
+      loader:
+      log_interval:
+    """
     with TorchTrainSession(model):
         train_accum_loss = 0
         generator = tqdm(enumerate(loader))
@@ -102,12 +123,21 @@ def train_model(
 
 
 def stest_model(
-    model: VAE,
-    epoch_i: int,
-    metric_writer: Writer,
-    loader: DataLoader,
-    save_images: bool = True,
+        model: VAE,
+        epoch_i: int,
+        metric_writer: Writer,
+        loader: DataLoader,
+        save_images: bool = True,
 ):
+    """
+
+    Args:
+      model:
+      epoch_i:
+      metric_writer:
+      loader:
+      save_images:
+    """
     global LOWEST_L
     with TorchEvalSession(model):
         test_accum_loss = 0
@@ -132,12 +162,12 @@ def stest_model(
                             nrow=n,
                         )
                         """
-scatter_plot_encoding_space(str(BASE_PATH /
-f'encoding_space_{str(epoch_i)}.png'),
-mean.to('cpu').numpy(),
-log_var.to('cpu').numpy(),
-labels)
-"""
+            scatter_plot_encoding_space(str(BASE_PATH /
+            f'encoding_space_{str(epoch_i)}.png'),
+            mean.to('cpu').numpy(),
+            log_var.to('cpu').numpy(),
+            labels)
+            """
                 break
 
         # test_loss /= len(loader.dataset)
@@ -172,7 +202,7 @@ if __name__ == "__main__":
         optimiser = optim.Adam(MODEL.parameters(), lr=LR, betas=(0.9, 0.999))
 
         with TensorBoardPytorchWriter(
-            PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
+                PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
         ) as metric_writer:
             for epoch in range(1, EPOCHS + 1):
                 train_model(MODEL, optimiser, epoch, metric_writer, dataset_loader)
@@ -191,5 +221,6 @@ if __name__ == "__main__":
                             img_w=INPUT_SIZE,
                             img_h=INPUT_SIZE,
                         )
+
 
     main()

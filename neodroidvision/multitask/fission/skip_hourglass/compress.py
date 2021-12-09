@@ -1,7 +1,6 @@
-from typing import Tuple
-
 import torch
 from torch import nn
+from typing import Tuple
 
 __all__ = ["Compress"]
 
@@ -41,6 +40,14 @@ class Compress(nn.Module):
             self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+
+        Args:
+          x:
+
+        Returns:
+
+        """
         x = torch.relu(self.conv1(x))
         x = torch.relu(self.conv2(x))
         before_pool = x

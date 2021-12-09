@@ -7,15 +7,14 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
-import random
-from pathlib import Path
-from typing import Tuple, Union
-
 import numpy
+import random
 import torch
 from draugr.numpy_utilities import Split
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
+from pathlib import Path
+from typing import Tuple, Union
 from warg import drop_unused_kws, passes_kws_to
 
 from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
@@ -33,7 +32,7 @@ class PairDataset(
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws
     def __init__(
-        self, data_path: Union[str, Path], split: Split = Split.Training, **kwargs
+            self, data_path: Union[str, Path], split: Split = Split.Training, **kwargs
     ):
         super().__init__()
 

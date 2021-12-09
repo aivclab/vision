@@ -7,13 +7,12 @@ __doc__ = r"""
            Created on 30/11/2019
            """
 
-from pathlib import Path
-
 import albumentations
 import cv2
 import numpy
 import pandas
 from matplotlib import pyplot
+from pathlib import Path
 from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import Dataset
 
@@ -30,6 +29,9 @@ from draugr.opencv_utilities import cv2_resize
 
 
 class CloudSegmentationDataset(Dataset):
+    """
+
+    """
     categories = {0: "Fish", 1: "Flower", 2: "Gravel", 3: "Sugar"}
     image_size = (640, 320)
     image_size_T = image_size[::-1]
@@ -47,6 +49,11 @@ class CloudSegmentationDataset(Dataset):
     std = (0.25366131, 0.24921637, 0.23504028)  # Computed prior
 
     def training_augmentations(self):
+        """
+
+        Returns:
+
+        """
         return [
             albumentations.VerticalFlip(p=0.5),
             albumentations.HorizontalFlip(p=0.5),
@@ -62,19 +69,19 @@ class CloudSegmentationDataset(Dataset):
         ]
 
     '''
-def un_standardise(self, img):
-"""Add paddings to make image shape divisible by 32"""
-return (img * self.std + self.mean).astype(numpy.uint8)
-'''
+  def un_standardise(self, img):
+  """Add paddings to make image shape divisible by 32"""
+  return (img * self.std + self.mean).astype(numpy.uint8)
+  '''
 
     def __init__(
-        self,
-        csv_path: Path,
-        image_data_path: Path,
-        subset: Split = Split.Training,
-        transp=True,
-        N_FOLDS=10,
-        SEED=246232,
+            self,
+            csv_path: Path,
+            image_data_path: Path,
+            subset: Split = Split.Training,
+            transp=True,
+            N_FOLDS=10,
+            SEED=246232,
     ):
 
         self.transp = transp
@@ -95,11 +102,11 @@ return (img * self.std + self.mean).astype(numpy.uint8)
                 data_frame.loc[
                     data_frame["EncodedPixels"].isnull() == False, "Image_Label"
                 ]
-                .apply(lambda x: x.split("_")[0])
-                .value_counts()
-                .sort_index()
-                .reset_index()
-                .rename(columns={"index": "img_id", "Image_Label": "count"})
+                    .apply(lambda x: x.split("_")[0])
+                    .value_counts()
+                    .sort_index()
+                    .reset_index()
+                    .rename(columns={"index": "img_id", "Image_Label": "count"})
             )  # split data into train and val
 
             ids = id_mask_count["img_id"].values
@@ -119,9 +126,9 @@ return (img * self.std + self.mean).astype(numpy.uint8)
         else:
             self.img_ids = (
                 data_frame["Image_Label"]
-                .apply(lambda x: x.split("_")[0])
-                .drop_duplicates()
-                .values
+                    .apply(lambda x: x.split("_")[0])
+                    .drop_duplicates()
+                    .values
             )
             self.image_data_path = image_data_path / "test_images_525"
 
@@ -154,6 +161,14 @@ return (img * self.std + self.mean).astype(numpy.uint8)
 
     @staticmethod
     def no_info_mask(img):
+        """
+
+        Args:
+          img:
+
+        Returns:
+
+        """
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         lower = numpy.array([0, 0, 0], numpy.uint8)
         upper = numpy.array([180, 255, 10], numpy.uint8)
@@ -221,12 +236,12 @@ return (img * self.std + self.mean).astype(numpy.uint8)
 
     @staticmethod
     def visualise_prediction(
-        processed_image,
-        processed_mask,
-        original_image=None,
-        original_mask=None,
-        raw_image=None,
-        raw_mask=None,
+            processed_image,
+            processed_mask,
+            original_image=None,
+            original_mask=None,
+            raw_image=None,
+            raw_mask=None,
     ):
         """
         Plot image and masks.

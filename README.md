@@ -9,9 +9,7 @@
 <!--# Vision-->
 
 
-This repository will host implementations of computer vision algorithms, this repository hosts a general
-toolbox in library format under [neodroidvision](neodroidvision), while also comprising a range of sample
-usages in
+This repository will host implementations of computer vision algorithms, this repository hosts a general toolbox in library format under [neodroidvision](neodroidvision), while also comprising a range of sample usages in
 [samples](samples), many of them utilising the
 [Neodroid](https://github.com/sintefneodroid/) platform.
 
@@ -61,8 +59,7 @@ _[Neodroid](https://github.com/sintefneodroid) is developed with support from Re
 ### Segmentation
 
 - [UNET](neodroidvision/segmentation/instance_segmentation_model.py) - Segmentation model
-- [AUX-UNET](neodroidvision/multitask/fission/skip_hourglass/skip_hourglass_fission.py) - Instance
-  Segmentation model + Auxilary ouputs
+- [AUX-UNET](neodroidvision/multitask/fission/skip_hourglass/skip_hourglass_fission.py) - Instance Segmentation model + Auxilary ouputs
 
 ### Detection
 

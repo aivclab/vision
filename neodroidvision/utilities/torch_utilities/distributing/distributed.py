@@ -2,6 +2,7 @@
 # Code is copy-pasted exactly as in torch.utils.data.distributed.
 # FIXME remove this once c10d fixes the bug it has
 import math
+from typing import Sized
 
 import torch
 import torch.distributed as dist
@@ -25,8 +26,11 @@ class DistributedSampler(Sampler):
     distributed training.
     rank (optional): Rank of the current process within num_replicas."""
 
-    def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):
+    def __init__(
+            self, dataset: Sized, num_replicas: int = None, rank=None, shuffle: bool = True
+    ):
         """
+
 
         :param dataset:
         :param num_replicas:
@@ -63,7 +67,7 @@ class DistributedSampler(Sampler):
 
         # subsample
         offset = self.num_samples * self.rank
-        indices = indices[offset : offset + self.num_samples]
+        indices = indices[offset: offset + self.num_samples]
         assert len(indices) == self.num_samples
 
         return iter(indices)

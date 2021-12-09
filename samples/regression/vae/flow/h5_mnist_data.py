@@ -9,6 +9,8 @@ __doc__ = r"""
 
 from pathlib import Path
 
+from warg import Triple
+
 """Get the binarized MNIST dataset and convert to hdf5.
 From https://github.com/yburda/iwae/blob/master/datasets.py
 """
@@ -19,8 +21,25 @@ import numpy
 from neodroidvision import PROJECT_APP_PATH
 
 
-def parse_binary_mnist(data_dir: Path):
+def parse_binary_mnist(data_dir: Path) -> Triple:
+    """
+
+    Args:
+      data_dir:
+
+    Returns:
+
+    """
+
     def lines_to_np_array(lines):
+        """
+
+        Args:
+          lines:
+
+        Returns:
+
+        """
         return numpy.array([[int(i) for i in line.split()] for line in lines])
 
     with open(str(data_dir / "binarized_mnist_train.amat")) as f:
@@ -36,9 +55,15 @@ def parse_binary_mnist(data_dir: Path):
 
 
 def download_binary_mnist(
-    fname="binary_mnist.h5",
-    data_dir=(PROJECT_APP_PATH.user_data / "vanilla_vae" / "data"),
+        fname: str = "binary_mnist.h5",
+        data_dir: Path = (PROJECT_APP_PATH.user_data / "vanilla_vae" / "data"),
 ):
+    """
+
+    Args:
+      fname:
+      data_dir:
+    """
     if not data_dir.exists():
         data_dir.mkdir(parents=True)
     subdatasets = ["train", "valid", "test"]

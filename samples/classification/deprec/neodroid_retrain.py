@@ -7,7 +7,6 @@ import time
 import torchvision
 from draugr import (
     batch_generator,
-    horizontal_imshow,
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
@@ -18,10 +17,33 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
+from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
 )
+
+import torch
+import torchvision
+from draugr import (
+    batch_generator,
+    rgb_drop_alpha_batch_nhwc,
+    torch_vision_normalize_batch_nchw,
+)
+from draugr.torch_utilities import (
+    TensorBoardPytorchWriter,
+    ensure_directory_exist,
+    global_torch_device,
+    to_tensor,
+    uint_hwc_to_chw_float_tensor,
+)
+from draugr.visualisation import horizontal_imshow
+from matplotlib import pyplot
+from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
+    MixedObservationWrapper,
+)
+from torch import optim
+from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
@@ -32,10 +54,6 @@ from neodroidvision.classification.procedures.deprec.procedures import (
 # from warg.pooled_queue_processor import PooledQueueTask
 
 __author__ = "Christian Heider Nielsen"
-
-import torch
-import torch.optim as optim
-from tqdm import tqdm
 
 seed = 34874312
 batch_size = 16
@@ -56,6 +74,9 @@ __all__ = []
 
 
 def main():
+    """
+
+    """
     args = argparse.ArgumentParser()
     args.add_argument("--inference", "-i", action="store_true")
     args.add_argument("--continue_training", "-c", action="store_true")

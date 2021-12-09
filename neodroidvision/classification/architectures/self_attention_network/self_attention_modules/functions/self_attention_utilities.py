@@ -1,9 +1,8 @@
+import cupy
+import torch
 from collections import namedtuple
 from string import Template
 from typing import Any
-
-import cupy
-import torch
 
 __all__ = ["Stream", "get_dtype_str", "load_kernel"]
 
@@ -11,6 +10,14 @@ Stream = namedtuple("Stream", ["ptr"])
 
 
 def get_dtype_str(t: torch.Tensor) -> str:
+    """
+
+    Args:
+      t:
+
+    Returns:
+
+    """
     if isinstance(t, torch.cuda.FloatTensor):
         return "float"
     elif isinstance(t, torch.cuda.DoubleTensor):
@@ -20,6 +27,16 @@ def get_dtype_str(t: torch.Tensor) -> str:
 
 @cupy.util.memoize(for_each_device=True)
 def load_kernel(kernel_name: Any, code: str, **kwargs) -> Any:
+    """
+
+    Args:
+      kernel_name:
+      code:
+      **kwargs:
+
+    Returns:
+
+    """
     code = Template(code).substitute(**kwargs)
     kernel_code = cupy.cuda.compile_with_cache(code)
     return kernel_code.get_function(kernel_name)

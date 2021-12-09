@@ -8,7 +8,6 @@ __doc__ = r"""
            """
 
 import math
-
 import torch
 from torch import nn
 from torch.optim import Adam
@@ -19,6 +18,10 @@ __all__ = ["FullyConvolutional", "FCN"]
 
 
 class FullyConvolutional(nn.Module):
+    """
+
+    """
+
     @staticmethod
     def _pad(kernel_size: int, stride: int, dilation: int = 1) -> int:
         """
@@ -32,8 +35,18 @@ class FullyConvolutional(nn.Module):
 
     @staticmethod
     def conv2d_pool_block(
-        in_channels: int, out_channels: int, ext: bool = False
+            in_channels: int, out_channels: int, ext: bool = False
     ) -> torch.nn.Module:
+        """
+
+        Args:
+          in_channels:
+          out_channels:
+          ext:
+
+        Returns:
+
+        """
         base_c = [
             torch.nn.Conv2d(
                 in_channels=in_channels,
@@ -68,13 +81,13 @@ class FullyConvolutional(nn.Module):
         return torch.nn.Sequential(*base_c)
 
     def __init__(
-        self,
-        in_channels: int,
-        num_categories: int,
-        *,
-        final_act: callable,
-        base: int = 4,
-        t=8,
+            self,
+            in_channels: int,
+            num_categories: int,
+            *,
+            final_act: callable,
+            base: int = 4,
+            t=8,
     ):
         """
         FCN8
@@ -154,6 +167,14 @@ class FullyConvolutional(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+
+        Args:
+          x:
+
+        Returns:
+
+        """
         for ith_block in (0, 1):
             x = getattr(self, f"pool_block{ith_block}")(x)
 
@@ -174,6 +195,9 @@ FCN = FullyConvolutional
 if __name__ == "__main__":
 
     def a():
+        """
+
+        """
         img_size = 224
         in_channels = 5
         n_classes = 2
@@ -193,5 +217,6 @@ if __name__ == "__main__":
 
         pred = model(torch.ones((4, in_channels, img_size, img_size)))
         print(pred)
+
 
     a()

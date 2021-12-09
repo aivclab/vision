@@ -7,13 +7,12 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from pathlib import Path
-from typing import Tuple
-
 import numpy
 from PIL import Image
 from draugr.numpy_utilities import Split
 from draugr.opencv_utilities import xywh_to_minmax
+from pathlib import Path
+from typing import Tuple
 
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
@@ -25,10 +24,20 @@ from draugr.torch_utilities import NamedTensorTuple
 
 
 class COCODataset(ObjectDetectionDataset):
-    """ """
+    """
+    COCO 2014
+    """
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
+        """
+
+        Args:
+          self:
+
+        Returns:
+
+        """
         return (len(COCODataset.categories),)
 
     categories = (
@@ -135,12 +144,12 @@ class COCODataset(ObjectDetectionDataset):
         return (-1, -1, 3)
 
     def __init__(
-        self,
-        data_root: Path,
-        dataset_name: str,
-        split: Split,
-        img_transform: callable = None,
-        annotation_transform: callable = None,
+            self,
+            data_root: Path,
+            dataset_name: str,
+            split: Split,
+            img_transform: callable = None,
+            annotation_transform: callable = None,
     ):
         """
 
@@ -158,6 +167,7 @@ class COCODataset(ObjectDetectionDataset):
         :type remove_empty:"""
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
+
         )
         from pycocotools.coco import COCO
 
@@ -222,7 +232,7 @@ class COCODataset(ObjectDetectionDataset):
         ).reshape((-1,))
 
         keep = (boxes[:, 3] > boxes[:, 1]) & (
-            boxes[:, 2] > boxes[:, 0]
+                boxes[:, 2] > boxes[:, 0]
         )  # remove invalid boxes
         return boxes[keep], labels[keep]
 

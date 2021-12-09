@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-
 import cv2
 import numpy
 import pandas
@@ -16,6 +14,7 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -64,15 +63,30 @@ def reschedule(model, epoch, scheduler):
 
 
 def train_d(
-    model,
-    train_loader,
-    valid_loader,
-    criterion,
-    optimizer,
-    scheduler,
-    save_model_path,
-    n_epochs=0,
+        model,
+        train_loader,
+        valid_loader,
+        criterion,
+        optimizer,
+        scheduler,
+        save_model_path,
+        n_epochs=0,
 ):
+    """
+
+    Args:
+      model:
+      train_loader:
+      valid_loader:
+      criterion:
+      optimizer:
+      scheduler:
+      save_model_path:
+      n_epochs:
+
+    Returns:
+
+    """
     valid_loss_min = numpy.Inf  # track change in validation loss
     E = tqdm(range(1, n_epochs + 1))
     for epoch in E:
@@ -149,6 +163,17 @@ def train_d(
 
 
 def grid_search(model, probabilities, valid_masks, valid_loader):
+    """
+
+    Args:
+      model:
+      probabilities:
+      valid_masks:
+      valid_loader:
+
+    Returns:
+
+    """
     ## Grid Search for best Threshold
     class_params = {}
 
@@ -219,6 +244,18 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
 
 
 def submission(model, class_params, base_path, batch_size, resized_loc):
+    """
+
+    Args:
+      model:
+      class_params:
+      base_path:
+      batch_size:
+      resized_loc:
+
+    Returns:
+
+    """
     test_loader = DataLoader(
         CloudSegmentationDataset(
             df_path=base_path / "sample_submission.csv",
@@ -236,6 +273,14 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
     ]
 
     def get_black_mask(image_path):
+        """
+
+        Args:
+          image_path:
+
+        Returns:
+
+        """
         img = cv2.imread(image_path)
         img = resize_image_cv(img, (525, 350))
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -284,6 +329,9 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
 
 
 def main():
+    """
+
+    """
     pyplot.style.use("bmh")
 
     base_path = Path.home() / "Data" / "Datasets" / "Clouds"

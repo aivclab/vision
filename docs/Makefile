@@ -4,10 +4,10 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = Neo
+SPHINXPROJ    = NeodroidVision
 SOURCEDIR     = source
-BUILDDIR      = build
-PYCMD 				= python
+BUILDDIR      = ../docs/github
+PYCMD         = python
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -17,7 +17,7 @@ help:
 		@$(PYCMD) source/scripts/compile_images.py
 
 	docset: html
-		doc2dash --name $(SPHINXPROJ) --icon $(SOURCEDIR)/_static/img/neo.logo.png --enable-js --online-redirect-url http://neo.sintefneodroid.github.io/docs/ --force $(BUILDDIR)/html/
+		doc2dash --name $(SPHINXPROJ) --icon $(SOURCEDIR)/_static/img/neo.logo.png --enable-js --online-redirect-url http://neodroidvision.sintefneodroid.github.io/docs/ --force $(BUILDDIR)/html/
 
 		# Manually fix because Zeal doesn't deal well with `icon.png`-only at 2x resolution.
 		cp $(SPHINXPROJ).docset/icon.png $(SPHINXPROJ).docset/icon@2x.png

@@ -3,9 +3,8 @@
 import argparse
 import os
 import time
-
 import torchvision
-from draugr import batch_generator, horizontal_imshow
+from draugr import batch_generator
 from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
@@ -18,6 +17,8 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
 )
+
+from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
@@ -55,6 +56,9 @@ normalise = torchvision.transforms.Normalize(
 
 
 def main():
+    """
+
+    """
     args = argparse.ArgumentParser()
     args.add_argument("--inference", "-i", action="store_true")
     args.add_argument("--continue_training", "-c", action="store_true")

@@ -13,13 +13,13 @@ class PadModeEnum(Enum):
 
 
 def aggregation(
-    input,
-    weight,
-    kernel_size: int = 3,
-    stride: int = 1,
-    padding: int = 0,
-    dilation: int = 1,
-    pad_mode: PadModeEnum = PadModeEnum.ref_pad,
+        input,
+        weight,
+        kernel_size: int = 3,
+        stride: int = 1,
+        padding: int = 0,
+        dilation: int = 1,
+        pad_mode: PadModeEnum = PadModeEnum.ref_pad,
 ):
     """
 
@@ -40,9 +40,9 @@ def aggregation(
     :return:
     :rtype:"""
     assert (
-        input.shape[0] == weight.shape[0]
-        and (input.shape[1] % weight.shape[1] == 0)
-        and pad_mode in [0, 1]
+            input.shape[0] == weight.shape[0]
+            and (input.shape[1] % weight.shape[1] == 0)
+            and pad_mode in [0, 1]
     )
     if input.is_cuda:
         if pad_mode == PadModeEnum.zero_pad:
@@ -59,12 +59,12 @@ def aggregation(
 
 
 def subtraction(
-    input,
-    kernel_size: int = 3,
-    stride: int = 1,
-    padding: int = 0,
-    dilation: int = 1,
-    pad_mode: PadModeEnum = PadModeEnum.ref_pad,
+        input,
+        kernel_size: int = 3,
+        stride: int = 1,
+        padding: int = 0,
+        dilation: int = 1,
+        pad_mode: PadModeEnum = PadModeEnum.ref_pad,
 ):
     """
 
@@ -98,13 +98,13 @@ def subtraction(
 
 
 def subtraction2(
-    input1,
-    input2,
-    kernel_size: int = 3,
-    stride: int = 1,
-    padding: int = 0,
-    dilation: int = 1,
-    pad_mode: PadModeEnum = PadModeEnum.ref_pad,
+        input1,
+        input2,
+        kernel_size: int = 3,
+        stride: int = 1,
+        padding: int = 0,
+        dilation: int = 1,
+        pad_mode: PadModeEnum = PadModeEnum.ref_pad,
 ):
     """
 

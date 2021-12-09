@@ -1,4 +1,8 @@
 #SAN
-cupy
+
+#cupy
+
+#cupy>=9.0.0
+
 # Pointcloud
-polyscope
+polyscope>=0.1.6

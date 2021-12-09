@@ -1,5 +1,3 @@
-from functools import reduce
-
 import numpy
 import torch
 from draugr import (
@@ -7,12 +5,17 @@ from draugr import (
     pil_img_to_np_array,
     pil_merge_images,
 )
+from functools import reduce
 from matplotlib import pyplot
+
 from samples.classification.ram.architecture.ram_modules import GlimpseSensor
 from samples.classification.ram.ram_params import get_ram_config
 
 
 def main():
+    """
+
+    """
     data_dir = get_ram_config()["data_dir"]
 
     # load images

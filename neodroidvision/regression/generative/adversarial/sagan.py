@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 from torch.nn.init import xavier_uniform_
 
 from neodroidvision.utilities.torch_utilities.mechanims.attention import (
@@ -31,6 +31,15 @@ class ConditionalBatchNorm2d(nn.Module):
         self.embed.weight.data[:, num_features:].zero_()  # Initialize bias at 0
 
     def forward(self, x, y):
+        """
+
+        Args:
+          x:
+          y:
+
+        Returns:
+
+        """
         out = self.bn(x)
         gamma, beta = self.embed(y).chunk(2, 1)
         return gamma.reshape(-1, self.num_features, 1, 1) * out + beta.reshape(
@@ -39,6 +48,10 @@ class ConditionalBatchNorm2d(nn.Module):
 
 
 class GenBlock(nn.Module):
+    """
+
+    """
+
     def __init__(self, in_channels, out_channels, num_classes):
         super(GenBlock, self).__init__()
         self.cond_bn1 = ConditionalBatchNorm2d(in_channels, num_classes)
@@ -67,6 +80,15 @@ class GenBlock(nn.Module):
         )
 
     def forward(self, x, labels):
+        """
+
+        Args:
+          x:
+          labels:
+
+        Returns:
+
+        """
         x0 = x
 
         x = self.cond_bn1(x, labels)
@@ -110,6 +132,15 @@ class Generator(nn.Module):
         self.apply(init_weights)
 
     def forward(self, z, labels):
+        """
+
+        Args:
+          z:
+          labels:
+
+        Returns:
+
+        """
         # n x z_dim
         act0 = self.spectral_norm_linear0(z)  # n x g_conv_dim*16*4*4
         act0 = act0.reshape(-1, self.g_conv_dim * 16, 4, 4)  # n x g_conv_dim*16 x 4 x 4
@@ -126,6 +157,10 @@ class Generator(nn.Module):
 
 
 class DiscriminatorOptBlock(nn.Module):
+    """
+
+    """
+
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.spectral_norm_conv2d1 = spectral_norm_conv2d(
@@ -153,6 +188,14 @@ class DiscriminatorOptBlock(nn.Module):
         )
 
     def forward(self, x):
+        """
+
+        Args:
+          x:
+
+        Returns:
+
+        """
         x0 = x
 
         x = self.spectral_norm_conv2d1(x)
@@ -167,6 +210,10 @@ class DiscriminatorOptBlock(nn.Module):
 
 
 class DiscriminatorBlock(nn.Module):
+    """
+
+    """
+
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.relu = nn.ReLU(inplace=True)
@@ -197,6 +244,15 @@ class DiscriminatorBlock(nn.Module):
         )
 
     def forward(self, x, down_sample: bool = True):
+        """
+
+        Args:
+          x:
+          down_sample:
+
+        Returns:
+
+        """
         x0 = x
 
         x = self.relu(x)
@@ -239,6 +295,15 @@ class Discriminator(nn.Module):
         xavier_uniform_(self.spectral_norm_embedding1.weight)
 
     def forward(self, x, labels):
+        """
+
+        Args:
+          x:
+          labels:
+
+        Returns:
+
+        """
         # n x 3 x 128 x 128
         h0 = self.opt_block1(x)  # n x d_conv_dim   x 64 x 64
         h1 = self.block1(h0)  # n x d_conv_dim*2 x 32 x 32

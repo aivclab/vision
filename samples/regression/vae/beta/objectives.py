@@ -9,6 +9,15 @@ Objective functions for beta vae's
 
 
 def reconstruction_loss(reconstruction, original):
+    """
+
+    Args:
+      reconstruction:
+      original:
+
+    Returns:
+
+    """
     batch_size = original.size(0)
     assert batch_size != 0
 
@@ -23,6 +32,15 @@ def reconstruction_loss(reconstruction, original):
 
 
 def kl_divergence(mean, log_var):
+    """
+
+    Args:
+      mean:
+      log_var:
+
+    Returns:
+
+    """
     batch_size = mean.size(0)
     assert batch_size != 0
     if mean.data.ndimension() == 4:

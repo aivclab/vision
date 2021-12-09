@@ -1,9 +1,8 @@
 from enum import Enum
 from typing import List, Union
 
-import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor
+from torch import Tensor, nn
 
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
@@ -12,6 +11,10 @@ from neodroidvision.utilities.torch_utilities import L2Norm
 
 
 class VGG(SSDBackbone):
+    """
+
+    """
+
     class VggSize(Enum):
         s300 = "300"
         s512 = "512"
@@ -63,6 +66,16 @@ class VGG(SSDBackbone):
 
     @staticmethod
     def add_vgg(cfg, batch_norm: bool = False, *, in_channels: int = 3):
+        """
+
+        Args:
+          cfg:
+          batch_norm:
+          in_channels:
+
+        Returns:
+
+        """
         layers = []
 
         for v in cfg:
@@ -142,9 +155,22 @@ class VGG(SSDBackbone):
         self.reset_parameters()
 
     def init_from_pretrain(self, state_dict):
+        """
+
+        Args:
+          state_dict:
+        """
         self.vgg.load_state_dict(state_dict)
 
     def forward(self, x: Tensor) -> List[Tensor]:
+        """
+
+        Args:
+          x:
+
+        Returns:
+
+        """
         features = []
 
         for i in range(23):

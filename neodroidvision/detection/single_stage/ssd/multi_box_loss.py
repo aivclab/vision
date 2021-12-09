@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from typing import Tuple
-
 import torch
 from torch import nn
 from torch.nn import functional
+from typing import Tuple
 from warg import Number
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
@@ -33,11 +32,11 @@ class MultiBoxLoss(nn.Module):
         self._neg_pos_ratio = neg_pos_ratio
 
     def forward(
-        self,
-        confidence: torch.Tensor,
-        predicted_locations: torch.Tensor,
-        labels: torch.Tensor,
-        gt_locations: torch.Tensor,
+            self,
+            confidence: torch.Tensor,
+            predicted_locations: torch.Tensor,
+            labels: torch.Tensor,
+            gt_locations: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute classification loss and smooth l1 loss.
 

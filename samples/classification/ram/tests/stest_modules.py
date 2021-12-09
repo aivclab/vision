@@ -1,6 +1,6 @@
 import sys
-
 from draugr import pil_img_to_np_array
+
 from samples.classification.ram.architecture.ram_modules import (
     Actor,
     CoreRNN,

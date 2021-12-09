@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from pathlib import Path
-
 import torch
 from PIL import Image
+from pathlib import Path
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -43,6 +42,9 @@ from warg import GDKC
 if __name__ == "__main__":
 
     def main():
+        """
+
+        """
         dataset_root = Path.home() / "Data"
         base_path = ensure_existence(PROJECT_APP_PATH.user_data / "maskrcnn")
         log_path = ensure_existence(PROJECT_APP_PATH.user_log / "maskrcnn")
@@ -83,7 +85,7 @@ if __name__ == "__main__":
         )
 
         data_loader_val = DataLoader(
-            Subset(dataset_validation, split_indices[-split.validation_num :]),
+            Subset(dataset_validation, split_indices[-split.validation_num:]),
             batch_size=1,
             shuffle=False,
             num_workers=num_workers,
@@ -162,5 +164,6 @@ if __name__ == "__main__":
                 )
 
                 cv2.waitKey()
+
 
     main()

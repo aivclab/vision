@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Tuple
-
 import numpy
+from typing import Tuple
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 from neodroidvision.regression.vae.architectures.vae import VAE
 
@@ -51,8 +50,21 @@ class HigginsVae(VAE):
 
     @staticmethod
     def conv_module(
-        in_channels, out_channels, kernel_size=4, stride=2, padding=1, **conv_kwargs
+            in_channels, out_channels, kernel_size=4, stride=2, padding=1, **conv_kwargs
     ):
+        """
+
+        Args:
+          in_channels:
+          out_channels:
+          kernel_size:
+          stride:
+          padding:
+          **conv_kwargs:
+
+        Returns:
+
+        """
         return nn.Sequential(
             nn.Conv2d(
                 in_channels,
@@ -68,8 +80,21 @@ class HigginsVae(VAE):
 
     @staticmethod
     def deconv_module(
-        in_channels, out_channels, kernel_size=4, stride=2, padding=1, **convt_kwargs
+            in_channels, out_channels, kernel_size=4, stride=2, padding=1, **convt_kwargs
     ):
+        """
+
+        Args:
+          in_channels:
+          out_channels:
+          kernel_size:
+          stride:
+          padding:
+          **convt_kwargs:
+
+        Returns:
+
+        """
         return nn.Sequential(
             nn.ConvTranspose2d(
                 in_channels,
@@ -84,15 +109,39 @@ class HigginsVae(VAE):
         )
 
     def encode(self, *x) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+
+        Args:
+          *x:
+
+        Returns:
+
+        """
         x = self.encoder(*x)
         return self.fc_mean(x), self.fc_std(x)
 
     def decode(self, *z) -> torch.Tensor:
+        """
+
+        Args:
+          *z:
+
+        Returns:
+
+        """
         out = self.decoder(*z)
         out = torch.sigmoid(out)
         return out
 
     def forward(self, x) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """
+
+        Args:
+          x:
+
+        Returns:
+
+        """
         mu, log_var = self.encode(x)
         z = self.reparameterise(mu, log_var)
         reconstruction = self.decode(z)

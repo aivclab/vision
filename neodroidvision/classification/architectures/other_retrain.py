@@ -11,7 +11,7 @@ __all__ = ["other_retrain"]
 
 
 def other_retrain(
-    arch: str, model: torch.nn.Module, num_classes: int
+        arch: str, model: torch.nn.Module, num_classes: int
 ) -> torch.nn.Module:
     """
     Inplace op but returns the model anyway

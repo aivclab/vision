@@ -1,17 +1,23 @@
+import numpy
 import os
 import pickle
-from pathlib import Path
 
 import numpy
-from draugr import (
-    denormalise_minusoneone,
-    matplotlib_bounding_box,
-)
+
+from draugr.visualisation import denormalise_minusoneone, matplotlib_bounding_box
 from matplotlib import animation, pyplot
+from pathlib import Path
+
 from samples.classification.ram.ram_params import get_ram_config
 
 
 def main(plot_dir: Path, epoch=None):
+    """
+
+    Args:
+      plot_dir:
+      epoch:
+    """
     if epoch is None:
         list_of_files = list(plot_dir.rglob("*.p"))
         lastest_model_path = max(list_of_files, key=os.path.getctime)
@@ -41,6 +47,11 @@ def main(plot_dir: Path, epoch=None):
         ax.get_yaxis().set_visible(False)
 
     def update_data(i):
+        """
+
+        Args:
+          i:
+        """
         color = "r"
         co = coords[i]
         for j, ax in enumerate(axs.flat):

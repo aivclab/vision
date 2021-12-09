@@ -1,15 +1,14 @@
 import cv2
 import dlib
 from draugr.opencv_utilities import AsyncVideoStream
-from draugr.opencv_utilities.dlib_utilities import (
-    dlib68FacialLandmarksIndices,
-    mouth_aspect_ratio,
-    shape_to_ndarray,
-)
+from draugr.opencv_utilities.dlib import Dlib68faciallandmarksindices, shape_to_ndarray, mouth_aspect_ratio
 
 if __name__ == "__main__":
 
     def asd():
+        """
+
+        """
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
         cv2.namedWindow("test")
@@ -18,8 +17,8 @@ if __name__ == "__main__":
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             for rect_i, rect in enumerate(detector(gray, upsample_num_times)):
                 shape = predictor(gray, rect)
-                mouth = dlib68FacialLandmarksIndices.slice(
-                    shape_to_ndarray(shape), dlib68FacialLandmarksIndices.mouth
+                mouth = Dlib68faciallandmarksindices.slice(
+                    shape_to_ndarray(shape), Dlib68faciallandmarksindices.mouth
                 )
                 mar = mouth_aspect_ratio(mouth)
                 mouth_hull = cv2.convexHull(mouth)
@@ -61,5 +60,6 @@ if __name__ == "__main__":
                 break
 
         cv2.destroyAllWindows()
+
 
     asd()

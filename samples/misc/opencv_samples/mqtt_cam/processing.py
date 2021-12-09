@@ -1,13 +1,12 @@
 import time
-
 from draugr.python_utilities.datetimes import now_repr
 from draugr.visualisation.pillow_utilities import (
     byte_array_to_pil_image,
     pil_image_to_byte_array,
 )
-from samples.misc.opencv_samples.mqtt_cam.mqtt_callbacks import get_mqtt_client
 
 from config import MQTT_CAM_CONFIG
+from samples.misc.opencv_samples.mqtt_cam.mqtt_callbacks import get_mqtt_client
 
 MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]
 MQTT_PORT = MQTT_CAM_CONFIG["mqtt"]["port"]
@@ -21,6 +20,13 @@ ROTATE_ANGLE = 45  # Angle of rotation in degrees to apply
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    """
+
+    Args:
+      client:
+      userdata:
+      msg:
+    """
     now = now_repr()
     print("message on " + str(msg.topic) + f" at {now}")
     try:
@@ -36,6 +42,9 @@ def on_message(client, userdata, msg):
 
 
 def main():
+    """
+
+    """
     client = get_mqtt_client()
     client.on_message = on_message
     client.connect(MQTT_BROKER, port=MQTT_PORT)

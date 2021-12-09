@@ -9,20 +9,23 @@ __doc__ = r"""
 
 __all__ = ["PairRankingSiamese"]
 
-from typing import Tuple, Union
-
 import torch
 from draugr.torch_utilities import conv2d_hw_shape, pad2d_hw_shape
 from numpy import product
 from torch import nn
+from typing import Tuple, Union
 
 
 class PairRankingSiamese(nn.Module):
+    """
+
+    """
+
     def __init__(
-        self,
-        in_size: Union[int, Tuple[int, int]] = (105, 105),
-        output_size: int = 1,
-        input_channels: int = 1,
+            self,
+            in_size: Union[int, Tuple[int, int]] = (105, 105),
+            output_size: int = 1,
+            input_channels: int = 1,
     ):
         super().__init__()
 
@@ -72,7 +75,15 @@ class PairRankingSiamese(nn.Module):
         )
 
     def forward(self, anchor: torch.Tensor, other: torch.Tensor) -> torch.Tensor:
+        """
 
+        Args:
+          anchor:
+          other:
+
+        Returns:
+
+        """
         if self.concat_merge:
             dist = torch.cat((self.mapping(anchor), self.mapping(other)), 1)
         else:

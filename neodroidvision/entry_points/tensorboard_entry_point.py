@@ -5,10 +5,15 @@ from shutil import rmtree
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from draugr.stopping import IgnoreInterruptSignal
+from draugr import IgnoreInterruptSignal
 
 
-def main(keep_alive=True):
+def main(keep_alive: bool = True) -> str:
+    """
+
+    Args:
+      keep_alive:
+    """
     from draugr.torch_utilities.writers.tensorboard.launcher import launch_tensorboard
     from time import sleep
 
@@ -36,6 +41,16 @@ def main(keep_alive=True):
             rmtree(log_dir)
         else:
             PROJECT_APP_PATH.user_log.mkdir()
+
+    address = launch_tensorboard(log_dir, args.port)
+
+    if keep_alive:
+        print(f"tensorboard address: {address} for log_dir {log_dir}")
+        with IgnoreInterruptSignal():
+            while True:
+                sleep(100)
+    else:
+        PROJECT_APP_PATH.user_log.mkdir()
 
     address = launch_tensorboard(log_dir, args.port)
 

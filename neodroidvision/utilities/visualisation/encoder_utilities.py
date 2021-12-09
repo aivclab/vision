@@ -8,9 +8,12 @@ from imageio import imwrite
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
+from warg import Number
 
-def compile_encoding_image(images, size, resize_factor=1.0):
+
+def compile_encoding_image(images, size, resize_factor: Number = 1.0):
     """
+
 
     :param images:
     :param size:
@@ -31,7 +34,7 @@ def compile_encoding_image(images, size, resize_factor=1.0):
             Image.fromarray(image).resize((w_, h_), resampe=Image.BICUBIC)
         )
 
-        img[j * h_ : j * h_ + h_, i * w_ : i * w_ + w_] = image_
+        img[j * h_: j * h_ + h_, i * w_: i * w_ + w_] = image_
 
     return img
 
@@ -45,8 +48,8 @@ def sample_2d_latent_vectors(encoding_space, n_img_x, n_img_y):
     :return:"""
     vectors = numpy.rollaxis(
         numpy.mgrid[
-            encoding_space : -encoding_space : n_img_y * 1j,
-            encoding_space : -encoding_space : n_img_x * 1j,
+        encoding_space: -encoding_space: n_img_y * 1j,
+        encoding_space: -encoding_space: n_img_x * 1j,
         ],
         0,
         3,
@@ -56,7 +59,14 @@ def sample_2d_latent_vectors(encoding_space, n_img_x, n_img_y):
 
 
 def plot_manifold(
-    model, out_path, n_img_x=20, n_img_y=20, img_h=28, img_w=28, sample_range=1
+
+        model,
+        out_path,
+        n_img_x: int = 20,
+        n_img_y: int = 20,
+        img_h: int = 28,
+        img_w: int = 28,
+        sample_range: Number = 1,
 ):
     """
 

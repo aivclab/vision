@@ -1,5 +1,9 @@
 import functools
+
+from pathlib import Path
 from typing import Sequence, Tuple, Union
+
+import PIL
 
 import numpy
 import six
@@ -7,6 +11,7 @@ import tensorflow
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 from attr import dataclass
 from matplotlib import pyplot
+from typing import Sequence, Tuple, Union
 from warg.mixins.dict_mixins import IterDictValuesMixin
 
 __author__ = "Christian Heider Nielsen"
@@ -26,12 +31,12 @@ class BoundingBoxCoordinatesSpec(IterDictValuesMixin):
     y_max = 0
 
     """
-def __init__(self,x_min,y_min,x_max,y_max):
-self.x_min = x_min
-self.y_min = y_min
-self.x_max = x_max
-self.y_max = y_max
-"""
+  def __init__(self,x_min,y_min,x_max,y_max):
+  self.x_min = x_min
+  self.y_min = y_min
+  self.x_max = x_max
+  self.y_max = y_max
+  """
 
 
 @dataclass
@@ -181,25 +186,27 @@ STANDARD_COLORS = [
 ]
 
 
-def save_image_array_as_png(image, output_path):
+def save_image_array_as_png(image: PIL.Image, output_path: Path) -> None:
     """Saves an image (represented as a numpy array) to PNG.
 
     Args:
     image: a numpy array with shape [height, width, 3].
-    output_path: path to which image should be written."""
+    output_path: path to which image should be written.
+    """
     image_pil = Image.fromarray(numpy.uint8(image)).convert("RGB")
     with tensorflow.gfile.Open(output_path, "w") as fid:
         image_pil.save(fid, "PNG")
 
 
-def encode_image_array_as_png_str(image):
+def encode_image_array_as_png_str(image: PIL.Image) -> bytes:
     """Encodes a numpy array into a PNG string.
 
     Args:
     image: a numpy array with shape [height, width, 3].
 
     Returns:
-    PNG encoded image string."""
+    PNG encoded image string.
+    """
     image_pil = Image.fromarray(numpy.uint8(image))
     output = six.BytesIO()
     image_pil.save(output, format="PNG")
@@ -209,36 +216,37 @@ def encode_image_array_as_png_str(image):
 
 
 def draw_bounding_box_on_image_array(
-    image,
-    y_min,
-    x_min,
-    y_max,
-    x_max,
-    labels=(),
-    *,
-    color="red",
-    thickness=2,
-    use_normalized_coordinates=True,
-    mode="RGBA",
+        image: numpy.ndarray,
+        y_min: int,
+        x_min: int,
+        y_max: int,
+        x_max: int,
+        labels: tuple = (),
+        *,
+        color: str = "red",
+        thickness: int = 2,
+        use_normalized_coordinates: bool = True,
+        mode: str = "RGBA",
 ) -> None:
     """Adds a bounding box to an image (numpy array).
 
-    Bounding box coordinates can be specified in either absolute (pixel) or
-    normalized coordinates by setting the use_normalized_coordinates argument.
+  Bounding box coordinates can be specified in either absolute (pixel) or
+  normalized coordinates by setting the use_normalized_coordinates argument.
 
-    Args:
-    image: a numpy array with shape [height, width, 3].
-    y_min: y_min of bounding box.
-    x_min: x_min of bounding box.
-    y_max: y_max of bounding box.
-    x_max: x_max of bounding box.
-    color: color to draw bounding box. Default is red.
-    thickness: line thickness. Default value is 2.
-    labels: list of strings to display in box
-                (each to be shown on its own line).
-    use_normalized_coordinates: If True (default), treat coordinates
-    y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
-    coordinates as absolute."""
+  Args:
+  image: a numpy array with shape [height, width, 3].
+  y_min: y_min of bounding box.
+  x_min: x_min of bounding box.
+  y_max: y_max of bounding box.
+  x_max: x_max of bounding box.
+  color: color to draw bounding box. Default is red.
+  thickness: line thickness. Default value is 2.
+  labels: list of strings to display in box
+              (each to be shown on its own line).
+  use_normalized_coordinates: If True (default), treat coordinates
+  y_min, x_min, y_max, x_max as relative to the image.  Otherwise treat
+  coordinates as absolute."""
+
     image_pil = Image.fromarray(image, mode=mode)
     draw_bounding_box_on_image(
         image_pil,
@@ -255,18 +263,18 @@ def draw_bounding_box_on_image_array(
 
 
 def draw_bounding_box_on_image(
-    image,
-    x_min,
-    y_min,
-    x_max,
-    y_max,
-    labels=(),
-    *,
-    line_color="red",
-    thickness=2,
-    use_normalized_coordinates=True,
-    label_inside=True,
-    text_color="black",
+        image,
+        x_min,
+        y_min,
+        x_max,
+        y_max,
+        labels=(),
+        *,
+        line_color="red",
+        thickness=2,
+        use_normalized_coordinates=True,
+        label_inside=True,
+        text_color="black",
 ):
     """Adds a bounding box to an image.
 
@@ -364,7 +372,7 @@ def draw_bounding_box_on_image(
 
 
 def draw_bounding_boxes_on_image_array(
-    image, boxes, labels=None, *, color="red", thickness=2, mode="RGBA"
+        image, boxes, labels=None, *, color="red", thickness=2, mode="RGBA"
 ) -> None:
     """Draws bounding boxes on image (numpy array).
 
@@ -390,7 +398,7 @@ def draw_bounding_boxes_on_image_array(
 
 
 def draw_bounding_boxes_on_image(
-    image, boxes, labels_iterable=None, *, color="red", thickness=2
+        image, boxes, labels_iterable=None, *, color="red", thickness=2
 ):
     """Draws bounding boxes on image.
 
@@ -436,7 +444,7 @@ def _visualize_boxes(image, boxes, classes, scores, category_index, **kwargs):
 
 
 def _visualize_boxes_and_masks(
-    image, boxes, classes, scores, masks, category_index, **kwargs
+        image, boxes, classes, scores, masks, category_index, **kwargs
 ):
     return visualize_boxes_and_labels_on_image_array(
         image,
@@ -450,7 +458,7 @@ def _visualize_boxes_and_masks(
 
 
 def _visualize_boxes_and_keypoints(
-    image, boxes, classes, scores, keypoints, category_index, **kwargs
+        image, boxes, classes, scores, keypoints, category_index, **kwargs
 ):
     return visualize_boxes_and_labels_on_image_array(
         image,
@@ -464,7 +472,7 @@ def _visualize_boxes_and_keypoints(
 
 
 def _visualize_boxes_and_masks_and_keypoints(
-    image, boxes, classes, scores, masks, keypoints, category_index, **kwargs
+        image, boxes, classes, scores, masks, keypoints, category_index, **kwargs
 ):
     return visualize_boxes_and_labels_on_image_array(
         image,
@@ -479,16 +487,16 @@ def _visualize_boxes_and_masks_and_keypoints(
 
 
 def draw_bounding_boxes_on_image_tensors(
-    images,
-    boxes,
-    classes,
-    scores,
-    category_index,
-    instance_masks=None,
-    keypoints=None,
-    max_boxes_to_draw=20,
-    min_score_thresh=0.2,
-    line_thickness=2,
+        images,
+        boxes,
+        classes,
+        scores,
+        category_index,
+        instance_masks=None,
+        keypoints=None,
+        max_boxes_to_draw=20,
+        min_score_thresh=0.2,
+        line_thickness=2,
 ):
     """Draws bounding boxes, masks, and keypoints on batch of image tensors.
 
@@ -563,12 +571,12 @@ def draw_bounding_boxes_on_image_tensors(
 
 
 def draw_keypoints_on_image_array(
-    image,
-    keypoints,
-    color="red",
-    radius=2,
-    use_normalized_coordinates=True,
-    mode="RGBA",
+        image,
+        keypoints,
+        color="red",
+        radius=2,
+        use_normalized_coordinates=True,
+        mode="RGBA",
 ):
     """Draws keypoints on an image (numpy array).
 
@@ -593,7 +601,7 @@ def draw_keypoints_on_image_array(
 
 
 def draw_keypoints_on_image(
-    image, keypoints, color="red", radius=2, use_normalized_coordinates=True
+        image, keypoints, color="red", radius=2, use_normalized_coordinates=True
 ):
     """Draws keypoints on an image.
 
@@ -663,12 +671,12 @@ def draw_mask_on_image_array(image, mask, color="red", alpha=0.4, mode="RGBA"):
 
 
 def visualize_boxes_and_labels_on_image_array(
-    image,
-    bounding_boxes: Sequence[BoundingBoxSpec],
-    use_normalized_coordinates=True,
-    max_boxes_to_draw=20,
-    min_score_thresh=0.5,
-    line_thickness=2,
+        image,
+        bounding_boxes: Sequence[BoundingBoxSpec],
+        use_normalized_coordinates=True,
+        max_boxes_to_draw=20,
+        min_score_thresh=0.5,
+        line_thickness=2,
 ):
     """Overlay labeled boxes on an image with formatted scores and label names.
 
@@ -764,8 +772,8 @@ def add_cdf_image_summary(values, name):
         sorted_values = numpy.sort(normalized_values)
         cumulative_values = numpy.cumsum(sorted_values)
         fraction_of_examples = (
-            numpy.arange(cumulative_values.size, dtype=numpy.float32)
-            / cumulative_values.size
+                numpy.arange(cumulative_values.size, dtype=numpy.float32)
+                / cumulative_values.size
         )
         fig = pyplot.figure(frameon=False)
         ax = fig.add_subplot("111")
@@ -813,9 +821,10 @@ def add_hist_image_summary(values, bins, name):
 
 
 if __name__ == "__main__":
-
     def main():
+        """
 
+        """
         im = numpy.random.rand(256, 256, 4)
         bb = numpy.array(
             [
@@ -835,5 +844,6 @@ if __name__ == "__main__":
         # visualize_boxes_and_labels_on_image_array(im, bs)
         pyplot.imshow(im)
         pyplot.show()
+
 
     main()

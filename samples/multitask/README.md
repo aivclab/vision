@@ -1,6 +1,6 @@
 # Multitask Samples
 
-Investigation
+## Investigation
 
 - No Gradient fusion (ordered iterative update)
 - Earle Gradient fusion

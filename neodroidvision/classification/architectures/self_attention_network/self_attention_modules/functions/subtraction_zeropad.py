@@ -12,8 +12,8 @@ from .self_attention_utilities import (
 )
 
 _subtraction_zeropad_forward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void subtraction_zeropad_forward_kernel(
 const ${Dtype}* bottom_data, ${Dtype}* top_data) {
@@ -47,8 +47,8 @@ const ${Dtype}* bottom_data, ${Dtype}* top_data) {
 )
 
 _subtraction_zeropad_input_backward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void subtraction_zeropad_input_backward_kernel(
     const ${Dtype}* const top_diff, ${Dtype}* bottom_diff) {
@@ -96,6 +96,19 @@ __all__ = ["SubtractionZeropad", "subtraction_zeropad"]
 class SubtractionZeropad(Function):
     @staticmethod
     def forward(ctx, input, kernel_size, stride, padding, dilation):
+        """
+
+        Args:
+          ctx:
+          input:
+          kernel_size:
+          stride:
+          padding:
+          dilation:
+
+        Returns:
+
+        """
         kernel_size, stride, padding, dilation = (
             _pair(kernel_size),
             _pair(stride),
@@ -159,6 +172,15 @@ class SubtractionZeropad(Function):
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+
+        Args:
+          ctx:
+          grad_output:
+
+        Returns:
+
+        """
         kernel_size, stride, padding, dilation = (
             ctx.kernel_size,
             ctx.stride,
@@ -218,6 +240,18 @@ class SubtractionZeropad(Function):
 
 
 def subtraction_zeropad(input, kernel_size=3, stride=1, padding=0, dilation=1):
+    """
+
+    Args:
+      input:
+      kernel_size:
+      stride:
+      padding:
+      dilation:
+
+    Returns:
+
+    """
     assert input.dim() == 4
     if input.is_cuda:
         out = SubtractionZeropad.apply(input, kernel_size, stride, padding, dilation)
@@ -227,7 +261,6 @@ def subtraction_zeropad(input, kernel_size=3, stride=1, padding=0, dilation=1):
 
 
 if __name__ == "__main__":
-
     def test_subtraction_zeropad():
         import os
 
@@ -280,5 +313,6 @@ if __name__ == "__main__":
             x,
         )
         print("test case passed")
+
 
     test_subtraction_zeropad()

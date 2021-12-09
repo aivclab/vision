@@ -14,7 +14,7 @@ from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
 
 def get_pretrained_instance_segmentation_maskrcnn(
-    num_categories: int, hidden_layer: int = 256
+        num_categories: int, hidden_layer: int = 256
 ) -> Module:
     """
     load an instance segmentation model pre-trained on COCO

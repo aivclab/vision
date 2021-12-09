@@ -1,9 +1,7 @@
 import copy
+import numpy
 import string
 import time
-from pathlib import Path
-
-import numpy
 import torch
 import tqdm
 from draugr.numpy_utilities import Split
@@ -18,15 +16,13 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
 )
+from draugr.visualisation import confusion_matrix_plot
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
+from pathlib import Path
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
-
-from neodroidvision.data.neodroid_environments.classification.data import (
-    default_torch_retransform,
-)
 
 __all__ = ["test_model", "pred_target_train_model"]
 
@@ -119,17 +115,34 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
 
 def pred_target_train_model(
-    model,
-    train_iterator,
-    criterion,
-    optimizer,
-    scheduler,
-    writer,
-    interrupted_path,
-    test_data_iterator=None,
-    num_updates: int = 250000,
-    early_stop=None,
+        model,
+        train_iterator,
+        criterion,
+        optimizer,
+        scheduler,
+        writer,
+        interrupted_path,
+        test_data_iterator=None,
+        num_updates: int = 250000,
+        early_stop=None,
 ) -> torch.nn.Module:
+    """
+
+    Args:
+      model:
+      train_iterator:
+      criterion:
+      optimizer:
+      scheduler:
+      writer:
+      interrupted_path:
+      test_data_iterator:
+      num_updates:
+      early_stop:
+
+    Returns:
+
+    """
     best_model_wts = copy.deepcopy(model.state_dict())
     best_val_loss = 1e10
     since = time.time()

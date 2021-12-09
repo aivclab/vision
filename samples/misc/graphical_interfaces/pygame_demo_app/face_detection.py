@@ -3,12 +3,13 @@
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
-           """
+            pip install opencv-python opencv-contrib-python -U
 
-import time
+           """
 
 import cv2
 import pygame
+import time
 from pygame import camera
 
 FACE_HAAR = cv2.CascadeClassifier(
@@ -84,9 +85,9 @@ if __name__ == "__main__":
 
     pygame.init()  # Initialize pygame
     camera.init()  # Initialize camera
-
+    cameras = pygame.camera.list_cameras()
     # Load camera source then start
-    cam = camera.Camera("/dev/video0", SCREEN)
+    cam = camera.Camera(cameras[0], SCREEN)
     cam.start()
 
     while 1:  # Ze loop
@@ -98,10 +99,10 @@ if __name__ == "__main__":
         cv_image = pygame_to_cvimage(image)  # Create cv image from pygame image
 
         points = (
-            detect_eyes(cv_image)
-            + detect_nose(cv_image)
-            + detect_mouth(cv_image)
-            + detect_faces(cv_image)
+                detect_eyes(cv_image)
+                + detect_nose(cv_image)
+                + detect_mouth(cv_image)
+                + detect_faces(cv_image)
         )  # Get points of faces.
 
         cv_image = draw_from_points(cv_image, points)  # Draw points

@@ -7,9 +7,12 @@ __doc__ = r"""
            Created on 23/03/2020
            """
 
+import torch
+
 import typing
 
-import torch
+from draugr.writers import Writer
+
 from torch import distributed as dist
 
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
@@ -20,7 +23,8 @@ __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 
 
 def write_metrics_recursive(
-    eval_result, prefix: str, summary_writer, global_step: int
+
+        eval_result: typing.Mapping, prefix: str, summary_writer: Writer, global_step: int
 ) -> None:
     for key in eval_result:
         value = eval_result[key]
@@ -28,7 +32,7 @@ def write_metrics_recursive(
         if isinstance(value, typing.Mapping):
             write_metrics_recursive(value, tag, summary_writer, global_step)
         else:
-            summary_writer.add_scalar(tag, value, global_step=global_step)
+            summary_writer.scalar(tag, value, step_i=global_step)
 
 
 def reduce_loss_dict(loss_dict: dict) -> dict:

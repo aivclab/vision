@@ -11,7 +11,7 @@ __doc__ = r"""
 https://github.com/ikostrikov/pytorch-flows"""
 import numpy
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.nn import functional as F
 
 
@@ -34,6 +34,15 @@ class InverseAutoregressiveFlow(nn.Module):
         self.log_sigmoid = nn.LogSigmoid()
 
     def forward(self, input, context=None):
+        """
+
+        Args:
+          input:
+          context:
+
+        Returns:
+
+        """
         m, s = torch.chunk(self.made(input, context), chunks=2, dim=-1)
         s = s + self.sigmoid_arg_bias
         sigmoid = self.sigmoid(s)
@@ -45,6 +54,15 @@ class FlowSequential(nn.Sequential):
     """Forward pass."""
 
     def forward(self, input, context=None):
+        """
+
+        Args:
+          input:
+          context:
+
+        Returns:
+
+        """
         total_log_prob = torch.zeros_like(input, device=input.device)
         for block in self._modules.values():
             input, log_prob = block(input, context)
@@ -56,7 +74,7 @@ class MaskedLinear(nn.Module):
     """Linear layer with some input-output connections masked."""
 
     def __init__(
-        self, in_features, out_features, mask, context_features=None, bias=True
+            self, in_features, out_features, mask, context_features=None, bias=True
     ):
         super().__init__()
         self.linear = nn.Linear(in_features, out_features, bias)
@@ -65,6 +83,15 @@ class MaskedLinear(nn.Module):
             self.cond_linear = nn.Linear(context_features, out_features, bias=False)
 
     def forward(self, input, context=None):
+        """
+
+        Args:
+          input:
+          context:
+
+        Returns:
+
+        """
         output = F.linear(input, self.mask * self.linear.weight, self.linear.bias)
         if context is None:
             return output
@@ -113,7 +140,7 @@ class MADE(nn.Module):
                 # assign output layer units a number between 1 and D
                 m = numpy.arange(1, num_input + 1)
                 assert (
-                    num_output % num_input == 0
+                        num_output % num_input == 0
                 ), "num_output must be multiple of num_input"
                 self._m.append(
                     numpy.hstack([m for _ in range(num_output // num_input)])
@@ -145,11 +172,20 @@ class MADE(nn.Module):
             assert numpy.triu(final).all() == 0
         else:
             for submat in numpy.split(
-                final, indices_or_sections=num_output // num_input, axis=1
+                    final, indices_or_sections=num_output // num_input, axis=1
             ):
                 assert numpy.triu(submat).all() == 0
 
     def forward(self, input, context=None):
+        """
+
+        Args:
+          input:
+          context:
+
+        Returns:
+
+        """
         # first hidden layer receives input and context
         hidden = self.input_context_net(input, context)
         # rest of the network is conditioned on both input and context
@@ -169,6 +205,16 @@ class Reverse(nn.Module):
         self.inv_perm = numpy.argsort(self.perm)
 
     def forward(self, inputs, context=None, mode="forward"):
+        """
+
+        Args:
+          inputs:
+          context:
+          mode:
+
+        Returns:
+
+        """
         if mode == "forward":
             return (
                 inputs[..., self.perm],

@@ -28,7 +28,7 @@ def area_of_tensors(left_top: torch.Tensor, right_bottom: torch.Tensor) -> torch
 
 
 def iou_of_tensors(
-    boxes0: torch.Tensor, boxes1: torch.Tensor, eps: float = 1e-5
+        boxes0: torch.Tensor, boxes1: torch.Tensor, eps: float = 1e-5
 ) -> torch.Tensor:
     """Return intersection-over-union (Jaccard index) of boxes.
 
@@ -48,7 +48,7 @@ def iou_of_tensors(
 
 
 def hard_negative_mining(
-    loss: torch.Tensor, labels: torch.Tensor, neg_pos_ratio: float
+        loss: torch.Tensor, labels: torch.Tensor, neg_pos_ratio: float
 ) -> torch.Tensor:
     """
     It used to suppress the presence of a large number of negative prediction.

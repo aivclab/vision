@@ -9,7 +9,7 @@ from matplotlib import pyplot
 
 
 def scatter_plot_encoding_space(
-    out_path, mean, log_var, labels, encoding_space_range=1, min_size_constant=2, N=10
+        out_path, mean, log_var, labels, encoding_space_range=1, min_size_constant=2, N=10
 ):
     """
 

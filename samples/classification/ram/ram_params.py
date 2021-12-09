@@ -1,6 +1,5 @@
 import argparse
 from pathlib import Path
-
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
@@ -10,10 +9,26 @@ parser = argparse.ArgumentParser(description="RAM")
 
 
 def str2bool(v):
+    """
+
+    Args:
+      v:
+
+    Returns:
+
+    """
     return v.lower() in ("true", "1")
 
 
 def add_argument_group(name):
+    """
+
+    Args:
+      name:
+
+    Returns:
+
+    """
     arg = parser.add_argument_group(name)
     arg_lists.append(arg)
     return arg
@@ -148,6 +163,11 @@ misc_arg.add_argument(
 
 
 def get_ram_config():
+    """
+
+    Returns:
+
+    """
     config, unparsed = parser.parse_known_args()
 
     ram_base = "ram"

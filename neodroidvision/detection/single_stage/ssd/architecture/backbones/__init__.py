@@ -19,6 +19,15 @@ __all__ = ["efficient_net_b3_factory", "vgg_factory", "mobilenet_v2_factory"]
 
 
 def efficient_net_b3_factory(image_size, pretrained=True):
+    """
+
+    Args:
+      image_size:
+      pretrained:
+
+    Returns:
+
+    """
     if pretrained:
         model = EfficientNet.from_pretrained("efficientnet-b3")
     else:
@@ -27,6 +36,15 @@ def efficient_net_b3_factory(image_size, pretrained=True):
 
 
 def vgg_factory(IMAGE_SIZE, pretrained=True):
+    """
+
+    Args:
+      IMAGE_SIZE:
+      pretrained:
+
+    Returns:
+
+    """
     model = VGG(IMAGE_SIZE)
     if pretrained:
         model.init_from_pretrain(
@@ -38,6 +56,15 @@ def vgg_factory(IMAGE_SIZE, pretrained=True):
 
 
 def mobilenet_v2_factory(image_size, pretrained=True):
+    """
+
+    Args:
+      image_size:
+      pretrained:
+
+    Returns:
+
+    """
     model = MobileNetV2(image_size)
     if pretrained:
         model.load_state_dict(

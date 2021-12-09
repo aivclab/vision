@@ -18,11 +18,18 @@ import random
 from neodroidvision import PROJECT_APP_PATH
 
 
-def evaluate(generator, evaluation_data, ddevice):
+def evaluate(generator, evaluation_data, device):
+    """
+
+      Args:
+        generator:
+        evaluation_data:
+        device:
+      """
     generator.eval()
     for batch in evaluation_data:
-        x = batch[0].to(ddevice)
-        z = torch.randn(cfg.latent_size, device=ddevice)
+        x = batch[0].to(device)
+        z = torch.randn(cfg.latent_size, device=device)
         log_p_x_and_z, logits = generator(z, x)
         print(log_p_x_and_z)
 

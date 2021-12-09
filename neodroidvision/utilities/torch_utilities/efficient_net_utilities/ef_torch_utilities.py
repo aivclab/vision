@@ -1,4 +1,5 @@
 import math
+from typing import Any
 
 import torch
 
@@ -7,7 +8,7 @@ __all__ = ["round_filters", "round_repeats", "drop_connect"]
 from warg import Number
 
 
-def round_filters(filters: Number, global_params: object) -> int:
+def round_filters(filters: Number, global_params: Any) -> int:
     """Calculate and round number of filters based on depth multiplier."""
     multiplier = global_params.width_coefficient
     if not multiplier:
@@ -22,7 +23,7 @@ def round_filters(filters: Number, global_params: object) -> int:
     return int(new_filters)
 
 
-def round_repeats(repeats: Number, global_params: object) -> int:
+def round_repeats(repeats: Number, global_params: Any) -> int:
     """Round number of filters based on depth multiplier."""
     multiplier = global_params.depth_coefficient
     if not multiplier:
@@ -36,9 +37,14 @@ def drop_connect(inputs: torch.Tensor, p: float, training: bool) -> torch.Tensor
         return inputs
     batch_size = inputs.shape[0]
     keep_prob = 1 - p
-    random_tensor = keep_prob
-    random_tensor += torch.rand(
+
+    random_tensor = torch.rand(
         [batch_size, 1, 1, 1], dtype=inputs.dtype, device=inputs.device
     )
+    random_tensor += keep_prob
     binary_tensor = torch.floor(random_tensor)
     return inputs / keep_prob * binary_tensor
+
+
+if __name__ == '__main__':
+    print(drop_connect(torch.ones(2, 2), 0.5, True))

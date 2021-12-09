@@ -10,14 +10,13 @@ __doc__ = r"""
            """
 
 import argparse
-from pathlib import Path
-from typing import Sequence
-
 import cv2
 import numpy
 import torch
 from draugr.torch_utilities import GuidedBackPropReLUModel
+from pathlib import Path
 from torchvision import models
+from typing import Sequence
 
 from neodroidvision.utilities.processing import (
     overlay_cam_on_image,
@@ -27,6 +26,10 @@ from neodroidvision.utilities.processing import (
 
 
 class GradientClassActivationMapping:
+    """
+
+    """
+
     class ModelOutputs:
         """Class for making a forward pass, and getting:
         1. The network output.
@@ -44,6 +47,11 @@ class GradientClassActivationMapping:
                 self.gradients = []
 
             def save_gradient(self, grad):
+                """
+
+                Args:
+                  grad:
+                """
                 self.gradients.append(grad)
 
             def __call__(self, x):
@@ -66,6 +74,11 @@ class GradientClassActivationMapping:
             )
 
         def get_gradients(self):
+            """
+
+            Returns:
+
+            """
             return self.feature_extractor.gradients
 
         def __call__(self, x):
@@ -82,11 +95,11 @@ class GradientClassActivationMapping:
             return target_activations, x
 
     def __init__(
-        self,
-        model: torch.nn.Module,
-        feature_module: torch.nn.Module,
-        target_layer_names: Sequence,
-        use_cuda: bool,
+            self,
+            model: torch.nn.Module,
+            feature_module: torch.nn.Module,
+            target_layer_names: Sequence,
+            use_cuda: bool,
     ):
         self.model = model
         self.feature_module = feature_module
@@ -100,6 +113,14 @@ class GradientClassActivationMapping:
         )
 
     def forward(self, input_img):
+        """
+
+        Args:
+          input_img:
+
+        Returns:
+
+        """
         return self.model(input_img)
 
     def __call__(self, input_img, target_category=None):
@@ -147,7 +168,13 @@ if __name__ == "__main__":
 
     from apppath import ensure_existence
 
+
     def get_args():
+        """
+
+        Returns:
+
+        """
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "--use-cuda",
@@ -175,6 +202,7 @@ if __name__ == "__main__":
             print("Using CPU for computation")
 
         return args
+
 
     args = get_args()
 

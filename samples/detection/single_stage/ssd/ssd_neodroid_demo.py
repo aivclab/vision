@@ -1,7 +1,4 @@
 import argparse
-from pathlib import Path
-from typing import Sequence
-
 import cv2
 import numpy
 import torch
@@ -11,7 +8,9 @@ from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
+from pathlib import Path
 from tqdm import tqdm
+from typing import Sequence
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
@@ -24,11 +23,11 @@ from neodroidvision.utilities import CheckPointer
 
 @torch.no_grad()
 def run_webcam_demo(
-    cfg: NOD,
-    categories: Sequence[str],
-    model_ckpt: Path,
-    score_threshold: float = 0.5,
-    window_name: str = "SSD",
+        cfg: NOD,
+        categories: Sequence[str],
+        model_ckpt: Path,
+        score_threshold: float = 0.5,
+        window_name: str = "SSD",
 ):
     """
 
@@ -87,7 +86,11 @@ def run_webcam_demo(
             cv2.imshow(
                 window_name,
                 draw_bounding_boxes(
-                    image, boxes[indices], labels[indices], scores[indices], categories
+                    image,
+                    boxes[indices],
+                    labels=labels[indices],
+                    scores=scores[indices],
+                    categories=categories,
                 ).astype(numpy.uint8),
             )
             if cv2.waitKey(1) == 27:
@@ -95,6 +98,9 @@ def run_webcam_demo(
 
 
 def main():
+    """
+
+    """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
@@ -102,9 +108,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-        / "ssd"
-        / "models"
-        / "mobilenet_v2_ssd320_voc0712.pth"
+                / "ssd"
+                / "models"
+                / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

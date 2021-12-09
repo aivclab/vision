@@ -1,21 +1,19 @@
 import pickle
 import shutil
 import time
-from pathlib import Path
-
 import torch
 from apppath import ensure_existence
 from draugr import AverageMeter
 from draugr.writers import MockWriter, Writer
-from samples.classification.ram.architecture.ram import RecurrentAttention
-from samples.classification.ram.ram_params import get_ram_config
-
+from pathlib import Path
 # from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
 from neodroidvision.data.classification import MNISTDataset
+from samples.classification.ram.architecture.ram import RecurrentAttention
+from samples.classification.ram.ram_params import get_ram_config
 
 
 class Trainer:
@@ -95,13 +93,13 @@ class Trainer:
 
         # configure tensorboard logging
         """
-if self.use_tensorboard:
+    if self.use_tensorboard:
     tensorboard_dir = self.logs_dir / self.model_name
     print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
     if not os.path.exists(tensorboard_dir):
         os.makedirs(tensorboard_dir)
     configure(tensorboard_dir)
-"""
+    """
 
         self.model = RecurrentAttention(
             self.patch_size,
@@ -123,6 +121,14 @@ if self.use_tensorboard:
         )
 
     def reset(self):
+        """
+
+        Args:
+          self:
+
+        Returns:
+
+        """
         h_t = torch.zeros(
             self.batch_size,
             self.hidden_size,
@@ -475,6 +481,11 @@ if self.use_tensorboard:
 
 
 def main(config):
+    """
+
+    Args:
+      config:
+    """
     # ensure reproducibility
     torch.manual_seed(config.random_seed)
     kwargs = {}

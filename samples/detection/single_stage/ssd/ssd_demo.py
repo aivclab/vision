@@ -1,15 +1,18 @@
 import argparse
-import os
-import time
-from pathlib import Path
+from typing import Sequence, Mapping
 
 import numpy
+import os
+import time
 import torch
 from PIL import Image, ImageFont
 from apppath import ensure_existence
 from draugr.numpy_utilities import Split
 from draugr.opencv_utilities import draw_bounding_boxes
 from draugr.torch_utilities import global_torch_device
+from pathlib import Path
+
+from warg import NOD
 
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDetection
@@ -21,8 +24,18 @@ from neodroidvision.utilities import CheckPointer
 
 @torch.no_grad()
 def run_demo(
-    cfg, categories, model_ckpt, score_threshold, images_dir, output_dir: Path
+        cfg: NOD, categories: Sequence, model_ckpt, score_threshold: float, images_dir: Path, output_dir: Path
 ):
+    """
+
+    Args:
+      cfg:
+      categories:
+      model_ckpt:
+      score_threshold:
+      images_dir:
+      output_dir:
+    """
     model = SingleShotDetection(cfg)
 
     checkpointer = CheckPointer(
@@ -92,6 +105,9 @@ def run_demo(
 
 
 def main():
+    """
+
+    """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
@@ -99,9 +115,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-        / "ssd"
-        / "models"
-        / "mobilenet_v2_ssd320_voc0712.pth"
+                / "ssd"
+                / "models"
+                / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

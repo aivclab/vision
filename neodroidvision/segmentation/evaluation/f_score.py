@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Callable
-
 import torch
+from typing import Callable
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -14,12 +13,12 @@ __all__ = ["f_score"]
 
 
 def f_score(
-    pr: torch.Tensor,
-    gt: torch.Tensor,
-    beta: float = 1.0,
-    eps: float = 1e-7,
-    threshold: float = None,
-    activation: Callable = torch.sigmoid,
+        pr: torch.Tensor,
+        gt: torch.Tensor,
+        beta: float = 1.0,
+        eps: float = 1e-7,
+        threshold: float = None,
+        activation: Callable = torch.sigmoid,
 ) -> torch.Tensor:
     """
 
@@ -49,7 +48,7 @@ def f_score(
     fn = torch.sum(gt) - tp
 
     score = ((1 + beta ** 2) * tp + eps) / (
-        (1 + beta ** 2) * tp + beta ** 2 * fn + fp + eps
+            (1 + beta ** 2) * tp + beta ** 2 * fn + fp + eps
     )
 
     return score

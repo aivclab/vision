@@ -7,12 +7,11 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import time
-from collections import defaultdict
-
 import pandas as pd
 import seaborn as sns
+import time
 import torch
+from collections import defaultdict
 from draugr.torch_utilities import global_torch_device
 from matplotlib import pyplot
 from torch.utils.data import DataLoader
@@ -59,6 +58,16 @@ if not tmsp_path.exists():
 
 
 def one_hot(labels, num_labels, device="cpu"):
+    """
+
+    Args:
+      labels:
+      num_labels:
+      device:
+
+    Returns:
+
+    """
     targets = torch.zeros(labels.size(0), num_labels)
     for i, label in enumerate(labels):
         targets[i, label] = 1
@@ -66,11 +75,14 @@ def one_hot(labels, num_labels, device="cpu"):
 
 
 def main():
+    """
+
+    """
     data_loader = DataLoader(
         dataset=dataset, batch_size=config.batch_size, shuffle=True
     )
 
-    optimizer = torch.optim.Adam(vae.parameters(), lr=config.learning_rate)
+    optimiser = torch.optim.Adam(vae.parameters(), lr=config.learning_rate)
 
     logs = defaultdict(list)
 
@@ -93,10 +105,10 @@ def main():
                 tracker_epoch[id]["y"] = z[i, 1].item()
                 tracker_epoch[id]["label"] = yi.item()
 
-            optimizer.zero_grad()
+            optimiser.zero_grad()
             loss = loss_fn(reconstruction, original, mean, log_var)
             loss.backward()
-            optimizer.step()
+            optimiser.step()
 
             logs["loss"].append(loss.item())
 
@@ -154,5 +166,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

@@ -89,8 +89,10 @@ class CenterLossFunc(Function):
 
 
 if __name__ == "__main__":
-
     def main():
+        """
+
+        """
         from draugr.torch_utilities import global_torch_device
 
         torch.manual_seed(999)
@@ -105,5 +107,6 @@ if __name__ == "__main__":
         out.backward()
         print(ct.centers.grad)
         print(feat.grad)
+
 
     main()

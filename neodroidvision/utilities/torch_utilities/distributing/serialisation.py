@@ -1,12 +1,11 @@
 import pickle
-from typing import Any, List
-
 import torch
+from typing import Any, List
 
 __all__ = ["to_byte_tensor", "serialise_byte_tensor", "deserialise_byte_tensor"]
 
 
-def to_byte_tensor(data: Any, *, device="cuda") -> torch.ByteTensor:
+def to_byte_tensor(data: Any, *, device: str = "cuda") -> torch.ByteTensor:
     return torch.ByteTensor(
         torch.ByteStorage.from_buffer(
             pickle.dumps(data)  # gets a byte representation for the data
@@ -16,8 +15,11 @@ def to_byte_tensor(data: Any, *, device="cuda") -> torch.ByteTensor:
     )  # convert this byte string into a byte tensor
 
 
-def serialise_byte_tensor(encoded_data, data, *, device="cuda") -> None:
+def serialise_byte_tensor(
+        encoded_data: Any, data: Any, *, device: str = "cuda"
+) -> None:
     """
+
 
     :param encoded_data:
     :param data:
@@ -30,7 +32,7 @@ def serialise_byte_tensor(encoded_data, data, *, device="cuda") -> None:
     assert s <= 255, "Can't encode data greater than 255 bytes"
 
     encoded_data[0] = s  # put the size in encoded_data
-    encoded_data[1 : (s + 1)] = tensor  # put the encoded data in encoded_data
+    encoded_data[1: (s + 1)] = tensor  # put the encoded data in encoded_data
 
 
 def deserialise_byte_tensor(size_list, tensor_list) -> List:

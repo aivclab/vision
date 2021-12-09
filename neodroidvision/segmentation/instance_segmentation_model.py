@@ -16,8 +16,17 @@ __all__ = ["get_model_instance_segmentation"]
 
 
 def get_model_instance_segmentation(
-    num_categories: int, hidden_layer: int = 256
+        num_categories: int, hidden_layer: int = 256
 ) -> torch.nn.Module:
+    """
+
+    Args:
+      num_categories:
+      hidden_layer:
+
+    Returns:
+
+    """
     # load an instance segmentation model pre-trained pre-trained on COCO
     model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
 

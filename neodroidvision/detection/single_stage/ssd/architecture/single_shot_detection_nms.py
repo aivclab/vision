@@ -1,6 +1,5 @@
-from typing import List
-
 import torch
+from typing import List
 
 __all__ = ["SingleShotDetectionNms"]
 
@@ -16,6 +15,10 @@ from warg import NOD
 
 
 class SingleShotDetectionNms(SingleShotDetection):
+    """
+
+    """
+
     def __init__(self, cfg: NOD):
         super().__init__(cfg)
 
@@ -28,7 +31,18 @@ class SingleShotDetectionNms(SingleShotDetection):
         self.priors_cfg = cfg.model.box_head.priors
 
     def forward(self, images: torch.Tensor) -> List[SSDOut]:
+        """
+
+        Args:
+          images:
+
+        Returns:
+
+        """
         return self.box_head(super().forward(images))
 
     def post_init(self) -> None:
+        """
+
+        """
         self.box_head.post_init(**self.priors_cfg)

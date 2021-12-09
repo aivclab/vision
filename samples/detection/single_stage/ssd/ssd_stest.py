@@ -1,7 +1,6 @@
 import argparse
 import logging
 import os
-
 import torch
 import torch.utils.data
 from draugr.torch_utilities import global_torch_device
@@ -30,9 +29,9 @@ def main():
         "--ckpt",
         help="The path to the checkpoint for test, default is the latest checkpoint.",
         default=PROJECT_APP_PATH.user_data
-        / "ssd"
-        / "models"
-        / "mobilenet_v2_ssd320_voc0712.pth"
+                / "ssd"
+                / "models"
+                / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"
@@ -63,9 +62,14 @@ def main():
             save_dir=PROJECT_APP_PATH.user_data / "results",
             logger=logging.getLogger("SSD.inference"),
         )
+
         checkpointer.load(args.ckpt, use_latest=args.ckpt is None)
         do_ssd_evaluation(
-            base_cfg, model.to(torch.device(base_cfg.MODEL.DEVICE)), distributed
+            base_cfg.data_dir,
+            base_cfg,
+            model.to(torch.device(base_cfg.MODEL.DEVICE)),
+            distributed,
+
         )
 
 

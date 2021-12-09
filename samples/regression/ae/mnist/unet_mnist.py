@@ -3,22 +3,24 @@
 import copy
 import os
 import time
-from itertools import cycle
-from pathlib import Path
-from typing import Iterator
 
+from apppath import ensure_existence
 from draugr.numpy_utilities import Split
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
-    global_torch_device,
+    TorchEvalSession, global_torch_device,
     to_device_iterator,
 )
+from draugr.visualisation import plot_img_array, plot_side_by_side
 from draugr.writers import Writer
+from itertools import cycle
 from matplotlib import pyplot
+from pathlib import Path
 from torch.nn.modules.module import Module
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision import transforms
+from typing import Iterator
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
@@ -38,16 +40,16 @@ criterion = torch.nn.MSELoss()
 
 
 def training(
-    model: Module,
-    data_iterator: Iterator,
-    optimizer: Optimizer,
-    scheduler,
-    writer: Writer,
-    interrupted_path: Path,
-    *,
-    num_updates=2500000,
-    early_stop_threshold=1e-9,
-    denoise: bool = True,
+        model: Module,
+        data_iterator: Iterator,
+        optimizer: Optimizer,
+        scheduler,
+        writer: Writer,
+        interrupted_path: Path,
+        *,
+        num_updates=2500000,
+        early_stop_threshold=1e-9,
+        denoise: bool = True,
 ) -> Module:
     """
 
@@ -142,7 +144,7 @@ def training(
     return model
 
 
-def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
+def inference(model: Module, data_iterator: Iterator, denoise: bool = True, num: int = 3) -> None:
     """
 
     :param model:
@@ -158,14 +160,21 @@ def inference(model: Module, data_iterator: Iterator, denoise: bool = True):
                 )
             else:
                 model_input = img
-            pred, *_ = model(torch.clamp(model_input, 0.0, 1.0))
-            for i, (s, j) in enumerate(
-                zip(pred.cpu().numpy(), model_input.cpu().numpy())
+            model_input = torch.clamp(model_input, 0.0, 1.0)
+            pred, *_ = model(model_input)
+            plot_side_by_side([pred.squeeze(1)[:num].cpu().numpy(),
+                               model_input.squeeze(1)[:num].cpu().numpy()])
+            pyplot.show()
+            return
+            for i, (s, j, label) in enumerate(
+                    zip(pred.cpu().numpy(), model_input.cpu().numpy(), target)
             ):
                 pyplot.imshow(j[0])
+                pyplot.title(f'sample_{i}, category: {label}')
                 pyplot.show()
+                # plot_side_by_side(s)
                 pyplot.imshow(s[0])
-                pyplot.title(i)
+                pyplot.title(f'sample_{i}, category: {label}')
                 pyplot.show()
                 break
 
@@ -177,7 +186,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     :type load_earlier:
     :param train:
     :type train:"""
-    seed = 2554215
+    seed = 251645
     batch_size = 32
 
     tqdm.monitor_interval = 0
@@ -191,8 +200,10 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
 
     home_path = PROJECT_APP_PATH
     model_file_ending = ".model"
+    model_base_path = ensure_existence(PROJECT_APP_PATH.user_data / "unet_mnist")
+    interrupted_name = 'INTERRUPTED_BEST'
     interrupted_path = (
-        PROJECT_APP_PATH.user_data / f"INTERRUPTED_BEST{model_file_ending}"
+            model_base_path / f"{interrupted_name}{model_file_ending}"
     )
 
     torch.manual_seed(seed)
@@ -229,7 +240,10 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     )
 
     if load_earlier:
-        _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
+        _list_of_files = list(model_base_path.rglob(f"{interrupted_name}{model_file_ending}"))
+        if not len(_list_of_files):
+            print(f'found no trained models under {model_base_path}/**/{interrupted_name}{model_file_ending}')
+            exit(1)
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
         if latest_model_path is not None:
@@ -247,7 +261,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
                 denoise=denoise,
             )
             torch.save(
-                model, PROJECT_APP_PATH.user_data / f"fission_net{model_file_ending}"
+                model.state_dict(), model_base_path / f"unet_mnist_final{model_file_ending}"
             )
     else:
         inference(model, data_iter, denoise=denoise)
@@ -256,4 +270,5 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
 
 
 if __name__ == "__main__":
+    # train_mnist(load_earlier=False, train=True)
     train_mnist(load_earlier=True, train=False)

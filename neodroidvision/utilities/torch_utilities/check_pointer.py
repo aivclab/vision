@@ -8,13 +8,12 @@ __doc__ = r"""
            """
 
 import logging
-from pathlib import Path
-from typing import Any
-
 import torch
+from pathlib import Path
 from torch.nn import Module
 from torch.nn.parallel import DistributedDataParallel
 from torch.optim import Optimizer
+from typing import Any
 
 from neodroidvision.utilities.torch_utilities.custom_model_caching import (
     custom_cache_url,
@@ -24,18 +23,18 @@ __all__ = ["CheckPointer"]
 
 
 class CheckPointer:
-    """ """
+    """"""
 
     _last_checkpoint_name = "last_checkpoint.txt"
 
     def __init__(
-        self,
-        model: Module,
-        optimizer: Optimizer = None,
-        scheduler: torch.optim.lr_scheduler = None,
-        save_dir: Path = Path.cwd(),
-        save_to_disk: bool = None,
-        logger: logging.Logger = None,
+            self,
+            model: Module,
+            optimizer: Optimizer = None,
+            scheduler: torch.optim.lr_scheduler = None,
+            save_dir: Path = Path.cwd(),
+            save_to_disk: bool = None,
+            logger: logging.Logger = None,
     ):
         """
 
@@ -61,6 +60,16 @@ class CheckPointer:
         self.logger = logger
 
     def save(self, name, **kwargs):
+        """
+
+        Args:
+          self:
+          name:
+          **kwargs:
+
+        Returns:
+
+        """
         if not self.save_dir:
             return
 
@@ -85,6 +94,16 @@ class CheckPointer:
         self.tag_last_checkpoint(save_file)
 
     def load(self, f: Path = None, use_latest=True):
+        """
+
+        Args:
+          self:
+          f:
+          use_latest:
+
+        Returns:
+
+        """
         if f is None:
             return {}
 
@@ -116,6 +135,14 @@ class CheckPointer:
         return checkpoint
 
     def get_checkpoint_file(self) -> str:
+        """
+
+        Args:
+          self:
+
+        Returns:
+
+        """
         try:
             with open(str(self.save_dir / self._last_checkpoint_name), "r") as f:
                 last_saved = f.read().strip()
@@ -126,6 +153,12 @@ class CheckPointer:
         return last_saved
 
     def tag_last_checkpoint(self, last_filename) -> None:
+        """
+
+        Args:
+          self:
+          last_filename:
+        """
         with open(str(self.save_dir / self._last_checkpoint_name), "w") as f:
             f.write(last_filename)
 

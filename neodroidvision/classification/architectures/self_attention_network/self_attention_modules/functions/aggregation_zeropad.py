@@ -12,8 +12,8 @@ from .self_attention_utilities import (
 )
 
 _aggregation_zeropad_forward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void aggregation_zeropad_forward_kernel(
 const ${Dtype}* bottom_data, const ${Dtype}* weight_data, ${Dtype}* top_data) {
@@ -43,8 +43,8 @@ const ${Dtype}* bottom_data, const ${Dtype}* weight_data, ${Dtype}* top_data) {
 )
 
 _aggregation_zeropad_input_backward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void aggregation_zeropad_input_backward_kernel(
     const ${Dtype}* const top_diff, const ${Dtype}* const weight_data, ${Dtype}* bottom_diff) {
@@ -79,8 +79,8 @@ __global__ void aggregation_zeropad_input_backward_kernel(
 )
 
 _aggregation_zeropad_weight_backward_kernel = (
-    kernel_loop
-    + r"""
+        kernel_loop
+        + r"""
 extern "C"
 __global__ void aggregation_zeropad_weight_backward_kernel(
     const ${Dtype}* const top_diff, const ${Dtype}* const bottom_data, ${Dtype}* weight_diff) {
@@ -118,6 +118,20 @@ __all__ = ["AggregationZeropad", "aggregation_zeropad"]
 class AggregationZeropad(Function):
     @staticmethod
     def forward(ctx, input, weight, kernel_size, stride, padding, dilation):
+        """
+
+        Args:
+          ctx:
+          input:
+          weight:
+          kernel_size:
+          stride:
+          padding:
+          dilation:
+
+        Returns:
+
+        """
         kernel_size, stride, padding, dilation = (
             _pair(kernel_size),
             _pair(stride),
@@ -179,6 +193,15 @@ class AggregationZeropad(Function):
 
     @staticmethod
     def backward(ctx, grad_output):
+        """
+
+        Args:
+          ctx:
+          grad_output:
+
+        Returns:
+
+        """
         kernel_size, stride, padding, dilation = (
             ctx.kernel_size,
             ctx.stride,
@@ -254,6 +277,19 @@ class AggregationZeropad(Function):
 
 
 def aggregation_zeropad(input, weight, kernel_size=3, stride=1, padding=0, dilation=1):
+    """
+
+    Args:
+      input:
+      weight:
+      kernel_size:
+      stride:
+      padding:
+      dilation:
+
+    Returns:
+
+    """
     assert input.shape[0] == weight.shape[0] and (input.shape[1] % weight.shape[1] == 0)
     if input.is_cuda:
         out = AggregationZeropad.apply(
@@ -265,7 +301,6 @@ def aggregation_zeropad(input, weight, kernel_size=3, stride=1, padding=0, dilat
 
 
 if __name__ == "__main__":
-
     def test_aggregation_zeropad():
         import os
 
@@ -284,8 +319,8 @@ if __name__ == "__main__":
             torch.randn(
                 n, c_w, kernel_size ** 2, out_height * out_width, requires_grad=True
             )
-            .double()
-            .cuda()
+                .double()
+                .cuda()
         )
 
         y1 = aggregation_zeropad(
@@ -326,5 +361,6 @@ if __name__ == "__main__":
             (x, w),
         )
         print("test case passed")
+
 
     test_aggregation_zeropad()

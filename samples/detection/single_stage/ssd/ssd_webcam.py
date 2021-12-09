@@ -8,9 +8,6 @@ __doc__ = r"""
            """
 
 import argparse
-from pathlib import Path
-from typing import List
-
 import cv2
 import numpy
 import torch
@@ -19,7 +16,9 @@ from apppath import ensure_existence
 from draugr.numpy_utilities import Split
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
+from pathlib import Path
 from tqdm import tqdm
+from typing import List
 from warg import NOD
 
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
@@ -32,21 +31,21 @@ from neodroidvision.utilities import CheckPointer
 
 @torch.no_grad()
 def run_webcam_demo(
-    cfg: NOD,
-    input_cfg: NOD,
-    categories: List,
-    model_ckpt: Path,
-    score_threshold: float = 0.7,
-    window_name: str = "SSD",
+        cfg: NOD,
+        input_cfg: NOD,
+        categories: List,
+        model_checkpoint: Path,
+        score_threshold: float = 0.7,
+        window_name: str = "SSD",
 ):
     """
-
+  
     :param categories:
     :type categories:
     :param cfg:
     :type cfg:
-    :param model_ckpt:
-    :type model_ckpt:
+    :param model_checkpoint:
+    :type model_checkpoint:
     :param score_threshold:
     :type score_threshold:
     :param window_name:
@@ -63,9 +62,9 @@ def run_webcam_demo(
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
     )
-    checkpointer.load(model_ckpt, use_latest=model_ckpt is None)
+    checkpointer.load(model_checkpoint, use_latest=model_checkpoint is None)
     print(
-        f"Loaded weights from {model_ckpt if model_ckpt else checkpointer.get_checkpoint_file()}"
+        f"Loaded weights from {model_checkpoint if model_checkpoint else checkpointer.get_checkpoint_file()}"
     )
 
     model.post_init()
@@ -106,6 +105,9 @@ def run_webcam_demo(
 
 
 def main():
+    """
+
+    """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
@@ -113,9 +115,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-        / "ssd"
-        / "models"
-        / "mobilenet_v2_ssd320_voc0712.pth"
+                / "ssd"
+                / "models"
+                / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"
@@ -129,7 +131,7 @@ def main():
         cfg=base_cfg,
         input_cfg=base_cfg.input,
         categories=base_cfg.dataset_type.categories,
-        model_ckpt=Path(args.ckpt),
+        model_checkpoint=Path(args.ckpt),
         score_threshold=args.score_threshold,
     )
 

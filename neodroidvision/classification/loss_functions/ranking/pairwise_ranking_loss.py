@@ -25,7 +25,7 @@ class PairwiseRankingLoss(torch.nn.Module):
         self._margin = margin
 
     def forward(
-        self, anchor: torch.Tensor, other: torch.Tensor, is_diff: torch.Tensor
+            self, anchor: torch.Tensor, other: torch.Tensor, is_diff: torch.Tensor
     ) -> torch.Tensor:
         """
 
