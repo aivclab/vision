@@ -242,7 +242,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     if load_earlier:
         _list_of_files = list(model_base_path.rglob(f"{interrupted_name}{model_file_ending}"))
         if not len(_list_of_files):
-            print(f'found no trained models under {model_base_path}/**/{interrupted_name}{model_file_ending}')
+            print(f'found no trained models under {model_base_path}{os.path.sep}**{os.path.sep}{interrupted_name}{model_file_ending}')
             exit(1)
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
@@ -270,5 +270,5 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
 
 
 if __name__ == "__main__":
-    # train_mnist(load_earlier=False, train=True)
+    #train_mnist(load_earlier=False, train=True)
     train_mnist(load_earlier=True, train=False)
