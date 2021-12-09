@@ -1,4 +1,4 @@
 sphinx>=4.0.1
 m2r2
 sphinxcontrib-programoutput
-mistune<2.0.0
+mistune<3.0.0
