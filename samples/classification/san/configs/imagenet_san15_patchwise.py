@@ -8,4 +8,4 @@ SAN_CONFIG.update(
     kernels=[3, 7, 7, 7, 7],
     save_path=Path("exclude/models/imagenet/san15_patchwise/model"),
     model_path=Path("exclude/models/imagenet/san15_patchwise/model/model_best.pth"),
-)
+    )

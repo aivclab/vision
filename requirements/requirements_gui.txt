@@ -1,4 +1,4 @@
-cv2
+#cv2 # conda OpenCv
 imageio
 pygame
 kivy>=1.10.1

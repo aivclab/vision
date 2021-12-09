@@ -1,62 +1,64 @@
-from pathlib import Path
-
 import numpy
 from matplotlib import pyplot
+from pathlib import Path
 
 from neodroidvision.regression.denoise.spectral_denoise import fft_im_denoise
 
 if __name__ == "__main__":
 
-    def plot_spectrum(im_fft):
-        """
+  def plot_spectrum(im_fft):
+    """
 
-        :param im_fft:
-        :type im_fft:"""
-        from matplotlib.colors import LogNorm
+    :param im_fft:
+    :type im_fft:"""
+    from matplotlib.colors import LogNorm
 
-        # A logarithmic colormap
-        pyplot.imshow(numpy.abs(im_fft), norm=LogNorm(vmin=5))
-        pyplot.colorbar()
+    # A logarithmic colormap
+    pyplot.imshow(numpy.abs(im_fft), norm=LogNorm(vmin=5))
+    pyplot.colorbar()
 
-    def blur_im(im):
-        """
 
-        :param im:
-        :type im:"""
-        ############################################################
-        # Easier and better: :func:`scipy.ndimage.gaussian_filter`
-        ############################################################
-        #
-        # Implementing filtering directly with FFTs is tricky and time consuming.
-        # We can use the Gaussian filter from :mod:`scipy.ndimage`
+  def blur_im(im):
+    """
 
-        from scipy import ndimage
+    :param im:
+    :type im:"""
+    ############################################################
+    # Easier and better: :func:`scipy.ndimage.gaussian_filter`
+    ############################################################
+    #
+    # Implementing filtering directly with FFTs is tricky and time consuming.
+    # We can use the Gaussian filter from :mod:`scipy.ndimage`
 
-        im_blur = ndimage.gaussian_filter(im, 4)
+    from scipy import ndimage
 
-        pyplot.figure()
-        pyplot.imshow(im_blur, pyplot.cm.gray)
-        pyplot.title("Blurred image")
+    im_blur = ndimage.gaussian_filter(im, 4)
 
-    def main(im_raw):
-        """
+    pyplot.figure()
+    pyplot.imshow(im_blur, pyplot.cm.gray)
+    pyplot.title("Blurred image")
 
-        :param im_raw:
-        :type im_raw:"""
-        pyplot.figure()
-        pyplot.imshow(im_raw, pyplot.cm.gray)
-        pyplot.title("Original image")
 
-        im_denoised = fft_im_denoise(im_raw)
+  def main(im_raw):
+    """
 
-        pyplot.figure()
-        pyplot.imshow(im_denoised, pyplot.cm.gray)
-        pyplot.title("Reconstructed Image")
+    :param im_raw:
+    :type im_raw:"""
+    pyplot.figure()
+    pyplot.imshow(im_raw, pyplot.cm.gray)
+    pyplot.title("Original image")
 
-    im22 = pyplot.imread(
-        str(Path.home() / "Data" / "Datasets" / "Denoise" / "moonlanding.png")
-    ).astype(float)
+    im_denoised = fft_im_denoise(im_raw)
 
-    main(im22)
+    pyplot.figure()
+    pyplot.imshow(im_denoised, pyplot.cm.gray)
+    pyplot.title("Reconstructed Image")
 
-    pyplot.show()
+
+  im22 = pyplot.imread(
+      str(Path.home() / "Data" / "Datasets" / "Denoise" / "moonlanding.png")
+      ).astype(float)
+
+  main(im22)
+
+  pyplot.show()

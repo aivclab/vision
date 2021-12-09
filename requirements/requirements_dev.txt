@@ -8,3 +8,9 @@ black
 pre-commit
 black
 pre-commit
+-r requirements_docs.txt
+-r requirements_extra.txt
+-r requirements_gui.txt
+-r requirements_setup.txt
+-r requirements_tests.txt
+-r ../requirements.txt

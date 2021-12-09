@@ -1,4 +1,0 @@
-/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
-/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/cpufeatures.dir
-/home/heider/Projects/Alexandra/Python/vision/samples/graphical_interfaces/android_demo_app/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/caffe2_native_lib.dir

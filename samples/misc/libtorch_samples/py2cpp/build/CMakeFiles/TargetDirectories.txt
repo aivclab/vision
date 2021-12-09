@@ -1,3 +1,0 @@
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/py2cpp/build/CMakeFiles/rebuild_cache.dir
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/py2cpp/build/CMakeFiles/edit_cache.dir
-/home/heider/Projects/Neodroid/Unity/Inference/Assets/Exclude/cvs/libtorch_samples/py2cpp/build/CMakeFiles/py2cpp.dir

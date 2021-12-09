@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
@@ -62,7 +61,7 @@ base_cfg.model.box_head.priors.aspect_ratios = (
     (2, 3),
     (2,),
     (2,),
-)  # when has 1 aspect ratio,
+    )  # when has 1 aspect ratio,
 # every location has 4 boxes, 2 ratio 6 boxes. #boxes = 2 + #ratio * 2
 base_cfg.model.box_head.priors.boxes_per_location = (
     4,
@@ -71,7 +70,7 @@ base_cfg.model.box_head.priors.boxes_per_location = (
     6,
     4,
     4,
-)  # number of boxes per feature map location
+    )  # number of boxes per feature map location
 base_cfg.model.box_head.priors.clip = True
 
 # -----------------------------------------------------------------------------
@@ -83,7 +82,7 @@ base_cfg.input.pixel_mean = (
     123,
     117,
     104,
-)  # Values to be used for image normalization, RGB layout
+    )  # Values to be used for image normalization, RGB layout
 
 # -----------------------------------------------------------------------------
 # Dataset

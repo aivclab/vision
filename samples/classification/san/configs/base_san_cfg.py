@@ -8,7 +8,6 @@ __doc__ = r"""
            """
 
 from pathlib import Path
-
 from warg import NOD
 
 from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
@@ -51,4 +50,4 @@ SAN_CONFIG = NOD(
     save_path=None,  #
     weight=None,  # path to initial weight (default=none)
     resume=None,  # path to latest checkpoint (default=none)
-)
+    )

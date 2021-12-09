@@ -12,37 +12,37 @@ __all__ = ["other_retrain"]
 
 def other_retrain(
     arch: str, model: torch.nn.Module, num_classes: int
-) -> torch.nn.Module:
-    """
-    Inplace op but returns the model anyway
-    """
-    if arch.startswith("alexnet"):
-        model._action_classifier[6] = torch.nn.Linear(
-            model._action_classifier[6].in_features, num_classes
+    ) -> torch.nn.Module:
+  """
+  Inplace op but returns the model anyway
+  """
+  if arch.startswith("alexnet"):
+    model._action_classifier[6] = torch.nn.Linear(
+        model._action_classifier[6].in_features, num_classes
         )
-        print(
-            f"=> reshaped AlexNet classifier layer with: {str(model._action_classifier[6])}"
-        )
-
-    elif arch.startswith("vgg"):
-        model._action_classifier[6] = torch.nn.Linear(
-            model._action_classifier[6].in_features, num_classes
-        )
-        print(
-            f"=> reshaped VGG classifier layer with: {str(model._action_classifier[6])}"
+    print(
+        f"=> reshaped AlexNet classifier layer with: {str(model._action_classifier[6])}"
         )
 
-    elif arch.startswith("densenet"):
-        model._action_classifier = torch.nn.Linear(
-            model._action_classifier.in_features, num_classes
+  elif arch.startswith("vgg"):
+    model._action_classifier[6] = torch.nn.Linear(
+        model._action_classifier[6].in_features, num_classes
         )
-        print(
-            f"=> reshaped DenseNet classifier layer with: {str(model._action_classifier)}"
+    print(
+        f"=> reshaped VGG classifier layer with: {str(model._action_classifier[6])}"
         )
 
-    elif arch.startswith("inception"):
-        model.AuxLogits.fc = torch.nn.Linear(
-            model.AuxLogits.fc.in_features, num_classes
+  elif arch.startswith("densenet"):
+    model._action_classifier = torch.nn.Linear(
+        model._action_classifier.in_features, num_classes
         )
-        model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
-    return model
+    print(
+        f"=> reshaped DenseNet classifier layer with: {str(model._action_classifier)}"
+        )
+
+  elif arch.startswith("inception"):
+    model.AuxLogits.fc = torch.nn.Linear(
+        model.AuxLogits.fc.in_features, num_classes
+        )
+    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+  return model

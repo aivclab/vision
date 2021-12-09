@@ -13,5 +13,5 @@ __all__ = ["swish"]
 
 
 def swish(x):
-    """Swish activation function"""
-    return x * torch.sigmoid(x)
+  """Swish activation function"""
+  return x * torch.sigmoid(x)
