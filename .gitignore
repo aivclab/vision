@@ -11,6 +11,9 @@ parts
 __pycache__/
 #*.py[cod]
 
+*[Bb]uild*
+.cxx
+
 venv/
 *.db
 *.pb
