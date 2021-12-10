@@ -9,7 +9,7 @@ __doc__ = r"""
 
 import numpy
 import torch
-from draugr.numpy_utilities import Split, SplitIndexer
+from draugr.numpy_utilities import SplitEnum, SplitIndexer
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 from matplotlib import pyplot
 from pathlib import Path
@@ -44,7 +44,7 @@ class MNISTDataset2(SupervisedDataset):
     def __init__(
             self,
             dataset_path: Path,
-            split: Split = Split.Training,
+            split: SplitEnum = SplitEnum.training,
             validation: float = 0.3,
             resize_s: int = 28,
             seed: int = 42,
@@ -75,11 +75,11 @@ class MNISTDataset2(SupervisedDataset):
             ]
         )
 
-        if split == Split.Training:
+        if split == SplitEnum.training:
             mnist_data = MNIST(
                 str(dataset_path), train=True, download=download, transform=train_trans
             )
-        elif split == Split.Validation:
+        elif split == SplitEnum.validation:
             mnist_data = MNIST(
                 str(dataset_path), train=True, download=download, transform=val_trans
             )
@@ -88,12 +88,12 @@ class MNISTDataset2(SupervisedDataset):
                 str(dataset_path), train=False, download=download, transform=val_trans
             )
 
-        if split != Split.Testing:
+        if split != SplitEnum.testing:
             torch.manual_seed(seed)
             train_ind, val_ind, test_ind = SplitIndexer(
                 len(mnist_data), validation=validation, testing=0.0
-            ).shuffled_indices()
-            if split == Split.Validation:
+            ).shuffled_indices().values()
+            if split == SplitEnum.validation:
                 self.mnist_data_split = Subset(mnist_data, val_ind)
             else:
                 self.mnist_data_split = Subset(mnist_data, train_ind)
@@ -112,9 +112,9 @@ class MNISTDataset2(SupervisedDataset):
 class MNISTDataset(SupervisedDataset):
     """"""
 
-    def __init__(self, data_dir: Path, split: Split = Split.Training):
+    def __init__(self, data_dir: Path, split: SplitEnum = SplitEnum.training):
         super().__init__()
-        if split == Split.Training:
+        if split == SplitEnum.training:
             self._dataset = datasets.MNIST(
                 str(data_dir), train=True, download=True, transform=self.trans
             )
@@ -276,7 +276,7 @@ class MNISTDataset(SupervisedDataset):
             # assert num_workers == 1
             # assert pin_memory == True
 
-        dataset = MNISTDataset(data_dir, split=Split.Testing)
+        dataset = MNISTDataset(data_dir, split=SplitEnum.testing)
 
         data_loader = torch.utils.data.DataLoader(
             dataset,
@@ -339,17 +339,17 @@ if __name__ == "__main__":
 
         batch_size = 32
 
-        dt_t = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=Split.Training)
+        dt_t = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=SplitEnum.training)
 
         print(len(dt_t))
 
         dt_v = MNISTDataset2(
-            Path(Path.home() / "Data" / "mnist"), split=Split.Validation
+            Path(Path.home() / "Data" / "mnist"), split=SplitEnum.validation
         )
 
         print(len(dt_v))
 
-        dt = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=Split.Testing)
+        dt = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=SplitEnum.testing)
 
         print(len(dt))
 

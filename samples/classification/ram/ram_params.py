@@ -1,23 +1,12 @@
 import argparse
 from pathlib import Path
 from warg import NOD
+from warg.arguments import str2bool
 
 from neodroidvision import PROJECT_APP_PATH
 
 arg_lists = []
 parser = argparse.ArgumentParser(description="RAM")
-
-
-def str2bool(v):
-    """
-
-    Args:
-      v:
-
-    Returns:
-
-    """
-    return v.lower() in ("true", "1")
 
 
 def add_argument_group(name):
@@ -32,7 +21,6 @@ def add_argument_group(name):
     arg = parser.add_argument_group(name)
     arg_lists.append(arg)
     return arg
-
 
 # glimpse network params
 glimpse_arg = add_argument_group("Glimpse Network Params")

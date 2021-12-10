@@ -9,7 +9,7 @@ import time
 import torch
 import torchvision
 from draugr import IgnoreInterruptSignal
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
@@ -113,7 +113,7 @@ def train_siamese(
                     transforms.ToTensor(),
                 ]
             ),
-            split=Split.Training,
+            split=SplitEnum.training,
         ),
         shuffle=True,
         num_workers=0,
@@ -130,7 +130,7 @@ def train_siamese(
                     transforms.ToTensor(),
                 ]
             ),
-            split=Split.Validation,
+            split=SplitEnum.validation,
         ),
         shuffle=True,
         num_workers=0,

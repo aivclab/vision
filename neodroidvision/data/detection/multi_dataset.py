@@ -8,7 +8,7 @@ __doc__ = r"""
            """
 
 from abc import abstractmethod
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from pathlib import Path
 from torch.utils.data import ConcatDataset
 from typing import Sequence, Tuple
@@ -46,7 +46,7 @@ class MultiDataset(SupervisedDataset):
             dataset_type: callable,
             data_root: Path,
             sub_datasets: Tuple,
-            split: Split = Split.Training
+            split: SplitEnum = SplitEnum.training
     ):
         """
 
@@ -71,7 +71,7 @@ class MultiDataset(SupervisedDataset):
 
         )
 
-        if split == Split.Training:
+        if split == SplitEnum.training:
             annotation_transform = SSDAnnotationTransform(
                 image_size=cfg.input.image_size,
                 priors_cfg=cfg.model.box_head.priors,
@@ -96,7 +96,7 @@ class MultiDataset(SupervisedDataset):
             )
 
         # for testing, return a list of datasets
-        if not split == Split.Training:
+        if not split == SplitEnum.training:
             self.sub_datasets = datasets
         else:
             dataset = datasets[0]

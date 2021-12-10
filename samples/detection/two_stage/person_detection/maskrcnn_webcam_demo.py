@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
         seed_stack(3825)
 
-        dataset = PennFudanDataset  # (dataset_root / "PennFudanPed", Split.Training)
+        dataset = PennFudanDataset  # (dataset_root / "PennFudanPed", SplitEnum.training)
         categories = dataset.categories
 
         if True:

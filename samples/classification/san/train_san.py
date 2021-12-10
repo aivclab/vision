@@ -6,7 +6,7 @@ import shutil
 import time
 import torch
 from draugr import AverageMeter, find_unclaimed_port
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import TensorBoardPytorchWriter
 from pathlib import Path
 from torch import distributed, multiprocessing, nn
@@ -72,8 +72,8 @@ def main_worker(gpu, ngpus_per_node, config):
     """
     global CONFIG, best_acc1
     CONFIG, best_acc1 = config, 0
-    train_set = config.dataset_type(CONFIG.dataset_path, Split.Training)
-    val_set = config.dataset_type(CONFIG.dataset_path, Split.Validation)
+    train_set = config.dataset_type(CONFIG.dataset_path, SplitEnum.training)
+    val_set = config.dataset_type(CONFIG.dataset_path, SplitEnum.validation)
 
     if CONFIG.distributed:
         if CONFIG.dist_url == "env://" and CONFIG.rank == -1:

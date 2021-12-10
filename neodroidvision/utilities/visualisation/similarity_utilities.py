@@ -11,9 +11,10 @@ __all__ = ["boxed_text_overlay_plot"]
 
 import numpy
 from matplotlib import pyplot
+from torch import Tensor
 
 
-def boxed_text_overlay_plot(img, text):
+def boxed_text_overlay_plot(img:Tensor, text:str)->None:
     """
 
     :param img:

@@ -1,9 +1,17 @@
+from enum import Enum
+
 import numpy
 import pywt
 from matplotlib import pyplot
 from pathlib import Path
 
+from sorcery import assigned_names
+
 if __name__ == "__main__":
+
+    class CoeffFormatEnum(Enum):
+        (wavedec, wavedec2, wavedecn)=assigned_names()
+
     def wavelet_denoise(
             im,
             mother_wavelet: str = "db1",  # Daubechies wavelet 1
@@ -27,7 +35,7 @@ if __name__ == "__main__":
                     numpy.abs(coef_array) > Csort[int(numpy.floor((1 - keep) * len(Csort)))]
             ),
             coef_slices,
-            output_format="wavedec2",
+            output_format=CoeffFormatEnum.wavedec2.value,
         )
 
         recon = pywt.waverec2(coef_filt, wavelet=mother_wavelet)

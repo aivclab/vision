@@ -9,7 +9,7 @@ from draugr import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TorchEvalSession,
     TorchTrainSession,
@@ -163,8 +163,8 @@ def predictor_response_train_model_neodroid_observations(
         last_out = None
         with torch.autograd.detect_anomaly():
             for update_i in sess:
-                for phase in [Split.Training, Split.Validation]:
-                    if phase == Split.Training:
+                for phase in [SplitEnum.training, SplitEnum.validation]:
+                    if phase == SplitEnum.training:
                         with TorchTrainSession(model):
 
                             input, true_label = zip(*next(train_iterator))

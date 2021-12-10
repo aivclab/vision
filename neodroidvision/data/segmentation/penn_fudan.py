@@ -14,7 +14,7 @@ from typing import Tuple, Union
 import numpy
 import torch
 from PIL import Image
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
     SupervisedDataset,
@@ -78,7 +78,7 @@ class PennFudanDataset(SupervisedDataset):
         return (*self.image_size_T, self.predictor_channels)
 
     @staticmethod
-    def get_transforms(split: Split):
+    def get_transforms(split: SplitEnum):
         """
 
         :param split:
@@ -87,13 +87,13 @@ class PennFudanDataset(SupervisedDataset):
         :rtype:"""
         transforms = [Resize(PennFudanDataset.image_size_T), ToTensor()]
 
-        # if split == Split.Training:
+        # if split == SplitEnum.training:
         #  transforms.append(RandomHorizontalFlip(0.5))
 
         return Compose(transforms)
 
     @staticmethod
-    def get_tuple_transforms(split: Split):
+    def get_tuple_transforms(split: SplitEnum):
         """
 
         :param split:
@@ -105,7 +105,7 @@ class PennFudanDataset(SupervisedDataset):
             TupleToTensor()
         ]
 
-        if split == Split.Training:
+        if split == SplitEnum.training:
             transforms.append(TupleRandomHorizontalFlip(0.5))
 
         return TupleCompose(transforms)
@@ -113,7 +113,7 @@ class PennFudanDataset(SupervisedDataset):
     def __init__(
             self,
             root: Union[str, Path],
-            split: Split = Split.Training,
+            split: SplitEnum = SplitEnum.training,
             return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
     ):
         """
@@ -258,7 +258,7 @@ class PennFudanDataset(SupervisedDataset):
 
 if __name__ == "__main__":
     dataset = PennFudanDataset(
-        Path.home() / "Data" / "Datasets" / "PennFudanPed", Split.Training
+        Path.home() / "Data" / "Datasets" / "PennFudanPed", SplitEnum.training
     )
 
     global_torch_device(override=global_torch_device("cpu"))

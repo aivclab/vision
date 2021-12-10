@@ -19,7 +19,7 @@ from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
 
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 
 
@@ -90,7 +90,7 @@ class VOCDataset(ObjectDetectionDataset):
             self,
             data_root: Path,
             dataset_name: str,
-            split: Split,
+            split: SplitEnum,
             img_transform: callable = None,
             annotation_transform: callable = None,
     ):
@@ -126,7 +126,7 @@ class VOCDataset(ObjectDetectionDataset):
         self._ids = VOCDataset._read_image_ids(
             self._data_dir / "ImageSets" / "Main" / f"{self.splits[dataset_name]}.txt"
         )
-        self._keep_difficult = not split == Split.Training
+        self._keep_difficult = not split == SplitEnum.training
 
         self._class_dict = {
             class_name: i for i, class_name in enumerate(self.categories)

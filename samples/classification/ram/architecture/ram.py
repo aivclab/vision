@@ -56,7 +56,7 @@ class RecurrentAttention(nn.Module):
         )
         self._rnn = ram_modules.CoreRNN(hidden_size_rnn, hidden_size_rnn)
         self._locator_policy = ram_modules.Locator(hidden_size_rnn, 2, std_policy)
-        self._action_classifier = ram_modules.Actor(hidden_size_rnn, num_classes)
+        self.classifier = ram_modules.Actor(hidden_size_rnn, num_classes)
         self._signal_baseline = ram_modules.SignalBaseline(hidden_size_rnn, 1)
 
     def forward(
@@ -103,7 +103,7 @@ class RecurrentAttention(nn.Module):
         b_t = self._signal_baseline(h_t).squeeze()
 
         if last:
-            log_probas = self._action_classifier(h_t)
+            log_probas = self.classifier(h_t)
             return h_t, l_t, b_t, log_probas, log_pi
 
         return h_t, l_t, b_t, log_pi

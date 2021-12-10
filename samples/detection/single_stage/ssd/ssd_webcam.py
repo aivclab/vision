@@ -13,7 +13,7 @@ import numpy
 import torch
 from PIL import ImageFont
 from apppath import ensure_existence
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from pathlib import Path
@@ -55,7 +55,7 @@ def run_webcam_demo(
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(
-        input_cfg.image_size, input_cfg.pixel_mean, split=Split.Testing
+        input_cfg.image_size, input_cfg.pixel_mean, split=SplitEnum.testing
     )
     model = SingleShotDetectionNms(cfg)
 

@@ -10,7 +10,7 @@ __doc__ = r"""
 import numpy
 import random
 import torch
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
 from pathlib import Path
@@ -32,7 +32,7 @@ class PairDataset(
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws
     def __init__(
-            self, data_path: Union[str, Path], split: Split = Split.Training, **kwargs
+            self, data_path: Union[str, Path], split: SplitEnum = SplitEnum.training, **kwargs
     ):
         super().__init__()
 
@@ -151,7 +151,7 @@ class PairDataset(
 
 
 if __name__ == "__main__":
-    sd = PairDataset(Path.home() / "Data" / "mnist_png", split=Split.Validation)
+    sd = PairDataset(Path.home() / "Data" / "mnist_png", split=SplitEnum.validation)
     print(sd.predictor_shape)
     print(sd.response_shape)
     sd.sample()

@@ -8,6 +8,6 @@ from .encoder_utilities import *
 from .encoding_space import *
 from .plot_kernel import *
 from .similarity_utilities import *
-
+from .grad_cam import *
 if __name__ == "__main__":
     pass

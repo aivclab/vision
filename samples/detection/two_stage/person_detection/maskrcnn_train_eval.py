@@ -8,7 +8,7 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
 from apppath import ensure_existence
-from draugr.numpy_utilities import Split, SplitIndexer
+from draugr.numpy_utilities import SplitEnum, SplitIndexer
 
 from torch.utils.data import DataLoader, Subset
 from tqdm import tqdm
@@ -64,12 +64,12 @@ if __name__ == "__main__":
 
         dataset = PennFudanDataset(
             dataset_root / "PennFudanPed",
-            Split.Training,
+            SplitEnum.training,
             return_variant=ReturnVariantEnum.all,
         )
         dataset_validation = PennFudanDataset(
             dataset_root / "PennFudanPed",
-            Split.Validation,
+            SplitEnum.validation,
             return_variant=ReturnVariantEnum.all,
         )
         split = SplitIndexer(len(dataset), validation=0.3, testing=0)

@@ -5,7 +5,7 @@ import cv2
 import numpy
 import pandas
 import torch
-from draugr.numpy_utilities import Split, chw_to_hwc, float_chw_to_hwc_uint
+from draugr.numpy_utilities import SplitEnum, chw_to_hwc, float_chw_to_hwc_uint
 from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchEvalSession,
@@ -295,21 +295,21 @@ def main():
     seed_stack(SEED)
 
     train_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Training),
+        CloudSegmentationDataset(base_dataset_path, image_path, subset=SplitEnum.training),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
     )
     valid_loader = DataLoader(
         CloudSegmentationDataset(
-            base_dataset_path, image_path, subset=Split.Validation
+            base_dataset_path, image_path, subset=SplitEnum.validation
         ),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
     )
     test_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Testing),
+        CloudSegmentationDataset(base_dataset_path, image_path, subset=SplitEnum.testing),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,

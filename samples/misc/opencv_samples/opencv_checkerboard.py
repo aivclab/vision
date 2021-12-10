@@ -141,7 +141,9 @@ with keyboard.Listener(
         """
 
         """
-        img = cv2.imread(str(base / "left12.jpg"))
+        im_path = base / "left12.jpg"
+        assert im_path.exists()
+        img = cv2.imread(str(im_path))
         h, w = img.shape[:2]
         shape_ = (w, h)
         (

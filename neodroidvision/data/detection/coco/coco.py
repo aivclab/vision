@@ -9,7 +9,7 @@ __doc__ = r"""
 
 import numpy
 from PIL import Image
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import xywh_to_minmax
 from pathlib import Path
 from typing import Tuple
@@ -147,7 +147,7 @@ class COCODataset(ObjectDetectionDataset):
             self,
             data_root: Path,
             dataset_name: str,
-            split: Split,
+            split: SplitEnum,
             img_transform: callable = None,
             annotation_transform: callable = None,
     ):
@@ -175,7 +175,7 @@ class COCODataset(ObjectDetectionDataset):
         self._image_dir = data_root / self.image_dirs[dataset_name]
         self._img_transforms = img_transform
         self._annotation_transforms = annotation_transform
-        self._remove_empty = split == Split.Training
+        self._remove_empty = split == SplitEnum.training
         if self._remove_empty:
             self._ids = list(
                 self._coco_source.imgToAnns.keys()

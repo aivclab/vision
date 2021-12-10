@@ -10,7 +10,7 @@ __doc__ = r"""
 import csv
 import torch
 from PIL import Image
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from matplotlib import pyplot
 from pathlib import Path
 from torch.utils import data
@@ -54,7 +54,7 @@ class VggFaces2(SupervisedDataset):
     )
 
     @staticmethod
-    def get_id_label_map(meta_file):
+    def get_id_label_map(meta_file:Path):
         """
 
         :param meta_file:
@@ -80,21 +80,21 @@ class VggFaces2(SupervisedDataset):
         return id_label_dict
 
     @property
-    def split_names(self) -> Dict[Split, str]:
+    def split_names(self) -> Dict[SplitEnum, str]:
         """
 
         :return:
         :rtype:"""
         return {
-            Split.Training: "train",
-            Split.Validation: "validation",
-            Split.Testing: "test",
+            SplitEnum.training: "train",
+            SplitEnum.validation: "validation",
+            SplitEnum.testing: "test",
         }
 
     def __init__(
             self,
             dataset_path: Path,
-            split: Split = Split.Training,
+            split: SplitEnum = SplitEnum.training,
             resize_s: int = 256,
             raw_images: bool = False,
     ):
@@ -160,7 +160,7 @@ class VggFaces2(SupervisedDataset):
         img = Image.open(str(self._dataset_path / img_file))
 
         if not self._raw_images:
-            if self._split == Split.Training:
+            if self._split == SplitEnum.training:
                 img = self.train_trans(img)
             else:
                 img = self.val_trans(img)
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
     dt = VggFaces2(
         Path.home() / "Data/vggface2",
-        split=Split.Testing,
+        split=SplitEnum.testing,
         # raw_images=True
     )
 

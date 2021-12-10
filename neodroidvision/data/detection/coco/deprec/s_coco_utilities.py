@@ -36,7 +36,7 @@ __all__ = [
     "CocoModeEnum",
 ]
 
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 
 
@@ -296,7 +296,7 @@ class CocoDetection(torchvision.datasets.CocoDetection):
 
 def get_coco_ins(
         root_path: Path,
-        image_set: Split,
+        image_set: SplitEnum,
         transforms,
         mode: CocoModeEnum = CocoModeEnum.instances,
 ):
@@ -312,13 +312,13 @@ def get_coco_ins(
     :type mode:
     :return:
     :rtype:"""
-    assert image_set in Split
-    assert image_set != Split.Testing
+    assert image_set in SplitEnum
+    assert image_set != SplitEnum.testing
 
     annotations_path = Path("annotations")
     PATHS = {
-        Split.Training: ("train2017", annotations_path / f"{mode}_{'train'}2017.json"),
-        Split.Validation: ("val2017", annotations_path / f"{mode}_{'val'}2017.json"),
+        SplitEnum.training: ("train2017", annotations_path / f"{mode}_{'train'}2017.json"),
+        SplitEnum.validation: ("val2017", annotations_path / f"{mode}_{'val'}2017.json"),
     }
 
     t = [ConvertCocoPolysToMask()]
@@ -333,7 +333,7 @@ def get_coco_ins(
         root_path / img_folder, root_path / ann_file, transforms=transforms
     )
 
-    if image_set == Split.Training:
+    if image_set == SplitEnum.training:
         dataset = _coco_remove_images_without_annotations(dataset)
 
     # dataset = torch.utils.data.Subset(dataset, [i for i in range(500)])

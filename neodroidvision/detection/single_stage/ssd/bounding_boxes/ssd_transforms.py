@@ -9,7 +9,7 @@ __doc__ = r"""
 
 import numpy
 import torch
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import (
     CV2Compose,
     CV2Expand,
@@ -41,7 +41,7 @@ __all__ = ["SSDTransform", "SSDAnnotationTransform"]
 class SSDTransform(torch.nn.Module):
     """ """
 
-    def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: Split):
+    def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: SplitEnum):
         """
 
         :param image_size:
@@ -54,7 +54,7 @@ class SSDTransform(torch.nn.Module):
 
         transform_list = []
 
-        if split == Split.Training:
+        if split == SplitEnum.training:
             transform_list.extend(
                 [
                     ConvertFromInts(),

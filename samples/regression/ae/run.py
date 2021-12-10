@@ -5,7 +5,7 @@ import copy
 import draugr.visualisation.matplotlib_utilities
 import os
 import time
-from draugr.numpy_utilities import Split, hwc_to_chw
+from draugr.numpy_utilities import SplitEnum, hwc_to_chw
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     global_torch_device,
@@ -81,8 +81,8 @@ def train_model(
     try:
         sess = tqdm(range(num_updates), leave=False)
         for update_i in sess:
-            for phase in [Split.Training, Split.Validation]:
-                if phase == Split.Training:
+            for phase in [SplitEnum.training, SplitEnum.validation]:
+                if phase == SplitEnum.training:
                     scheduler.step()
                     for param_group in optimizer.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
@@ -96,7 +96,7 @@ def train_model(
                 )
 
                 optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == Split.Training):
+                with torch.set_grad_enabled(phase == SplitEnum.training):
                     seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
                     ret = calculate_multi_auto_encoder_loss(
                         (seg_pred, seg_target),
@@ -105,14 +105,14 @@ def train_model(
                         (normals_pred, normals_target),
                     )
 
-                    if phase == Split.Training:
+                    if phase == SplitEnum.training:
                         ret.loss.backward()
                         optimizer.step()
 
                 update_loss = ret.loss.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == Split.Validation and update_loss < best_loss:
+                if phase == SplitEnum.validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     writer.image(f"rgb_imgs", rgb_imgs, update_i)

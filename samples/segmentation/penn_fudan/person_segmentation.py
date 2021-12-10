@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy
 import torch
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.random_utilities import seed_stack
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
@@ -176,12 +176,12 @@ def main():
     learning_rate = 0.01
     seed_stack(SEED)
 
-    train_set = PennFudanDataset(base_path, Split.Training)
+    train_set = PennFudanDataset(base_path, SplitEnum.training)
     train_loader = DataLoader(
         train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers
     )
     valid_loader = DataLoader(
-        PennFudanDataset(base_path, Split.Validation),
+        PennFudanDataset(base_path, SplitEnum.validation),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,

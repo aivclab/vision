@@ -7,7 +7,7 @@ import time
 import torch
 from PIL import Image, ImageFont
 from apppath import ensure_existence
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes
 from draugr.torch_utilities import global_torch_device
 from pathlib import Path
@@ -53,7 +53,7 @@ def run_demo(
 
     cpu_device = torch.device("cpu")
     transforms = SSDTransform(
-        cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
+        cfg.input.image_size, cfg.input.pixel_mean, split=SplitEnum.testing
     )
     model.eval()
 

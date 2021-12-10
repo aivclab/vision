@@ -5,7 +5,7 @@ import os
 import time
 import torch
 from apppath import ensure_existence
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TorchCacheSession,
     TorchEvalSession,
@@ -244,7 +244,7 @@ def train_ssd(data_root: Path, cfg, solver_cfg: NOD, kws: NOD) -> Module:
         data_loader=object_detection_data_loaders(
             data_root=data_root,
             cfg=cfg,
-            split=Split.Training,
+            split=SplitEnum.training,
             distributed=kws.distributed,
             max_iter=solver_cfg.max_iter // kws.num_gpus,
             start_iter=arguments["iteration"],

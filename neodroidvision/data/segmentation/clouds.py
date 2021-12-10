@@ -23,7 +23,7 @@ from draugr.numpy_utilities import (
     hwc_to_chw,
     float_chw_to_hwc_uint,
     chw_to_hwc,
-    Split,
+    SplitEnum,
 )
 from draugr.opencv_utilities import cv2_resize
 
@@ -78,7 +78,7 @@ class CloudSegmentationDataset(Dataset):
             self,
             csv_path: Path,
             image_data_path: Path,
-            subset: Split = Split.Training,
+            subset: SplitEnum = SplitEnum.training,
             transp=True,
             N_FOLDS=10,
             SEED=246232,
@@ -186,7 +186,7 @@ class CloudSegmentationDataset(Dataset):
             masks = augmented["mask"]
         img_o = uint_hwc_to_chw_float(img_o)
         masks = hwc_to_chw(masks)
-        if self.subset == Split.Testing:
+        if self.subset == SplitEnum.testing:
             return img_o, masks, self.no_info_mask(img)
         return img_o, masks
 

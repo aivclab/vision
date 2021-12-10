@@ -11,7 +11,7 @@ __all__ = ["SplitDictImageFolder", "DictImageFolder"]
 
 from pathlib import Path
 
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     DictDatasetFolder,
     SplitDictDatasetFolder,
@@ -51,7 +51,7 @@ class SplitDictImageFolder(SplitDictDatasetFolder):
             transform: callable = transforms.ToTensor(),
             target_transform: callable = None,
             loader=default_loader,
-            split: Split = Split.Training,
+            split: SplitEnum = SplitEnum.training,
     ):
         super().__init__(
             root,

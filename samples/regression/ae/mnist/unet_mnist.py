@@ -5,7 +5,7 @@ import os
 import time
 
 from apppath import ensure_existence
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession, global_torch_device,
@@ -79,8 +79,8 @@ def training(
     try:
         sess = tqdm(range(num_updates), leave=False, disable=False)
         for update_i in sess:
-            for phase in [Split.Training, Split.Validation]:
-                if phase == Split.Training:
+            for phase in [SplitEnum.training, SplitEnum.validation]:
+                if phase == SplitEnum.training:
 
                     for param_group in optimizer.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
@@ -92,7 +92,7 @@ def training(
                 rgb_imgs, *_ = next(data_iterator)
 
                 optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == Split.Training):
+                with torch.set_grad_enabled(phase == SplitEnum.training):
                     if denoise:  # =='denoise':
                         model_input = rgb_imgs + torch.normal(
                             mean=0.0,
@@ -107,7 +107,7 @@ def training(
                     recon_pred, *_ = model(torch.clamp(model_input, 0.0, 1.0))
                     ret = criterion(recon_pred, rgb_imgs)
 
-                    if phase == Split.Training:
+                    if phase == SplitEnum.training:
                         ret.backward()
                         optimizer.step()
                         scheduler.step()
@@ -115,7 +115,7 @@ def training(
                 update_loss = ret.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == Split.Validation and update_loss < best_loss:
+                if phase == SplitEnum.validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     _format = "NCHW"

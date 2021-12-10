@@ -10,7 +10,7 @@ __doc__ = r"""
 import numpy
 import torch
 import torchvision
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset
 from matplotlib import pyplot
 from pathlib import Path
@@ -63,17 +63,17 @@ class ImageNet2012(SupervisedDataset):
         return self._crop_size, self._crop_size
 
     @property
-    def split_names(self) -> Dict[Split, str]:
+    def split_names(self) -> Dict[SplitEnum, str]:
         """
 
         :return:
         :rtype:"""
-        return {Split.Training: "train", Split.Validation: "val", Split.Testing: "test"}
+        return {SplitEnum.training: "train", SplitEnum.validation: "val", SplitEnum.testing: "test"}
 
     def __init__(
             self,
             dataset_path: Path,
-            split: Split = Split.Training,
+            split: SplitEnum = SplitEnum.training,
             resize_s: int = 256,
             crop_size: int = 224,
     ):
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         batch_size = 32
 
         dt = ImageNet2012(
-            Path.home() / "Data" / "Datasets" / "ILSVRC2012", split=Split.Validation
+            Path.home() / "Data" / "Datasets" / "ILSVRC2012", split=SplitEnum.validation
         )
 
         val_loader = torch.utils.data.DataLoader(

@@ -7,7 +7,7 @@ import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 from draugr import AverageMeter
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from itertools import count
 from matplotlib import pyplot
 from pathlib import Path
@@ -52,7 +52,7 @@ if __name__ == "__main__":
             SAN_CONFIG,
         )
 
-        dataset = SAN_CONFIG.dataset_type(SAN_CONFIG.dataset_path, Split.Validation)
+        dataset = SAN_CONFIG.dataset_type(SAN_CONFIG.dataset_path, SplitEnum.validation)
 
         logger = get_logger()
         logger.info(SAN_CONFIG)

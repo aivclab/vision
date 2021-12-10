@@ -22,7 +22,7 @@ from neodroidvision.utilities import (
 
 __all__ = ["do_ssd_evaluation"]
 
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 
 
 def compute_on_dataset(
@@ -173,7 +173,7 @@ def do_ssd_evaluation(
             object_detection_data_loaders(
                 data_root=data_root,
                 cfg=cfg,
-                split=Split.Validation,
+                split=SplitEnum.validation,
                 distributed=distributed,
             ),
     ):

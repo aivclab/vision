@@ -6,7 +6,7 @@ import numpy
 import pandas
 import seaborn
 import torch
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchEvalSession,
@@ -260,7 +260,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
         CloudSegmentationDataset(
             df_path=base_path / "sample_submission.csv",
             resized_loc=resized_loc,
-            subset=Split.Testing,
+            subset=SplitEnum.testing,
         ),
         batch_size=batch_size,
         shuffle=False,
@@ -350,7 +350,7 @@ def main():
         CloudSegmentationDataset(
             df_path=base_path / "train.csv",
             resized_loc=resized_loc,
-            subset=Split.Training,
+            subset=SplitEnum.training,
         ),
         batch_size=batch_size,
         shuffle=True,
@@ -360,7 +360,7 @@ def main():
         CloudSegmentationDataset(
             df_path=base_path / "train.csv",
             resized_loc=resized_loc,
-            subset=Split.Validation,
+            subset=SplitEnum.validation,
         ),
         batch_size=batch_size,
         shuffle=False,

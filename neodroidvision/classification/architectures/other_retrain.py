@@ -17,27 +17,27 @@ def other_retrain(
     Inplace op but returns the model anyway
     """
     if arch.startswith("alexnet"):
-        model._action_classifier[6] = torch.nn.Linear(
-            model._action_classifier[6].in_features, num_classes
+        model.classifier[6] = torch.nn.Linear(
+            model.classifier[6].in_features, num_classes
         )
         print(
-            f"=> reshaped AlexNet classifier layer with: {str(model._action_classifier[6])}"
+            f"=> reshaped AlexNet classifier layer with: {str(model.classifier[6])}"
         )
 
     elif arch.startswith("vgg"):
-        model._action_classifier[6] = torch.nn.Linear(
-            model._action_classifier[6].in_features, num_classes
+        model.classifier[6] = torch.nn.Linear(
+            model.classifier[6].in_features, num_classes
         )
         print(
-            f"=> reshaped VGG classifier layer with: {str(model._action_classifier[6])}"
+            f"=> reshaped VGG classifier layer with: {str(model.classifier[6])}"
         )
 
     elif arch.startswith("densenet"):
-        model._action_classifier = torch.nn.Linear(
-            model._action_classifier.in_features, num_classes
+        model.classifier = torch.nn.Linear(
+            model.classifier.in_features, num_classes
         )
         print(
-            f"=> reshaped DenseNet classifier layer with: {str(model._action_classifier)}"
+            f"=> reshaped DenseNet classifier layer with: {str(model.classifier)}"
         )
 
     elif arch.startswith("inception"):

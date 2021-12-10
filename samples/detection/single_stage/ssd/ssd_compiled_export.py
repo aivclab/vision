@@ -3,7 +3,7 @@ import cv2
 import torch
 from apppath import ensure_existence
 from draugr import sprint
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import global_torch_device
 from pathlib import Path
@@ -56,7 +56,7 @@ def export_detection_model(
     model.to(global_torch_device())
 
     transforms = SSDTransform(
-        cfg.input.image_size, cfg.input.pixel_mean, split=Split.Testing
+        cfg.input.image_size, cfg.input.pixel_mean, split=SplitEnum.testing
     )
     model.eval()
 

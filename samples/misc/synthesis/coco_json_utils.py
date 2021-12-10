@@ -67,7 +67,7 @@ class AnnotationJsonUtils:
         self._mask_image = self._mask_image.convert("RGB")
         self._width, self._height = self._mask_image.size
 
-        # Split up the multi-colored masks into multiple 0/1 bit masks
+        # SplitEnum up the multi-colored masks into multiple 0/1 bit masks
         self._isolate_masks()
 
         # Create annotations from the masks

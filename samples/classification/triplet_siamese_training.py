@@ -9,7 +9,7 @@ import numpy
 import torch
 import torch.nn.functional as F
 import torchvision.utils
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 
 from draugr import IgnoreInterruptSignal
 from draugr.torch_utilities import (
@@ -78,7 +78,7 @@ def vis(model, data_dir, img_size):
                             transforms.ToTensor(),
                         ]
                     ),
-                    split=Split.Validation,
+                    split=SplitEnum.validation,
                 ),
                 shuffle=True,
                 num_workers=0,
@@ -105,7 +105,7 @@ def stest_one_versus_many(model, data_dir, img_size):
                         transforms.ToTensor(),
                     ]
                 ),
-                split=Split.Testing,
+                split=SplitEnum.testing,
             ),
             num_workers=0,
             batch_size=1,
@@ -224,7 +224,7 @@ def train_siamese(
                     transforms.ToTensor(),
                 ]
             ),
-            split=Split.Training,
+            split=SplitEnum.training,
         ),
         shuffle=True,
         num_workers=0,
@@ -241,7 +241,7 @@ def train_siamese(
                     transforms.ToTensor(),
                 ]
             ),
-            split=Split.Validation,
+            split=SplitEnum.validation,
         ),
         shuffle=True,
         num_workers=0,

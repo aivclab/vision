@@ -4,12 +4,33 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
+from pathlib import Path
+from typing import Sequence, Union
+
 import numpy
 from matplotlib import pyplot
+from matplotlib.colors import Colormap, LinearSegmentedColormap
+from numpy import ndarray
+from warg import Number
+
+
+def discrete_cmap(N:int, base_cmap:Union[Colormap, str, None]=None)->LinearSegmentedColormap:
+    """Create an N-bin discrete colormap from the specified input map"""
+
+    # Note that if base_cmap is a string or None, you can simply do
+    #    return pyplot.cm.get_cmap(base_cmap, N)
+    # The following works for string, None, or a colormap instance:
+
+    base = pyplot.cm.get_cmap(base_cmap)
+    color_list = base(numpy.linspace(0, 1, N))
+    cmap_name = base.name + str(N)
+    return base.from_list(cmap_name, color_list, N)
 
 
 def scatter_plot_encoding_space(
-        out_path, mean, log_var, labels, encoding_space_range=1, min_size_constant=2, N=10
+        out_path:Path, mean:ndarray, log_var:ndarray, labels:Sequence, encoding_space_range:Number=1,
+    min_size_constant:Number=2,
+    N:int=10
 ):
     """
 
@@ -23,7 +44,7 @@ def scatter_plot_encoding_space(
     :return:"""
     sizes = numpy.abs(log_var.mean(-1)) + min_size_constant
 
-    pyplot.figure(figsize=(8, 6))
+    fig = pyplot.figure(figsize=(8, 6))
     pyplot.scatter(
         mean[:, 0],
         mean[:, 1],
@@ -42,17 +63,5 @@ def scatter_plot_encoding_space(
 
     pyplot.grid(True)
     pyplot.savefig(out_path)
-    pyplot.clf()
+    return fig
 
-
-def discrete_cmap(N, base_cmap=None):
-    """Create an N-bin discrete colormap from the specified input map"""
-
-    # Note that if base_cmap is a string or None, you can simply do
-    #    return pyplot.cm.get_cmap(base_cmap, N)
-    # The following works for string, None, or a colormap instance:
-
-    base = pyplot.cm.get_cmap(base_cmap)
-    color_list = base(numpy.linspace(0, 1, N))
-    cmap_name = base.name + str(N)
-    return base.from_list(cmap_name, color_list, N)
