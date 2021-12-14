@@ -12,3 +12,4 @@ from .torch_utilities import *
 
 # from .tf_utilities import *
 from .visualisation import *
+from .conversion import *

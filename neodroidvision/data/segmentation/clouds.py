@@ -86,7 +86,7 @@ class CloudSegmentationDataset(Dataset):
 
         self.transp = transp
 
-        if subset != subset.Testing:
+        if subset != subset.testing:
             data_frame = pandas.read_csv(csv_path / f"train.csv")
         else:
             data_frame = pandas.read_csv(csv_path / f"sample_submission.csv")
@@ -97,7 +97,7 @@ class CloudSegmentationDataset(Dataset):
         self.subset = subset
         self.base_image_data = image_data_path
 
-        if subset != subset.Testing:
+        if subset != subset.testing:
             id_mask_count = (
                 data_frame.loc[
                     data_frame["EncodedPixels"].isnull() == False, "Image_Label"
@@ -119,7 +119,7 @@ class CloudSegmentationDataset(Dataset):
 
             self.image_data_path = image_data_path / "train_images_525"
 
-            if subset == subset.Validation:
+            if subset == SplitEnum.validation:
                 self.img_ids = ids[li[0][1]]
             else:
                 self.img_ids = ids[li[0][0]]
@@ -132,7 +132,7 @@ class CloudSegmentationDataset(Dataset):
             )
             self.image_data_path = image_data_path / "test_images_525"
 
-        if subset == subset.Training:
+        if subset == SplitEnum.training:
             self.transforms = albumentations.Compose(
                 self.training_augmentations()  # +
                 #                   self.validation_augmentations()

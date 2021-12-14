@@ -67,7 +67,10 @@ class VggFaces2(SupervisedDataset):
         N_IDENTITY_PRETRAIN = 8631  # the number of identities used in training by Caffe
         identity_list = meta_file
         df = pandas.read_csv(
-            identity_list, sep=",\s+", quoting=csv.QUOTE_ALL, encoding="utf-8"
+            identity_list,
+            sep=",\s+",
+            quoting=csv.QUOTE_ALL, encoding="utf-8",
+            engine='python'
 
         )
         df["class"] = -1
@@ -115,6 +118,8 @@ class VggFaces2(SupervisedDataset):
 
         self._image_list_file_path = image_list_file_path
         meta_id_path = dataset_path / "identity_meta.csv"
+        if not meta_id_path.exists():
+            meta_id_path = dataset_path.parent/"meta"/meta_id_path.name
         assert meta_id_path.exists(), f"meta id path {meta_id_path} does not exists"
         assert resize_s > 2, "resize_s should be >2"
         self._split = split
@@ -177,7 +182,7 @@ if __name__ == "__main__":
     batch_size = 32
 
     dt = VggFaces2(
-        Path.home() / "Data/vggface2",
+        Path.home() / "Data"/"VGG-Face2"/'data',
         split=SplitEnum.testing,
         # raw_images=True
     )
@@ -189,11 +194,12 @@ if __name__ == "__main__":
     for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
             enumerate(test_loader),
             total=len(test_loader),
-            desc="Bro",
+            desc=f'{test_loader.dataset}',
             ncols=80,
             leave=False,
     ):
         pyplot.imshow(dt.inverse_transform(imgs[0]))
+        pyplot.title(f'{label[0],class_ids[0]}')
         # pyplot.imshow(imgs)
         pyplot.show()
         break

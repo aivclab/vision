@@ -6,10 +6,10 @@ from typing import Tuple
 import numpy
 import torch
 from PIL import Image
-from imageio import imwrite
+
 
 __author__ = "Christian Heider Nielsen"
-__doc__ = ""
+__doc__ = r""""""
 
 from numpy import ndarray
 
@@ -86,4 +86,5 @@ def plot_manifold(
     vectors = sample_2d_latent_vectors(sample_range, n_img_x, n_img_y).to("cuda")
     encodings = model(vectors).to("cpu")
     images = encodings.reshape(n_img_x * n_img_y, img_h, img_w)
-    imwrite(str(out_path), compile_encoding_image(images, [n_img_y, n_img_x]))
+    from imageio import imwrite
+    imwrite(str(out_path), compile_encoding_image(images, (n_img_y, n_img_x)))

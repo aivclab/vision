@@ -32,20 +32,24 @@ class PairDataset(
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws
     def __init__(
-            self, data_path: Union[str, Path], split: SplitEnum = SplitEnum.training, **kwargs
+            self, data_path: Union[str, Path],
+        split: SplitEnum = SplitEnum.training,
+        return_categories:bool=False,
+        **kwargs
     ):
         super().__init__()
 
+        self.return_categories = return_categories
         self.split = split
         # name = self.split_names[split]
-        if split == split.Testing:
-            name = split.Testing.value
-            self._dataset = DictImageFolder(root=data_path / name, **kwargs)
+        if split == SplitEnum.testing:
+            self._dataset = DictImageFolder(root=data_path / SplitEnum.testing.value, **kwargs)
         else:
-            name = split.Training.value
             self._dataset = SplitDictImageFolder(
-                root=data_path / name, split=split, **kwargs
+                root=data_path / SplitEnum.training.value,
+                split=self.split, **kwargs
             )
+
 
     def __getitem__(self, idx1: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
@@ -71,6 +75,7 @@ class PairDataset(
                     t2, random.randint(0, self._dataset.category_sizes[t2])
                 )[0],
                 torch.ones(1, dtype=torch.long),
+            *(t1,t2 if self.return_categories else ())
             )
 
         while True:
@@ -82,6 +87,7 @@ class PairDataset(
             self._dataset.sample(t1, idx1)[0],
             self._dataset.sample(t1, idx2)[0],
             torch.zeros(1, dtype=torch.long),
+            *(t1,t1 if self.return_categories else ())
         )
 
     @property
@@ -115,16 +121,14 @@ class PairDataset(
             )
         )
         for _ in range(3):
-            images1, images2, labels = next(dl)
-            X1 = images1.numpy()
-            X1 = numpy.transpose(X1, [0, 2, 3, 1])
-            X2 = images2.numpy()
-            X2 = numpy.transpose(X2, [0, 2, 3, 1])
+            images1, images2, *labels = next(dl)
+            X1 = numpy.transpose(images1.numpy(), [0, 2, 3, 1])
+            X2 = numpy.transpose(images2.numpy(), [0, 2, 3, 1])
             if horizontal_merge:
                 X = numpy.dstack((X1, X2))
             else:
                 X = numpy.hstack((X1, X2))
-            PairDataset.plot_images(X, labels)
+            PairDataset.plot_images(X, list(zip(*labels)))
 
     @staticmethod
     def plot_images(images, label=None) -> None:
@@ -135,14 +139,14 @@ class PairDataset(
         :param label:
         :type label:"""
         images = images.squeeze()
-        if label is not None:
-            assert len(images) == len(label) == 9
+        if label:
+            assert len(images) == len(label) == 9, f'{len(images), len(label) }'
 
         fig, axes = pyplot.subplots(3, 3)
         for i, ax in enumerate(axes.flat):
             ax.imshow(images[i], cmap="Greys_r")
 
-            if label is not None:
+            if label:
                 ax.set_xlabel(f"{label[i]}")
             ax.set_xticks([])
             ax.set_yticks([])
@@ -151,7 +155,9 @@ class PairDataset(
 
 
 if __name__ == "__main__":
-    sd = PairDataset(Path.home() / "Data" / "mnist_png", split=SplitEnum.validation)
+    sd = PairDataset(Path.home() / "Data" / "mnist_png",
+                     split=SplitEnum.validation,
+                     return_categories=True)
     print(sd.predictor_shape)
     print(sd.response_shape)
     sd.sample()
