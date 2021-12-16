@@ -8,6 +8,8 @@ import numpy as np
 from draugr.numpy_utilities import SplitEnum
 from tqdm import trange
 
+from .augmentation import rotate_y
+
 MIN_X, MAX_X = (-0.5, 0.5)
 MIN_Y, MAX_Y = (-0.5, 0.5)
 MIN_Z, MAX_Z = (-3, 3)
@@ -74,7 +76,7 @@ def img_to_point_cloud(input_image, voxel):
   """
   non_zero_coord = np.transpose(np.nonzero(input_image))
 
-  # dict for fast looking of neighboor ocupancy
+  # dict for fast looking of neighbor occupancy
   non_zero_dict = {}
   for i in range(input_image.shape[0]):
     for j in range(input_image.shape[1]):
@@ -114,31 +116,16 @@ def img_to_point_cloud(input_image, voxel):
 
   cloud = np.concatenate(cloud)
 
-  # make max range 0-1
   xyzmin = np.min(cloud[:, :3], axis=0)
   xyzmax = np.max(cloud[:, :3], axis=0)
   diff = xyzmax - xyzmin
-  cloud[:, :3] = ((cloud[:, :3] - xyzmin[np.argmax(diff)]) / diff[np.argmax(diff)])
+  cloud[:, :3] = ((cloud[:, :3] - xyzmin[np.argmax(diff)]) / diff[np.argmax(diff)])  # make max range 0-1
 
-  # 0 mean
-  cloud[:, :3] -= np.mean(cloud[:, :3], axis=0)
+  cloud[:, :3] -= np.mean(cloud[:, :3], axis=0)  # 0 mean
 
   return cloud
 
 
-def Ry(angle, degrees: bool = True):
-  '''rotate along   y axis'''
-  if degrees:
-    angle = np.deg2rad(angle)
-
-  cy = np.cos(angle)
-  sy = np.sin(angle)
-
-  return np.array(
-      [[cy, 0, -sy, 0],
-       [0, 1, 0, 0],
-       [sy, 0, cy, 0],
-       [0, 0, 0, 1]])
 
 
 def save_dataset(X, y, voxel, output, shape=(28, 28)):
@@ -160,7 +147,7 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
 
       # rotate to vertical
       transf = np.c_[data[:, :3], np.ones(data[:, :3].shape[0])]
-      transf = transf @ Ry(90)
+      transf = transf @ rotate_y(90)
       data[:, :3] = transf[:, :-1]
 
       grp = hf.create_group(str(i))

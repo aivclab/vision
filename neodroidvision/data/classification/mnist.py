@@ -330,11 +330,17 @@ class MNISTDataset(SupervisedDataset):
 if __name__ == "__main__":
 
     def a():
+        """
+
+        """
         MNISTDataset(Path.home() / "Data" / "MNIST").sample()
         pyplot.show()
 
 
     def siuadyh():
+        """
+
+        """
         import tqdm
 
         batch_size = 32

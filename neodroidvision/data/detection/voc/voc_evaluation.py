@@ -384,6 +384,14 @@ def calc_detection_voc_ap(prec, rec, use_07_metric=False):
 
 
 def voc_evaluation(dataset, predictions, output_dir: Path, iteration=None):
+    """
+
+    :param dataset:
+    :param predictions:
+    :param output_dir:
+    :param iteration:
+    :return:
+    """
     class_names = dataset.class_names
 
     pred_boxes_list = []

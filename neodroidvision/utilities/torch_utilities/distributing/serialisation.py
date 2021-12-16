@@ -6,6 +6,12 @@ __all__ = ["to_byte_tensor", "serialise_byte_tensor", "deserialise_byte_tensor"]
 
 
 def to_byte_tensor(data: Any, *, device: str = "cuda") -> torch.ByteTensor:
+    """
+
+    :param data:
+    :param device:
+    :return:
+    """
     return torch.ByteTensor(
         torch.ByteStorage.from_buffer(
             pickle.dumps(data)  # gets a byte representation for the data
@@ -36,6 +42,12 @@ def serialise_byte_tensor(
 
 
 def deserialise_byte_tensor(size_list, tensor_list) -> List:
+    """
+
+    :param size_list:
+    :param tensor_list:
+    :return:
+    """
     data_list = []
     for size, tensor in zip(size_list, tensor_list):
         data_list.append(pickle.loads(tensor.cpu().numpy().tobytes()[:size]))

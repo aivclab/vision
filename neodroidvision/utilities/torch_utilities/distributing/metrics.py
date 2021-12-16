@@ -26,6 +26,13 @@ def write_metrics_recursive(
 
         eval_result: typing.Mapping, prefix: str, summary_writer: Writer, global_step: int
 ) -> None:
+    """
+
+    :param eval_result:
+    :param prefix:
+    :param summary_writer:
+    :param global_step:
+    """
     for key in eval_result:
         value = eval_result[key]
         tag = f"{prefix}/{key}"
