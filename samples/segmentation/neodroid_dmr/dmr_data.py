@@ -16,7 +16,7 @@ __author__ = "Christian Heider Nielsen"
 
 
 def neodroid_camera_data_iterator(
-        env: DictUnityEnvironment, device: torch.device, batch_size: int = 12
+    env: DictUnityEnvironment, device: torch.device, batch_size: int = 12
 ) -> Any:
     """
 

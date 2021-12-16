@@ -64,14 +64,14 @@ class SkipHourglassFission(nn.Module):
             )
 
     def __init__(
-            self,
-            *,
-            input_channels: int,
-            output_heads: Union[Dict, Iterable],
-            encoding_depth: int = 5,
-            start_channels: int = 32,
-            up_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
-            merge_mode: MergeMode = MergeMode.Add,
+        self,
+        *,
+        input_channels: int,
+        output_heads: Union[Dict, Iterable],
+        encoding_depth: int = 5,
+        start_channels: int = 32,
+        up_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
+        merge_mode: MergeMode = MergeMode.Add,
     ):
         """
         :type input_channels: int
@@ -140,14 +140,12 @@ class SkipHourglassFission(nn.Module):
             init.constant_(m.bias, 0)
 
     def reset_params(self) -> None:
-        """
-
-        """
+        """ """
         for i, m in enumerate(self.modules()):
             self.weight_init(m)
 
     def forward(
-            self, x_enc: torch.Tensor
+        self, x_enc: torch.Tensor
     ) -> Union[Tuple[torch.Tensor], Dict[str, torch.Tensor]]:
         """
 
@@ -160,7 +158,7 @@ class SkipHourglassFission(nn.Module):
         encoder_skips = []
 
         for i, module in enumerate(
-                self.down_convolutions
+            self.down_convolutions
         ):  # encoder pathway, keep outputs for merging
             x_enc, before_pool = module(x_enc)
             encoder_skips.append(before_pool)

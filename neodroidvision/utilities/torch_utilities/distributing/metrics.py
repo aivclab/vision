@@ -23,8 +23,7 @@ __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 
 
 def write_metrics_recursive(
-
-        eval_result: typing.Mapping, prefix: str, summary_writer: Writer, global_step: int
+    eval_result: typing.Mapping, prefix: str, summary_writer: Writer, global_step: int
 ) -> None:
     """
 

@@ -54,11 +54,11 @@ def masks_to_color_img(masks: numpy.ndarray) -> numpy.ndarray:
 
 
 def plot_prediction(
-        img_array: numpy.ndarray,
-        labels: Sequence,
-        max_pred: Sequence,
-        pred: Sequence,
-        n_col: int = 3,
+    img_array: numpy.ndarray,
+    labels: Sequence,
+    max_pred: Sequence,
+    pred: Sequence,
+    n_col: int = 3,
 ) -> None:
     """
 
@@ -83,7 +83,7 @@ def plot_prediction(
 
 
 def bounding_box_from_mask(
-        hard_mask: numpy.ndarray,
+    hard_mask: numpy.ndarray,
 ) -> Tuple[Number, Number, Number, Number]:
     """
 

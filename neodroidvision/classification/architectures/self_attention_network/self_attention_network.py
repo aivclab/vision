@@ -22,15 +22,15 @@ class SelfAttentionModule(nn.Module):
     """ """
 
     def __init__(
-            self,
-            self_attention_type: SelfAttentionTypeEnum,
-            in_planes,
-            rel_planes,
-            out_planes,
-            share_planes,
-            kernel_size: int = 3,
-            stride: int = 1,
-            dilation: int = 1,
+        self,
+        self_attention_type: SelfAttentionTypeEnum,
+        in_planes,
+        rel_planes,
+        out_planes,
+        share_planes,
+        kernel_size: int = 3,
+        stride: int = 1,
+        dilation: int = 1,
     ):
         """
 
@@ -126,7 +126,7 @@ class SelfAttentionModule(nn.Module):
         )
 
     def encode_position(
-            self, height: int, width: int, is_cuda: bool = True
+        self, height: int, width: int, is_cuda: bool = True
     ) -> torch.Tensor:
         """
 
@@ -188,15 +188,15 @@ class SelfAttentionBottleneck(nn.Module):
     """ """
 
     def __init__(
-            self,
-            self_attention_type: SelfAttentionTypeEnum,
-            in_planes,
-            rel_planes,
-            mid_planes,
-            out_planes,
-            share_planes: int = 8,
-            kernel_size: int = 7,
-            stride: int = 1,
+        self,
+        self_attention_type: SelfAttentionTypeEnum,
+        in_planes,
+        rel_planes,
+        mid_planes,
+        out_planes,
+        share_planes: int = 8,
+        kernel_size: int = 7,
+        stride: int = 1,
     ):
         super(SelfAttentionBottleneck, self).__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
@@ -249,12 +249,12 @@ class SelfAttentionNetwork(nn.Module):
         )
 
     def __init__(
-            self,
-            self_attention_type: SelfAttentionTypeEnum,
-            block,
-            layers,
-            kernels,
-            num_classes,
+        self,
+        self_attention_type: SelfAttentionTypeEnum,
+        block,
+        layers,
+        kernels,
+        num_classes,
     ):
         super().__init__()
         c = 64
@@ -295,12 +295,12 @@ class SelfAttentionNetwork(nn.Module):
 
     @staticmethod
     def _make_layer(
-            self_attention_type: SelfAttentionTypeEnum,
-            block,
-            planes,
-            blocks,
-            kernel_size: int = 7,
-            stride: int = 1,
+        self_attention_type: SelfAttentionTypeEnum,
+        block,
+        planes,
+        blocks,
+        kernel_size: int = 7,
+        stride: int = 1,
     ) -> nn.Module:
         layers = []
         for _ in range(0, blocks):
@@ -337,11 +337,11 @@ class SelfAttentionNetwork(nn.Module):
 
 
 def make_san(
-        *,
-        self_attention_type: SelfAttentionTypeEnum = SelfAttentionTypeEnum.pairwise,
-        layers,
-        kernels,
-        num_classes,
+    *,
+    self_attention_type: SelfAttentionTypeEnum = SelfAttentionTypeEnum.pairwise,
+    layers,
+    kernels,
+    num_classes,
 ) -> nn.Module:
     """
 
@@ -368,8 +368,8 @@ if __name__ == "__main__":
             kernels=[3, 7, 7, 7, 7],
             num_classes=1000,
         )
-            .cuda()
-            .eval()
+        .cuda()
+        .eval()
     )
     print(net)
     y = net(torch.randn(4, 3, 224, 224).cuda())

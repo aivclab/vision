@@ -17,15 +17,13 @@ from typing import Tuple, Union
 
 
 class PairRankingSiamese(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(
-            self,
-            in_size: Union[int, Tuple[int, int]] = (105, 105),
-            output_size: int = 1,
-            input_channels: int = 1,
+        self,
+        in_size: Union[int, Tuple[int, int]] = (105, 105),
+        output_size: int = 1,
+        input_channels: int = 1,
     ):
         super().__init__()
 

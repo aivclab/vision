@@ -11,7 +11,7 @@ __all__ = ["other_retrain"]
 
 
 def other_retrain(
-        arch: str, model: torch.nn.Module, num_classes: int
+    arch: str, model: torch.nn.Module, num_classes: int
 ) -> torch.nn.Module:
     """
     Inplace op but returns the model anyway
@@ -20,25 +20,17 @@ def other_retrain(
         model.classifier[6] = torch.nn.Linear(
             model.classifier[6].in_features, num_classes
         )
-        print(
-            f"=> reshaped AlexNet classifier layer with: {str(model.classifier[6])}"
-        )
+        print(f"=> reshaped AlexNet classifier layer with: {str(model.classifier[6])}")
 
     elif arch.startswith("vgg"):
         model.classifier[6] = torch.nn.Linear(
             model.classifier[6].in_features, num_classes
         )
-        print(
-            f"=> reshaped VGG classifier layer with: {str(model.classifier[6])}"
-        )
+        print(f"=> reshaped VGG classifier layer with: {str(model.classifier[6])}")
 
     elif arch.startswith("densenet"):
-        model.classifier = torch.nn.Linear(
-            model.classifier.in_features, num_classes
-        )
-        print(
-            f"=> reshaped DenseNet classifier layer with: {str(model.classifier)}"
-        )
+        model.classifier = torch.nn.Linear(model.classifier.in_features, num_classes)
+        print(f"=> reshaped DenseNet classifier layer with: {str(model.classifier)}")
 
     elif arch.startswith("inception"):
         model.AuxLogits.fc = torch.nn.Linear(

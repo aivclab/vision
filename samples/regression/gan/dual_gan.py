@@ -73,13 +73,11 @@ def sample_x(X, size):
 
     """
     start_idx = numpy.random.randint(0, X.shape[0] - size)
-    return X[start_idx: start_idx + size]
+    return X[start_idx : start_idx + size]
 
 
 def main():
-    """
-
-    """
+    """ """
     mnist_l = torchvision.datasets.MNIST(
         PROJECT_APP_PATH.user_cache / "data",
         train=True,
@@ -142,7 +140,7 @@ def main():
     del X_train  # Cleanup
 
     with TensorBoardPytorchWriter(
-            PROJECT_APP_PATH.user_log / str(time.time())
+        PROJECT_APP_PATH.user_log / str(time.time())
     ) as writer:
 
         for it in range(1000000):

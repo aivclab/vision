@@ -111,7 +111,7 @@ class CocoEvaluator(object):
             coco_eval.summarize()
 
     def prepare_data(
-            self, predictions: Sequence, iou_type: IouType
+        self, predictions: Sequence, iou_type: IouType
     ) -> List[Dict[str, Any]]:
         """
 
@@ -397,7 +397,7 @@ def load_results(self, resFile) -> COCO:
     assert type(anns) == list, "results in not an array of objects"
     annsImgIds = [ann["image_id"] for ann in anns]
     assert set(annsImgIds) == (
-            set(annsImgIds) & set(self.getImgIds())
+        set(annsImgIds) & set(self.getImgIds())
     ), "Results do not correspond to current coco set"
     if "caption" in anns[0]:
         imgIds = set([img["id"] for img in res.dataset["images"]]) & set(

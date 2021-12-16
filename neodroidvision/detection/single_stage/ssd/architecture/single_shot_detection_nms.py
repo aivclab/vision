@@ -15,9 +15,7 @@ from warg import NOD
 
 
 class SingleShotDetectionNms(SingleShotDetection):
-    """
-
-    """
+    """ """
 
     def __init__(self, cfg: NOD):
         super().__init__(cfg)
@@ -42,7 +40,5 @@ class SingleShotDetectionNms(SingleShotDetection):
         return self.box_head(super().forward(images))
 
     def post_init(self) -> None:
-        """
-
-        """
+        """ """
         self.box_head.post_init(**self.priors_cfg)

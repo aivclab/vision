@@ -186,9 +186,7 @@ def update_figures(i):
 
 
 def main():
-    """
-
-    """
+    """ """
     global image_axs
 
     env.reset()

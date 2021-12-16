@@ -35,9 +35,7 @@ class LimitedBatchResampler(BatchSampler):
 
 
 class BatchCollator:
-    """
-
-    """
+    """ """
 
     def __init__(self, wrap: bool = True):
         self.wrap = wrap

@@ -50,7 +50,7 @@ class HigginsVae(VAE):
 
     @staticmethod
     def conv_module(
-            in_channels, out_channels, kernel_size=4, stride=2, padding=1, **conv_kwargs
+        in_channels, out_channels, kernel_size=4, stride=2, padding=1, **conv_kwargs
     ):
         """
 
@@ -80,7 +80,7 @@ class HigginsVae(VAE):
 
     @staticmethod
     def deconv_module(
-            in_channels, out_channels, kernel_size=4, stride=2, padding=1, **convt_kwargs
+        in_channels, out_channels, kernel_size=4, stride=2, padding=1, **convt_kwargs
     ):
         """
 

@@ -41,7 +41,9 @@ if __name__ == "__main__":
 
         seed_stack(3825)
 
-        dataset = PennFudanDataset  # (dataset_root / "PennFudanPed", SplitEnum.training)
+        dataset = (
+            PennFudanDataset  # (dataset_root / "PennFudanPed", SplitEnum.training)
+        )
         categories = dataset.categories
 
         if True:
@@ -59,10 +61,10 @@ if __name__ == "__main__":
         with torch.no_grad():
             with TorchEvalSession(model):
                 for image in tqdm(
-                        to_tensor_generator(
-                            frame_generator(cv2.VideoCapture(0)),
-                            device=global_torch_device(),
-                        )
+                    to_tensor_generator(
+                        frame_generator(cv2.VideoCapture(0)),
+                        device=global_torch_device(),
+                    )
                 ):
                     prediction = model(
                         # torch_vision_normalize_batch_nchw(
@@ -92,6 +94,5 @@ if __name__ == "__main__":
 
                     if cv2.waitKey(1) == 27:
                         break  # esc to quit
-
 
     main()

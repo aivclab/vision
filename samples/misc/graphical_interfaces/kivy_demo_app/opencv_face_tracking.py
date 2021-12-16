@@ -27,9 +27,8 @@ Window.clearcolor = (0.9, 0.9, 0.9, 1)
 
 
 class MainLayout(BoxLayout):
-    """
+    """ """
 
-    """
     _video_capture = None
     _face_cascade = None
     _frame_name = (
@@ -92,9 +91,7 @@ class MainLayout(BoxLayout):
         # setattr(self.dropdown_btn, 'text', model)
 
     def build(self):
-        """
-
-        """
+        """ """
         apply_btn = Button(text="Apply", bold=True)
         apply_btn.bind(on_press=self.settings_process)
 
@@ -113,18 +110,14 @@ class MainLayout(BoxLayout):
         )
 
     def start(self):
-        """
-
-        """
+        """ """
         if self.ids.status.text == "Stop":
             self.stop_stream()
         else:
             self.start_stream()
 
     def start_stream(self):
-        """
-
-        """
+        """ """
         self.ids.status.text = "Stop"
         self._video_capture = cv2.VideoCapture(0)
         self._face_cascade = cv2.CascadeClassifier(
@@ -133,9 +126,7 @@ class MainLayout(BoxLayout):
         Clock.schedule_once(self.update)
 
     def stop_stream(self):
-        """
-
-        """
+        """ """
         self.ids.status.text = "Start"
         Clock.unschedule(self.update)
         self._video_capture.release()
@@ -165,18 +156,14 @@ class MainLayout(BoxLayout):
         Clock.schedule_once(self.update)
 
     def close(self):
-        """
-
-        """
+        """ """
         self.stop_stream()
         # self.stop()
         App.get_running_app().stop()
         # exit(0)
 
     def settings(self):
-        """
-
-        """
+        """ """
         self._popup.open()
 
     def settings_process(self, btn):
@@ -292,31 +279,23 @@ MainLayout:
 
 
 class ExitPopup(Popup):
-    """
-
-    """
+    """ """
 
     def __init__(self, **kwargs):
         super(ExitPopup, self).__init__(**kwargs)
         self.register_event_type("on_confirm")
 
     def on_confirm(self):
-        """
-
-        """
+        """ """
         pass
 
     def on_button_yes(self):
-        """
-
-        """
+        """ """
         self.dispatch("on_confirm")
 
 
 def main():
-    """
-
-    """
+    """ """
     VideoStreamApp().run()
 
 

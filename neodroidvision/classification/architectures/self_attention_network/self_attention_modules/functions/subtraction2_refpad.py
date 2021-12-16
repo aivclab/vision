@@ -13,8 +13,8 @@ from .self_attention_utilities import (
 )
 
 _subtraction2_refpad_forward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction2_refpad_forward_kernel(
 const ${Dtype}* bottom1_data, const ${Dtype}* bottom2_data, ${Dtype}* top_data) {
@@ -53,8 +53,8 @@ const ${Dtype}* bottom1_data, const ${Dtype}* bottom2_data, ${Dtype}* top_data) 
 )
 
 _subtraction2_refpad_input1_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction2_refpad_input1_backward_kernel(
     const ${Dtype}* const top_diff, ${Dtype}* bottom_diff) {
@@ -82,8 +82,8 @@ __global__ void subtraction2_refpad_input1_backward_kernel(
 )
 
 _subtraction2_refpad_input2_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction2_refpad_input2_backward_kernel(
     const ${Dtype}* const top_diff, ${Dtype}* bottom_diff) {
@@ -122,7 +122,7 @@ __all__ = ["Subtraction2Refpad", "subtraction2_refpad"]
 class Subtraction2Refpad(Function):
     @staticmethod
     def forward(
-            ctx, input1, input2, kernel_size, stride, padding, dilation
+        ctx, input1, input2, kernel_size, stride, padding, dilation
     ) -> torch.Tensor:
         """
 
@@ -289,25 +289,25 @@ class Subtraction2Refpad(Function):
                     args=[grad_output.data_ptr(), grad_input2.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )
-                grad_input2[..., padding[0] + 1: 2 * padding[0] + 1, :] += torch.flip(
+                grad_input2[..., padding[0] + 1 : 2 * padding[0] + 1, :] += torch.flip(
                     grad_input2[..., : padding[0], :], dims=[2]
                 )
                 grad_input2[
-                ..., input_height - 1: input_height + padding[0] - 1, :
+                    ..., input_height - 1 : input_height + padding[0] - 1, :
                 ] += torch.flip(
-                    grad_input2[..., input_height + padding[0]:, :], dims=[2]
+                    grad_input2[..., input_height + padding[0] :, :], dims=[2]
                 )
-                grad_input2[..., padding[1] + 1: 2 * padding[1] + 1] += torch.flip(
+                grad_input2[..., padding[1] + 1 : 2 * padding[1] + 1] += torch.flip(
                     grad_input2[..., : padding[1]], dims=[3]
                 )
                 grad_input2[
-                ..., input_width - 1: input_width + padding[1] - 1
-                ] += torch.flip(grad_input2[..., input_width + padding[1]:], dims=[3])
+                    ..., input_width - 1 : input_width + padding[1] - 1
+                ] += torch.flip(grad_input2[..., input_width + padding[1] :], dims=[3])
                 grad_input2 = grad_input2[
-                              ...,
-                              padding[0]: padding[0] + input_height,
-                              padding[1]: padding[1] + input_width,
-                              ]
+                    ...,
+                    padding[0] : padding[0] + input_height,
+                    padding[1] : padding[1] + input_width,
+                ]
         return grad_input1, grad_input2, None, None, None, None
 
 
@@ -339,6 +339,7 @@ def subtraction2_refpad(input1, input2, kernel_size=3, stride=1, padding=0, dila
 
 
 if __name__ == "__main__":
+
     def test_subtraction2_refpad():
         import os
 
@@ -395,6 +396,5 @@ if __name__ == "__main__":
             (x1, x2),
         )
         print("test case passed")
-
 
     test_subtraction2_refpad()

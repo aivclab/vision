@@ -42,13 +42,13 @@ class MNISTDataset2(SupervisedDataset):
         return self._resize_shape
 
     def __init__(
-            self,
-            dataset_path: Path,
-            split: SplitEnum = SplitEnum.training,
-            validation: float = 0.3,
-            resize_s: int = 28,
-            seed: int = 42,
-            download: bool = True,
+        self,
+        dataset_path: Path,
+        split: SplitEnum = SplitEnum.training,
+        validation: float = 0.3,
+        resize_s: int = 28,
+        seed: int = 42,
+        download: bool = True,
     ):
         """
         :param dataset_path: dataset directory
@@ -90,9 +90,11 @@ class MNISTDataset2(SupervisedDataset):
 
         if split != SplitEnum.testing:
             torch.manual_seed(seed)
-            train_ind, val_ind, test_ind = SplitIndexer(
-                len(mnist_data), validation=validation, testing=0.0
-            ).shuffled_indices().values()
+            train_ind, val_ind, test_ind = (
+                SplitIndexer(len(mnist_data), validation=validation, testing=0.0)
+                .shuffled_indices()
+                .values()
+            )
             if split == SplitEnum.validation:
                 self.mnist_data_split = Subset(mnist_data, val_ind)
             else:
@@ -158,15 +160,15 @@ class MNISTDataset(SupervisedDataset):
 
     @staticmethod
     def get_train_valid_loader(
-            data_dir: Path,
-            batch_size: int,
-            random_seed: int,
-            *,
-            valid_size: float = 0.1,
-            shuffle: bool = True,
-            num_workers: int = 0,
-            pin_memory: bool = False,
-            using_cuda: bool = True,
+        data_dir: Path,
+        batch_size: int,
+        random_seed: int,
+        *,
+        valid_size: float = 0.1,
+        shuffle: bool = True,
+        num_workers: int = 0,
+        pin_memory: bool = False,
+        using_cuda: bool = True,
     ) -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
         """Train and validation data loaders.
 
@@ -242,12 +244,12 @@ class MNISTDataset(SupervisedDataset):
 
     @staticmethod
     def get_test_loader(
-            data_dir: Path,
-            batch_size: int,
-            *,
-            num_workers: int = 0,
-            pin_memory: bool = False,
-            using_cuda: bool = True,
+        data_dir: Path,
+        batch_size: int,
+        *,
+        num_workers: int = 0,
+        pin_memory: bool = False,
+        using_cuda: bool = True,
     ) -> torch.utils.data.DataLoader:
         """Test datalaoder.
 
@@ -330,22 +332,19 @@ class MNISTDataset(SupervisedDataset):
 if __name__ == "__main__":
 
     def a():
-        """
-
-        """
+        """ """
         MNISTDataset(Path.home() / "Data" / "MNIST").sample()
         pyplot.show()
 
-
     def siuadyh():
-        """
-
-        """
+        """ """
         import tqdm
 
         batch_size = 32
 
-        dt_t = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=SplitEnum.training)
+        dt_t = MNISTDataset2(
+            Path(Path.home() / "Data" / "mnist"), split=SplitEnum.training
+        )
 
         print(len(dt_t))
 
@@ -355,7 +354,9 @@ if __name__ == "__main__":
 
         print(len(dt_v))
 
-        dt = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=SplitEnum.testing)
+        dt = MNISTDataset2(
+            Path(Path.home() / "Data" / "mnist"), split=SplitEnum.testing
+        )
 
         print(len(dt))
 
@@ -364,17 +365,16 @@ if __name__ == "__main__":
         )
 
         for batch_idx, (imgs, label) in tqdm.tqdm(
-                enumerate(data_loader),
-                total=len(data_loader),
-                desc="Bro",
-                ncols=80,
-                leave=False,
+            enumerate(data_loader),
+            total=len(data_loader),
+            desc="Bro",
+            ncols=80,
+            leave=False,
         ):
             # pyplot.imshow(dt.inverse_transform(imgs[0]))
             # pyplot.imshow(imgs)
             # pyplot.show()
             print(imgs.shape)
             break
-
 
     siuadyh()

@@ -115,16 +115,16 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
 
 def pred_target_train_model(
-        model,
-        train_iterator,
-        criterion,
-        optimizer,
-        scheduler,
-        writer,
-        interrupted_path,
-        test_data_iterator=None,
-        num_updates: int = 250000,
-        early_stop=None,
+    model,
+    train_iterator,
+    criterion,
+    optimizer,
+    scheduler,
+    writer,
+    interrupted_path,
+    test_data_iterator=None,
+    num_updates: int = 250000,
+    early_stop=None,
 ) -> torch.nn.Module:
     """
 

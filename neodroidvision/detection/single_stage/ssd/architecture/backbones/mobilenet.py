@@ -7,14 +7,10 @@ from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbo
 
 
 class MobileNetV2(SSDBackbone):
-    """
-
-    """
+    """ """
 
     class ConvBatchNormReLU(nn.Sequential):
-        """
-
-        """
+        """ """
 
         def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, groups=1):
             padding = (kernel_size - 1) // 2
@@ -33,9 +29,7 @@ class MobileNetV2(SSDBackbone):
             )
 
     class InvertedResidual(nn.Module):
-        """
-
-        """
+        """ """
 
         def __init__(self, inp, oup, stride, expand_ratio):
             super().__init__()
@@ -79,12 +73,12 @@ class MobileNetV2(SSDBackbone):
                 return self.conv(x)
 
     def __init__(
-            self,
-            size: int,
-            width_mult: float = 1.0,
-            inverted_residual_setting=None,
-            input_channel: int = 32,
-            last_channel: int = 1280,
+        self,
+        size: int,
+        width_mult: float = 1.0,
+        inverted_residual_setting=None,
+        input_channel: int = 32,
+        last_channel: int = 1280,
     ):
         super().__init__(size)
         block = self.InvertedResidual
@@ -103,8 +97,8 @@ class MobileNetV2(SSDBackbone):
 
         # only check the first element, assuming user knows t,c,n,s are required
         if (
-                len(inverted_residual_setting) == 0
-                or len(inverted_residual_setting[0]) != 4
+            len(inverted_residual_setting) == 0
+            or len(inverted_residual_setting[0]) != 4
         ):
             raise ValueError(
                 "inverted_residual_setting should be non-empty "
@@ -117,10 +111,10 @@ class MobileNetV2(SSDBackbone):
         feature_extractor = [MobileNetV2.ConvBatchNormReLU(3, input_channel, stride=2)]
 
         for (
-                t,
-                c,
-                n,
-                s,
+            t,
+            c,
+            n,
+            s,
         ) in inverted_residual_setting:  # building inverted residual blocks
             output_channel = int(c * width_mult)
             for i in range(n):

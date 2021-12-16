@@ -4,6 +4,7 @@ import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.random_utilities import seed_stack
+
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
     TorchCacheSession,
@@ -30,7 +31,7 @@ __doc__ = r"""
 
 
 def reschedule_learning_rate(
-        model: torch.nn.Module, epoch: int, scheduler: torch.optim.lr_scheduler
+    model: torch.nn.Module, epoch: int, scheduler: torch.optim.lr_scheduler
 ):
     r"""This may be improved its just a hacky way to write SGDWR"""
     if epoch == 7:
@@ -62,14 +63,14 @@ def reschedule_learning_rate(
 
 
 def train_person_segmentor(
-        model: torch.nn.Module,
-        train_loader: torch.utils.data.DataLoader,
-        valid_loader: torch.utils.data.DataLoader,
-        criterion: callable,
-        optimizer: torch.optim.optimizer,
-        scheduler: torch.optim.lr_scheduler,
-        save_model_path: Path,
-        n_epochs: int = 100,
+    model: torch.nn.Module,
+    train_loader: torch.utils.data.DataLoader,
+    valid_loader: torch.utils.data.DataLoader,
+    criterion: callable,
+    optimizer: torch.optim.optimizer,
+    scheduler: torch.optim.lr_scheduler,
+    save_model_path: Path,
+    n_epochs: int = 100,
 ):
     """
 
@@ -161,9 +162,7 @@ def train_person_segmentor(
 
 
 def main():
-    """
-
-    """
+    """ """
     pyplot.style.use("bmh")
     base_path = Path.home() / "/Data" / "PennFudanPed"
 

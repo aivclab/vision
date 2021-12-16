@@ -68,7 +68,6 @@ class SSDTransform(torch.nn.Module):
 
         transform_list.extend(
             [CV2Resize(image_size), SubtractMeans(pixel_mean), CV2ToTensor()]
-
         )
 
         self.transforms = CV2Compose(transform_list)
@@ -87,13 +86,13 @@ class SSDAnnotationTransform(torch.nn.Module):
     """ """
 
     def __init__(
-            self,
-            *,
-            image_size: Any,
-            priors_cfg: NOD,
-            center_variance: Any,
-            size_variance: Any,
-            iou_threshold: Any
+        self,
+        *,
+        image_size: Any,
+        priors_cfg: NOD,
+        center_variance: Any,
+        size_variance: Any,
+        iou_threshold: Any
     ):
         """
 
@@ -134,7 +133,6 @@ class SSDAnnotationTransform(torch.nn.Module):
             gt_labels=gt_labels,
             corner_form_priors=self.corner_form_priors,
             iou_threshold=self.iou_threshold,
-
         )
         locations = convert_boxes_to_locations(
             center_form_boxes=corner_form_to_center_form(boxes),

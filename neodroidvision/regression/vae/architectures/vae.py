@@ -15,14 +15,10 @@ __all__ = ["VAE"]
 
 
 class VAE(torch.nn.Module):
-    """
-
-    """
+    """ """
 
     class View(nn.Module):
-        """
-
-        """
+        """ """
 
         def __init__(self, size):
             super().__init__()
@@ -56,9 +52,7 @@ class VAE(torch.nn.Module):
                 m.bias.data.fill_(0)
 
     def weight_init(self):
-        """
-
-        """
+        """ """
         for m in self.modules():
             self.kaiming_init(m)
 

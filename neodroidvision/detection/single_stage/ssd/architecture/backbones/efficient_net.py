@@ -182,10 +182,10 @@ class EfficientNet(SSDBackbone):
 
     @staticmethod
     def interpret(
-            width_coefficient=None,
-            depth_coefficient=None,
-            dropout_rate=0.2,
-            drop_connect_rate=0.2,
+        width_coefficient=None,
+        depth_coefficient=None,
+        dropout_rate=0.2,
+        drop_connect_rate=0.2,
     ):
         """Creates a efficient net model."""
 
@@ -241,7 +241,7 @@ class EfficientNet(SSDBackbone):
 
                 # Check stride
                 assert ("s" in options and len(options["s"]) == 1) or (
-                        len(options["s"]) == 2 and options["s"][0] == options["s"][1]
+                    len(options["s"]) == 2 and options["s"][0] == options["s"][1]
                 )
 
                 return BlockArgs(

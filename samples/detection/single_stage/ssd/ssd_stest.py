@@ -29,9 +29,9 @@ def main():
         "--ckpt",
         help="The path to the checkpoint for test, default is the latest checkpoint.",
         default=PROJECT_APP_PATH.user_data
-                / "ssd"
-                / "models"
-                / "mobilenet_v2_ssd320_voc0712.pth"
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"
@@ -69,7 +69,6 @@ def main():
             base_cfg,
             model.to(torch.device(base_cfg.MODEL.DEVICE)),
             distributed,
-
         )
 
 

@@ -13,10 +13,10 @@ class Decompress(nn.Module):
 
     @staticmethod
     def decompress(
-            in_channels: int,
-            out_channels: int,
-            mode: UpscaleMode = UpscaleMode.FractionalTranspose,
-            factor: int = 2,
+        in_channels: int,
+        out_channels: int,
+        mode: UpscaleMode = UpscaleMode.FractionalTranspose,
+        factor: int = 2,
     ) -> nn.Module:
         """
 
@@ -42,11 +42,11 @@ class Decompress(nn.Module):
             )
 
     def __init__(
-            self,
-            in_channels: int,
-            out_channels: int,
-            merge_mode: MergeMode = MergeMode.Concat,
-            upscale_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
+        self,
+        in_channels: int,
+        out_channels: int,
+        merge_mode: MergeMode = MergeMode.Concat,
+        upscale_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
     ):
         super().__init__()
 

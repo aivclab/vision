@@ -6,6 +6,7 @@ from apppath import ensure_existence
 from draugr import AverageMeter
 from draugr.writers import MockWriter, Writer
 from pathlib import Path
+
 # from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau

@@ -3,11 +3,11 @@ from draugr.opencv_utilities import AsyncVideoStream
 
 from samples.misc.exclude import VIDEO_SOURCE
 
-#for i in AsyncVideoStream(VIDEO_SOURCE) :
+# for i in AsyncVideoStream(VIDEO_SOURCE) :
 #  print(i)
 #  cv2.imshow("Output", i)
 
-'''
+"""
 import cv2
 import numpy as np
 import os
@@ -21,4 +21,4 @@ while(1):
     else:
         cv2.imshow('VIDEO', frame)
         cv2.waitKey(1)
-'''
+"""

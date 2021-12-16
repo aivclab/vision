@@ -22,6 +22,7 @@ def add_argument_group(name):
     arg_lists.append(arg)
     return arg
 
+
 # glimpse network params
 glimpse_arg = add_argument_group("Glimpse Network Params")
 glimpse_arg.add_argument(

@@ -63,8 +63,8 @@ class PennFudanDataset(SupervisedDataset):
         if self._return_variant == ReturnVariantEnum.binary:
             return (*self.image_size_T, self.response_channels_binary)
         elif (
-                self._return_variant == ReturnVariantEnum.instanced
-                or self._return_variant == ReturnVariantEnum.all
+            self._return_variant == ReturnVariantEnum.instanced
+            or self._return_variant == ReturnVariantEnum.all
         ):
             return (*self.image_size_T, self.response_channels)
         raise NotImplementedError
@@ -111,10 +111,10 @@ class PennFudanDataset(SupervisedDataset):
         return TupleCompose(transforms)
 
     def __init__(
-            self,
-            root: Union[str, Path],
-            split: SplitEnum = SplitEnum.training,
-            return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
+        self,
+        root: Union[str, Path],
+        split: SplitEnum = SplitEnum.training,
+        return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
     ):
         """
 

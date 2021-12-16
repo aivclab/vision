@@ -58,7 +58,7 @@ def is_main_process():
 
     """
     return not CONFIG.multiprocessing_distributed or (
-            CONFIG.multiprocessing_distributed and CONFIG.rank % CONFIG.ngpus_per_node == 0
+        CONFIG.multiprocessing_distributed and CONFIG.rank % CONFIG.ngpus_per_node == 0
     )
 
 
@@ -239,8 +239,8 @@ def main_worker(gpu, ngpus_per_node, config):
                 shutil.copyfile(filename, CONFIG.save_path / "model_best.pth")
             if epoch_log / CONFIG.save_freq > 2:
                 deletename = (
-                        CONFIG.save_path
-                        / f"train_epoch_{str(epoch_log - CONFIG.save_freq * 2)}.pth"
+                    CONFIG.save_path
+                    / f"train_epoch_{str(epoch_log - CONFIG.save_freq * 2)}.pth"
                 )
                 os.remove(deletename)
 
@@ -470,9 +470,7 @@ def validate(val_loader, model, criterion):
 if __name__ == "__main__":
 
     def main():
-        """
-
-        """
+        """ """
         from samples.classification.san.configs.imagenet_san10_pairwise import (
             SAN_CONFIG,
         )
@@ -491,7 +489,7 @@ if __name__ == "__main__":
         if SAN_CONFIG.dist_url == "env://" and SAN_CONFIG.world_size == -1:
             SAN_CONFIG.world_size = int(os.environ["WORLD_SIZE"])
         SAN_CONFIG.distributed = (
-                SAN_CONFIG.world_size > 1 or SAN_CONFIG.multiprocessing_distributed
+            SAN_CONFIG.world_size > 1 or SAN_CONFIG.multiprocessing_distributed
         )
         SAN_CONFIG.ngpus_per_node = len(SAN_CONFIG.train_gpu)
         if len(SAN_CONFIG.train_gpu) == 1:
@@ -509,6 +507,5 @@ if __name__ == "__main__":
             )
         else:
             main_worker(SAN_CONFIG.train_gpu, SAN_CONFIG.ngpus_per_node, SAN_CONFIG)
-
 
     main()

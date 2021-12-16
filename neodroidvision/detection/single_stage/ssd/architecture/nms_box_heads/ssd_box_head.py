@@ -28,16 +28,16 @@ class SSDNmsBoxHead(nn.Module):
 
     @drop_unused_kws
     def __init__(
-            self,
-            *,
-            image_size: Any,
-            predictor: BoxPredictor,
-            confidence_threshold: Any,
-            nms_threshold: Any,
-            max_per_image: Any,
-            center_variance: Any,
-            size_variance: Any,
-            max_candidates: int = 100
+        self,
+        *,
+        image_size: Any,
+        predictor: BoxPredictor,
+        confidence_threshold: Any,
+        nms_threshold: Any,
+        max_per_image: Any,
+        center_variance: Any,
+        size_variance: Any,
+        max_candidates: int = 100
     ):
         """
 
@@ -76,12 +76,11 @@ class SSDNmsBoxHead(nn.Module):
         Builds priors"""
         self._priors = Parameter(
             build_priors(image_size=self.image_size, **priors_cfg), requires_grad=False
-
         )
 
     @staticmethod
     def keep_above(
-            scores: torch.Tensor, *args, threshold: float
+        scores: torch.Tensor, *args, threshold: float
     ) -> Tuple[torch.Tensor, ...]:
         """
         Only keep detections above the confidence threshold"""
@@ -92,7 +91,7 @@ class SSDNmsBoxHead(nn.Module):
 
     @staticmethod
     def sort_keep_top_k(
-            scores: torch.Tensor, *args, k: int
+        scores: torch.Tensor, *args, k: int
     ) -> Tuple[torch.Tensor, ...]:
         """
         Only keep detections above the confidence threshold"""
@@ -110,25 +109,25 @@ class SSDNmsBoxHead(nn.Module):
 
         results = []
         for (scores, boxes) in zip(
-                functional.log_softmax(
-                    categori_logits, dim=-1
-                ),  # TODO:Check dim maybe it should be 1
-                conversion.center_to_corner_form(
-                    conversion.locations_to_boxes(
-                        locations=bbox_pred,
-                        priors=self._priors,
-                        center_variance=self.center_variance,
-                        size_variance=self.size_variance,
-                    )
-                ),
+            functional.log_softmax(
+                categori_logits, dim=-1
+            ),  # TODO:Check dim maybe it should be 1
+            conversion.center_to_corner_form(
+                conversion.locations_to_boxes(
+                    locations=bbox_pred,
+                    priors=self._priors,
+                    center_variance=self.center_variance,
+                    size_variance=self.size_variance,
+                )
+            ),
         ):
             # (N, #CLS) (N, 4)
             num_boxes, num_categories, *_ = scores.shape
             boxes = boxes.reshape(num_boxes, 1, 4).expand(num_boxes, num_categories, 4)
             labels = (
                 torch.arange(num_categories, device=scores.device)
-                    .reshape(1, num_categories)
-                    .expand_as(scores)
+                .reshape(1, num_categories)
+                .expand_as(scores)
             )
 
             # remove predictions with the background label and batch everything,

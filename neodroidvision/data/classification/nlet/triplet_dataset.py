@@ -58,7 +58,7 @@ class TripletDataset(
             self._dataset.sample(
                 t2, random.randint(0, self._dataset.category_sizes[t2])
             )[0],
-            *(t1, t2 if self.return_categories else ())
+            *(t1, t2 if self.return_categories else ()),
         )
 
     def sample(self, horizontal_merge: bool = False) -> None:
@@ -85,7 +85,7 @@ class TripletDataset(
 
 
 if __name__ == "__main__":
-    sd = TripletDataset(Path.home() / "Data" / "mnist_png",return_categories=True)
+    sd = TripletDataset(Path.home() / "Data" / "mnist_png", return_categories=True)
     print(sd.predictor_shape)
     print(sd.response_shape)
     sd.sample()

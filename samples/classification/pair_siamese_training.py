@@ -52,28 +52,28 @@ def accuracy(*, distances, is_diff, threshold: float = 0.5):
     :rtype:"""
     return torch.mean(
         (
-                is_diff
-                == to_tensor(
-            distances > threshold, dtype=torch.long, device=global_torch_device()
-        )
+            is_diff
+            == to_tensor(
+                distances > threshold, dtype=torch.long, device=global_torch_device()
+            )
         ).to(dtype=torch.float)
     )
 
 
 def train_siamese(
-        model: Module,
-        optimiser: Optimizer,
-        criterion: callable,
-        *,
-        writer: Writer = MockWriter(),
-        train_number_epochs: int,
-        data_dir: Path,
-        train_batch_size: int,
-        model_name: str,
-        save_path: Path,
-        save_best: bool = False,
-        img_size: Tuple[int, int],
-        validation_interval: int = 1,
+    model: Module,
+    optimiser: Optimizer,
+    criterion: callable,
+    *,
+    writer: Writer = MockWriter(),
+    train_number_epochs: int,
+    data_dir: Path,
+    train_batch_size: int,
+    model_name: str,
+    save_path: Path,
+    save_best: bool = False,
+    img_size: Tuple[int, int],
+    validation_interval: int = 1,
 ):
     """
     :param img_size:
@@ -183,7 +183,7 @@ def train_siamese(
 
 
 def stest_many_versus_many2(
-        model: Module, data_dir: Path, img_size: Tuple[int, int], threshold=0.5
+    model: Module, data_dir: Path, img_size: Tuple[int, int], threshold=0.5
 ):
     """
 
@@ -219,8 +219,8 @@ def stest_many_versus_many2(
                 to_tensor(x0, device=global_torch_device()),
                 to_tensor(x1, device=global_torch_device()),
             )
-                .cpu()
-                .item()
+            .cpu()
+            .item()
         )
         boxed_text_overlay_plot(
             torchvision.utils.make_grid(torch.cat((x0, x1), 0)),
@@ -255,7 +255,7 @@ if __name__ == "__main__":
                 )
 
             with TensorBoardPytorchWriter(
-                    PROJECT_APP_PATH.user_log / model_name / str(time.time())
+                PROJECT_APP_PATH.user_log / model_name / str(time.time())
             ) as writer:
                 # with CaptureEarlyStop() as _:
                 with IgnoreInterruptSignal():
@@ -283,6 +283,5 @@ if __name__ == "__main__":
             )
             print("loaded best val")
             stest_many_versus_many2(model, data_dir, img_size)
-
 
     main()

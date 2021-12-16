@@ -85,12 +85,12 @@ class VOCDataset(ObjectDetectionDataset):
     }
 
     def __init__(
-            self,
-            data_root: Path,
-            dataset_name: str,
-            split: SplitEnum,
-            img_transform: callable = None,
-            annotation_transform: callable = None,
+        self,
+        data_root: Path,
+        dataset_name: str,
+        split: SplitEnum,
+        img_transform: callable = None,
+        annotation_transform: callable = None,
     ):
         """
 
@@ -119,7 +119,6 @@ class VOCDataset(ObjectDetectionDataset):
             split=split,
             img_transform=img_transform,
             annotation_transform=annotation_transform,
-
         )
 
         self._data_dir = data_root / self.data_dirs[dataset_name]
@@ -200,7 +199,6 @@ class VOCDataset(ObjectDetectionDataset):
             numpy.array(boxes, dtype=numpy.float32),
             numpy.array(labels, dtype=numpy.int64),
             numpy.array(is_difficult, dtype=numpy.uint8),
-
         )
 
     def get_img_info(self, index):

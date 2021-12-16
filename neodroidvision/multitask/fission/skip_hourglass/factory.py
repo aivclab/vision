@@ -44,7 +44,7 @@ def fcn_encoder(in_channels: int, depth: int, start_channels: int) -> Tuple[List
 
 
 def fcn_decoder(
-        in_channels: int, depth: int, up_mode: UpscaleMode, merge_mode: MergeMode
+    in_channels: int, depth: int, up_mode: UpscaleMode, merge_mode: MergeMode
 ) -> Tuple[List, int]:
     """
 

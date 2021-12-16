@@ -8,7 +8,8 @@ from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
-    TorchEvalSession, global_torch_device,
+    TorchEvalSession,
+    global_torch_device,
     to_device_iterator,
 )
 from draugr.visualisation import plot_img_array, plot_side_by_side
@@ -40,16 +41,16 @@ criterion = torch.nn.MSELoss()
 
 
 def training(
-        model: Module,
-        data_iterator: Iterator,
-        optimizer: Optimizer,
-        scheduler,
-        writer: Writer,
-        interrupted_path: Path,
-        *,
-        num_updates=2500000,
-        early_stop_threshold=1e-9,
-        denoise: bool = True,
+    model: Module,
+    data_iterator: Iterator,
+    optimizer: Optimizer,
+    scheduler,
+    writer: Writer,
+    interrupted_path: Path,
+    *,
+    num_updates=2500000,
+    early_stop_threshold=1e-9,
+    denoise: bool = True,
 ) -> Module:
     """
 
@@ -144,7 +145,9 @@ def training(
     return model
 
 
-def inference(model: Module, data_iterator: Iterator, denoise: bool = True, num: int = 3) -> None:
+def inference(
+    model: Module, data_iterator: Iterator, denoise: bool = True, num: int = 3
+) -> None:
     """
 
     :param model:
@@ -162,19 +165,23 @@ def inference(model: Module, data_iterator: Iterator, denoise: bool = True, num:
                 model_input = img
             model_input = torch.clamp(model_input, 0.0, 1.0)
             pred, *_ = model(model_input)
-            plot_side_by_side([pred.squeeze(1)[:num].cpu().numpy(),
-                               model_input.squeeze(1)[:num].cpu().numpy()])
+            plot_side_by_side(
+                [
+                    pred.squeeze(1)[:num].cpu().numpy(),
+                    model_input.squeeze(1)[:num].cpu().numpy(),
+                ]
+            )
             pyplot.show()
             return
             for i, (s, j, label) in enumerate(
-                    zip(pred.cpu().numpy(), model_input.cpu().numpy(), target)
+                zip(pred.cpu().numpy(), model_input.cpu().numpy(), target)
             ):
                 pyplot.imshow(j[0])
-                pyplot.title(f'sample_{i}, category: {label}')
+                pyplot.title(f"sample_{i}, category: {label}")
                 pyplot.show()
                 # plot_side_by_side(s)
                 pyplot.imshow(s[0])
-                pyplot.title(f'sample_{i}, category: {label}')
+                pyplot.title(f"sample_{i}, category: {label}")
                 pyplot.show()
                 break
 
@@ -201,10 +208,8 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     home_path = PROJECT_APP_PATH
     model_file_ending = ".model"
     model_base_path = ensure_existence(PROJECT_APP_PATH.user_data / "unet_mnist")
-    interrupted_name = 'INTERRUPTED_BEST'
-    interrupted_path = (
-            model_base_path / f"{interrupted_name}{model_file_ending}"
-    )
+    interrupted_name = "INTERRUPTED_BEST"
+    interrupted_path = model_base_path / f"{interrupted_name}{model_file_ending}"
 
     torch.manual_seed(seed)
 
@@ -240,9 +245,13 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     )
 
     if load_earlier:
-        _list_of_files = list(model_base_path.rglob(f"{interrupted_name}{model_file_ending}"))
+        _list_of_files = list(
+            model_base_path.rglob(f"{interrupted_name}{model_file_ending}")
+        )
         if not len(_list_of_files):
-            print(f'found no trained models under {model_base_path}{os.path.sep}**{os.path.sep}{interrupted_name}{model_file_ending}')
+            print(
+                f"found no trained models under {model_base_path}{os.path.sep}**{os.path.sep}{interrupted_name}{model_file_ending}"
+            )
             exit(1)
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
@@ -261,7 +270,8 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
                 denoise=denoise,
             )
             torch.save(
-                model.state_dict(), model_base_path / f"unet_mnist_final{model_file_ending}"
+                model.state_dict(),
+                model_base_path / f"unet_mnist_final{model_file_ending}",
             )
     else:
         inference(model, data_iter, denoise=denoise)
@@ -270,5 +280,5 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
 
 
 if __name__ == "__main__":
-    #train_mnist(load_earlier=False, train=True)
+    # train_mnist(load_earlier=False, train=True)
     train_mnist(load_earlier=True, train=False)

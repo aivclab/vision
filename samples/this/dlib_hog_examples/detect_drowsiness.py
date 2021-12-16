@@ -5,7 +5,11 @@ from draugr.opencv_utilities import AsyncVideoStream
 
 from threading import Thread
 
-from draugr.opencv_utilities.dlib import shape_to_ndarray, Dlib68faciallandmarksindices, eye_aspect_ratio
+from draugr.opencv_utilities.dlib import (
+    shape_to_ndarray,
+    Dlib68faciallandmarksindices,
+    eye_aspect_ratio,
+)
 
 
 def sound_alarm(path):

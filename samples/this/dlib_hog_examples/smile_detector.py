@@ -1,14 +1,16 @@
 import cv2
 import dlib
 from draugr.opencv_utilities import AsyncVideoStream
-from draugr.opencv_utilities.dlib import Dlib68faciallandmarksindices, shape_to_ndarray, mouth_aspect_ratio
+from draugr.opencv_utilities.dlib import (
+    Dlib68faciallandmarksindices,
+    shape_to_ndarray,
+    mouth_aspect_ratio,
+)
 
 if __name__ == "__main__":
 
     def asd():
-        """
-
-        """
+        """ """
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
         cv2.namedWindow("test")
@@ -60,6 +62,5 @@ if __name__ == "__main__":
                 break
 
         cv2.destroyAllWindows()
-
 
     asd()

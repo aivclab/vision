@@ -22,12 +22,12 @@ from neodroidvision.utilities import reduce_dict
 
 
 def maskrcnn_train_single_epoch(
-        *,
-        model: Module,
-        optimiser: Optimizer,
-        data_loader: DataLoader,
-        device: torch.device = global_torch_device(),
-        writer: Writer = None,
+    *,
+    model: Module,
+    optimiser: Optimizer,
+    data_loader: DataLoader,
+    device: torch.device = global_torch_device(),
+    writer: Writer = None,
 ):
     """
 
@@ -76,11 +76,11 @@ def maskrcnn_train_single_epoch(
 
 
 def maskrcnn_evaluate(
-        model: Module,
-        data_loader: DataLoader,
-        *,
-        device=global_torch_device(),
-        writer: Writer = None,
+    model: Module,
+    data_loader: DataLoader,
+    *,
+    device=global_torch_device(),
+    writer: Writer = None,
 ):
     """
 

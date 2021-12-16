@@ -173,5 +173,4 @@ if __name__ == "__main__":
         logger.info("<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<")
         print(loss_meter.avg, mIoU, mAcc, allAcc, top1_meter.avg, top5_meter.avg)
 
-
     main()

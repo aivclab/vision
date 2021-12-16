@@ -77,12 +77,12 @@ def loss_function(reconstruction, original, mean, log_var, beta=1):
 
 
 def train_model(
-        model,
-        optimiser,
-        epoch_i: int,
-        metric_writer: Writer,
-        loader: DataLoader,
-        log_interval=10,
+    model,
+    optimiser,
+    epoch_i: int,
+    metric_writer: Writer,
+    loader: DataLoader,
+    log_interval=10,
 ):
     """
 
@@ -125,11 +125,11 @@ def train_model(
 
 
 def stest_model(
-        model: VAE,
-        epoch_i: int,
-        metric_writer: Writer,
-        loader: DataLoader,
-        save_images: bool = True,
+    model: VAE,
+    epoch_i: int,
+    metric_writer: Writer,
+    loader: DataLoader,
+    save_images: bool = True,
 ):
     """
 
@@ -164,11 +164,12 @@ def stest_model(
                             nrow=n,
                         )
 
-                scatter_plot_encoding_space(str(BASE_PATH /
-                f'encoding_space_{str(epoch_i)}.png'),
-                mean.to('cpu').numpy(),
-                log_var.to('cpu').numpy(),
-                labels)
+                scatter_plot_encoding_space(
+                    str(BASE_PATH / f"encoding_space_{str(epoch_i)}.png"),
+                    mean.to("cpu").numpy(),
+                    log_var.to("cpu").numpy(),
+                    labels,
+                )
 
                 break
 
@@ -204,7 +205,7 @@ if __name__ == "__main__":
         optimiser = optim.Adam(MODEL.parameters(), lr=LR, betas=(0.9, 0.999))
 
         with TensorBoardPytorchWriter(
-                PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
+            PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
         ) as metric_writer:
             for epoch in range(1, EPOCHS + 1):
                 if train_model_:
@@ -224,6 +225,5 @@ if __name__ == "__main__":
                             img_w=INPUT_SIZE,
                             img_h=INPUT_SIZE,
                         )
-
 
     main()

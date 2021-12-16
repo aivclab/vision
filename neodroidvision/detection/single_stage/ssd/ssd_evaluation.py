@@ -26,10 +26,10 @@ from draugr.numpy_utilities import SplitEnum
 
 
 def compute_on_dataset(
-        model: Module,
-        data_loader: DataLoader,
-        device: torch.device,
-        cpu_device=torch.device("cpu"),
+    model: Module,
+    data_loader: DataLoader,
+    device: torch.device,
+    cpu_device=torch.device("cpu"),
 ) -> dict:
     """
 
@@ -50,8 +50,8 @@ def compute_on_dataset(
                 {
                     img_id: result
                     for img_id, result in zip(
-                    image_ids, [o.to(cpu_device) for o in model(images.to(device))]
-                )
+                        image_ids, [o.to(cpu_device) for o in model(images.to(device))]
+                    )
                 }
             )
     return results_dict
@@ -105,14 +105,14 @@ def evaluate_dataset(dataset, predictions, output_dir: Path, **kwargs) -> dict:
 
 
 def inference_ssd(
-        *,
-        model: Module,
-        data_loader: DataLoader,
-        dataset_name: str,
-        device: torch.device,
-        output_folder: Path = None,
-        use_cached: bool = False,
-        **kwargs,
+    *,
+    model: Module,
+    data_loader: DataLoader,
+    dataset_name: str,
+    device: torch.device,
+    output_folder: Path = None,
+    use_cached: bool = False,
+    **kwargs,
 ) -> dict:
     """
 
@@ -150,7 +150,8 @@ def inference_ssd(
 
 @torch.no_grad()
 def do_ssd_evaluation(
-        data_root: Path, cfg: NOD, model: Module, distributed: bool, **kwargs) -> List:
+    data_root: Path, cfg: NOD, model: Module, distributed: bool, **kwargs
+) -> List:
     """
 
     Args:
@@ -169,13 +170,13 @@ def do_ssd_evaluation(
     device = torch.device(cfg.MODEL.DEVICE)
     eval_results = []
     for dataset_name, data_loader in zip(
-            cfg.DATASETS.TEST,
-            object_detection_data_loaders(
-                data_root=data_root,
-                cfg=cfg,
-                split=SplitEnum.validation,
-                distributed=distributed,
-            ),
+        cfg.DATASETS.TEST,
+        object_detection_data_loaders(
+            data_root=data_root,
+            cfg=cfg,
+            split=SplitEnum.validation,
+            distributed=distributed,
+        ),
     ):
         eval_results.append(
             inference_ssd(
@@ -184,9 +185,9 @@ def do_ssd_evaluation(
                 dataset_name=dataset_name,
                 device=device,
                 output_folder=PROJECT_APP_PATH.user_data
-                              / "results"
-                              / "inference"
-                              / dataset_name,
+                / "results"
+                / "inference"
+                / dataset_name,
                 **kwargs,
             )
         )

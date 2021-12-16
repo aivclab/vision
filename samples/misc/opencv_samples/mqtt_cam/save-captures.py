@@ -37,9 +37,7 @@ def on_message(client, userdata, msg):
 
 
 def main():
-    """
-
-    """
+    """ """
     client = get_mqtt_client()
     client.on_message = on_message
     client.connect(MQTT_BROKER, port=MQTT_PORT)

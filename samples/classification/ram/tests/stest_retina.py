@@ -13,9 +13,7 @@ from samples.classification.ram.ram_params import get_ram_config
 
 
 def main():
-    """
-
-    """
+    """ """
     data_dir = get_ram_config()["data_dir"]
 
     # load images

@@ -14,7 +14,9 @@ from numpy import ndarray
 from warg import Number
 
 
-def discrete_cmap(N:int, base_cmap:Union[Colormap, str, None]=None)->LinearSegmentedColormap:
+def discrete_cmap(
+    N: int, base_cmap: Union[Colormap, str, None] = None
+) -> LinearSegmentedColormap:
     """Create an N-bin discrete colormap from the specified input map"""
 
     # Note that if base_cmap is a string or None, you can simply do
@@ -28,9 +30,13 @@ def discrete_cmap(N:int, base_cmap:Union[Colormap, str, None]=None)->LinearSegme
 
 
 def scatter_plot_encoding_space(
-        out_path:Path, mean:ndarray, log_var:ndarray, labels:Sequence, encoding_space_range:Number=1,
-    min_size_constant:Number=2,
-    N:int=10
+    out_path: Path,
+    mean: ndarray,
+    log_var: ndarray,
+    labels: Sequence,
+    encoding_space_range: Number = 1,
+    min_size_constant: Number = 2,
+    N: int = 10,
 ):
     """
 
@@ -64,4 +70,3 @@ def scatter_plot_encoding_space(
     pyplot.grid(True)
     pyplot.savefig(out_path)
     return fig
-

@@ -9,11 +9,11 @@ __all__ = [
 
 
 def locations_to_boxes(
-        *,
-        locations: torch.Tensor,
-        priors: torch.Tensor,
-        center_variance: float,
-        size_variance: float
+    *,
+    locations: torch.Tensor,
+    priors: torch.Tensor,
+    center_variance: float,
+    size_variance: float
 ) -> torch.tensor:
     """Convert regressional location results of SSD into boxes in the form of (center_x, center_y, h, w).
 
@@ -43,11 +43,11 @@ def locations_to_boxes(
 
 
 def convert_boxes_to_locations(
-        *,
-        center_form_boxes: torch.Tensor,
-        center_form_priors: torch.Tensor,
-        center_variance: float,
-        size_variance: float
+    *,
+    center_form_boxes: torch.Tensor,
+    center_form_priors: torch.Tensor,
+    center_variance: float,
+    size_variance: float
 ) -> torch.tensor:
     """
 

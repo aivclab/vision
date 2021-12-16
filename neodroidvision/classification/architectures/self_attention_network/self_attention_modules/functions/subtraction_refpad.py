@@ -12,8 +12,8 @@ from .self_attention_utilities import (
 )
 
 _subtraction_refpad_forward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction_refpad_forward_kernel(
 const ${Dtype}* bottom_data, ${Dtype}* top_data) {
@@ -52,8 +52,8 @@ const ${Dtype}* bottom_data, ${Dtype}* top_data) {
 )
 
 _subtraction_refpad_input_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction_refpad_input_backward_kernel(
     const ${Dtype}* const top_diff, ${Dtype}* bottom_diff) {
@@ -252,25 +252,25 @@ class SubtractionRefpad(Function):
                     args=[grad_output.data_ptr(), grad_input.data_ptr()],
                     stream=Stream(ptr=torch.cuda.current_stream().cuda_stream),
                 )
-                grad_input[..., padding[0] + 1: 2 * padding[0] + 1, :] += torch.flip(
+                grad_input[..., padding[0] + 1 : 2 * padding[0] + 1, :] += torch.flip(
                     grad_input[..., : padding[0], :], dims=[2]
                 )
                 grad_input[
-                ..., input_height - 1: input_height + padding[0] - 1, :
+                    ..., input_height - 1 : input_height + padding[0] - 1, :
                 ] += torch.flip(
-                    grad_input[..., input_height + padding[0]:, :], dims=[2]
+                    grad_input[..., input_height + padding[0] :, :], dims=[2]
                 )
-                grad_input[..., padding[1] + 1: 2 * padding[1] + 1] += torch.flip(
+                grad_input[..., padding[1] + 1 : 2 * padding[1] + 1] += torch.flip(
                     grad_input[..., : padding[1]], dims=[3]
                 )
                 grad_input[
-                ..., input_width - 1: input_width + padding[1] - 1
-                ] += torch.flip(grad_input[..., input_width + padding[1]:], dims=[3])
+                    ..., input_width - 1 : input_width + padding[1] - 1
+                ] += torch.flip(grad_input[..., input_width + padding[1] :], dims=[3])
                 grad_input = grad_input[
-                             ...,
-                             padding[0]: padding[0] + input_height,
-                             padding[1]: padding[1] + input_width,
-                             ]
+                    ...,
+                    padding[0] : padding[0] + input_height,
+                    padding[1] : padding[1] + input_width,
+                ]
         return grad_input, None, None, None, None
 
 
@@ -296,6 +296,7 @@ def subtraction_refpad(input, kernel_size=3, stride=1, padding=0, dilation=1):
 
 
 if __name__ == "__main__":
+
     def test_subtraction_refpad():
         import os
 
@@ -347,6 +348,5 @@ if __name__ == "__main__":
             x,
         )
         print("test case passed")
-
 
     test_subtraction_refpad()

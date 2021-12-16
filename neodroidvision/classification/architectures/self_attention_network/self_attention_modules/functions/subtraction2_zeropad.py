@@ -12,8 +12,8 @@ from .self_attention_utilities import (
 )
 
 _subtraction2_zeropad_forward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction2_zeropad_forward_kernel(
 const ${Dtype}* bottom1_data, const ${Dtype}* bottom2_data, ${Dtype}* top_data) {
@@ -47,8 +47,8 @@ const ${Dtype}* bottom1_data, const ${Dtype}* bottom2_data, ${Dtype}* top_data) 
 )
 
 _subtraction2_zeropad_input1_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction2_zeropad_input1_backward_kernel(
     const ${Dtype}* const top_diff, ${Dtype}* bottom_diff) {
@@ -76,8 +76,8 @@ __global__ void subtraction2_zeropad_input1_backward_kernel(
 )
 
 _subtraction2_zeropad_input2_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void subtraction2_zeropad_input2_backward_kernel(
     const ${Dtype}* const top_diff, ${Dtype}* bottom_diff) {
@@ -275,7 +275,7 @@ class Subtraction2Zeropad(Function):
 
 
 def subtraction2_zeropad(
-        input1, input2, kernel_size=3, stride=1, padding=0, dilation=1
+    input1, input2, kernel_size=3, stride=1, padding=0, dilation=1
 ):
     """
 
@@ -301,6 +301,7 @@ def subtraction2_zeropad(
 
 
 if __name__ == "__main__":
+
     def test_subtraction2_zeropad():
         import os
 

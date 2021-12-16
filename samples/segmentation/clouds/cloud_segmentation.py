@@ -67,14 +67,14 @@ def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
 
 
 def train_model(
-        model,
-        train_loader,
-        valid_loader,
-        criterion,
-        optimizer,
-        scheduler,
-        save_model_path: Path,
-        n_epochs=99,
+    model,
+    train_loader,
+    valid_loader,
+    criterion,
+    optimizer,
+    scheduler,
+    save_model_path: Path,
+    n_epochs=99,
 ):
     """
 
@@ -227,7 +227,7 @@ def threshold_grid_search(model, valid_loader, max_samples=2000):
 
 
 def prepare_submission(
-        model, class_params, test_loader, submission_file_path="submission.csv"
+    model, class_params, test_loader, submission_file_path="submission.csv"
 ):
     """
 
@@ -279,9 +279,7 @@ def prepare_submission(
 
 
 def main():
-    """
-
-    """
+    """ """
     pyplot.style.use("bmh")
 
     base_dataset_path = Path.home() / "Data" / "Datasets" / "Clouds"
@@ -295,7 +293,9 @@ def main():
     seed_stack(SEED)
 
     train_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset=SplitEnum.training),
+        CloudSegmentationDataset(
+            base_dataset_path, image_path, subset=SplitEnum.training
+        ),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
@@ -309,7 +309,9 @@ def main():
         num_workers=num_workers,
     )
     test_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset=SplitEnum.testing),
+        CloudSegmentationDataset(
+            base_dataset_path, image_path, subset=SplitEnum.testing
+        ),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,

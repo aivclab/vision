@@ -9,7 +9,6 @@ import torchvision
 from draugr import recycle
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
-
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
@@ -56,19 +55,19 @@ normalise = torchvision.transforms.Normalize(
 
 
 def predictor_response_train_model(
-        model,
-        *,
-        train_iterator,
-        criterion,
-        optimizer,
-        scheduler,
-        writer,
-        interrupted_path,
-        val_data_iterator=None,
-        num_updates: int = 250000,
-        device=global_torch_device(),
-        early_stop=None,
-    debug=False
+    model,
+    *,
+    train_iterator,
+    criterion,
+    optimizer,
+    scheduler,
+    writer,
+    interrupted_path,
+    val_data_iterator=None,
+    num_updates: int = 250000,
+    device=global_torch_device(),
+    early_stop=None,
+    debug=False,
 ):
     """
 
@@ -174,13 +173,8 @@ def predictor_response_train_model(
     return model
 
 
-def main(    train_model = True,
-             continue_training=True,
-             no_cuda=False):
-    """
-
-    """
-
+def main(train_model=True, continue_training=True, no_cuda=False):
+    """ """
 
     timeas = str(time.time())
     this_model_path = PROJECT_APP_PATH.user_data / timeas
@@ -196,7 +190,9 @@ def main(    train_model = True,
     if no_cuda:
         global_torch_device("cpu")
 
-    dataset = MNISTDataset2(PROJECT_APP_PATH.user_cache / "mnist", split=SplitEnum.training)
+    dataset = MNISTDataset2(
+        PROJECT_APP_PATH.user_cache / "mnist", split=SplitEnum.training
+    )
     train_iter = iter(
         recycle(
             DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
@@ -216,8 +212,10 @@ def main(    train_model = True,
         )
     )
 
-    model, params_to_update = squeezenet_retrain(len(dataset.categories),train_only_last_layer=True)
-    #print(params_to_update)
+    model, params_to_update = squeezenet_retrain(
+        len(dataset.categories), train_only_last_layer=True
+    )
+    # print(params_to_update)
     model = model.to(global_torch_device())
 
     if continue_training:
@@ -261,11 +259,12 @@ def main(    train_model = True,
         pred = model(inputs)
         predicted = torch.argmax(pred, -1)
         true_label = to_tensor(true_label, dtype=torch.long)
-        #print(predicted, true_label)
+        # print(predicted, true_label)
         horizontal_imshow(
             [to_pil_image(i) for i in inputs],
-            [f"p:{int(p)},t:{int(t)}" for p, t in zip(predicted, true_label)]
-        ,num_columns=64//8)
+            [f"p:{int(p)},t:{int(t)}" for p, t in zip(predicted, true_label)],
+            num_columns=64 // 8,
+        )
         pyplot.show()
 
     torch_clean_up()

@@ -19,7 +19,7 @@ class BoxPredictor(nn.Module):
         self.reg_headers = nn.ModuleList()
 
         for (level_i, (num_boxes, num_channels)) in enumerate(
-                zip(boxes_per_location, self.out_channels)
+            zip(boxes_per_location, self.out_channels)
         ):
             self.cls_headers.append(
                 self.category_block(level_i, num_channels, num_boxes)
@@ -71,8 +71,7 @@ class BoxPredictor(nn.Module):
         cls_logits = []
         bbox_pred = []
         for feature, cat_fun, loc_fun in zip(
-                features, self.cls_headers, self.reg_headers
-
+            features, self.cls_headers, self.reg_headers
         ):
             cls_logits.append(cat_fun(feature).permute(0, 2, 3, 1).contiguous())
             bbox_pred.append(loc_fun(feature).permute(0, 2, 3, 1).contiguous())

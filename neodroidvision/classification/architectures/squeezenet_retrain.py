@@ -13,7 +13,7 @@ from torchvision.models import SqueezeNet
 
 
 def squeezenet_retrain(
-        num_classes: int, pretrained: bool = True, train_only_last_layer: bool = False
+    num_classes: int, pretrained: bool = True, train_only_last_layer: bool = False
 ) -> Tuple[SqueezeNet, List[Parameter]]:
     """
 

@@ -23,12 +23,12 @@ from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 
 @torch.no_grad()
 def export_detection_model(
-        cfg: NOD,
-        model_ckpt: Path,
-        model_export_path: Path = Path("torch_model"),
-        verbose: bool = True,
-        onnx_export: bool = False,
-        strict_jit: bool = False,
+    cfg: NOD,
+    model_ckpt: Path,
+    model_export_path: Path = Path("torch_model"),
+    verbose: bool = True,
+    onnx_export: bool = False,
+    strict_jit: bool = False,
 ) -> None:
     """
 
@@ -89,9 +89,7 @@ def export_detection_model(
 
 
 def main():
-    """
-
-    """
+    """ """
     from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
 
     # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
@@ -105,9 +103,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-                / "ssd"
-                / "models"
-                / "mobilenet_v2_ssd320_voc0712.pth"
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

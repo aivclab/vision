@@ -125,7 +125,7 @@ class GlimpseSensor(nn.Module):
             # loop through mini-batch and extract patches
             patch = []
             for i in range(B):
-                patch.append(x[i, :, start[i, 1]: end[i, 1], start[i, 0]: end[i, 0]])
+                patch.append(x[i, :, start[i, 1] : end[i, 1], start[i, 0] : end[i, 0]])
             return torch.stack(patch)
 
         def denormalize(self, T, coords) -> torch.LongTensor:
@@ -148,7 +148,6 @@ class GlimpseSensor(nn.Module):
 
         self.fc1 = nn.Linear(
             k * g * g * c, h_g
-
         )  # glimpse layer TODO: RENAME TO WHAT IS IT!!
 
         self.fc2 = nn.Linear(2, h_l)  # location layer
@@ -173,7 +172,6 @@ class GlimpseSensor(nn.Module):
             + self.fc4(
                 functional.relu(self.fc2(l_t_prev.view(l_t_prev.size(0), -1)))
             )  # where
-
         )
 
 
@@ -220,12 +218,12 @@ class CoreRNN(nn.Module):
         """
 
 
-            :param g_t:
-            :type g_t:
-            :param h_t_prev:
-            :type h_t_prev:
-            :return:
-            :rtype:"""
+        :param g_t:
+        :type g_t:
+        :param h_t_prev:
+        :type h_t_prev:
+        :return:
+        :rtype:"""
         h1 = self.i2h(g_t)
         h2 = self.h2h(h_t_prev)
         h_t = functional.relu(h1 + h2)
@@ -265,10 +263,10 @@ class Actor(nn.Module):
         """
 
 
-            :param h_t:
-            :type h_t:
-            :return:
-            :rtype:"""
+        :param h_t:
+        :type h_t:
+        :return:
+        :rtype:"""
         return functional.log_softmax(self.fc(h_t), dim=1)
 
 

@@ -75,9 +75,7 @@ def one_hot(labels, num_labels, device="cpu"):
 
 
 def main():
-    """
-
-    """
+    """ """
     data_loader = DataLoader(
         dataset=dataset, batch_size=config.batch_size, shuffle=True
     )

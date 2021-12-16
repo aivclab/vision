@@ -20,11 +20,11 @@ from neodroidvision.utilities import OutputActivationModule
 
 @torch.no_grad()
 def export_detection_model(
-        model_export_path: Path = ensure_existence(
-            PROJECT_APP_PATH.user_data / "penn_fudan_segmentation"
-        )
-                                  / "seg_skip_fis",
-        SEED: int = 87539842,
+    model_export_path: Path = ensure_existence(
+        PROJECT_APP_PATH.user_data / "penn_fudan_segmentation"
+    )
+    / "seg_skip_fis",
+    SEED: int = 87539842,
 ) -> None:
     """
 
@@ -64,11 +64,11 @@ def export_detection_model(
                         # strict=strict_jit,
                         check_inputs=(
                             transform(next(frame_g))
-                                .unsqueeze(0)
-                                .to(global_torch_device()),
+                            .unsqueeze(0)
+                            .to(global_torch_device()),
                             transform(next(frame_g))
-                                .unsqueeze(0)
-                                .to(global_torch_device()),
+                            .unsqueeze(0)
+                            .to(global_torch_device()),
                         ),
                     )
                     exp_path = model_export_path.with_suffix(".traced")

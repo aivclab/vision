@@ -17,7 +17,9 @@ from numpy import ndarray
 from warg import Number
 
 
-def compile_encoding_image(images:ndarray, size:Tuple, resize_factor: Number = 1.0)->ndarray:
+def compile_encoding_image(
+    images: ndarray, size: Tuple, resize_factor: Number = 1.0
+) -> ndarray:
     """
 
 
@@ -40,12 +42,14 @@ def compile_encoding_image(images:ndarray, size:Tuple, resize_factor: Number = 1
             Image.fromarray(image).resize((w_, h_), resampe=Image.BICUBIC)
         )
 
-        img[j * h_: j * h_ + h_, i * w_: i * w_ + w_] = image_
+        img[j * h_ : j * h_ + h_, i * w_ : i * w_ + w_] = image_
 
     return img
 
 
-def sample_2d_latent_vectors(encoding_space:Number, n_img_x:int, n_img_y:int)->torch.FloatTensor:
+def sample_2d_latent_vectors(
+    encoding_space: Number, n_img_x: int, n_img_y: int
+) -> torch.FloatTensor:
     """
 
     :param encoding_space:
@@ -53,26 +57,29 @@ def sample_2d_latent_vectors(encoding_space:Number, n_img_x:int, n_img_y:int)->t
     :param n_img_y:
     :return:"""
 
-    return torch.FloatTensor([numpy.rollaxis(
-        numpy.mgrid[
-        encoding_space: -encoding_space: n_img_y * 1j,
-        encoding_space: -encoding_space: n_img_x * 1j,
-        ],
-        0,
-        3,
-    ).reshape([-1, 2])])
+    return torch.FloatTensor(
+        [
+            numpy.rollaxis(
+                numpy.mgrid[
+                    encoding_space : -encoding_space : n_img_y * 1j,
+                    encoding_space : -encoding_space : n_img_x * 1j,
+                ],
+                0,
+                3,
+            ).reshape([-1, 2])
+        ]
+    )
 
 
 def plot_manifold(
-
-        model:torch.nn.Module,
-        out_path:Path,
-        n_img_x: int = 20,
-        n_img_y: int = 20,
-        img_h: int = 28,
-        img_w: int = 28,
-        sample_range: Number = 1,
-)->None:
+    model: torch.nn.Module,
+    out_path: Path,
+    n_img_x: int = 20,
+    n_img_y: int = 20,
+    img_h: int = 28,
+    img_w: int = 28,
+    sample_range: Number = 1,
+) -> None:
     """
 
     :param model:
@@ -87,4 +94,5 @@ def plot_manifold(
     encodings = model(vectors).to("cpu")
     images = encodings.reshape(n_img_x * n_img_y, img_h, img_w)
     from imageio import imwrite
+
     imwrite(str(out_path), compile_encoding_image(images, (n_img_y, n_img_x)))

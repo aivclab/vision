@@ -63,14 +63,14 @@ def reschedule(model, epoch, scheduler):
 
 
 def train_d(
-        model,
-        train_loader,
-        valid_loader,
-        criterion,
-        optimizer,
-        scheduler,
-        save_model_path,
-        n_epochs=0,
+    model,
+    train_loader,
+    valid_loader,
+    criterion,
+    optimizer,
+    scheduler,
+    save_model_path,
+    n_epochs=0,
 ):
     """
 
@@ -329,9 +329,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
 
 
 def main():
-    """
-
-    """
+    """ """
     pyplot.style.use("bmh")
 
     base_path = Path.home() / "Data" / "Datasets" / "Clouds"

@@ -24,9 +24,7 @@ indent = " " * margin
 
 class NeodroidVisionCLI(object):
     def run(self) -> None:
-        """
-
-        """
+        """ """
         pass
 
     @staticmethod
@@ -38,9 +36,7 @@ class NeodroidVisionCLI(object):
 
     @staticmethod
     def sponsors() -> None:
-        """
-
-        """
+        """ """
         print(sponsors)
 
 

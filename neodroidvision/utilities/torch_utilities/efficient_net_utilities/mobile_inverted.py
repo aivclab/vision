@@ -38,14 +38,14 @@ class MobileInvertedResidualBottleneckConvBlock(nn.Module):
         self._bn_mom = 1 - global_params.batch_norm_momentum
         self._bn_eps = global_params.batch_norm_epsilon
         self.has_se = (self._block_args.se_ratio is not None) and (
-                0 < self._block_args.se_ratio <= 1
+            0 < self._block_args.se_ratio <= 1
         )
         self.id_skip = block_args.id_skip  # skip connection and drop connect
 
         # Expansion phase
         inp = self._block_args.input_filters  # number of input channels
         oup = (
-                self._block_args.input_filters * self._block_args.expand_ratio
+            self._block_args.input_filters * self._block_args.expand_ratio
         )  # number of output channels
         if self._block_args.expand_ratio != 1:
             self._expand_conv = Conv2dSamePadding(
@@ -117,9 +117,9 @@ class MobileInvertedResidualBottleneckConvBlock(nn.Module):
             self._block_args.output_filters,
         )
         if (
-                self.id_skip
-                and self._block_args.stride == 1
-                and input_filters == output_filters
+            self.id_skip
+            and self._block_args.stride == 1
+            and input_filters == output_filters
         ):
             if drop_connect_rate:
                 x = drop_connect(x, p=drop_connect_rate, training=self.training)

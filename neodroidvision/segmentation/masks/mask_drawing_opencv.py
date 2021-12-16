@@ -49,7 +49,7 @@ class ConvexHullEnum(Enum):
 
 
 def draw_convex_hull(
-        mask: numpy.ndarray, mode: ConvexHullEnum = ConvexHullEnum.convex
+    mask: numpy.ndarray, mode: ConvexHullEnum = ConvexHullEnum.convex
 ) -> numpy.ndarray:
     """
 

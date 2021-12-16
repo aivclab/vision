@@ -32,11 +32,11 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 
 @torch.no_grad()
 def run_traced_webcam_demo(
-        input_cfg: NOD,
-        categories: List,
-        score_threshold: float = 0.7,
-        window_name: str = "SSD",
-        onnx_exported: bool = False,
+    input_cfg: NOD,
+    categories: List,
+    score_threshold: float = 0.7,
+    window_name: str = "SSD",
+    onnx_exported: bool = False,
 ):
     """
 
@@ -99,7 +99,7 @@ def run_traced_webcam_demo(
         torch.jit.load("torch_model.traced")
 
         with open(
-                "torch_model.traced", "rb"
+            "torch_model.traced", "rb"
         ) as f:  # Load ScriptModule from io.BytesIO object
             buffer = io.BytesIO(f.read())
 
@@ -160,9 +160,7 @@ def run_traced_webcam_demo(
 
 
 def main():
-    """
-
-    """
+    """ """
     from configs.mobilenet_v2_ssd320_voc0712 import base_cfg
 
     # from configs.efficient_net_b3_ssd300_voc0712 import base_cfg
@@ -176,9 +174,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-                / "ssd"
-                / "models"
-                / "mobilenet_v2_ssd320_voc0712.pth"
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

@@ -9,7 +9,7 @@ __all__ = ["dice_loss", "dice_coefficient", "DiceLoss", "BCEDiceLoss"]
 
 
 def dice_coefficient(
-        pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
+    pred: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
     """
     This definition generalize to real valued pred and target vector.
@@ -27,7 +27,7 @@ def dice_coefficient(
 
 
 def dice_loss(
-        prediction: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
+    prediction: torch.Tensor, target: torch.Tensor, *, epsilon: float = 1e-10
 ) -> torch.Tensor:
     """
 
@@ -43,9 +43,7 @@ def dice_loss(
 
 
 class DiceLoss(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, *, eps: float = 1e-7, activation: callable = torch.sigmoid):
         super().__init__()
@@ -73,16 +71,14 @@ class DiceLoss(nn.Module):
 
 
 class BCEDiceLoss(DiceLoss):
-    """
-
-    """
+    """ """
 
     def __init__(
-            self,
-            eps: float = 1e-7,
-            activation: Any = None,
-            lambda_dice: float = 1.0,
-            lambda_bce: float = 1.0,
+        self,
+        eps: float = 1e-7,
+        activation: Any = None,
+        lambda_dice: float = 1.0,
+        lambda_bce: float = 1.0,
     ):
         super().__init__(eps=eps, activation=activation)
 

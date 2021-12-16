@@ -51,10 +51,10 @@ def accuracy(*, distances, is_diff, threshold: float = 0.5):
     :rtype:"""
     return torch.mean(
         (
-                is_diff
-                == to_tensor(
-            distances < threshold, dtype=torch.long, device=global_torch_device()
-        )
+            is_diff
+            == to_tensor(
+                distances < threshold, dtype=torch.long, device=global_torch_device()
+            )
         ).to(dtype=torch.float)
     )
 
@@ -122,8 +122,8 @@ def stest_one_versus_many(model, data_dir, img_size):
                     to_tensor(x1, device=global_torch_device()),
                 )
             )
-                .cpu()
-                .item()
+            .cpu()
+            .item()
         )
         boxed_text_overlay_plot(
             torchvision.utils.make_grid(torch.cat((x0, x1), 0)),
@@ -159,8 +159,8 @@ def stest_many_versus_many(model, data_dir, img_size, threshold=0.5):
                     to_tensor(x1, device=global_torch_device()),
                 )
             )
-                .cpu()
-                .item()
+            .cpu()
+            .item()
         )
         boxed_text_overlay_plot(
             torchvision.utils.make_grid(torch.cat((x0, x1), 0)),
@@ -171,19 +171,19 @@ def stest_many_versus_many(model, data_dir, img_size, threshold=0.5):
 
 
 def train_siamese(
-        model,
-        optimiser,
-        criterion,
-        *,
-        writer: Writer = MockWriter(),
-        train_number_epochs,
-        data_dir,
-        train_batch_size,
-        model_name,
-        save_path,
-        save_best=False,
-        img_size,
-        validation_interval: int = 1,
+    model,
+    optimiser,
+    criterion,
+    *,
+    writer: Writer = MockWriter(),
+    train_number_epochs,
+    data_dir,
+    train_batch_size,
+    model_name,
+    save_path,
+    save_best=False,
+    img_size,
+    validation_interval: int = 1,
 ):
     """
     :param data_dir:
@@ -274,15 +274,15 @@ def train_siamese(
                             accuracy(
                                 distances=F.pairwise_distance(o[0], o[1]), is_diff=0
                             )
-                                .cpu()
-                                .item()
+                            .cpu()
+                            .item()
                         )
                         valid_negative_acc = (
                             accuracy(
                                 distances=F.pairwise_distance(o[0], o[2]), is_diff=1
                             )
-                                .cpu()
-                                .item()
+                            .cpu()
+                            .item()
                         )
                         valid_acc = numpy.mean((valid_negative_acc, valid_positive_acc))
                         writer.scalar("valid_loss", a_v, batch_i)
@@ -359,6 +359,5 @@ if __name__ == "__main__":
             )
             print("loaded best val")
             stest_many_versus_many(model, data_dir, img_size)
-
 
     main()

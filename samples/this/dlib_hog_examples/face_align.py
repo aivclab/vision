@@ -15,9 +15,7 @@ from draugr.opencv_utilities.dlib.facealigner import align_face
 
 
 def aushda():
-    """
-
-    """
+    """ """
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
     face_size = (256, 256)
@@ -37,7 +35,7 @@ def aushda():
         cv2.imshow("test", numpy.hstack(faces))
 
         if cv2.waitKey(1) & 0xFF == ord(
-                "q"
+            "q"
         ):  # if the `q` key was pressed, break from the loop
             break
 

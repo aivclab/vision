@@ -29,7 +29,7 @@ class FocalLoss(nn.Module):
                     instead summed for each mini batch."""
 
     def __init__(
-            self, class_num, alpha=None, gamma: float = 2.0, size_average: bool = True
+        self, class_num, alpha=None, gamma: float = 2.0, size_average: bool = True
     ):
         super(FocalLoss, self).__init__()
         if alpha is None:

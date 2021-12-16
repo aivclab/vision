@@ -68,7 +68,6 @@ class VggFaces2(SupervisedDataset):
         identity_list = meta_file
         df = pandas.read_csv(
             identity_list, sep=",\s+", quoting=csv.QUOTE_ALL, encoding="utf-8"
-
         )
         df["class"] = -1
         df.loc[df["Flag"] == 1, "class"] = range(N_IDENTITY_PRETRAIN)
@@ -88,11 +87,11 @@ class VggFaces2(SupervisedDataset):
         return "train", "validation", "test"
 
     def __init__(
-            self,
-            dataset_path: Path,
-            split: SplitEnum = SplitEnum.training,
-            resize_s: int = 256,
-            raw_images: bool = False,
+        self,
+        dataset_path: Path,
+        split: SplitEnum = SplitEnum.training,
+        resize_s: int = 256,
+        raw_images: bool = False,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -183,11 +182,11 @@ if __name__ == "__main__":
     # test_loader = dt
 
     for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
-            enumerate(test_loader),
-            total=len(test_loader),
-            desc="Bro",
-            ncols=80,
-            leave=False,
+        enumerate(test_loader),
+        total=len(test_loader),
+        desc="Bro",
+        ncols=80,
+        leave=False,
     ):
         pyplot.imshow(dt.inverse_transform(imgs[0]))
         # pyplot.imshow(imgs)

@@ -74,9 +74,7 @@ __all__ = []
 
 
 def main():
-    """
-
-    """
+    """ """
     args = argparse.ArgumentParser()
     args.add_argument("--inference", "-i", action="store_true")
     args.add_argument("--continue_training", "-c", action="store_true")

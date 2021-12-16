@@ -12,8 +12,8 @@ from .self_attention_utilities import (
 )
 
 _aggregation_zeropad_forward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void aggregation_zeropad_forward_kernel(
 const ${Dtype}* bottom_data, const ${Dtype}* weight_data, ${Dtype}* top_data) {
@@ -43,8 +43,8 @@ const ${Dtype}* bottom_data, const ${Dtype}* weight_data, ${Dtype}* top_data) {
 )
 
 _aggregation_zeropad_input_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void aggregation_zeropad_input_backward_kernel(
     const ${Dtype}* const top_diff, const ${Dtype}* const weight_data, ${Dtype}* bottom_diff) {
@@ -79,8 +79,8 @@ __global__ void aggregation_zeropad_input_backward_kernel(
 )
 
 _aggregation_zeropad_weight_backward_kernel = (
-        kernel_loop
-        + r"""
+    kernel_loop
+    + r"""
 extern "C"
 __global__ void aggregation_zeropad_weight_backward_kernel(
     const ${Dtype}* const top_diff, const ${Dtype}* const bottom_data, ${Dtype}* weight_diff) {
@@ -301,6 +301,7 @@ def aggregation_zeropad(input, weight, kernel_size=3, stride=1, padding=0, dilat
 
 
 if __name__ == "__main__":
+
     def test_aggregation_zeropad():
         import os
 
@@ -319,8 +320,8 @@ if __name__ == "__main__":
             torch.randn(
                 n, c_w, kernel_size ** 2, out_height * out_width, requires_grad=True
             )
-                .double()
-                .cuda()
+            .double()
+            .cuda()
         )
 
         y1 = aggregation_zeropad(
@@ -361,6 +362,5 @@ if __name__ == "__main__":
             (x, w),
         )
         print("test case passed")
-
 
     test_aggregation_zeropad()

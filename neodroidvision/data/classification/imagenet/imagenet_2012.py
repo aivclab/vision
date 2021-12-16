@@ -68,14 +68,18 @@ class ImageNet2012(SupervisedDataset):
 
         :return:
         :rtype:"""
-        return {SplitEnum.training: "train", SplitEnum.validation: "val", SplitEnum.testing: "test"}
+        return {
+            SplitEnum.training: "train",
+            SplitEnum.validation: "val",
+            SplitEnum.testing: "test",
+        }
 
     def __init__(
-            self,
-            dataset_path: Path,
-            split: SplitEnum = SplitEnum.training,
-            resize_s: int = 256,
-            crop_size: int = 224,
+        self,
+        dataset_path: Path,
+        split: SplitEnum = SplitEnum.training,
+        resize_s: int = 256,
+        crop_size: int = 224,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -94,7 +98,6 @@ class ImageNet2012(SupervisedDataset):
         self._dataset_path = dataset_path / self.split_names[split]
 
         self.train_trans = transforms.Compose(
-
             [
                 transforms.RandomResizedCrop(crop_size),
                 transforms.RandomHorizontalFlip(),
@@ -131,9 +134,7 @@ class ImageNet2012(SupervisedDataset):
 if __name__ == "__main__":
 
     def main():
-        """
-
-        """
+        """ """
         import tqdm
 
         batch_size = 32
@@ -147,16 +148,15 @@ if __name__ == "__main__":
         )
 
         for batch_idx, (imgs, categories) in tqdm.tqdm(
-                enumerate(val_loader),
-                total=len(val_loader),
-                desc="Bro",
-                ncols=80,
-                leave=False,
+            enumerate(val_loader),
+            total=len(val_loader),
+            desc="Bro",
+            ncols=80,
+            leave=False,
         ):
             pyplot.imshow(dt.inverse_base_transform(imgs[0]))
             pyplot.title(dt.category_names[categories[0].item()])
             pyplot.show()
             break
-
 
     main()

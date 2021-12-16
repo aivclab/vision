@@ -19,16 +19,16 @@ class RecurrentAttention(nn.Module):
     [1]: Minh et. al., https://arxiv.org/abs/1406.6247"""
 
     def __init__(
-            self,
-            size_glimpse,
-            num_patches_per_glimpse,
-            scale_factor_suc,
-            num_channels,
-            hidden_size_glimpse,
-            hidden_size_locator,
-            std_policy,
-            hidden_size_rnn,
-            num_classes,
+        self,
+        size_glimpse,
+        num_patches_per_glimpse,
+        scale_factor_suc,
+        num_channels,
+        hidden_size_glimpse,
+        hidden_size_locator,
+        std_policy,
+        hidden_size_rnn,
+        num_classes,
     ):
         """Constructor.
 
@@ -60,11 +60,11 @@ class RecurrentAttention(nn.Module):
         self._signal_baseline = ram_modules.SignalBaseline(hidden_size_rnn, 1)
 
     def forward(
-            self,
-            x: torch.Tensor,
-            l_t_prev: torch.Tensor,
-            h_t_prev: torch.Tensor,
-            last: bool = False,
+        self,
+        x: torch.Tensor,
+        l_t_prev: torch.Tensor,
+        h_t_prev: torch.Tensor,
+        last: bool = False,
     ) -> Tuple[torch.Tensor, ...]:
         """Run RAM for one timestep on a minibatch of images.
 

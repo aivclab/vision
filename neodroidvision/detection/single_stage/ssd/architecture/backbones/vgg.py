@@ -11,9 +11,7 @@ from neodroidvision.utilities.torch_utilities import L2Norm
 
 
 class VGG(SSDBackbone):
-    """
-
-    """
+    """ """
 
     class VggSize(Enum):
         s300 = "300"

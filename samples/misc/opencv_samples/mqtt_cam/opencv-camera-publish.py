@@ -18,9 +18,7 @@ FPS = MQTT_CAM_CONFIG["camera"]["fps"]
 
 
 def main():
-    """
-
-    """
+    """ """
     client = get_mqtt_client()
     client.connect(MQTT_BROKER, port=MQTT_PORT)
     time.sleep(4)  # Wait for connection setup to complete

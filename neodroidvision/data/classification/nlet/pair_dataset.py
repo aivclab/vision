@@ -32,10 +32,11 @@ class PairDataset(
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws
     def __init__(
-            self, data_path: Union[str, Path],
+        self,
+        data_path: Union[str, Path],
         split: SplitEnum = SplitEnum.training,
-        return_categories:bool=False,
-        **kwargs
+        return_categories: bool = False,
+        **kwargs,
     ):
         super().__init__()
 
@@ -43,13 +44,13 @@ class PairDataset(
         self.split = split
         # name = self.split_names[split]
         if split == SplitEnum.testing:
-            self._dataset = DictImageFolder(root=data_path / SplitEnum.testing.value, **kwargs)
+            self._dataset = DictImageFolder(
+                root=data_path / SplitEnum.testing.value, **kwargs
+            )
         else:
             self._dataset = SplitDictImageFolder(
-                root=data_path / SplitEnum.training.value,
-                split=self.split, **kwargs
+                root=data_path / SplitEnum.training.value, split=self.split, **kwargs
             )
-
 
     def __getitem__(self, idx1: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
@@ -75,7 +76,7 @@ class PairDataset(
                     t2, random.randint(0, self._dataset.category_sizes[t2])
                 )[0],
                 torch.ones(1, dtype=torch.long),
-            *(t1,t2 if self.return_categories else ())
+                *(t1, t2 if self.return_categories else ()),
             )
 
         while True:
@@ -87,7 +88,7 @@ class PairDataset(
             self._dataset.sample(t1, idx1)[0],
             self._dataset.sample(t1, idx2)[0],
             torch.zeros(1, dtype=torch.long),
-            *(t1,t1 if self.return_categories else ())
+            *(t1, t1 if self.return_categories else ()),
         )
 
     @property
@@ -140,7 +141,7 @@ class PairDataset(
         :type label:"""
         images = images.squeeze()
         if label:
-            assert len(images) == len(label) == 9, f'{len(images), len(label) }'
+            assert len(images) == len(label) == 9, f"{len(images), len(label) }"
 
         fig, axes = pyplot.subplots(3, 3)
         for i, ax in enumerate(axes.flat):
@@ -155,9 +156,11 @@ class PairDataset(
 
 
 if __name__ == "__main__":
-    sd = PairDataset(Path.home() / "Data" / "mnist_png",
-                     split=SplitEnum.validation,
-                     return_categories=True)
+    sd = PairDataset(
+        Path.home() / "Data" / "mnist_png",
+        split=SplitEnum.validation,
+        return_categories=True,
+    )
     print(sd.predictor_shape)
     print(sd.response_shape)
     sd.sample()

@@ -28,13 +28,13 @@ class CheckPointer:
     _last_checkpoint_name = "last_checkpoint.txt"
 
     def __init__(
-            self,
-            model: Module,
-            optimizer: Optimizer = None,
-            scheduler: torch.optim.lr_scheduler = None,
-            save_dir: Path = Path.cwd(),
-            save_to_disk: bool = None,
-            logger: logging.Logger = None,
+        self,
+        model: Module,
+        optimizer: Optimizer = None,
+        scheduler: torch.optim.lr_scheduler = None,
+        save_dir: Path = Path.cwd(),
+        save_to_disk: bool = None,
+        logger: logging.Logger = None,
     ):
         """
 

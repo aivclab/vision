@@ -13,9 +13,7 @@ import torch
 
 
 class TorusConv2d(torch.nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, input_dim: int, output_dim: int, kernel_size, bn: bool):
         super().__init__()
@@ -33,11 +31,11 @@ class TorusConv2d(torch.nn.Module):
 
         """
         h = torch.cat(
-            [x[:, :, :, -self.edge_size[1]:], x, x[:, :, :, : self.edge_size[1]]],
+            [x[:, :, :, -self.edge_size[1] :], x, x[:, :, :, : self.edge_size[1]]],
             dim=3,
         )
         h = torch.cat(
-            [h[:, :, -self.edge_size[0]:], h, h[:, :, : self.edge_size[0]]], dim=2
+            [h[:, :, -self.edge_size[0] :], h, h[:, :, : self.edge_size[0]]], dim=2
         )
         h = self.conv(h)
         if self.bn is not None:

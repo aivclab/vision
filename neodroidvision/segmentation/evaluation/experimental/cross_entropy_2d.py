@@ -37,7 +37,7 @@ def cross_entropy2d(input, target, weight=None, size_average=True):
 
 
 def multi_scale_cross_entropy2d(
-        input, target, weight=None, size_average=True, scale_weight=None
+    input, target, weight=None, size_average=True, scale_weight=None
 ):
     """
 

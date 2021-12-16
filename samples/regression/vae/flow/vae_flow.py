@@ -74,7 +74,7 @@ class MaskedLinear(nn.Module):
     """Linear layer with some input-output connections masked."""
 
     def __init__(
-            self, in_features, out_features, mask, context_features=None, bias=True
+        self, in_features, out_features, mask, context_features=None, bias=True
     ):
         super().__init__()
         self.linear = nn.Linear(in_features, out_features, bias)
@@ -140,7 +140,7 @@ class MADE(nn.Module):
                 # assign output layer units a number between 1 and D
                 m = numpy.arange(1, num_input + 1)
                 assert (
-                        num_output % num_input == 0
+                    num_output % num_input == 0
                 ), "num_output must be multiple of num_input"
                 self._m.append(
                     numpy.hstack([m for _ in range(num_output // num_input)])
@@ -172,7 +172,7 @@ class MADE(nn.Module):
             assert numpy.triu(final).all() == 0
         else:
             for submat in numpy.split(
-                    final, indices_or_sections=num_output // num_input, axis=1
+                final, indices_or_sections=num_output // num_input, axis=1
             ):
                 assert numpy.triu(submat).all() == 0
 

@@ -99,10 +99,10 @@ if __name__ == "__main__":
         cv_image = pygame_to_cvimage(image)  # Create cv image from pygame image
 
         points = (
-                detect_eyes(cv_image)
-                + detect_nose(cv_image)
-                + detect_mouth(cv_image)
-                + detect_faces(cv_image)
+            detect_eyes(cv_image)
+            + detect_nose(cv_image)
+            + detect_mouth(cv_image)
+            + detect_faces(cv_image)
         )  # Get points of faces.
 
         cv_image = draw_from_points(cv_image, points)  # Draw points

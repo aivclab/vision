@@ -6,3 +6,4 @@
 
 # Pointcloud
 polyscope>=0.1.6
+pycocotools

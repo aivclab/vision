@@ -15,12 +15,10 @@ from neodroidvision.classification.architectures.self_attention_network.self_att
 if __name__ == "__main__":
     from samples.classification.san.configs.base_san_cfg import SAN_CONFIG
 
-
     def main():
-        """
-
-        """
+        """ """
         with torch.cuda.device(0):
+
             def subtraction_flops_counter_hook(module, input, output):
                 """
 
@@ -73,6 +71,5 @@ if __name__ == "__main__":
                 model.cuda(), (3, 224, 224), as_strings=True, print_per_layer_stat=True
             )
             print(f"Params/Flops: {params}/{flops}")
-
 
     main()

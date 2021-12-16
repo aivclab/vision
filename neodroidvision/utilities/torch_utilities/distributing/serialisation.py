@@ -22,7 +22,7 @@ def to_byte_tensor(data: Any, *, device: str = "cuda") -> torch.ByteTensor:
 
 
 def serialise_byte_tensor(
-        encoded_data: Any, data: Any, *, device: str = "cuda"
+    encoded_data: Any, data: Any, *, device: str = "cuda"
 ) -> None:
     """
 
@@ -38,7 +38,7 @@ def serialise_byte_tensor(
     assert s <= 255, "Can't encode data greater than 255 bytes"
 
     encoded_data[0] = s  # put the size in encoded_data
-    encoded_data[1: (s + 1)] = tensor  # put the encoded data in encoded_data
+    encoded_data[1 : (s + 1)] = tensor  # put the encoded data in encoded_data
 
 
 def deserialise_byte_tensor(size_list, tensor_list) -> List:

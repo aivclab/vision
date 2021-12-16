@@ -87,12 +87,12 @@ class VOCDataset(ObjectDetectionDataset):
     }
 
     def __init__(
-            self,
-            data_root: Path,
-            dataset_name: str,
-            split: SplitEnum,
-            img_transform: callable = None,
-            annotation_transform: callable = None,
+        self,
+        data_root: Path,
+        dataset_name: str,
+        split: SplitEnum,
+        img_transform: callable = None,
+        annotation_transform: callable = None,
     ):
         """
 
@@ -117,7 +117,6 @@ class VOCDataset(ObjectDetectionDataset):
 
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
-
         )
         self._data_dir = data_root / self.data_dirs[dataset_name]
         self._img_transforms = img_transform

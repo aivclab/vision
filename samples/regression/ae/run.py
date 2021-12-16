@@ -52,13 +52,13 @@ def get_metric_str(metrics, writer: ImageWriterMixin, update_i):
 
 
 def train_model(
-        model,
-        data_iterator,
-        optimizer,
-        scheduler,
-        writer: ImageWriterMixin,
-        interrupted_path,
-        num_updates=25000,
+    model,
+    data_iterator,
+    optimizer,
+    scheduler,
+    writer: ImageWriterMixin,
+    interrupted_path,
+    num_updates=25000,
 ):
     """
 
@@ -175,9 +175,7 @@ def test_model(model, data_iterator, load_path=None):
 
 
 def main():
-    """
-
-    """
+    """ """
     args = argparse.ArgumentParser()
     args.add_argument("-i", action="store_false")
     options = args.parse_args()
@@ -234,7 +232,7 @@ def main():
     else:
         _list_of_files = list(home_path.glob("*"))
         latest_model_path = (
-                str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
+            str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
         )
         print("loading previous model: " + latest_model_path)
         test_model(aeu_model, data_iter, load_path=latest_model_path)

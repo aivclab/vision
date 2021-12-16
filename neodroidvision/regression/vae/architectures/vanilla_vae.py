@@ -15,9 +15,7 @@ __all__ = ["VanillaVAE"]
 
 
 class Encoder(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, input_size=784, output_size=20):
         super().__init__()
@@ -53,9 +51,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, input_size=20, output_size=784):
         super().__init__()

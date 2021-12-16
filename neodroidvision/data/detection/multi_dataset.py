@@ -40,13 +40,13 @@ class MultiDataset(SupervisedDataset):
         return (len(self.categories),)
 
     def __init__(
-            self,
-            *,
-            cfg,
-            dataset_type: callable,
-            data_root: Path,
-            sub_datasets: Tuple,
-            split: SplitEnum = SplitEnum.training
+        self,
+        *,
+        cfg,
+        dataset_type: callable,
+        data_root: Path,
+        sub_datasets: Tuple,
+        split: SplitEnum = SplitEnum.training
     ):
         """
 
@@ -68,7 +68,6 @@ class MultiDataset(SupervisedDataset):
             image_size=cfg.input.image_size,
             pixel_mean=cfg.input.pixel_mean,
             split=split,
-
         )
 
         if split == SplitEnum.training:

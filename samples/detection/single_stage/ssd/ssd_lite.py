@@ -26,9 +26,7 @@ from neodroidvision.utilities.torch_utilities.distributing.distributing_utilitie
 
 
 class SSDLITE:
-    """
-
-    """
+    """ """
 
     def __init__(self):
         self.m_detector = torchvision.models.detection.ssdlite320_mobilenet_v3_large(
@@ -38,9 +36,7 @@ class SSDLITE:
 
 
 def main():
-    """
-
-    """
+    """ """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(
@@ -51,9 +47,9 @@ def main():
         "--ckpt",
         help="The path to the checkpoint for test, default is the latest checkpoint.",
         default=PROJECT_APP_PATH.user_data
-                / "ssd"
-                / "models"
-                / "mobilenet_v2_ssd320_voc0712.pth"
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

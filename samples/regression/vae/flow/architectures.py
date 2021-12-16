@@ -27,7 +27,6 @@ class MLP(nn.Module):
             nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, output_size),
-
         ]
         self.net = nn.Sequential(*modules)
 
@@ -138,9 +137,8 @@ class VariationalFlow(nn.Module):
 
 
 class NormalLogProb(nn.Module):
-    '''
+    """ """
 
-    '''
     def forward(self, loc, scale, z):
         """
 

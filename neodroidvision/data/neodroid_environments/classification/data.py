@@ -62,17 +62,15 @@ def pooled_neodroid_env_classification_generator(env, device, batch_size=64) -> 
     """
 
     class FetchConvert(PooledQueueTask):
-        """
-
-        """
+        """ """
 
         def __init__(
-                self,
-                env,
-                device: Union[str, torch.device] = "cpu",
-                batch_size: int = 64,
-                *args,
-                **kwargs
+            self,
+            env,
+            device: Union[str, torch.device] = "cpu",
+            batch_size: int = 64,
+            *args,
+            **kwargs
         ):
             """
 
@@ -127,15 +125,12 @@ def pooled_neodroid_env_classification_generator(env, device, batch_size=64) -> 
 if __name__ == "__main__":
 
     def asdadsad():
-        """
-
-        """
+        """ """
         neodroid_generator = neodroid_env_classification_generator(neodroid.connect())
         train_loader = torch.utils.data.DataLoader(
             dataset=neodroid_generator, batch_size=12, shuffle=True
         )
         for p, r in train_loader:
             print(r)
-
 
     asdadsad()

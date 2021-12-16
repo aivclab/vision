@@ -10,13 +10,13 @@ from sorcery import assigned_names
 if __name__ == "__main__":
 
     class CoeffFormatEnum(Enum):
-        (wavedec, wavedec2, wavedecn)=assigned_names()
+        (wavedec, wavedec2, wavedecn) = assigned_names()
 
     def wavelet_denoise(
-            im,
-            mother_wavelet: str = "db1",  # Daubechies wavelet 1
-            levels: int = 4,
-            keep: float = 1 / 1e2,  # percent
+        im,
+        mother_wavelet: str = "db1",  # Daubechies wavelet 1
+        levels: int = 4,
+        keep: float = 1 / 1e2,  # percent
     ):
         """
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         coef_filt = pywt.array_to_coeffs(
             coef_array
             * (
-                    numpy.abs(coef_array) > Csort[int(numpy.floor((1 - keep) * len(Csort)))]
+                numpy.abs(coef_array) > Csort[int(numpy.floor((1 - keep) * len(Csort)))]
             ),
             coef_slices,
             output_format=CoeffFormatEnum.wavedec2.value,
@@ -41,7 +41,6 @@ if __name__ == "__main__":
         recon = pywt.waverec2(coef_filt, wavelet=mother_wavelet)
 
         return recon
-
 
     def main(im_raw):
         """
@@ -58,13 +57,12 @@ if __name__ == "__main__":
         pyplot.imshow(im_denoised, pyplot.cm.gray)
         pyplot.title("Reconstructed Image")
 
-
     im22 = (
         pyplot.imread(
             str(Path.home() / "Data" / "Datasets" / "Denoise" / "moonlanding.png")
         )
-            .astype(float)
-            .mean(-1)
+        .astype(float)
+        .mean(-1)
     )
     main(im22)
 

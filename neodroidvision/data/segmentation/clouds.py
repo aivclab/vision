@@ -29,9 +29,8 @@ from draugr.opencv_utilities import cv2_resize
 
 
 class CloudSegmentationDataset(Dataset):
-    """
+    """ """
 
-    """
     categories = {0: "Fish", 1: "Flower", 2: "Gravel", 3: "Sugar"}
     image_size = (640, 320)
     image_size_T = image_size[::-1]
@@ -75,13 +74,13 @@ class CloudSegmentationDataset(Dataset):
   '''
 
     def __init__(
-            self,
-            csv_path: Path,
-            image_data_path: Path,
-            subset: SplitEnum = SplitEnum.training,
-            transp=True,
-            N_FOLDS=10,
-            SEED=246232,
+        self,
+        csv_path: Path,
+        image_data_path: Path,
+        subset: SplitEnum = SplitEnum.training,
+        transp=True,
+        N_FOLDS=10,
+        SEED=246232,
     ):
 
         self.transp = transp
@@ -102,11 +101,11 @@ class CloudSegmentationDataset(Dataset):
                 data_frame.loc[
                     data_frame["EncodedPixels"].isnull() == False, "Image_Label"
                 ]
-                    .apply(lambda x: x.split("_")[0])
-                    .value_counts()
-                    .sort_index()
-                    .reset_index()
-                    .rename(columns={"index": "img_id", "Image_Label": "count"})
+                .apply(lambda x: x.split("_")[0])
+                .value_counts()
+                .sort_index()
+                .reset_index()
+                .rename(columns={"index": "img_id", "Image_Label": "count"})
             )  # split data into train and val
 
             ids = id_mask_count["img_id"].values
@@ -126,9 +125,9 @@ class CloudSegmentationDataset(Dataset):
         else:
             self.img_ids = (
                 data_frame["Image_Label"]
-                    .apply(lambda x: x.split("_")[0])
-                    .drop_duplicates()
-                    .values
+                .apply(lambda x: x.split("_")[0])
+                .drop_duplicates()
+                .values
             )
             self.image_data_path = image_data_path / "test_images_525"
 
@@ -236,12 +235,12 @@ class CloudSegmentationDataset(Dataset):
 
     @staticmethod
     def visualise_prediction(
-            processed_image,
-            processed_mask,
-            original_image=None,
-            original_mask=None,
-            raw_image=None,
-            raw_mask=None,
+        processed_image,
+        processed_mask,
+        original_image=None,
+        original_mask=None,
+        raw_image=None,
+        raw_mask=None,
     ):
         """
         Plot image and masks.

@@ -31,15 +31,15 @@ from neodroidvision.utilities import CheckPointer
 
 @torch.no_grad()
 def run_webcam_demo(
-        cfg: NOD,
-        input_cfg: NOD,
-        categories: List,
-        model_checkpoint: Path,
-        score_threshold: float = 0.7,
-        window_name: str = "SSD",
+    cfg: NOD,
+    input_cfg: NOD,
+    categories: List,
+    model_checkpoint: Path,
+    score_threshold: float = 0.7,
+    window_name: str = "SSD",
 ):
     """
-  
+
     :param categories:
     :type categories:
     :param cfg:
@@ -105,9 +105,7 @@ def run_webcam_demo(
 
 
 def main():
-    """
-
-    """
+    """ """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
@@ -115,9 +113,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-                / "ssd"
-                / "models"
-                / "mobilenet_v2_ssd320_voc0712.pth"
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

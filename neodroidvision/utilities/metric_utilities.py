@@ -107,9 +107,8 @@ class SmoothedValue(object):
 
 
 class MetricLogger(object):
-    """
+    """ """
 
-    """
     MB = 1024.0 * 1024.0
 
     def __init__(self, delimiter="\t"):
@@ -144,9 +143,7 @@ class MetricLogger(object):
         return self.delimiter.join(loss_str)
 
     def synchronise_meters_between_processes(self):
-        """
-
-        """
+        """ """
         for meter in self.meters.values():
             meter.synchronise_between_processes_torch()
 

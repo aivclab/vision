@@ -119,18 +119,18 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
 
 def predictor_response_train_model_neodroid_observations(
-        model,
-        *,
-        train_iterator,
-        criterion,
-        optimizer,
-        scheduler,
-        writer,
-        interrupted_path,
-        val_data_iterator=None,
-        num_updates: int = 250000,
-        device=global_torch_device(),
-        early_stop=None,
+    model,
+    *,
+    train_iterator,
+    criterion,
+    optimizer,
+    scheduler,
+    writer,
+    interrupted_path,
+    val_data_iterator=None,
+    num_updates: int = 250000,
+    device=global_torch_device(),
+    early_stop=None,
 ):
     """
 

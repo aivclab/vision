@@ -25,8 +25,8 @@ criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
 checkerboard_points = numpy.zeros((numpy.prod(intersections_shape), 3), numpy.float32)
 checkerboard_points[:, :2] = numpy.mgrid[
-                             0: intersections_shape[0], 0: intersections_shape[1]
-                             ].T.reshape(-1, 2)
+    0 : intersections_shape[0], 0 : intersections_shape[1]
+].T.reshape(-1, 2)
 
 # Arrays to store object points and image points from all the images.
 object_points = []  # 3d point in real world space
@@ -38,9 +38,7 @@ save_keys = ("mtx", "dist", "rvecs", "tvecs")
 
 
 def image_loader_generator():
-    """
-
-    """
+    """ """
     for fname in glob.glob(f"{base}/*.jpg"):
         yield cv2.imread(fname)
 
@@ -75,13 +73,11 @@ def on_release(key):
 
 
 with keyboard.Listener(
-        on_press=on_press, on_release=on_release
+    on_press=on_press, on_release=on_release
 ) as listener:  # Collect events until released
 
     def webcam_generator():
-        """
-
-        """
+        """ """
         global a
         cap = cv2.VideoCapture(0)
 
@@ -101,15 +97,11 @@ with keyboard.Listener(
         cv2.destroyAllWindows()
         raise StopIteration
 
-
     # images = image_loader_generator()
     images = webcam_generator()
 
-
     def find_intersections():
-        """
-
-        """
+        """ """
         for img, _ in zip(images, range(10)):
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -119,7 +111,7 @@ with keyboard.Listener(
             )
 
             if (
-                    intrsc_found
+                intrsc_found
             ):  # If found, add object points, image points (after refining them)
                 object_points.append(checkerboard_points)
 
@@ -136,11 +128,8 @@ with keyboard.Listener(
                 )
                 pyplot.show()
 
-
     def calibrate():
-        """
-
-        """
+        """ """
         im_path = base / "left12.jpg"
         assert im_path.exists()
         img = cv2.imread(str(im_path))
@@ -203,11 +192,8 @@ with keyboard.Listener(
     
     """
 
-
     def load_and_draw():
-        """
-
-        """
+        """ """
         # Load previously saved data
         with numpy.load(calibration_file_name) as X:
             camera_mtx, dist_coef, _, _ = [X[i] for i in save_keys]
@@ -236,7 +222,6 @@ with keyboard.Listener(
                 img = draw_cube(img, rot_vecs, trans_vecs, camera_mtx, dist_coef)
                 pyplot.imshow(img)
                 pyplot.show()
-
 
     find_intersections()
     calibrate()

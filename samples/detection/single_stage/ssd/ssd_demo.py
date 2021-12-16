@@ -24,7 +24,12 @@ from neodroidvision.utilities import CheckPointer
 
 @torch.no_grad()
 def run_demo(
-        cfg: NOD, categories: Sequence, model_ckpt, score_threshold: float, images_dir: Path, output_dir: Path
+    cfg: NOD,
+    categories: Sequence,
+    model_ckpt,
+    score_threshold: float,
+    images_dir: Path,
+    output_dir: Path,
 ):
     """
 
@@ -105,9 +110,7 @@ def run_demo(
 
 
 def main():
-    """
-
-    """
+    """ """
     from configs.vgg_ssd300_coco_trainval35k import base_cfg
 
     parser = argparse.ArgumentParser(description="SSD Demo.")
@@ -115,9 +118,9 @@ def main():
         "--ckpt",
         type=str,
         default=PROJECT_APP_PATH.user_data
-                / "ssd"
-                / "models"
-                / "mobilenet_v2_ssd320_voc0712.pth"
+        / "ssd"
+        / "models"
+        / "mobilenet_v2_ssd320_voc0712.pth"
         # "mobilenet_v2_ssd320_voc0712.pth"
         # "vgg_ssd300_coco_trainval35k.pth"
         # "vgg_ssd512_coco_trainval35k.pth"

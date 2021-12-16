@@ -46,12 +46,12 @@ class SplitDictImageFolder(SplitDictDatasetFolder):
       imgs (list): List of (image path, class_index) tuples"""
 
     def __init__(
-            self,
-            root: Path,
-            transform: callable = transforms.ToTensor(),
-            target_transform: callable = None,
-            loader=default_loader,
-            split: SplitEnum = SplitEnum.training,
+        self,
+        root: Path,
+        transform: callable = transforms.ToTensor(),
+        target_transform: callable = None,
+        loader=default_loader,
+        split: SplitEnum = SplitEnum.training,
     ):
         super().__init__(
             root,
@@ -90,12 +90,12 @@ class DictImageFolder(DictDatasetFolder):
       imgs (list): List of (image path, class_index) tuples"""
 
     def __init__(
-            self,
-            root: Path,
-            transform: callable = transforms.ToTensor(),
-            target_transform: callable = None,
-            loader=default_loader,
-            is_valid_file: callable = None,
+        self,
+        root: Path,
+        transform: callable = transforms.ToTensor(),
+        target_transform: callable = None,
+        loader=default_loader,
+        is_valid_file: callable = None,
     ):
         super().__init__(
             root,

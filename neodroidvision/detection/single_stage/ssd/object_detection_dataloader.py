@@ -25,13 +25,13 @@ __all__ = ["object_detection_data_loaders"]
 
 
 def object_detection_data_loaders(
-        *,
-        data_root: Path,
-        cfg: NOD,
-        split: SplitEnum = SplitEnum.training,
-        distributed: bool = False,
-        max_iter: Optional[int] = None,
-        start_iter: int = 0
+    *,
+    data_root: Path,
+    cfg: NOD,
+    split: SplitEnum = SplitEnum.training,
+    distributed: bool = False,
+    max_iter: Optional[int] = None,
+    start_iter: int = 0
 ) -> Union[List[DataLoader], DataLoader]:
     """
 
@@ -54,13 +54,13 @@ def object_detection_data_loaders(
     data_loaders = []
 
     for dataset in MultiDataset(
-            cfg=cfg,
-            dataset_type=cfg.dataset_type,
-            data_root=data_root,
-            sub_datasets=cfg.datasets.train
-            if split == SplitEnum.training
-            else cfg.datasets.test,
-            split=split,
+        cfg=cfg,
+        dataset_type=cfg.dataset_type,
+        data_root=data_root,
+        sub_datasets=cfg.datasets.train
+        if split == SplitEnum.training
+        else cfg.datasets.test,
+        split=split,
     ).sub_datasets:
         if distributed:
             sampler = DistributedSampler(dataset, shuffle=shuffle)

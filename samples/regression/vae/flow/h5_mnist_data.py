@@ -55,8 +55,8 @@ def parse_binary_mnist(data_dir: Path) -> Triple:
 
 
 def download_binary_mnist(
-        fname: str = "binary_mnist.h5",
-        data_dir: Path = (PROJECT_APP_PATH.user_data / "vanilla_vae" / "data"),
+    fname: str = "binary_mnist.h5",
+    data_dir: Path = (PROJECT_APP_PATH.user_data / "vanilla_vae" / "data"),
 ):
     """
 

@@ -7,9 +7,7 @@ __all__ = ["ConditionalVAE"]
 
 
 class Encoder(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, layer_sizes, latent_size, num_conditions):
         super().__init__()
@@ -48,9 +46,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, layer_sizes, latent_size, num_conditions):
 
@@ -59,7 +55,7 @@ class Decoder(nn.Module):
         self.MLP = nn.Sequential()
 
         for i, (in_size, out_size) in enumerate(
-                zip([latent_size + num_conditions] + layer_sizes[:-1], layer_sizes)
+            zip([latent_size + num_conditions] + layer_sizes[:-1], layer_sizes)
         ):
             self.MLP.add_module(name=f"L{i:d}", module=nn.Linear(in_size, out_size))
             if i + 1 < len(layer_sizes):
@@ -83,9 +79,7 @@ class Decoder(nn.Module):
 
 
 class ConditionalVAE(VAE):
-    """
-
-    """
+    """ """
 
     def encode(self, *x: torch.Tensor) -> torch.Tensor:
         """
@@ -110,7 +104,7 @@ class ConditionalVAE(VAE):
         return self.decoder(*x)
 
     def __init__(
-            self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
+        self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
     ):
         super().__init__(latent_size)
 

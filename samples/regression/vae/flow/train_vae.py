@@ -21,19 +21,21 @@ import random
 from neodroidvision import PROJECT_APP_PATH
 
 
-def evaluate(num_samples, generator, variational_encoder, evaluation_data, device) -> None:
+def evaluate(
+    num_samples, generator, variational_encoder, evaluation_data, device
+) -> None:
     """
 
-      Args:
-        num_samples:
-        generator:
-        variational_encoder:
-        evaluation_data:
-        device:
+    Args:
+      num_samples:
+      generator:
+      variational_encoder:
+      evaluation_data:
+      device:
 
-      Returns:
+    Returns:
 
-      """
+    """
     generator.eval()
     total_log_p_x = 0.0
     total_elbo = 0.0
@@ -42,7 +44,7 @@ def evaluate(num_samples, generator, variational_encoder, evaluation_data, devic
         z, log_q_z = variational_encoder(x, num_samples)
         log_p_x_and_z, _ = generator(z, x)
         elbo = (
-                log_p_x_and_z - log_q_z
+            log_p_x_and_z - log_q_z
         )  # importance sampling of approximate marginal likelihood with q(z) as
         # the proposal, and logsumexp in  the sample dimension
         log_p_x = torch.logsumexp(elbo, dim=1) - numpy.log(num_samples)

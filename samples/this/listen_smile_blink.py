@@ -11,15 +11,17 @@ import cv2
 import dlib
 from _dlib_pybind11 import rectangle
 from draugr.opencv_utilities import AsyncVideoStream
-from draugr.opencv_utilities.dlib import shape_to_ndarray, mouth_aspect_ratio, eye_aspect_ratio, \
-    Dlib68faciallandmarksindices
+from draugr.opencv_utilities.dlib import (
+    shape_to_ndarray,
+    mouth_aspect_ratio,
+    eye_aspect_ratio,
+    Dlib68faciallandmarksindices,
+)
 from draugr.opencv_utilities.dlib.facealigner import align_face
 
 
 def aushdas():
-    """
-
-    """
+    """ """
     cv2.namedWindow("test")
     cv2.namedWindow("rect")
 
@@ -103,7 +105,7 @@ def aushdas():
 
         cv2.imshow("test", frame)
         if cv2.waitKey(1) & 0xFF == ord(
-                "q"
+            "q"
         ):  # if the `q` key was pressed, break from the loop
             break
 

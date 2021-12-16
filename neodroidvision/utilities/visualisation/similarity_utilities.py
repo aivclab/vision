@@ -14,7 +14,7 @@ from matplotlib import pyplot
 from torch import Tensor
 
 
-def boxed_text_overlay_plot(img:Tensor, text:str)->None:
+def boxed_text_overlay_plot(img: Tensor, text: str) -> None:
     """
 
     :param img:

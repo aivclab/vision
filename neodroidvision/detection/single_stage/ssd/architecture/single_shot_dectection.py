@@ -8,9 +8,7 @@ from warg import NOD
 
 
 class SingleShotDetection(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, cfg: NOD):
         super().__init__()

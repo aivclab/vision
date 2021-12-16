@@ -21,11 +21,11 @@ from neodroidvision import PROJECT_APP_PATH
 def evaluate(generator, evaluation_data, device):
     """
 
-      Args:
-        generator:
-        evaluation_data:
-        device:
-      """
+    Args:
+      generator:
+      evaluation_data:
+      device:
+    """
     generator.eval()
     for batch in evaluation_data:
         x = batch[0].to(device)
