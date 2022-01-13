@@ -22,6 +22,12 @@ MOUTH_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_mout
 # Screen settings
 SCREEN = [640, 360]
 
+try:
+    from cv2 import CreateImageHeader
+except:
+    pass
+    # raise ModuleNotFoundError("Try: pip install opencv-python opencv-contrib-python -U")
+
 
 def surface_to_string(surface):
     """Convert a pygame surface into string"""

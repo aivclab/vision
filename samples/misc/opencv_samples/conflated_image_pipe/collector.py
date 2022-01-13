@@ -1,3 +1,5 @@
+from typing import Optional
+
 import cv2
 import zmq
 
@@ -6,14 +8,21 @@ from samples.misc.opencv_samples.conflated_image_pipe.configuration import ComAr
 
 if __name__ == "__main__":
 
-    def main(method=ComArchEnum.pubsub, topic=""):  # "" is all
+    def main(
+        method: ComArchEnum = ComArchEnum.pubsub, topic: Optional[str] = None
+    ) -> None:
         """
+
+        topic: "" is all
 
         :param method:
         :param topic:
         """
+        if topic is None:
+            topic = ""  # "" is all
+
         with zmq.Context() as context:
-            with context.socket(method.value[1].value) as zmq_socket:
+            with context.socket(method.value["dst"].value) as zmq_socket:
                 if method is ComArchEnum.pubsub:
                     zmq_socket.subscribe(topic)
                     # zmq_socket.setsockopt(zmq.ZMQ_RCVHWM, 1)

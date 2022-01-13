@@ -6,13 +6,13 @@ from samples.misc.opencv_samples.conflated_image_pipe.configuration import ComAr
 
 if __name__ == "__main__":
 
-    def main(method=ComArchEnum.pubsub):
+    def main(method: ComArchEnum = ComArchEnum.pubsub) -> None:
         """
 
         :param method:
         """
         with zmq.Context() as context:  # TODO: maybe set zmq.AFFINITY
-            with context.socket(method.value[0].value) as socket:
+            with context.socket(method.value["src"].value) as socket:
                 # dst = context.socket(zmq.PUB) # fine-tune zmq.SNDBUF + zmq.SNDHWM on PUB side, if multi-subscribers are expected and zmq.CONFLATE is not used.
                 # dst.setsockopt(zmq.SNDBUF, 1)
                 # dst.setsockopt(zmq.ZMQ_SNDHWM, 1)

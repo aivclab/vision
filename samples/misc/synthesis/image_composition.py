@@ -91,10 +91,10 @@ class ImageComposition:
 
         assert (
             self.foregrounds_dir is not None
-        ), "foregrounds sub-directory was not found in the input_dir"
+        ), "foregrounds subdirectory was not found in the input_dir"
         assert (
             self.backgrounds_dir is not None
-        ), "backgrounds sub-directory was not found in the input_dir"
+        ), "backgrounds subdirectory was not found in the input_dir"
 
         self._validate_and_process_foregrounds()
         self._validate_and_process_backgrounds()
@@ -170,7 +170,7 @@ class ImageComposition:
                 )
                 continue
 
-            # Valid file, add to backgrounds list
+            # Valid file, add to background list
             self.backgrounds.append(image_file)
 
         assert len(self.backgrounds) > 0, "no valid backgrounds were found"
@@ -302,8 +302,8 @@ class ImageComposition:
             max_x_position = composite.size[0] - fg_image.size[0]
             max_y_position = composite.size[1] - fg_image.size[1]
             assert max_x_position >= 0 and max_y_position >= 0, (
-                f"foreground {fg_path} is too big ({fg_image.size[0]}x{fg_image.size[1]}) for the requeste"
-                f"d output size ({self.width}x{self.height}), check your input parameters"
+                f"foreground {fg_path} is too big ({fg_image.size[0]}x{fg_image.size[1]}) for the requested"
+                f"output size ({self.width}x{self.height}), check your input parameters"
             )
             paste_position = (
                 random.randint(0, max_x_position),

@@ -48,7 +48,7 @@ class MaskJsonUtils:
         image_path: the relative path to the image, e.g. './images/00000001.png'
         mask_path: the relative path to the mask image, e.g. './masks/00000001.png'
         color_categories: the legend of color categories, for this particular mask,
-            represented as an rgb-color keyed dictionary of category names and their super categories.
+            represented as a rgb-color keyed dictionary of category names and their super categories.
             (the color category associations are not assumed to be consistent across images)
         Returns:
         True if successful, False if the image was already in the dictionary"""
