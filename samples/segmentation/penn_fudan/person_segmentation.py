@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy
 import torch
 from apppath import ensure_existence
-from draugr.numpy_utilities import SplitEnum, chw_to_hwc
+from draugr.numpy_utilities import chw_to_hwc, SplitEnum
 from draugr.opencv_utilities import cv2_resize
 from draugr.random_utilities import seed_stack
 
@@ -130,8 +130,10 @@ def train_person_segmentor(
                         data
                     )  # forward pass: compute predicted outputs by passing inputs to the model
                     output = torch.sigmoid(output)
-                    loss = criterion(output, target.float())  # calculate the batch loss
-                    valid_loss += loss.item() * data.size(
+                    validation_loss = criterion(
+                        output, target.float()
+                    )  # calculate the batch loss
+                    valid_loss += validation_loss.item() * data.size(
                         0
                     )  # update average validation loss
                     dice_cof = intersection_over_union(
@@ -169,8 +171,11 @@ def train_person_segmentor(
 def main(
     base_path: Path = Path.home() / "Data" / "Datasets" / "PennFudanPed",
     train_model: bool = False,
+    load_prev_model: bool = True,
 ):
     """ """
+
+    base_path = Path("/") / "encrypted_disk" / "heider" / "Data" / "PennFudanPed"
     pyplot.style.use("bmh")
 
     save_model_path = (
@@ -180,8 +185,9 @@ def main(
 
     eval_model = not train_model
     SEED = 87539842
-    batch_size = 8
+    batch_size = 16
     num_workers = 0
+    encoding_depth = 3
     learning_rate = 0.01
     seed_stack(SEED)
 
@@ -199,17 +205,19 @@ def main(
     model = SkipHourglassFission(
         input_channels=train_set.predictor_shape[-1],
         output_heads=(train_set.response_shape[-1],),
-        encoding_depth=1,
+        encoding_depth=encoding_depth,
     )
     model.to(global_torch_device())
 
     if train_model:
-        if save_model_path.exists():
+        if load_prev_model and save_model_path.exists():
             model.load_state_dict(torch.load(str(save_model_path)))
             print("loading saved model")
 
         with TorchTrainSession(model):
-            criterion = BCEDiceLoss(eps=1.0)
+            criterion = BCEDiceLoss(
+                # eps=1.0
+            )
             optimiser = torch.optim.SGD(model.parameters(), lr=learning_rate)
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
                 optimiser, T_max=7, eta_min=learning_rate / 100, last_epoch=-1
@@ -226,7 +234,7 @@ def main(
             )
 
     if eval_model:
-        if save_model_path.exists():
+        if load_prev_model and save_model_path.exists():
             model.load_state_dict(torch.load(str(save_model_path)))
             print("loading saved model")
 
@@ -276,5 +284,5 @@ def main(
 
 
 if __name__ == "__main__":
-    # main(train_model=True)
-    main(train_model=False)
+    main(train_model=True)
+    # main(train_model=False)
