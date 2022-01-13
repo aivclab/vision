@@ -30,17 +30,17 @@ class VoxelGrid(object):
         """
         self.points = points
 
-        xyzmin = numpy.min(points, axis=0) - 0.001
-        xyzmax = numpy.max(points, axis=0) + 0.001
+        xyz_min = numpy.min(points, axis=0) - 0.001
+        xyz_max = numpy.max(points, axis=0) + 0.001
 
         if bb_cuboid:
             #: adjust to obtain a  minimum bounding box with all sides of equal lenght
-            diff = max(xyzmax - xyzmin) - (xyzmax - xyzmin)
-            xyzmin = xyzmin - diff / 2
-            xyzmax = xyzmax + diff / 2
+            diff = max(xyz_max - xyz_min) - (xyz_max - xyz_min)
+            xyz_min = xyz_min - diff / 2
+            xyz_max = xyz_max + diff / 2
 
-        self.xyzmin = xyzmin
-        self.xyzmax = xyzmax
+        self.xyz_min = xyz_min
+        self.xyz_max = xyz_max
 
         segments = []
         shape = []
@@ -50,7 +50,7 @@ class VoxelGrid(object):
             if type(x_y_z[i]) is not int:
                 raise TypeError(f"x_y_z[{i}] must be int")
             s, step = numpy.linspace(
-                xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1), retstep=True
+                xyz_min[i], xyz_max[i], num=(x_y_z[i] + 1), retstep=True
             )
             segments.append(s)
             shape.append(step)

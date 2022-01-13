@@ -8,7 +8,7 @@ import numpy as np
 from draugr.numpy_utilities import SplitEnum
 from tqdm import trange
 
-from .augmentation import rotate_y
+from augmentation import rotate_y
 
 MIN_X, MAX_X = (-0.5, 0.5)
 MIN_Y, MAX_Y = (-0.5, 0.5)
@@ -151,6 +151,7 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
       shape:
     """
     img = np.zeros((shape[0] + 2, shape[1] + 2))
+    import nrrd  # pip install pynrrd
 
     with h5py.File(output.with_suffix(".h5"), "w") as hf:
         for i in trange(len(X)):
@@ -175,7 +176,7 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
 
 if __name__ == "__main__":
 
-    with gzip.open("exclude/mnist.pkl.gz", "rb") as f:
+    with gzip.open(Path("exclude") / "mnist.pkl.gz", "rb") as f:
         train_set, valid_set, test_set = pickle.load(f, encoding="iso-8859-1")
 
     N_VALID = 100

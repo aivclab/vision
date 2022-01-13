@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
 
-from samples.misc.synthesis.mask_json_utilities import MaskJsonUtils
+from samples.misc.data.synthesis.mask_json_utilities import MaskJsonUtils
 
 
 class ImageComposition:

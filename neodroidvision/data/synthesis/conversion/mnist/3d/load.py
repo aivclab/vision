@@ -5,8 +5,9 @@ Plot
 import h5py
 import plotly.offline
 from plotly.graph_objs import Figure, Layout, Scatter3d
+from pathlib import Path
 
-with h5py.File("exclude/testing.h5", "r") as points_dataset:
+with h5py.File(Path("exclude") / "testing.h5", "r") as points_dataset:
     digits = []
     for i in range(10):
         digit = (
@@ -16,7 +17,7 @@ with h5py.File("exclude/testing.h5", "r") as points_dataset:
         )
         digits.append(digit)
 
-for i in range(10):
+for i in range(3):
     x_c = [r[0] for r in digits[i][1]]
     y_c = [r[1] for r in digits[i][1]]
     z_c = [r[2] for r in digits[i][1]]
@@ -41,4 +42,4 @@ for i in range(10):
         ],
         layout=layout,
     )
-    plotly.offline.plot(fig, filename="exclude/temp-plot.html")
+    plotly.offline.plot(fig, filename=str(Path("exclude") / "temp-plot.html"))

@@ -16,6 +16,7 @@ import torch
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import cv2_resize
+from draugr.opencv_utilities.bounding_boxes import draw_boxes
 from draugr.torch_utilities import (
     SupervisedDataset,
     float_chw_to_hwc_uint_tensor,
@@ -162,6 +163,7 @@ class PennFudanDataset(SupervisedDataset):
 
     def get_binary(self, idx):
         """
+        Return a single binary channel target for all instances in image
 
         :param idx:
         :type idx:
@@ -182,6 +184,7 @@ class PennFudanDataset(SupervisedDataset):
 
     def get_instanced(self, idx):
         """
+        Return a separate channel target for each instance in image
 
         :param idx:
         :type idx:
@@ -201,6 +204,7 @@ class PennFudanDataset(SupervisedDataset):
 
     def get_all(self, idx):
         """
+        Return all info including bounding boxes for each instance
 
         :param idx:
         :type idx:
@@ -257,17 +261,64 @@ class PennFudanDataset(SupervisedDataset):
 
 
 if __name__ == "__main__":
-    dataset = PennFudanDataset(
-        Path.home() / "Data" / "Datasets" / "PennFudanPed", SplitEnum.training
-    )
 
-    global_torch_device(override=global_torch_device("cpu"))
+    def main_binary():
+        dataset = PennFudanDataset(
+            Path.home() / "Data" / "Datasets" / "PennFudanPed", SplitEnum.training
+        )
 
-    idx = -2
-    img, mask = dataset[idx]
-    print(img)
-    print(img.shape, mask.shape)
-    pyplot.imshow(float_chw_to_hwc_uint_tensor(img))
-    pyplot.show()
-    pyplot.imshow(mask.squeeze(0))
-    pyplot.show()
+        global_torch_device(override=global_torch_device("cpu"))
+
+        idx = -2
+        img, mask = dataset[idx]
+        print(img)
+        print(img.shape, mask.shape)
+        pyplot.imshow(float_chw_to_hwc_uint_tensor(img))
+        pyplot.show()
+        pyplot.imshow(mask.squeeze(0))
+        pyplot.show()
+
+    def main_instanced():
+        dataset = PennFudanDataset(
+            Path.home() / "Data" / "Datasets" / "PennFudanPed",
+            SplitEnum.training,
+            return_variant=ReturnVariantEnum.instanced,
+        )
+
+        global_torch_device(override=global_torch_device("cpu"))
+
+        idx = -2
+        img, mask = dataset[idx]
+        print(img)
+        print(img.shape, mask.shape)
+        pyplot.imshow(float_chw_to_hwc_uint_tensor(img))
+        pyplot.show()
+        for m in mask:
+            pyplot.imshow(m.squeeze(0))
+            pyplot.show()
+
+    def main_all_bb():
+        dataset = PennFudanDataset(
+            Path.home() / "Data" / "Datasets" / "PennFudanPed",
+            SplitEnum.training,
+            return_variant=ReturnVariantEnum.all,
+        )
+
+        global_torch_device(override=global_torch_device("cpu"))
+
+        idx = -2
+        img, info = dataset[idx]
+        print(img)
+        print(img.shape)
+
+        img = float_chw_to_hwc_uint_tensor(img).detach().numpy()
+        pyplot.imshow(
+            draw_boxes.draw_bounding_boxes(
+                img, info["boxes"], labels=info["labels"], mode="RGB"
+            )
+        )
+        pyplot.show()
+
+    # main_binary()
+    # main_instanced()
+    main_all_bb()

@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+
 import numpy
 import torch
-from draugr.numpy_utilities import SplitEnum
+from apppath import ensure_existence
+from draugr.numpy_utilities import SplitEnum, chw_to_hwc
+from draugr.opencv_utilities import cv2_resize
 from draugr.random_utilities import seed_stack
 
 # from draugr.opencv_utilities import cv2_resize
@@ -12,9 +16,10 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
+    chw_to_hwc_tensor,
 )
 from matplotlib import pyplot
-from pathlib import Path
+from torch.optim import optimizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -67,7 +72,7 @@ def train_person_segmentor(
     train_loader: torch.utils.data.DataLoader,
     valid_loader: torch.utils.data.DataLoader,
     criterion: callable,
-    optimizer: torch.optim.optimizer,
+    optimizer: optimizer,
     scheduler: torch.optim.lr_scheduler,
     save_model_path: Path,
     n_epochs: int = 100,
@@ -109,7 +114,7 @@ def train_person_segmentor(
                 optimizer.zero_grad()
                 output, *_ = model(data)
                 output = torch.sigmoid(output)
-                loss = criterion(output, target)
+                loss = criterion(output, target.float())
                 loss.backward()
                 optimizer.step()
                 train_loss += loss.item() * data.size(0)
@@ -125,7 +130,7 @@ def train_person_segmentor(
                         data
                     )  # forward pass: compute predicted outputs by passing inputs to the model
                     output = torch.sigmoid(output)
-                    loss = criterion(output, target)  # calculate the batch loss
+                    loss = criterion(output, target.float())  # calculate the batch loss
                     valid_loss += loss.item() * data.size(
                         0
                     )  # update average validation loss
@@ -161,13 +166,18 @@ def train_person_segmentor(
     return model
 
 
-def main():
+def main(
+    base_path: Path = Path.home() / "Data" / "Datasets" / "PennFudanPed",
+    train_model: bool = False,
+):
     """ """
     pyplot.style.use("bmh")
-    base_path = Path.home() / "/Data" / "PennFudanPed"
 
-    save_model_path = PROJECT_APP_PATH.user_data / "models" / "penn_fudan_ped_seg.model"
-    train_model = False
+    save_model_path = (
+        ensure_existence(PROJECT_APP_PATH.user_data / "models")
+        / "penn_fudan_ped_seg.model"
+    )
+
     eval_model = not train_model
     SEED = 87539842
     batch_size = 8
@@ -225,32 +235,35 @@ def main():
                 with TorchCacheSession():
                     with TorchEvalSession(model):
                         valid_masks = []
-                        a = (350, 525)
+                        out_data = []
+                        a = (256, 256)
                         tr = min(len(valid_loader.dataset) * 4, 2000)
-                        probabilities = numpy.zeros((tr, *a), dtype=numpy.float32)
+                        probabilities = []
                         for sample_i, (data, target) in enumerate(tqdm(valid_loader)):
                             data = data.to(global_torch_device())
-                            target = target.cpu().detach().numpy()
                             outpu, *_ = model(data)
-                            outpu = torch.sigmoid(outpu).cpu().detach().numpy()
-                            for p in range(data.shape[0]):
-                                output, mask = outpu[p], target[p]
-                                """
-                for m in mask:
-                valid_masks.append(cv2_resize(m, a))
-                for probability in output:
-                probabilities[sample_i, :, :] = cv2_resize(probability, a)
-                sample_i += 1
-                """
+                            for m, d, p in zip(
+                                target.cpu().detach().numpy(),
+                                data.cpu().detach().numpy(),
+                                torch.sigmoid(outpu).cpu().detach().numpy(),
+                            ):
+                                out_data.append(cv2_resize(chw_to_hwc(d), a))
+                                valid_masks.append(cv2_resize(m[0], a))
+                                probabilities.append(cv2_resize(p[0], a))
+                                sample_i += 1
+
                                 if sample_i >= tr - 1:
                                     break
+
                             if sample_i >= tr - 1:
                                 break
 
-                        f, ax = pyplot.subplots(3, 3, figsize=(24, 12))
+                        min_a = min(3, len(out_data))
+                        f, ax = pyplot.subplots(min_a, 3, figsize=(24, 12))
 
-                        for i in range(3):
-                            ax[0, i].imshow(valid_masks[i], vmin=0, vmax=1)
+                        # assert len(valid_masks)>2, f'{len(valid_masks), tr}'
+                        for i in range(min_a):
+                            ax[0, i].imshow(out_data[i], vmin=0, vmax=1)
                             ax[0, i].set_title("Original", fontsize=14)
 
                             ax[1, i].imshow(valid_masks[i], vmin=0, vmax=1)
@@ -263,4 +276,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main(train_model=True)
+    main(train_model=False)
