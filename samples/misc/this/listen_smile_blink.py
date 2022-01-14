@@ -8,7 +8,7 @@ __doc__ = r"""
            """
 
 import cv2
-import dlib
+import dlib  # pip install dlib -U
 from _dlib_pybind11 import rectangle
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib import (

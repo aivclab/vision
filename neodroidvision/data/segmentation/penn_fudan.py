@@ -38,7 +38,9 @@ from neodroidvision.utilities import (
 
 
 class ReturnVariantEnum(Enum):
-    """ """
+    """
+    Return binary mask, instanced or all annotations
+    """
 
     binary, instanced, all = assigned_names()
 

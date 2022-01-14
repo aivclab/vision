@@ -15,6 +15,7 @@ __all__ = ["f_score"]
 def f_score(
     pr: torch.Tensor,
     gt: torch.Tensor,
+    *,
     beta: float = 1.0,
     eps: float = 1e-7,
     threshold: float = None,

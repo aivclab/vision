@@ -1,8 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on {date}
+           """
 import gzip
 import pickle
 from pathlib import Path
 
-import numpy as np
+import numpy
 from draugr.numpy_utilities import SplitEnum
 from tqdm import trange
 
@@ -27,7 +35,7 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
       output:
       shape:
     """
-    img = np.zeros((shape[0] + 2, shape[1] + 2))
+    img = numpy.zeros((shape[0] + 2, shape[1] + 2))
     import nrrd  # pip install pynrrd
 
     for i in trange(len(X)):
@@ -35,12 +43,12 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
         data = img_to_point_cloud(img, voxel)
 
         # rotate to vertical
-        transf = np.c_[data[:, :3], np.ones(data[:, :3].shape[0])]
+        transf = numpy.c_[data[:, :3], numpy.ones(data[:, :3].shape[0])]
         transf = transf @ rotate_y(90)
         data[:, :3] = transf[:, :-1]
 
         if i == 1:
-            # data = np.zeros((70, 800, 600))
+            # data = numpy.zeros((70, 800, 600))
             nrrd.write(str(Path("exclude") / f"{y[i]}.nrrd"), data[:, :3])
             exit(0)
 

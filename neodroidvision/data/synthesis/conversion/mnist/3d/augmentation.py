@@ -1,10 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on {date}
+           """
+
 import numpy
 
 __all__ = ["rotate_y", "rotate_x", "rotate_z"]
 
+from warg import Number
 
-def rotate_y(angle, degrees: bool = True):
-    """Ry ,rotate along y axis"""
+
+def rotate_y(angle: Number, degrees: bool = True) -> numpy.ndarray:
+    """Ry ,rotate along y-axis"""
     if degrees:
         angle = numpy.deg2rad(angle)
 
@@ -14,8 +25,8 @@ def rotate_y(angle, degrees: bool = True):
     return numpy.array([[cy, 0, -sy, 0], [0, 1, 0, 0], [sy, 0, cy, 0], [0, 0, 0, 1]])
 
 
-def rotate_x(angle, degrees: bool = True):
-    """Rx ,rotate along x axis"""
+def rotate_x(angle: Number, degrees: bool = True) -> numpy.ndarray:
+    """Rx ,rotate along x-axis"""
     if degrees:
         angle = numpy.deg2rad(angle)
 
@@ -25,8 +36,8 @@ def rotate_x(angle, degrees: bool = True):
     return numpy.array([[1, 0, 0, 0], [0, cx, sx, 0], [0, -sx, cx, 0], [0, 0, 0, 1]])
 
 
-def rotate_z(angle, degrees: bool = True):
-    """Rz ,rotate along z axis"""
+def rotate_z(angle: Number, degrees: bool = True) -> numpy.ndarray:
+    """Rz ,rotate along z-axis"""
     if degrees:
         angle = numpy.deg2rad(angle)
 

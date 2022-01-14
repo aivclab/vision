@@ -11,9 +11,10 @@ import numpy
 import torch
 import torch.utils
 import torch.utils.data
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 
-from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
+from vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 
 
 class MLP(nn.Module):
@@ -159,7 +160,9 @@ class BernoulliLogProb(nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.bce_with_logits = nn.BCEWithLogitsLoss(reduction="none")
+        self.bce_with_logits = nn.BCEWithLogitsLoss(
+            reduction=ReductionMethodEnum.none.value
+        )
 
     def forward(self, logits, target):
         """bernoulli log prob is equivalent to negative binary cross entropy"""

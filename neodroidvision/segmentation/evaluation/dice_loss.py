@@ -1,7 +1,7 @@
 import numpy
 import torch
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
-from typing import Any
 
 from neodroidvision.segmentation.evaluation.f_score import f_score
 
@@ -75,17 +75,20 @@ class BCEDiceLoss(DiceLoss):
 
     def __init__(
         self,
+        *,
         eps: float = 1e-7,
-        activation: Any = None,
+        activation: callable = None,
         lambda_dice: float = 1.0,
         lambda_bce: float = 1.0,
+        reduction: ReductionMethodEnum = ReductionMethodEnum.mean,
     ):
         super().__init__(eps=eps, activation=activation)
 
+        reduction = ReductionMethodEnum(reduction)
         if activation == None:
-            self.bce = nn.BCELoss(reduction="mean")
+            self.bce = nn.BCELoss(reduction=reduction.value)
         else:
-            self.bce = nn.BCEWithLogitsLoss(reduction="mean")
+            self.bce = nn.BCEWithLogitsLoss(reduction=reduction.value)
 
         self.lambda_dice = lambda_dice
         self.lambda_bce = lambda_bce
@@ -100,19 +103,20 @@ class BCEDiceLoss(DiceLoss):
         Returns:
 
         """
-        dice = super().forward(y_pr, y_gt)
-        bce = self.bce(y_pr, y_gt)
-        return (self.lambda_dice * dice) + (self.lambda_bce * bce)
+        return (self.lambda_dice * super().forward(y_pr, y_gt)) + (
+            self.lambda_bce * self.bce(y_pr, y_gt)
+        )
 
 
 if __name__ == "__main__":
     numpy.random.seed(2)
     data = numpy.random.random_sample((2, 1, 84, 84))
-    GPU_STATS = torch.FloatTensor(data)
+    a = torch.FloatTensor(data)
     b = torch.FloatTensor(data.transpose((0, 1, 3, 2)))
-    print(dice_loss(GPU_STATS, GPU_STATS))
-    print(dice_loss(GPU_STATS, b))
+    print(dice_loss(a, a))
+    print(dice_loss(a, b))
 
     h = torch.FloatTensor(numpy.array([[0, 1], [1, 1]]))
     j = torch.FloatTensor(numpy.ones((2, 2)))
-    print(dice_loss(j, j))
+    print(dice_loss(h, j))
+    print(dice_loss(j, h))

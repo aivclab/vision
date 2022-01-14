@@ -8,6 +8,7 @@ __doc__ = r"""
            """
 
 import torch
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 from torch.nn import functional
 from typing import Tuple
@@ -62,13 +63,13 @@ class MultiBoxLoss(nn.Module):
             functional.smooth_l1_loss(
                 predicted_locations[pos_mask, :].reshape(-1, 4),
                 gt_locations_masked,
-                reduction="sum",
+                reduction=ReductionMethodEnum.sum.value,
             )
             / num_pos,
             functional.cross_entropy(
                 confidence[mask, :].reshape(-1, confidence.size(2)),
                 labels[mask],
-                reduction="sum",
+                reduction=ReductionMethodEnum.sum.value,
             )
             / num_pos,
         )

@@ -1,7 +1,11 @@
-"""
-Plot
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-"""
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on {date}
+           """
 import h5py
 import plotly.offline
 from plotly.graph_objs import Figure, Layout, Scatter3d

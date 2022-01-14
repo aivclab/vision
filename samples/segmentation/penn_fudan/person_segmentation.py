@@ -107,17 +107,17 @@ def train_person_segmentor(
 
         with TorchTrainSession(model):
             for data, target in tqdm(train_loader):
+
                 data, target = (
                     data.to(global_torch_device()),
                     target.to(global_torch_device()),
                 )
                 optimizer.zero_grad()
                 output, *_ = model(data)
-                output = torch.sigmoid(output)
                 loss = criterion(output, target.float())
                 loss.backward()
                 optimizer.step()
-                train_loss += loss.item() * data.size(0)
+                train_loss += loss.detach().cpu().item() * data.size(0)
 
         with TorchEvalSession(model):
             with torch.no_grad():
@@ -129,15 +129,15 @@ def train_person_segmentor(
                     output, *_ = model(
                         data
                     )  # forward pass: compute predicted outputs by passing inputs to the model
-                    output = torch.sigmoid(output)
                     validation_loss = criterion(
                         output, target.float()
                     )  # calculate the batch loss
-                    valid_loss += validation_loss.item() * data.size(
+                    valid_loss += validation_loss.detach().cpu().item() * data.size(
                         0
                     )  # update average validation loss
                     dice_cof = intersection_over_union(
-                        output.cpu().detach().numpy(), target.cpu().detach().numpy()
+                        torch.sigmoid(output).cpu().detach().numpy(),
+                        target.cpu().detach().numpy(),
                     )
                     dice_score += dice_cof * data.size(0)
 
@@ -175,7 +175,8 @@ def main(
 ):
     """ """
 
-    base_path = Path("/") / "encrypted_disk" / "heider" / "Data" / "PennFudanPed"
+    # base_path = Path("/") / "encrypted_disk" / "heider" / "Data" / "PennFudanPed"
+    # base_path = Path('/media/heider/OS/Users/Christian/Data/Datasets/')  / "PennFudanPed"
     pyplot.style.use("bmh")
 
     save_model_path = (
@@ -185,9 +186,9 @@ def main(
 
     eval_model = not train_model
     SEED = 87539842
-    batch_size = 16
+    batch_size = 4
     num_workers = 0
-    encoding_depth = 3
+    encoding_depth = 1
     learning_rate = 0.01
     seed_stack(SEED)
 
@@ -216,7 +217,8 @@ def main(
 
         with TorchTrainSession(model):
             criterion = BCEDiceLoss(
-                # eps=1.0
+                # eps=1.0,
+                # activation=torch.sigmoid
             )
             optimiser = torch.optim.SGD(model.parameters(), lr=learning_rate)
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
@@ -284,5 +286,5 @@ def main(
 
 
 if __name__ == "__main__":
-    main(train_model=True)
+    main(train_model=True, load_prev_model=False)
     # main(train_model=False)

@@ -1,3 +1,5 @@
+from typing import Sequence, Tuple
+
 import torch
 from torch import nn
 
@@ -9,7 +11,9 @@ __all__ = ["ConditionalVAE"]
 class Encoder(nn.Module):
     """ """
 
-    def __init__(self, layer_sizes, latent_size, num_conditions):
+    def __init__(
+        self, layer_sizes: Sequence[int], latent_size: int, num_conditions: int
+    ):
         super().__init__()
 
         self.input_size = layer_sizes[0]
@@ -25,7 +29,9 @@ class Encoder(nn.Module):
         self.linear_means = nn.Linear(layer_sizes[-1], latent_size)
         self.linear_log_var = nn.Linear(layer_sizes[-1], latent_size)
 
-    def forward(self, x, condition):
+    def forward(
+        self, x: torch.Tensor, condition: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
 
         Args:
@@ -48,7 +54,9 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     """ """
 
-    def __init__(self, layer_sizes, latent_size, num_conditions):
+    def __init__(
+        self, layer_sizes: Sequence[int], latent_size: int, num_conditions: int
+    ):
 
         super().__init__()
 
@@ -63,7 +71,7 @@ class Decoder(nn.Module):
             else:
                 self.MLP.add_module(name="sigmoid", module=nn.Sigmoid())
 
-    def forward(self, z, condition):
+    def forward(self, z: torch.Tensor, condition: torch.Tensor) -> torch.Tensor:
         """
 
         Args:
@@ -104,21 +112,30 @@ class ConditionalVAE(VAE):
         return self.decoder(*x)
 
     def __init__(
-        self, encoder_layer_sizes, latent_size, decoder_layer_sizes, num_conditions
+        self,
+        encoder_layer_sizes: Sequence[int],
+        latent_size: int,
+        num_conditions: int,
+        *,
+        decoder_layer_sizes: Sequence[int] = None,
     ):
         super().__init__(latent_size)
 
         assert num_conditions > 1
 
-        assert type(encoder_layer_sizes) == list
-        assert type(latent_size) == int
-        assert type(decoder_layer_sizes) == list
+        assert isinstance(encoder_layer_sizes, Sequence)
+        assert isinstance(latent_size, int)
+        if decoder_layer_sizes:
+            assert isinstance(decoder_layer_sizes, Sequence)
+        else:
+            raise NotImplementedError  # TODO infer / reversed encoder
 
         self.encoder = Encoder(encoder_layer_sizes, latent_size, num_conditions)
-
         self.decoder = Decoder(decoder_layer_sizes, latent_size, num_conditions)
 
-    def forward(self, x: torch.Tensor, condition: torch.Tensor):
+    def forward(
+        self, x: torch.Tensor, condition: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         """
 
         Args:

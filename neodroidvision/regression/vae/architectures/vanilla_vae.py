@@ -6,6 +6,7 @@ __doc__ = ""
 
 import torch
 import torch.utils.data
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 from torch.nn.functional import binary_cross_entropy
 
@@ -138,7 +139,9 @@ class VanillaVAE(VAE):
 
         """
         BCE = binary_cross_entropy(
-            recon_x, x.view(-1, self._input_size), reduction="sum"
+            recon_x,
+            x.view(-1, self._input_size),
+            reduction=ReductionMethodEnum.sum.value,
         )
 
         # see Appendix B from VAE paper:

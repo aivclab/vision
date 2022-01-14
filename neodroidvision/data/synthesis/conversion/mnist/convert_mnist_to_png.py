@@ -1,4 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on {date}
+           """
 
 __all__ = ["convert_to_mnist_png", "generate_mnist_png"]
 

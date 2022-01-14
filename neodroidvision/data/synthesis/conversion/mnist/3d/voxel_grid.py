@@ -1,6 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on {date}
+           """
+
 import numpy
 from matplotlib import pyplot
 from plot3d import plot_voxelgrid
+
+__all__ = ["VoxelGrid"]
 
 
 class VoxelGrid(object):

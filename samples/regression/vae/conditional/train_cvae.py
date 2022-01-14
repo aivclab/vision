@@ -7,8 +7,8 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import pandas as pd
-import seaborn as sns
+import pandas
+import seaborn
 import time
 import torch
 from collections import defaultdict
@@ -57,7 +57,7 @@ if not tmsp_path.exists():
     tmsp_path.mkdir(parents=True)
 
 
-def one_hot(labels, num_labels, device="cpu"):
+def one_hot(labels, num_labels, device=torch.device("cpu")):
     """
 
     Args:
@@ -148,8 +148,8 @@ def main():
                 pyplot.clf()
                 pyplot.close("all")
 
-        df = pd.DataFrame.from_dict(tracker_epoch, orient="index")
-        g = sns.lmplot(
+        df = pandas.DataFrame.from_dict(tracker_epoch, orient="index")
+        g = seaborn.lmplot(
             x="x",
             y="y",
             hue="label",
