@@ -225,7 +225,9 @@ def main():
                 samples2 = samples2.view(-1, 1, 28, 28)
                 real_generate_samples = torch.cat([real2, samples1, real1, samples2])
 
-                grid = torchvision.utils.make_grid(real_generate_samples, nrow=4)
+                grid = torchvision.utils.make_grid(
+                    real_generate_samples, nrow=4
+                ).unsqueeze(0)
 
                 writer.image(f"Samples", data=grid, step=it, cmap="Greys_r")
 

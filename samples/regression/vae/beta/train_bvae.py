@@ -51,8 +51,12 @@ BATCH_SIZE = 1024
 EPOCHS = 1000
 LR = 3e-3
 ENCODING_SIZE = 10
+name = "VGG-Face2"
+# name = 'vggface2'
 DATASET = VggFaces2(
-    Path.home() / "Data" / "vggface2", split=SplitEnum.testing, resize_s=INPUT_SIZE
+    Path.home() / "Data" / "Datasets" / name,
+    split=SplitEnum.testing,
+    resize_s=INPUT_SIZE,
 )
 MODEL: VAE = HigginsVae(CHANNELS, latent_size=ENCODING_SIZE).to(global_torch_device())
 BETA = 4
@@ -210,7 +214,8 @@ if __name__ == "__main__":
             for epoch in range(1, EPOCHS + 1):
                 if train_model_:
                     train_model(MODEL, optimiser, epoch, metric_writer, dataset_loader)
-                stest_model(MODEL, epoch, metric_writer, dataset_loader)
+                if not train_model_:
+                    stest_model(MODEL, epoch, metric_writer, dataset_loader)
                 with torch.no_grad():
                     inv_sample = DATASET.inverse_transform(
                         MODEL.sample().view(CHANNELS, INPUT_SIZE, INPUT_SIZE)

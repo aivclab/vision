@@ -48,8 +48,7 @@ class Compress(nn.Module):
         Returns:
 
         """
-        x = torch.relu(self.conv1(x))
-        x = torch.relu(self.conv2(x))
+        x = torch.relu(self.conv2(torch.relu(self.conv1(x))))
         before_pool = x
 
         if self.pooling:

@@ -26,9 +26,8 @@ def reconstruction_loss(reconstruction, original):
     # size_average=False).div(batch_size)
 
     # reconstruction = torch.sigmoid(reconstruction)
-    recon_loss = mse_loss(reconstruction, original, size_average=False).div(batch_size)
 
-    return recon_loss
+    return mse_loss(reconstruction, original, size_average=False).div(batch_size)
 
 
 def kl_divergence(mean, log_var):
