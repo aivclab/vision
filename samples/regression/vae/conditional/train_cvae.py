@@ -115,9 +115,7 @@ def main():
                     f" Loss {loss.item():9.4f}"
                 )
 
-                condition_vector = (
-                    torch.arange(0, 10, device=GLOBAL_DEVICE).long()
-                )
+                condition_vector = torch.arange(0, 10, device=GLOBAL_DEVICE).long()
                 sample = vae.sample(
                     one_hot(condition_vector, 10).to(GLOBAL_DEVICE),
                     num=condition_vector.size(0),
