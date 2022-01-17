@@ -26,15 +26,41 @@ def test_package_data() -> None:
 
 def test_import_regression():
     from neodroidvision import regression
-    from neodroidvision import multitask
-    from neodroidvision import classification
-    from neodroidvision import segmentation
-    from neodroidvision import detection
-    from neodroidvision import data
 
     print(regression.__doc__)
+
+
+def test_import_multitask():
+    from neodroidvision import multitask
+
     print(multitask.__doc__)
+
+
+def test_import_classification():
+    from neodroidvision import classification
+
     print(classification.__doc__)
+
+
+def test_import_segmentation():
+    from neodroidvision import segmentation
+
     print(segmentation.__doc__)
+
+
+def test_import_detection():
+    from neodroidvision import detection
+
     print(detection.__doc__)
+
+
+def test_import_utilities():
+    from neodroidvision import utilities
+
+    print(utilities.__doc__)
+
+
+def test_import_data():
+    from neodroidvision import data
+
     print(data.__doc__)

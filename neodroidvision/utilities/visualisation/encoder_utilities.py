@@ -8,6 +8,7 @@ import numpy
 import torch
 from torch.nn.functional import one_hot
 from draugr.torch_utilities import global_torch_device
+from draugr.numpy_utilities import hwc_to_chw
 from PIL import Image
 
 
@@ -42,7 +43,7 @@ def compile_encoding_image(
         j = int(idx / size[1])
 
         image_ = numpy.array(
-            Image.fromarray(image).resize((w_, h_), resampe=Image.BICUBIC)
+            Image.fromarray(image).resize((w_, h_), resample=Image.BICUBIC)
         )
 
         img[j * h_ : j * h_ + h_, i * w_ : i * w_ + w_] = image_
@@ -85,7 +86,7 @@ def plot_conditioned_manifold(
     img_w: int = 28,
     sample_range: Number = 1,
     device: Optional[torch.device] = global_torch_device()
-):
+) -> None:
     condition_vector = torch.arange(0, 10, device=device).long().unsqueeze(1)
     sample = model.sample(
         one_hot(condition_vector, 10).to(device=device),
@@ -117,7 +118,7 @@ def plot_manifold(
     :return:"""
     vectors = sample_2d_latent_vectors(sample_range, n_img_x, n_img_y).to(device)
     encodings = model(vectors).to("cpu")
-    images = encodings.reshape(n_img_x * n_img_y, img_h, img_w)
+    images = encodings.reshape(n_img_x * n_img_y, img_h, img_w, -1).numpy()
     compiled = compile_encoding_image(images, (n_img_y, n_img_x))
     if out_path:
         from imageio import imwrite
