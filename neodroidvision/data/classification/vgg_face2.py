@@ -17,12 +17,12 @@ from torch.utils import data
 from torchvision import transforms
 from typing import Dict, Tuple
 
-__all__ = ["VggFaces2"]
+__all__ = ["VggFace2"]
 
 from draugr.torch_utilities import SupervisedDataset
 
 
-class VggFaces2(SupervisedDataset):
+class VggFace2(SupervisedDataset):
     """ """
 
     """"""
@@ -108,7 +108,10 @@ class VggFaces2(SupervisedDataset):
         super().__init__()
         assert dataset_path.exists(), f"root: {dataset_path} not found."
         split = self.split_names[split]
-        self._resize_shape = (resize_s, resize_s, 3)
+        if isinstance(resize_s, int):
+            assert resize_s > 2, "resize_s should be >2"
+            resize_s = (resize_s, resize_s, 3)
+        self._resize_shape = (*resize_s, 3)
 
         self._dataset_path = dataset_path / split
         image_list_file_path = dataset_path / f"{split}_list.txt"
@@ -121,14 +124,14 @@ class VggFaces2(SupervisedDataset):
         if not meta_id_path.exists():
             meta_id_path = dataset_path.parent / "meta" / meta_id_path.name
         assert meta_id_path.exists(), f"meta id path {meta_id_path} does not exists"
-        assert resize_s > 2, "resize_s should be >2"
+
         self._split = split
         self._id_label_dict = self.get_id_label_map(meta_id_path)
-        self._raw_images = raw_images
+        self._return_raw_images = raw_images
 
         self.train_trans = transforms.Compose(
             [
-                transforms.RandomResizedCrop(resize_s),
+                transforms.RandomResizedCrop(self._resize_shape[:2]),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 # transforms.Normalize(self.mean, self.std)
@@ -137,8 +140,8 @@ class VggFaces2(SupervisedDataset):
 
         self.val_trans = transforms.Compose(
             [
-                transforms.Resize(resize_s),
-                transforms.CenterCrop(resize_s),
+                transforms.Resize(self._resize_shape[:2]),
+                transforms.CenterCrop(self._resize_shape[:2]),
                 transforms.ToTensor(),
                 # transforms.Normalize(self.mean, self.std)
             ]
@@ -164,7 +167,7 @@ class VggFaces2(SupervisedDataset):
         img_file = info["img"]
         img = Image.open(str(self._dataset_path / img_file))
 
-        if not self._raw_images:
+        if not self._return_raw_images:
             if self._split == SplitEnum.training:
                 img = self.train_trans(img)
             else:
@@ -177,29 +180,35 @@ class VggFaces2(SupervisedDataset):
 
 
 if __name__ == "__main__":
-    import tqdm
 
-    batch_size = 32
+    def main():
+        import tqdm
 
-    dt = VggFaces2(
-        Path.home() / "Data" / "VGG-Face2" / "data",
-        split=SplitEnum.testing,
-        # raw_images=True
-    )
+        batch_size = 32
 
-    test_loader = torch.utils.data.DataLoader(dt, batch_size=batch_size, shuffle=False)
+        dt = VggFace2(
+            Path.home() / "Data" / "VGG-Face2" / "data",
+            split=SplitEnum.testing,
+            # raw_images=True
+        )
 
-    # test_loader = dt
+        test_loader = torch.utils.data.DataLoader(
+            dt, batch_size=batch_size, shuffle=False
+        )
 
-    for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
-        enumerate(test_loader),
-        total=len(test_loader),
-        desc=f"{test_loader.dataset}",
-        ncols=80,
-        leave=False,
-    ):
-        pyplot.imshow(dt.inverse_transform(imgs[0]))
-        pyplot.title(f"{label[0],class_ids[0]}")
-        # pyplot.imshow(imgs)
-        pyplot.show()
-        break
+        # test_loader = dt
+
+        for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
+            enumerate(test_loader),
+            total=len(test_loader),
+            desc=f"{test_loader.dataset}",
+            ncols=80,
+            leave=False,
+        ):
+            pyplot.imshow(dt.inverse_transform(imgs[0]))
+            pyplot.title(f"{label[0],class_ids[0]}")
+            # pyplot.imshow(imgs)
+            pyplot.show()
+            break
+
+    main()

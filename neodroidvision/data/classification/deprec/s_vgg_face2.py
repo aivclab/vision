@@ -177,7 +177,7 @@ if __name__ == "__main__":
 
         batch_size = 32
 
-        dt = VggFaces2(
+        dt = VggFace2(
             p,
             split=SplitEnum.testing,
             # raw_images=True

@@ -21,7 +21,7 @@ from torchvision.utils import save_image
 from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
+from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFace2
 from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
 from neodroidvision.regression.vae.architectures.vae import VAE
 from objectives import kl_divergence, reconstruction_loss
@@ -53,7 +53,7 @@ LR = 3e-3
 ENCODING_SIZE = 10
 name = "VGG-Face2"
 # name = 'vggface2'
-DATASET = VggFaces2(
+DATASET = VggFace2(
     Path.home() / "Data" / "Datasets" / name,
     split=SplitEnum.testing,
     resize_s=INPUT_SIZE,
