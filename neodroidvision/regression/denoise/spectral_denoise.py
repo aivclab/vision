@@ -59,13 +59,13 @@ def fft_im_denoise(img: numpy.ndarray, keep_fraction: float = 0.1) -> numpy.ndar
         :, int(num_columns * keep_fraction) : int(num_columns * (1 - keep_fraction))
     ] = 0
 
-    # plt.figure()
+    # pyplot.figure()
     # plot_spectrum(im_fft)
-    # plt.title('Fourier transform')
+    # pyplot.title('Fourier transform')
 
-    # plt.figure()
+    # pyplot.figure()
     # plot_spectrum(im_fft_cp)
-    # plt.title('Filtered Spectrum')
+    # pyplot.title('Filtered Spectrum')
 
     # Reconstruct the denoised image from the filtered spectrum, keep only the
     # real part for display.

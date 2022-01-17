@@ -176,6 +176,7 @@ def main(
     """ """
 
     # base_path = Path("/") / "encrypted_disk" / "heider" / "Data" / "PennFudanPed"
+    base_path: Path = Path.home() / "Data3" / "PennFudanPed"
     # base_path = Path('/media/heider/OS/Users/Christian/Data/Datasets/')  / "PennFudanPed"
     pyplot.style.use("bmh")
 
