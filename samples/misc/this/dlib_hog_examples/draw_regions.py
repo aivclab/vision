@@ -7,12 +7,11 @@ __doc__ = r"""
            Created on 03-05-2021
            """
 
+from itertools import cycle
+
 import cv2
 import dlib
 from draugr.opencv_utilities import AsyncVideoStream
-
-from itertools import cycle
-
 from draugr.opencv_utilities.dlib import Dlib68faciallandmarksindices
 
 detector = dlib.get_frontal_face_detector()

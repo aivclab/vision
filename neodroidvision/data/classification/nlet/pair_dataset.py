@@ -7,14 +7,16 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
-import numpy
 import random
+from pathlib import Path
+from typing import Tuple, Union
+
+import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
-from pathlib import Path
-from typing import Tuple, Union
+from torch.utils.data import DataLoader
 from warg import drop_unused_kws, passes_kws_to
 
 from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
@@ -113,7 +115,7 @@ class PairDataset(
     def sample(self, horizontal_merge: bool = False) -> None:
         """ """
         dl = iter(
-            torch.utils.data.DataLoader(
+            DataLoader(
                 self,
                 batch_size=9,
                 shuffle=True,
@@ -141,7 +143,7 @@ class PairDataset(
         :type label:"""
         images = images.squeeze()
         if label:
-            assert len(images) == len(label) == 9, f"{len(images), len(label) }"
+            assert len(images) == len(label) == 9, f"{len(images), len(label)}"
 
         fig, axes = pyplot.subplots(3, 3)
         for i, ax in enumerate(axes.flat):

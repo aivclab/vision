@@ -1,4 +1,7 @@
 import argparse
+from pathlib import Path
+from typing import Sequence
+
 import cv2
 import numpy
 import torch
@@ -8,9 +11,7 @@ from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
-from pathlib import Path
 from tqdm import tqdm
-from typing import Sequence
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
@@ -25,7 +26,7 @@ from neodroidvision.utilities import CheckPointer
 def run_webcam_demo(
     cfg: NOD,
     categories: Sequence[str],
-    model_ckpt: Path,
+    model_checkpoint: Path,
     score_threshold: float = 0.5,
     window_name: str = "SSD",
 ):
@@ -35,8 +36,8 @@ def run_webcam_demo(
     :type categories:
     :param cfg:
     :type cfg:
-    :param model_ckpt:
-    :type model_ckpt:
+    :param model_checkpoint:
+    :type model_checkpoint:
     :param score_threshold:
     :type score_threshold:
     :param window_name:
@@ -53,9 +54,9 @@ def run_webcam_demo(
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
     )
-    checkpointer.load(model_ckpt, use_latest=model_ckpt is None)
+    checkpointer.load(model_checkpoint, use_latest=model_checkpoint is None)
     print(
-        f"Loaded weights from {model_ckpt if model_ckpt else checkpointer.get_checkpoint_file()}"
+        f"Loaded weights from {model_checkpoint if model_checkpoint else checkpointer.get_checkpoint_file()}"
     )
 
     model.post_init()
@@ -121,7 +122,7 @@ def main():
     run_webcam_demo(
         cfg=base_cfg,
         categories=base_cfg.dataset_type.category_sizes,
-        model_ckpt=Path(args.ckpt),
+        model_checkpoint=Path(args.ckpt),
         score_threshold=args.score_threshold,
     )
 

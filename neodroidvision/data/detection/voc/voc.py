@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import numpy
-from PIL import Image
 from pathlib import Path
 from typing import Tuple
 from xml.etree import ElementTree
+
+import numpy
+from PIL import Image
 
 __all__ = ["VOCDataset"]
 

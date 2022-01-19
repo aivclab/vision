@@ -3,10 +3,11 @@
 
 import datetime
 import os
-import pkg_resources
-from apppath import AppPath
 from pathlib import Path
 from warnings import warn
+
+import pkg_resources
+from apppath import AppPath
 
 __project__ = "NeodroidVision"
 __author__ = "Christian Heider Nielsen"

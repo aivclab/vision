@@ -1,20 +1,27 @@
 import pickle
 import shutil
 import time
+from pathlib import Path
+
 import torch
 from apppath import ensure_existence
 from draugr import AverageMeter
+from draugr.torch_utilities.writers.tensorboard.tensorboard_pytorch_writer import (
+    PytorchTensorboardWriter,
+)
 from draugr.writers import MockWriter, Writer
-from pathlib import Path
 
 # from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
+from warg import NOD
 
 from neodroidvision.data.classification import MNISTDataset
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
+
+model_file_ending = ".model.tar"
 
 
 class Trainer:
@@ -23,13 +30,14 @@ class Trainer:
     All hyperparameters are provided by the user in the
     config file."""
 
-    def __init__(self, config, data_loader):
+    def __init__(self, data_loader, **config):
         """
         Construct a new Trainer instance.
 
         Args:
             config: object containing command line arguments.
             data_loader: A data iterator."""
+        config = NOD(**config)
         self.config = config
 
         if config.use_gpu and torch.cuda.is_available():
@@ -142,7 +150,7 @@ class Trainer:
 
         return h_t, l_t
 
-    def train(self):
+    def train(self, *, writer):
         """Train the model on the training set.
 
         A checkpoint of the model is saved after each epoch
@@ -163,10 +171,10 @@ class Trainer:
             )
 
             # train for 1 epoch
-            train_loss, train_acc = self.train_one_epoch(epoch)
+            train_loss, train_acc = self.train_one_epoch(epoch, writer=writer)
 
             # evaluate on validation set
-            valid_loss, valid_acc = self.validate(epoch)
+            valid_loss, valid_acc = self.validate(epoch, writer=writer)
 
             # # reduce lr if validation loss plateaus
             self.scheduler.step(-valid_acc)
@@ -395,7 +403,7 @@ class Trainer:
         return losses.avg, accs.avg
 
     @torch.no_grad()
-    def test(self):
+    def test(self, *, writer):
         """Test the RAM model.
 
         This function should only be called at the very
@@ -438,12 +446,20 @@ class Trainer:
 
         If this model has reached the best validation accuracy thus
         far, a seperate file with the suffix `best` is created."""
-        ckpt_path = str(self.ckpt_dir / f"{self.model_name}_ckpt.pth.tar")
+        ckpt_path = str(
+            (self.ckpt_dir / f"{self.model_name}_checkpoint").with_suffix(
+                model_file_ending
+            )
+        )
         torch.save(state, ckpt_path)
         if is_best:
             shutil.copyfile(
                 ckpt_path,
-                str(self.ckpt_dir / f"{self.model_name}_model_best.pth.tar"),
+                str(
+                    (self.ckpt_dir / f"{self.model_name}_model_best").with_suffix(
+                        model_file_ending
+                    )
+                ),
             )
 
     def load_checkpoint(self, best=False):
@@ -461,46 +477,49 @@ class Trainer:
                 is used."""
         print(f"[*] Loading model from {self.ckpt_dir}")
 
-        filename = f"{self.model_name}_ckpt.pth.tar"
+        filename = f"{self.model_name}_checkpoint"
         if best:
-            filename = f"{self.model_name}_model_best.pth.tar"
-        ckpt = torch.load(str(self.ckpt_dir / filename))
+            filename = f"{self.model_name}_model_best"
+        saved = (self.ckpt_dir / filename).with_suffix(model_file_ending)
+        if saved.exists():
+            ckpt = torch.load(str(saved))
 
-        # load variables from checkpoint
-        self.start_epoch = ckpt["epoch"]
-        self.best_valid_acc = ckpt["best_valid_acc"]
-        self.model.load_state_dict(ckpt["model_state"])
-        self.optimizer.load_state_dict(ckpt["optim_state"])
+            # load variables from checkpoint
+            self.start_epoch = ckpt["epoch"]
+            self.best_valid_acc = ckpt["best_valid_acc"]
+            self.model.load_state_dict(ckpt["model_state"])
+            self.optimizer.load_state_dict(ckpt["optim_state"])
 
-        if best:
-            print(
-                f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with "
-                f"best valid acc of {ckpt['best_valid_acc']:.3f}"
-            )
-        else:
-            print(f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']}")
+            if best:
+                print(
+                    f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']} with "
+                    f"best valid acc of {ckpt['best_valid_acc']:.3f}"
+                )
+            else:
+                print(f"[*] Loaded {filename} checkpoint @ epoch {ckpt['epoch']}")
 
 
-def main(config):
+def main(**config):
     """
 
     Args:
       config:
     """
-    # ensure reproducibility
-    torch.manual_seed(config.random_seed)
+
+    config = NOD(**config)
+
+    torch.manual_seed(config.random_seed)  # ensure reproducibility
     kwargs = {}
     if config.use_gpu:
         torch.cuda.manual_seed(config.random_seed)
         kwargs["num_workers"] = 1
         kwargs["pin_memory"] = True
 
-    # instantiate data loaders
-    if config.is_train:
+    if config.is_train:  # instantiate data loaders
         data_loader = MNISTDataset.get_train_valid_loader(
             config.data_dir,
-            config.batch_size,
-            config.random_seed,
+            batch_size=config.batch_size,
+            random_seed=config.random_seed,
             valid_size=config.valid_size,
             shuffle=config.shuffle,
             **kwargs,
@@ -510,12 +529,13 @@ def main(config):
             config.data_dir, config.batch_size, **kwargs
         )
 
-    trainer = Trainer(config, data_loader)
+    trainer = Trainer(data_loader, **config)
 
-    if config.is_train:
-        trainer.train()
-    else:  # or load a pretrained model and test
-        trainer.test()
+    with PytorchTensorboardWriter() as writer:
+        if config.is_train:
+            trainer.train(writer=writer)
+        else:  # or load a pretrained model and test
+            trainer.test(writer=writer)
 
 
 if __name__ == "__main__":
@@ -523,4 +543,4 @@ if __name__ == "__main__":
     config.is_train = False
     # config.is_train = True
 
-    main(config)
+    main(**config)

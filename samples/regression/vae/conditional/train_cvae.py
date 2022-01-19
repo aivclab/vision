@@ -7,21 +7,23 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+import time
+from collections import defaultdict
 from math import inf
+
 import pandas
 import seaborn
-import time
 import torch
-from collections import defaultdict
+from apppath import ensure_existence
 from draugr.torch_utilities import global_torch_device
 from draugr.tqdm_utilities import progress_bar
-from apppath import ensure_existence
 from matplotlib import pyplot
+from torch.nn.functional import one_hot
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD
-from torch.nn.functional import one_hot
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
 from objectives import loss_fn
@@ -50,7 +52,6 @@ DL_KWARGS = (
     {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
 )
 BASE_PATH = ensure_existence(PROJECT_APP_PATH.user_data / "cvae")
-
 
 if torch.cuda.is_available():
     torch.cuda.manual_seed(config.seed)

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import cv2
-import numpy
 from enum import Enum
 from typing import List
+
+import cv2
+import numpy
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

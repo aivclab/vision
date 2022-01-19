@@ -1,10 +1,9 @@
+from threading import Thread
+
 import cv2
 import dlib
 import playsound
 from draugr.opencv_utilities import AsyncVideoStream
-
-from threading import Thread
-
 from draugr.opencv_utilities.dlib import (
     shape_to_ndarray,
     Dlib68faciallandmarksindices,

@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 import argparse
 import copy
-import draugr.visualisation.matplotlib_utilities
 import os
 import time
+from pathlib import Path
+
+import draugr.visualisation.matplotlib_utilities
 from draugr.numpy_utilities import SplitEnum, hwc_to_chw
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
@@ -12,7 +14,6 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import ImageWriterMixin
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
-from pathlib import Path
 
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities

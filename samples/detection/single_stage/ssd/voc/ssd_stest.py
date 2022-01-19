@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+
 import torch
 import torch.utils.data
 from draugr.torch_utilities import global_torch_device

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
+
 import cv2
 import numpy
 import pandas
@@ -14,7 +16,6 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 

@@ -7,12 +7,10 @@ __doc__ = r"""
            Created on 23/03/2020
            """
 
-import torch
-
 import typing
 
+import torch
 from draugr.writers import Writer
-
 from torch import distributed as dist
 
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (

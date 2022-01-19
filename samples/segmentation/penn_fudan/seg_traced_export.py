@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import cv2
 import torch
 from apppath import ensure_existence
@@ -9,7 +11,6 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     global_torch_device,
 )
-from pathlib import Path
 from torchvision import transforms
 from tqdm import tqdm
 

@@ -8,14 +8,15 @@ __doc__ = r"""
            """
 
 import csv
+from pathlib import Path
+from typing import Dict, Tuple
+
 import torch
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
-from typing import Dict, Tuple
 
 __all__ = ["VggFace2"]
 
@@ -23,7 +24,10 @@ from draugr.torch_utilities import SupervisedDataset
 
 
 class VggFace2(SupervisedDataset):
-    """ """
+    """
+    Department of Engineering Science, University of Oxford
+    Visual Geometry Group Face 2 Dataset
+    """
 
     """"""
 
@@ -206,7 +210,7 @@ if __name__ == "__main__":
             leave=False,
         ):
             pyplot.imshow(dt.inverse_transform(imgs[0]))
-            pyplot.title(f"{label[0],class_ids[0]}")
+            pyplot.title(f"{label[0], class_ids[0]}")
             # pyplot.imshow(imgs)
             pyplot.show()
             break

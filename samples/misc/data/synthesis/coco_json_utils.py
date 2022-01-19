@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
 import json
+from pathlib import Path
+
 import numpy
 from PIL import Image
-from pathlib import Path
 from shapely.geometry import MultiPolygon, Polygon
 from skimage import measure
 from tqdm import tqdm

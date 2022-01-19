@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import numpy
 from draugr.numpy_utilities.raster_grid_3d_masking import sphere_mask
 from matplotlib import pyplot

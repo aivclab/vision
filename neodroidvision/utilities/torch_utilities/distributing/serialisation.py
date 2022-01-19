@@ -1,6 +1,7 @@
 import pickle
-import torch
 from typing import Any, List
+
+import torch
 
 __all__ = ["to_byte_tensor", "serialise_byte_tensor", "deserialise_byte_tensor"]
 

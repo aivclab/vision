@@ -1,10 +1,11 @@
+from typing import List, Tuple
+
 import torch
 import torchvision
 from draugr.torch_utilities import (
     set_all_parameter_requires_grad,
     trainable_parameters,
 )
-from typing import List, Tuple
 
 __all__ = ["squeezenet_retrain"]
 

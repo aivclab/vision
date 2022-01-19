@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import torch
 from abc import abstractmethod
+
+import torch
 from torch import nn
 from torch.nn.init import kaiming_normal_
 

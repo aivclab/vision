@@ -8,6 +8,9 @@ __doc__ = r"""
            """
 
 import argparse
+from pathlib import Path
+from typing import List
+
 import cv2
 import numpy
 import torch
@@ -16,9 +19,7 @@ from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
-from pathlib import Path
 from tqdm import tqdm
-from typing import List
 from warg import NOD
 
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH

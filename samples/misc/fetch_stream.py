@@ -1,8 +1,3 @@
-import cv2
-from draugr.opencv_utilities import AsyncVideoStream
-
-from samples.misc.exclude import VIDEO_SOURCE
-
 # for i in AsyncVideoStream(VIDEO_SOURCE) :
 #  print(i)
 #  cv2.imshow("Output", i)

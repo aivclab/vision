@@ -3,6 +3,8 @@ import datetime
 import logging
 import os
 import time
+from pathlib import Path
+
 import torch
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
@@ -12,7 +14,6 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     WarmupMultiStepLR,
 )
-from pathlib import Path
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader

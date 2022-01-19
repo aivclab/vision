@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+
 from warg import NOD
 from warg.arguments import str2bool
 
@@ -167,4 +168,4 @@ def get_ram_config():
     config.logs_dir = PROJECT_APP_PATH.user_log / ram_base / "logs"
     config.plot_dir = PROJECT_APP_PATH.user_log / ram_base / "plots"
 
-    return config  # , unparsed
+    return config

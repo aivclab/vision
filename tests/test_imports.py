@@ -9,8 +9,6 @@ __doc__ = r"""
 
 __all__ = []
 
-import pytest
-
 
 def test_import():
     import neodroidvision

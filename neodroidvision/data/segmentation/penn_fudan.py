@@ -37,14 +37,6 @@ from neodroidvision.utilities import (
 )
 
 
-class ReturnVariantEnum(Enum):
-    """
-    Return binary mask, instanced or all annotations
-    """
-
-    binary, instanced, all = assigned_names()
-
-
 class PennFudanDataset(SupervisedDataset):
     """ """
 
@@ -57,17 +49,25 @@ class PennFudanDataset(SupervisedDataset):
 
     categories = ("void", "person")
 
+    class PennFudanReturnVariantEnum(Enum):
+        """
+        Return binary mask, instanced or all annotations
+        """
+
+        binary, instanced, all = assigned_names()
+
     @property
     def response_shape(self) -> Tuple[int, ...]:
         """
 
         :return:
         :rtype:"""
-        if self._return_variant == ReturnVariantEnum.binary:
+        if self._return_variant == PennFudanDataset.PennFudanReturnVariantEnum.binary:
             return (*self.image_size_T, self.response_channels_binary)
         elif (
-            self._return_variant == ReturnVariantEnum.instanced
-            or self._return_variant == ReturnVariantEnum.all
+            self._return_variant
+            == PennFudanDataset.PennFudanReturnVariantEnum.instanced
+            or self._return_variant == PennFudanDataset.PennFudanReturnVariantEnum.all
         ):
             return (*self.image_size_T, self.response_channels)
         raise NotImplementedError
@@ -117,7 +117,7 @@ class PennFudanDataset(SupervisedDataset):
         self,
         root: Union[str, Path],
         split: SplitEnum = SplitEnum.training,
-        return_variant: ReturnVariantEnum = ReturnVariantEnum.binary,
+        return_variant: PennFudanReturnVariantEnum = PennFudanReturnVariantEnum.binary,
     ):
         """
 
@@ -131,16 +131,19 @@ class PennFudanDataset(SupervisedDataset):
         self._root_data_path = root
         self._return_variant = return_variant
 
-        if self._return_variant != ReturnVariantEnum.all:
+        if self._return_variant != PennFudanDataset.PennFudanReturnVariantEnum.all:
             self._transforms = self.get_transforms(split)
         else:
             self._transforms = self.get_tuple_transforms(split)
 
-        if self._return_variant == ReturnVariantEnum.binary:
+        if self._return_variant == PennFudanDataset.PennFudanReturnVariantEnum.binary:
             self._getter = self.get_binary
-        elif self._return_variant == ReturnVariantEnum.instanced:
+        elif (
+            self._return_variant
+            == PennFudanDataset.PennFudanReturnVariantEnum.instanced
+        ):
             self._getter = self.get_instanced
-        elif self._return_variant == ReturnVariantEnum.all:
+        elif self._return_variant == PennFudanDataset.PennFudanReturnVariantEnum.all:
             self._getter = self.get_all
         else:
             raise NotImplementedError
@@ -284,7 +287,7 @@ if __name__ == "__main__":
         dataset = PennFudanDataset(
             Path.home() / "Data" / "Datasets" / "PennFudanPed",
             SplitEnum.training,
-            return_variant=ReturnVariantEnum.instanced,
+            return_variant=PennFudanDataset.PennFudanReturnVariantEnum.instanced,
         )
 
         global_torch_device(override=global_torch_device("cpu"))
@@ -303,7 +306,7 @@ if __name__ == "__main__":
         dataset = PennFudanDataset(
             Path.home() / "Data" / "Datasets" / "PennFudanPed",
             SplitEnum.training,
-            return_variant=ReturnVariantEnum.all,
+            return_variant=PennFudanDataset.PennFudanReturnVariantEnum.all,
         )
 
         global_torch_device(override=global_torch_device("cpu"))

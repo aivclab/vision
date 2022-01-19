@@ -6,18 +6,12 @@ __doc__ = r"""
 
            Created on {date}
            """
+
 import gzip
 import pickle
 from pathlib import Path
 
 import numpy
-from draugr.numpy_utilities import SplitEnum
-from tqdm import trange
-
-import gzip
-import pickle
-from pathlib import Path
-
 from draugr.numpy_utilities import SplitEnum
 from tqdm import trange
 

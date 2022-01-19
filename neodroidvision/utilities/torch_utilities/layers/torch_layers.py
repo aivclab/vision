@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import torch
 from typing import Tuple
+
+import torch
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

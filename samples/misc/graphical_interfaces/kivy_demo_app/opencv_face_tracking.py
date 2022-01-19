@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from functools import partial
+
 import cv2
 import imageio
-from functools import partial
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config

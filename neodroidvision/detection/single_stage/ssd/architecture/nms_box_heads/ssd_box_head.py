@@ -1,9 +1,10 @@
-import torch
 from collections import namedtuple
+from typing import Any, Tuple
+
+import torch
 from draugr.torch_utilities import to_tensor
 from torch import nn
 from torch.nn import Parameter, functional
-from typing import Any, Tuple
 
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,

@@ -7,7 +7,6 @@ __doc__ = r"""
            Created on {date}
            """
 
-import argparse
 import gzip
 import pathlib
 import pickle

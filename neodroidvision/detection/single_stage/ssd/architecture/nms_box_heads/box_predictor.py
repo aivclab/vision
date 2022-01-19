@@ -1,7 +1,8 @@
-import torch
 from abc import abstractmethod
-from torch import nn
 from typing import Tuple
+
+import torch
+from torch import nn
 
 __all__ = ["BoxPredictor"]
 

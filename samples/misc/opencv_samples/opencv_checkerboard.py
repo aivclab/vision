@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import cv2
 import glob
+from pathlib import Path
+
+import cv2
 import numpy
 from draugr.opencv_utilities.opencv_drawing_utilities import draw_cube
 from matplotlib import pyplot
-from pathlib import Path
 from pynput import keyboard
 
 from neodroidvision import PROJECT_APP_PATH

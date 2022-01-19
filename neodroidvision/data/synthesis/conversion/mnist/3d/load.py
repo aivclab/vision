@@ -6,10 +6,12 @@ __doc__ = r"""
 
            Created on {date}
            """
+
+from pathlib import Path
+
 import h5py
 import plotly.offline
 from plotly.graph_objs import Figure, Layout, Scatter3d
-from pathlib import Path
 
 with h5py.File(Path("exclude") / "testing.h5", "r") as points_dataset:
     digits = []

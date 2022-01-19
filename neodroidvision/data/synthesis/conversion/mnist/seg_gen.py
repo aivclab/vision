@@ -7,7 +7,6 @@ __doc__ = r"""
            Created on {date}
            """
 
-import argparse
 import gzip
 import pathlib
 import pickle
@@ -157,7 +156,6 @@ def generate_dataset(
     mnist_images: numpy.ndarray,
     mnist_labels: numpy.ndarray,
 ):
-
     max_image_value = 255
     assert mnist_images.dtype == numpy.uint8
     image_dir = dirpath / "images"

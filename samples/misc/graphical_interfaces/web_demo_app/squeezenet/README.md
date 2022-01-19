@@ -13,7 +13,8 @@ This example shows:
 ## How to run
 
 1. Download model file `squeezenetV1_8.onnx`
-   from [examples/models](https://github.com/Microsoft/onnxjs-demo/tree/data/data/examples/models) and put it in the current folder.
+   from [examples/models](https://github.com/Microsoft/onnxjs-demo/tree/data/data/examples/models) and put it in the
+   current folder.
 
 2. Start an http server in this folder. You can install [`http-server`](https://github.com/indexzero/http-server) via
     ```

@@ -16,7 +16,6 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
-    chw_to_hwc_tensor,
 )
 from matplotlib import pyplot
 from torch.optim import optimizer
@@ -107,7 +106,6 @@ def train_person_segmentor(
 
         with TorchTrainSession(model):
             for data, target in tqdm(train_loader):
-
                 data, target = (
                     data.to(global_torch_device()),
                     target.to(global_torch_device()),

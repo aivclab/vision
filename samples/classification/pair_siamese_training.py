@@ -6,11 +6,14 @@ __doc__ = r"""
 
 import math
 import time
+from itertools import count
+from pathlib import Path
+from typing import Tuple
+
 import torch
 import torchvision
 from draugr import IgnoreInterruptSignal
 from draugr.numpy_utilities import SplitEnum
-
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -21,15 +24,12 @@ from draugr.torch_utilities import (
     to_tensor,
 )
 from draugr.writers import MockWriter, Writer
-from itertools import count
-from pathlib import Path
 from torch import nn, optim
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
-from typing import Tuple
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset
@@ -247,7 +247,7 @@ if __name__ == "__main__":
 
         if train:
             if load_prev:
-                model, optimer = load_model_parameters(
+                model, optimiser = load_model_parameters(
                     model,
                     optimiser=optimiser,
                     model_name=model_name,

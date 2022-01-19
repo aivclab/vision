@@ -1,6 +1,7 @@
+from enum import Enum
+
 import torch
 import torch.nn as nn
-from enum import Enum
 
 __all__ = ["SelfAttentionTypeEnum", "make_san"]
 

@@ -4,25 +4,6 @@ import argparse
 import os
 import time
 
-import torchvision
-from draugr import (
-    batch_generator,
-    rgb_drop_alpha_batch_nhwc,
-    torch_vision_normalize_batch_nchw,
-)
-from draugr.torch_utilities import (
-    TensorBoardPytorchWriter,
-    ensure_directory_exist,
-    global_torch_device,
-    to_tensor,
-    uint_hwc_to_chw_float_tensor,
-)
-from draugr.visualisation import horizontal_imshow
-from matplotlib import pyplot
-from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
-    MixedObservationWrapper,
-)
-
 import torch
 import torchvision
 from draugr import (

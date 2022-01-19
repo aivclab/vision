@@ -1,5 +1,6 @@
-from torch import nn
 from typing import Any
+
+from torch import nn
 
 
 class SSDBackbone(nn.Module):

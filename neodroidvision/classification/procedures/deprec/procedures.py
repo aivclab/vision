@@ -1,7 +1,9 @@
 import copy
-import numpy
 import string
 import time
+from pathlib import Path
+
+import numpy
 import torch
 import tqdm
 from draugr import (
@@ -20,7 +22,6 @@ from draugr.torch_utilities import (
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
-from pathlib import Path
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
 

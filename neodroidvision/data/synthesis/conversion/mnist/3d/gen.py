@@ -13,7 +13,6 @@ from pathlib import Path
 
 import h5py
 import numpy
-
 from tqdm import trange
 
 from augmentation import rotate_y
@@ -163,7 +162,6 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
       shape:
     """
     img = numpy.zeros((shape[0] + 2, shape[1] + 2))
-    import nrrd  # pip install pynrrd
 
     with h5py.File(output.with_suffix(".h5"), "w") as hf:
         for i in trange(len(X)):

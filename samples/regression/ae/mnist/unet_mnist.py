@@ -3,6 +3,9 @@
 import copy
 import os
 import time
+from itertools import cycle
+from pathlib import Path
+from typing import Iterator
 
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
@@ -12,16 +15,13 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_device_iterator,
 )
-from draugr.visualisation import plot_img_array, plot_side_by_side
+from draugr.visualisation import plot_side_by_side
 from draugr.writers import Writer
-from itertools import cycle
 from matplotlib import pyplot
-from pathlib import Path
 from torch.nn.modules.module import Module
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from typing import Iterator
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission

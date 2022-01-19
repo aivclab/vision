@@ -1,16 +1,17 @@
 import logging
-import numpy
 import os
 import time
+from itertools import count
+from pathlib import Path
+
+import numpy
 import torch
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 from draugr import AverageMeter
 from draugr.numpy_utilities import SplitEnum
-from itertools import count
 from matplotlib import pyplot
-from pathlib import Path
 from torch import nn
 
 from neodroidvision.classification.architectures.self_attention_network import (

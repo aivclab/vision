@@ -1,4 +1,5 @@
 import time
+
 from draugr.python_utilities.datetimes import now_repr
 from draugr.visualisation.pillow_utilities import byte_array_to_pil_image
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import argparse
 import copy
 import os
 import time
+
 import torch
 import torchvision
 from draugr import recycle
@@ -18,8 +18,6 @@ from draugr.torch_utilities import (
     to_tensor,
     torch_clean_up,
 )
-from draugr.torch_utilities.images.conversion import quick_to_pil_image
-
 from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from torch import optim
@@ -28,10 +26,9 @@ from torchvision.transforms.functional import to_pil_image
 from tqdm import tqdm
 from warg import ContextWrapper
 
+from data.classification.deprec.s_mnist import MNISTDataset2
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
-
-from neodroidvision.data.classification import MNISTDataset2
 
 __author__ = "Christian Heider Nielsen"
 __all__ = []

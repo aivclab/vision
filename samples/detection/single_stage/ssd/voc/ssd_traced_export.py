@@ -1,4 +1,6 @@
 import argparse
+from pathlib import Path
+
 import cv2
 import torch
 from apppath import ensure_existence
@@ -6,7 +8,6 @@ from draugr import sprint
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import global_torch_device
-from pathlib import Path
 from torch import onnx, quantization
 from tqdm import tqdm
 from warg import NOD
@@ -22,7 +23,7 @@ from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 @torch.no_grad()
 def export_detection_model(
     cfg: NOD,
-    model_ckpt: Path,
+    model_checkpoint: Path,
     model_export_path: Path = Path("torch_model"),
     verbose: bool = True,
     onnx_export: bool = False,
@@ -34,8 +35,8 @@ def export_detection_model(
     :type verbose:
     :param cfg:
     :type cfg:
-    :param model_ckpt:
-    :type model_ckpt:
+    :param model_checkpoint:
+    :type model_checkpoint:
     :param model_export_path:
     :type model_export_path:
     :return:
@@ -45,9 +46,9 @@ def export_detection_model(
     checkpointer = CheckPointer(
         model, save_dir=ensure_existence(PROJECT_APP_PATH.user_data / "results")
     )
-    checkpointer.load(model_ckpt, use_latest=model_ckpt is None)
+    checkpointer.load(model_checkpoint, use_latest=model_checkpoint is None)
     print(
-        f"Loaded weights from {model_ckpt if model_ckpt else checkpointer.get_checkpoint_file()}"
+        f"Loaded weights from {model_checkpoint if model_checkpoint else checkpointer.get_checkpoint_file()}"
     )
 
     model.post_init()
@@ -167,7 +168,7 @@ def main():
     )
     args = parser.parse_args()
 
-    export_detection_model(cfg=base_cfg, model_ckpt=Path(args.ckpt))
+    export_detection_model(cfg=base_cfg, model_checkpoint=Path(args.ckpt))
 
 
 if __name__ == "__main__":

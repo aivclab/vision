@@ -1,11 +1,12 @@
 import logging
+from pathlib import Path
+from typing import Any, List
+
 import torch
 import torch.utils.data
-from pathlib import Path
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from typing import Any, List
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH

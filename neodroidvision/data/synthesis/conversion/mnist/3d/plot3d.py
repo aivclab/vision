@@ -6,6 +6,7 @@ __doc__ = r"""
 
            Created on {date}
            """
+
 import numpy
 from IPython.display import IFrame
 from matplotlib import pyplot

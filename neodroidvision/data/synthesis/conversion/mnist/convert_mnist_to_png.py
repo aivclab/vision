@@ -16,7 +16,6 @@ from array import array
 from pathlib import Path
 from typing import Tuple
 
-
 import torchvision.datasets
 from draugr.numpy_utilities import SplitEnum
 

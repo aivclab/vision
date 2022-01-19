@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import numpy
 import time
+from typing import Iterable
+
+import numpy
 import torchvision
 from draugr.torch_utilities import TensorBoardPytorchWriter
 from torch import nn
-from typing import Iterable
 
 from neodroidvision import PROJECT_APP_PATH
 

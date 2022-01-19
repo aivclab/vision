@@ -1,11 +1,12 @@
+from functools import reduce
+
 import numpy
 import torch
-from draugr import (
+from draugr.visualisation import (
     np_array_to_pil_img,
     pil_img_to_np_array,
     pil_merge_images,
 )
-from functools import reduce
 from matplotlib import pyplot
 
 from samples.classification.ram.architecture.ram_modules import GlimpseSensor

@@ -8,12 +8,13 @@ __doc__ = r"""
            """
 
 import logging
-import torch
 from pathlib import Path
+from typing import Any
+
+import torch
 from torch.nn import Module
 from torch.nn.parallel import DistributedDataParallel
 from torch.optim import Optimizer
-from typing import Any
 
 from neodroidvision.utilities.torch_utilities.custom_model_caching import (
     custom_cache_url,

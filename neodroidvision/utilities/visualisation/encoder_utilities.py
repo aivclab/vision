@@ -1,22 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from statistics import mode
 from typing import Optional, Tuple
 
 import numpy
 import torch
-from torch.nn.functional import one_hot
-from draugr.torch_utilities import global_torch_device
-from draugr.numpy_utilities import hwc_to_chw
 from PIL import Image
-
+from draugr.torch_utilities import global_torch_device
+from torch.nn.functional import one_hot
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r""""""
 
 from numpy import ndarray
-
 
 from warg import Number
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+
 import cv2
 import torch
-from pathlib import Path
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""

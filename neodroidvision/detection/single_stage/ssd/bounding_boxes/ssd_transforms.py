@@ -7,6 +7,8 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
+from typing import Any, Tuple
+
 import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
@@ -22,7 +24,6 @@ from draugr.opencv_utilities import (
     ConvertFromInts,
     SubtractMeans,
 )
-from typing import Any, Tuple
 from warg import NOD
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (

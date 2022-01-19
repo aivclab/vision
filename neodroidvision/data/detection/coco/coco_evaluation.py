@@ -10,19 +10,20 @@ __doc__ = r"""
 import copy
 import json
 import logging
+from collections import defaultdict, namedtuple
+from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Sequence, Tuple
+
 import numpy
 import pycocotools.mask
 import torch
 import torch._six
 import torchvision
-from collections import defaultdict, namedtuple
-from datetime import datetime
 from draugr.python_utilities.exceptions import IncompatiblePackageVersions
-from enum import Enum
-from pathlib import Path
 from pycocotools.coco import COCO  # Version 2.0 REQUIRES numpy 1.17
 from pycocotools.cocoeval import COCOeval
-from typing import Any, Dict, List, Sequence, Tuple
 
 if pycocotools.coco.__version__ == "2.0" and "1.18" in numpy.__version__:
     print("Hint: downgrade numpy to 1.17.x")

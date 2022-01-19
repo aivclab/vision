@@ -1,5 +1,6 @@
-import cv2
 import time
+
+import cv2
 from PIL import Image
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.python_utilities.datetimes import now_repr

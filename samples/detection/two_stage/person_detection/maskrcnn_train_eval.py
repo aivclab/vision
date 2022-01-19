@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+
 import torch
 from PIL import Image
-from pathlib import Path
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -23,7 +24,6 @@ from warg.functions import collate_first_dim
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import PennFudanDataset
-from neodroidvision.data.segmentation.penn_fudan import ReturnVariantEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     load_model,
@@ -41,13 +41,15 @@ from warg import GDKC
 
 if __name__ == "__main__":
 
-    def main():
+    def main(
+        dataset_root=Path.home() / "DataWin" / "Datasets",
+        model_name=f"maskrcnn_pennfudanped",
+    ):
         """ """
-        dataset_root = Path.home() / "Data"
+
         base_path = ensure_existence(PROJECT_APP_PATH.user_data / "maskrcnn")
         log_path = ensure_existence(PROJECT_APP_PATH.user_log / "maskrcnn")
         export_root = ensure_existence(base_path / "models")
-        model_name = f"maskrcnn_pennfudanped"
 
         batch_size = 4
         num_epochs = 10
@@ -63,12 +65,12 @@ if __name__ == "__main__":
         dataset = PennFudanDataset(
             dataset_root / "PennFudanPed",
             SplitEnum.training,
-            return_variant=ReturnVariantEnum.all,
+            return_variant=PennFudanDataset.PennFudanReturnVariantEnum.all,
         )
         dataset_validation = PennFudanDataset(
             dataset_root / "PennFudanPed",
             SplitEnum.validation,
-            return_variant=ReturnVariantEnum.all,
+            return_variant=PennFudanDataset.PennFudanReturnVariantEnum.all,
         )
         split = SplitIndexer(len(dataset), validation=0.3, testing=0)
 
@@ -95,7 +97,13 @@ if __name__ == "__main__":
         lr_scheduler = scheduler_spec(optimiser)
 
         if True:
-            model = load_model(model_name=model_name, model_directory=export_root)
+            candidate = load_model(
+                model_name=model_name,
+                model_directory=export_root,
+                raise_on_failure=False,
+            )
+            if candidate:
+                model = candidate
 
         if True:
             with TorchTrainSession(model):

@@ -9,6 +9,7 @@ __doc__ = r"""
 
 import numpy
 from matplotlib import pyplot
+
 from plot3d import plot_voxelgrid
 
 __all__ = ["VoxelGrid"]

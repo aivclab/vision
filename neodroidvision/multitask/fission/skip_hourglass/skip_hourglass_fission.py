@@ -1,9 +1,10 @@
+from typing import Dict, Iterable, Sequence, Tuple, Union
+
 import numpy
 import torch
 from draugr.torch_utilities import to_tensor
 from torch import nn
 from torch.nn import init
-from typing import Dict, Iterable, Sequence, Tuple, Union
 
 from neodroidvision.multitask.fission.skip_hourglass.factory import (
     fcn_decoder,

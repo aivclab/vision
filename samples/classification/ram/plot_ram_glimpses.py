@@ -1,12 +1,10 @@
-import numpy
 import os
 import pickle
+from pathlib import Path
 
 import numpy
-
 from draugr.visualisation import denormalise_minusoneone, matplotlib_bounding_box
 from matplotlib import animation, pyplot
-from pathlib import Path
 
 from samples.classification.ram.ram_params import get_ram_config
 
@@ -20,8 +18,8 @@ def main(plot_dir: Path, epoch=None):
     """
     if epoch is None:
         list_of_files = list(plot_dir.rglob("*.p"))
-        lastest_model_path = max(list_of_files, key=os.path.getctime)
-        epoch = int(str(lastest_model_path).split("_")[-1].split(".")[0])
+        latest_model_path = max(list_of_files, key=os.path.getctime)
+        epoch = int(str(latest_model_path).split("_")[-1].split(".")[0])
 
     print(f"Load epoch model {epoch}")
 
@@ -30,7 +28,9 @@ def main(plot_dir: Path, epoch=None):
 
     glimpses = numpy.concatenate(glimpses)
 
-    size = int(str(plot_dir).split("_")[2][0])
+    ok = str(plot_dir.name).split("_")[2][0]
+    print(plot_dir, ok)
+    size = int(ok)
     num_anims = len(locations)
     num_cols = glimpses.shape[0]
     img_shape = glimpses.shape[1]
@@ -64,10 +64,11 @@ def main(plot_dir: Path, epoch=None):
     anim = animation.FuncAnimation(
         fig, update_data, frames=num_anims, interval=500, repeat=True
     )
+
     anim.save(
-        str(plot_dir / f"epoch_{epoch}.mp4"),
-        extra_args=["-vcodec", "h264", "-pix_fmt", "yuv420p"],
-    )  # save as mp4
+        str(plot_dir / f"epoch_{epoch}.gif"), writer=animation.PillowWriter(fps=30)
+    )
+    # anim.save(        str(plot_dir / f"epoch_{epoch}.mp4"),        extra_args=["-vcodec", "h264", "-pix_fmt", "yuv420p"]    )  # save as mp4
     pyplot.show()
 
 

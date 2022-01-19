@@ -7,15 +7,17 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
-import numpy
 import random
-import torch
 from pathlib import Path
 from typing import Tuple
+
+import numpy
+import torch
 
 __all__ = ["TripletDataset"]
 
 from draugr.torch_utilities import global_pin_memory
+from torch.utils.data import DataLoader
 
 from neodroidvision.data.classification.nlet import PairDataset
 
@@ -64,7 +66,7 @@ class TripletDataset(
     def sample(self, horizontal_merge: bool = False) -> None:
         """ """
         dl = iter(
-            torch.utils.data.DataLoader(
+            DataLoader(
                 self,
                 batch_size=9,
                 shuffle=True,

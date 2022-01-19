@@ -9,7 +9,6 @@ __doc__ = r"""
 
 __all__ = ["unstandardise_image", "preprocess_image", "overlay_cam_on_image"]
 
-import PIL
 import cv2
 import numpy
 from torchvision import transforms

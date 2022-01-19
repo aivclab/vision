@@ -5,13 +5,15 @@ __doc__ = r"""
 """
 
 import math
+from itertools import count
+from pathlib import Path
+
 import numpy
 import torch
 import torch.nn.functional as F
 import torchvision.utils
-from draugr.numpy_utilities import SplitEnum
-
 from draugr import IgnoreInterruptSignal
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -22,8 +24,6 @@ from draugr.torch_utilities import (
     to_tensor,
 )
 from draugr.writers import MockWriter, Writer
-from itertools import count
-from pathlib import Path
 from torch import optim
 from torch.nn import TripletMarginLoss
 from torch.utils.data import DataLoader

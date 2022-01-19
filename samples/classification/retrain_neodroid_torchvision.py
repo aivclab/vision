@@ -3,6 +3,7 @@
 import argparse
 import os
 import time
+
 import torchvision
 from draugr import batch_generator
 from draugr.python_utilities import (
@@ -17,7 +18,6 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
 )
-
 from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
@@ -91,10 +91,10 @@ def main():
 
         if options.continue_training:
             _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
-            lastest_model_path = str(max(_list_of_files, key=os.path.getctime))
-            print(f"loading previous model: {lastest_model_path}")
-            if lastest_model_path is not None:
-                model.load_state_dict(torch.load(lastest_model_path))
+            latest_model_path = str(max(_list_of_files, key=os.path.getctime))
+            print(f"loading previous model: {latest_model_path}")
+            if latest_model_path is not None:
+                model.load_state_dict(torch.load(latest_model_path))
 
         criterion = torch.nn.CrossEntropyLoss().to(global_torch_device())
 
@@ -126,8 +126,7 @@ def main():
                 )
             )
 
-            pred = model(rgb_imgs)
-            predicted = torch.argmax(pred, -1)
+            predicted = torch.argmax(model(rgb_imgs), -1)
             true_label = to_tensor(true_label, dtype=torch.long)
             print(predicted, true_label)
             horizontal_imshow(

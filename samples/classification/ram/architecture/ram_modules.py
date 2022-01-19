@@ -1,9 +1,8 @@
+from typing import Tuple
+
 import torch
 from torch import nn
 from torch.distributions import Normal
-
-from typing import Tuple
-
 from torch.nn import functional
 
 
@@ -278,7 +277,7 @@ class Locator(nn.Module):
     time step.
 
     Concretely, feeds the hidden state `h_t` through a fc
-    layer followed by a tanh to clamp the output beween
+    layer followed by a tanh to clamp the output between
     [-1, 1]. This produces a 2D vector of means used to
     parametrize a two-component Gaussian with a fixed
     variance from which the location coordinates `l_t`
@@ -315,11 +314,14 @@ class Locator(nn.Module):
         :type h_t:
         :return:
         :rtype:"""
-        # compute mean
-        mu = torch.tanh(self.fc_lt(functional.relu(self.fc(h_t.detach()))))
 
-        # reparametrization trick
-        l_t = torch.distributions.Normal(mu, self.std).rsample()
+        mu = torch.tanh(
+            self.fc_lt(functional.relu(self.fc(h_t.detach())))
+        )  # compute mean
+
+        l_t = torch.distributions.Normal(
+            mu, self.std
+        ).rsample()  # reparametrisation trick
 
         # we assume both dimensions are independent
         # 1. pdf of the joint is the product of the pdfs

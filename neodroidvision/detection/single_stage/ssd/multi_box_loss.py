@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+from typing import Tuple
+
 import torch
 from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 from torch.nn import functional
-from typing import Tuple
 from warg import Number
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (

@@ -8,6 +8,8 @@ __doc__ = r"""
            """
 
 import argparse
+from typing import List
+
 import cv2
 import numpy
 import torch
@@ -20,7 +22,6 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from tqdm import tqdm
-from typing import List
 from warg import NOD
 
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH

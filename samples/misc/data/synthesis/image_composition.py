@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 import json
-import numpy
 import random
 import warnings
-from PIL import Image, ImageEnhance
 from datetime import datetime
 from pathlib import Path
+
+import numpy
+from PIL import Image, ImageEnhance
 from tqdm import tqdm
 
 from samples.misc.data.synthesis.mask_json_utilities import MaskJsonUtils
@@ -451,7 +452,7 @@ if __name__ == "__main__":
         required=True,
         help="The directory where "
         "images, masks, \
-                                         and json files will be placed",
+                                              and json files will be placed",
     )
     parser.add_argument(
         "--count",

@@ -7,16 +7,17 @@ __doc__ = r"""
            Created on 27/06/2020
            """
 
+from pathlib import Path
+from typing import Dict, Tuple
+
 import numpy
 import torch
 import torchvision
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
-from typing import Dict, Tuple
 
 from neodroidvision.data.classification.imagenet.imagenet_2012_id import categories_id
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
@@ -117,7 +118,7 @@ class ImageNet2012(SupervisedDataset):
             str(self._dataset_path), self.val_trans
         )
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._image_folder)
 
     def __getitem__(self, index) -> Tuple[torch.Tensor, torch.Tensor]:

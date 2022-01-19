@@ -1,14 +1,15 @@
 import logging
-import numpy
 import os
 import random
 import shutil
 import time
+from pathlib import Path
+
+import numpy
 import torch
 from draugr import AverageMeter, find_unclaimed_port
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import TensorBoardPytorchWriter
-from pathlib import Path
 from torch import distributed, multiprocessing, nn
 from torch.backends import cudnn
 from torch.optim import lr_scheduler
