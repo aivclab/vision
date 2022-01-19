@@ -201,7 +201,7 @@ if __name__ == "__main__":
         encoding_depth=2,
         merge_mode=MergeMode.Concat,
     )
-    x = to_tensor(numpy.random.random((1, channels, 320, 320)), device="cpu")
+    x = to_tensor(numpy.random.random((1, channels, 320, 320)), device="cpu").float()
     out, out2, *_ = model(x)
     loss = torch.sum(out)
     loss.backward()

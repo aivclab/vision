@@ -8,4 +8,4 @@ __doc__ = r"""
            """
 
 from .clouds import *
-from .penn_fudan import *
+from .cam_vid import *

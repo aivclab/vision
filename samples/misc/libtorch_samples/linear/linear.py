@@ -19,16 +19,16 @@ data_loader = DataLoader(dataset)
 model = torch.nn.Linear(input_size, output_size)
 
 criterion = torch.nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+optimiser = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 for epoch in range(num_epochs):
     for example, label in data_loader:
         prediction = model.forward(example)
         loss = criterion(prediction, label)
 
-        optimizer.zero_grad()
+        optimiser.zero_grad()
         loss.backward()
-        optimizer.step()
+        optimiser.step()
 
 predicted = model(x_train).detach()
 pyplot.plot(x_train.numpy(), y_train.numpy(), "ro", label="Original data")

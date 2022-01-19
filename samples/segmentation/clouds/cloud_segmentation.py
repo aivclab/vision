@@ -72,7 +72,7 @@ def train_model(
     train_loader,
     valid_loader,
     criterion,
-    optimizer,
+    optimiser,
     scheduler,
     save_model_path: Path,
     n_epochs=99,
@@ -84,7 +84,7 @@ def train_model(
       train_loader:
       valid_loader:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       save_model_path:
       n_epochs:
@@ -106,12 +106,12 @@ def train_model(
                     data.to(global_torch_device(), dtype=torch.float),
                     target.to(global_torch_device(), dtype=torch.float),
                 )
-                optimizer.zero_grad()
+                optimiser.zero_grad()
                 output, *_ = model(data)
                 output = torch.sigmoid(output)
                 loss = criterion(output, target)
                 loss.backward()
-                optimizer.step()
+                optimiser.step()
                 train_loss += loss.item() * data.size(0)
                 train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
 
@@ -331,9 +331,9 @@ def main():
 
     criterion = BCEDiceLoss(eps=1.0)
     lr = 3e-3
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+    optimiser = torch.optim.SGD(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-        optimizer, 7, eta_min=lr / 100, last_epoch=-1
+        optimiser, 7, eta_min=lr / 100, last_epoch=-1
     )
 
     model = train_model(
@@ -341,7 +341,7 @@ def main():
         train_loader,
         valid_loader,
         criterion,
-        optimizer,
+        optimiser,
         scheduler,
         save_model_path,
     )

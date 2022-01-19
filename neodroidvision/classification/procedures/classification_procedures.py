@@ -119,7 +119,7 @@ def pred_target_train_model(
     model,
     train_iterator,
     criterion,
-    optimizer,
+    optimiser,
     scheduler,
     writer,
     interrupted_path,
@@ -133,7 +133,7 @@ def pred_target_train_model(
       model:
       train_iterator:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       writer:
       interrupted_path:
@@ -169,12 +169,12 @@ def pred_target_train_model(
                                 )
                             )
                             true_label = to_tensor(true_label, dtype=torch.long)
-                            optimizer.zero_grad()
+                            optimiser.zero_grad()
 
                             pred = model(rgb_imgs)
                             loss = criterion(pred, true_label)
                             loss.backward()
-                            optimizer.step()
+                            optimiser.step()
 
                             if last_out is None:
                                 last_out = pred

@@ -23,7 +23,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD
-
+import os
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
 from objectives import loss_fn
@@ -71,6 +71,13 @@ dataset = MNIST(
 tmsp_path = fig_root / str(timestamp)
 if not tmsp_path.exists():
     tmsp_path.mkdir(parents=True)
+
+if True:
+    _list_of_files = list(fig_root.rglob("*.pth"))
+    latest_model_path = str(max(_list_of_files, key=os.path.getctime))
+    print(f"loading previous model: {latest_model_path}")
+    if latest_model_path is not None:
+        vae.load_state_dict(torch.load(latest_model_path))
 
 
 def main():
@@ -163,9 +170,9 @@ def main():
                 vae.state_dict(), BASE_PATH / f"model_state_dict{str(epoch_i)}.pth"
             )
 
-        if False and LOWEST_L > test_accum_loss:
-            LOWEST_L = test_accum_loss
-            torch.save(model.state_dict(), BASE_PATH / f"best_state_dict.pth")
+        # if False and LOWEST_L > test_accum_loss:
+        #    LOWEST_L = test_accum_loss
+        #    torch.save(model.state_dict(), BASE_PATH / f"best_state_dict.pth")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ int main() {
 
 
     torch::nn::Linear model(1, 1);
-    torch::optim::SGD optimizer(model->parameters(), learning_rate);
+    torch::optim::SGD optimiser(model->parameters(), learning_rate);
 
     for (size_t epoch = 0; epoch < 50; ++epoch) {
         float epoch_loss = 0;
@@ -28,9 +28,9 @@ int main() {
             auto output = model->forward(x);
             auto loss = torch::mse_loss(output, y);
             
-            optimizer.zero_grad();
+            optimiser.zero_grad();
             loss.backward();
-            optimizer.step();
+            optimiser.step();
             epoch_loss += loss.item<float>();
         }
 
@@ -38,4 +38,3 @@ int main() {
         std::cout << "loss: " << epoch_loss << std::endl;
     }
 }
-

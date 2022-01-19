@@ -252,7 +252,7 @@ template<> EIGEN_STRONG_INLINE Packet2d pmadd(const Packet2d& a, const Packet2d&
 
 template<> EIGEN_STRONG_INLINE Packet4f pmin<Packet4f>(const Packet4f& a, const Packet4f& b) {
 #if EIGEN_COMP_GNUC
-  // There appears to be a bug in GCC, by which the optimizer may
+  // There appears to be a bug in GCC, by which the optimiser may
   // flip the argument order in calls to _mm_min_ps, so we have to
   // resort to inline ASM here. This is supposed to be fixed in gcc6.3,
   // see also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=72867
@@ -266,7 +266,7 @@ template<> EIGEN_STRONG_INLINE Packet4f pmin<Packet4f>(const Packet4f& a, const 
 }
 template<> EIGEN_STRONG_INLINE Packet2d pmin<Packet2d>(const Packet2d& a, const Packet2d& b) {
 #if EIGEN_COMP_GNUC
-  // There appears to be a bug in GCC, by which the optimizer may
+  // There appears to be a bug in GCC, by which the optimiser may
   // flip the argument order in calls to _mm_min_pd, so we have to
   // resort to inline ASM here. This is supposed to be fixed in gcc6.3,
   // see also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=72867
@@ -291,7 +291,7 @@ template<> EIGEN_STRONG_INLINE Packet4i pmin<Packet4i>(const Packet4i& a, const 
 
 template<> EIGEN_STRONG_INLINE Packet4f pmax<Packet4f>(const Packet4f& a, const Packet4f& b) {
 #if EIGEN_COMP_GNUC
-  // There appears to be a bug in GCC, by which the optimizer may
+  // There appears to be a bug in GCC, by which the optimiser may
   // flip the argument order in calls to _mm_max_ps, so we have to
   // resort to inline ASM here. This is supposed to be fixed in gcc6.3,
   // see also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=72867
@@ -305,7 +305,7 @@ template<> EIGEN_STRONG_INLINE Packet4f pmax<Packet4f>(const Packet4f& a, const 
 }
 template<> EIGEN_STRONG_INLINE Packet2d pmax<Packet2d>(const Packet2d& a, const Packet2d& b) {
 #if EIGEN_COMP_GNUC
-  // There appears to be a bug in GCC, by which the optimizer may
+  // There appears to be a bug in GCC, by which the optimiser may
   // flip the argument order in calls to _mm_max_pd, so we have to
   // resort to inline ASM here. This is supposed to be fixed in gcc6.3,
   // see also: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=72867

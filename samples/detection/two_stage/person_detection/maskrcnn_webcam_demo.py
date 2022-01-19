@@ -23,7 +23,7 @@ from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import load_model
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )

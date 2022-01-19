@@ -19,7 +19,7 @@ from draugr.visualisation import plot_side_by_side
 from draugr.writers import Writer
 from matplotlib import pyplot
 from torch.nn.modules.module import Module
-from torch.optim.optimizer import Optimizer
+
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
@@ -43,7 +43,7 @@ criterion = torch.nn.MSELoss()
 def training(
     model: Module,
     data_iterator: Iterator,
-    optimizer: Optimizer,
+    optimiser: torch.optim.Optimizer,
     scheduler,
     writer: Writer,
     interrupted_path: Path,
@@ -58,8 +58,8 @@ def training(
     :type model:
     :param data_iterator:
     :type data_iterator:
-    :param optimizer:
-    :type optimizer:
+    :param optimiser:
+    :type optimiser:
     :param scheduler:
     :type scheduler:
     :param writer:
@@ -83,7 +83,7 @@ def training(
             for phase in [SplitEnum.training, SplitEnum.validation]:
                 if phase == SplitEnum.training:
 
-                    for param_group in optimizer.param_groups:
+                    for param_group in optimiser.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
 
                     model.train()
@@ -92,7 +92,7 @@ def training(
 
                 rgb_imgs, *_ = next(data_iterator)
 
-                optimizer.zero_grad()
+                optimiser.zero_grad()
                 with torch.set_grad_enabled(phase == SplitEnum.training):
                     if denoise:  # =='denoise':
                         model_input = rgb_imgs + torch.normal(
@@ -110,7 +110,7 @@ def training(
 
                     if phase == SplitEnum.training:
                         ret.backward()
-                        optimizer.step()
+                        optimiser.step()
                         scheduler.step()
 
                 update_loss = ret.data.cpu().numpy()
@@ -238,10 +238,10 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
         start_channels=unet_start_channels,
     ).to(global_torch_device())
 
-    optimizer_ft = optim.Adam(model.parameters(), lr=learning_rate)
+    optimiser_ft = optim.Adam(model.parameters(), lr=learning_rate)
 
     exp_lr_scheduler = optim.lr_scheduler.StepLR(
-        optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
+        optimiser_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
     )
 
     if load_earlier:
@@ -263,7 +263,7 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
             model = training(
                 model,
                 data_iter,
-                optimizer_ft,
+                optimiser_ft,
                 exp_lr_scheduler,
                 writer,
                 interrupted_path,

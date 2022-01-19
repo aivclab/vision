@@ -55,7 +55,7 @@ def get_metric_str(metrics, writer: ImageWriterMixin, update_i):
 def train_model(
     model,
     data_iterator,
-    optimizer,
+    optimiser,
     scheduler,
     writer: ImageWriterMixin,
     interrupted_path,
@@ -66,7 +66,7 @@ def train_model(
     Args:
       model:
       data_iterator:
-      optimizer:
+      optimiser:
       scheduler:
       writer:
       interrupted_path:
@@ -85,7 +85,7 @@ def train_model(
             for phase in [SplitEnum.training, SplitEnum.validation]:
                 if phase == SplitEnum.training:
                     scheduler.step()
-                    for param_group in optimizer.param_groups:
+                    for param_group in optimiser.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
 
                     model.train()
@@ -96,7 +96,7 @@ def train_model(
                     data_iterator
                 )
 
-                optimizer.zero_grad()
+                optimiser.zero_grad()
                 with torch.set_grad_enabled(phase == SplitEnum.training):
                     seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
                     ret = calculate_multi_auto_encoder_loss(
@@ -108,7 +108,7 @@ def train_model(
 
                     if phase == SplitEnum.training:
                         ret.loss.backward()
-                        optimizer.step()
+                        optimiser.step()
 
                 update_loss = ret.loss.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
@@ -212,10 +212,10 @@ def main():
     )
     aeu_model = aeu_model.to(global_torch_device())
 
-    optimizer_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
+    optimiser_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
 
     exp_lr_scheduler = lr_scheduler.StepLR(
-        optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
+        optimiser_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
     )
 
     data_iter = iter(neodroid_camera_data_iterator(env, device, batch_size))
@@ -224,7 +224,7 @@ def main():
         trained_aeu_model = train_model(
             aeu_model,
             data_iter,
-            optimizer_ft,
+            optimiser_ft,
             exp_lr_scheduler,
             writer,
             interrupted_path,

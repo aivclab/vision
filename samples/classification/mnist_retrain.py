@@ -56,7 +56,7 @@ def predictor_response_train_model(
     *,
     train_iterator,
     criterion,
-    optimizer,
+    optimiser,
     scheduler,
     writer,
     interrupted_path,
@@ -71,7 +71,7 @@ def predictor_response_train_model(
     :param model:
     :param train_iterator:
     :param criterion:
-    :param optimizer:
+    :param optimiser:
     :param scheduler:
     :param writer:
     :param interrupted_path:
@@ -104,12 +104,12 @@ def predictor_response_train_model(
                             true_label = to_tensor(
                                 true_label, dtype=torch.long, device=device
                             )
-                            optimizer.zero_grad()
+                            optimiser.zero_grad()
 
                             pred = model(rgb_imgs)
                             loss = criterion(pred, true_label)
                             loss.backward()
-                            optimizer.step()
+                            optimiser.step()
 
                             update_loss = loss.data.cpu().numpy()
                             writer.scalar(f"loss/train", update_loss, update_i)
@@ -224,11 +224,11 @@ def main(train_model=True, continue_training=True, no_cuda=False):
 
     criterion = torch.nn.CrossEntropyLoss().to(global_torch_device())
 
-    optimizer_ft = optim.SGD(
+    optimiser_ft = optim.SGD(
         model.parameters(), lr=learning_rate, momentum=momentum, weight_decay=wd
     )
     exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(
-        optimizer_ft, step_size=7, gamma=0.1
+        optimiser_ft, step_size=7, gamma=0.1
     )
 
     with TensorBoardPytorchWriter(this_log) as writer:
@@ -237,7 +237,7 @@ def main(train_model=True, continue_training=True, no_cuda=False):
                 model,
                 train_iterator=train_iter,
                 criterion=criterion,
-                optimizer=optimizer_ft,
+                optimiser=optimiser_ft,
                 scheduler=exp_lr_scheduler,
                 writer=writer,
                 interrupted_path=interrupted_path,

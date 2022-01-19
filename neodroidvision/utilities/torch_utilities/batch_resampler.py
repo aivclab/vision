@@ -1,6 +1,6 @@
 from typing import Iterable, Tuple
 
-from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
+from draugr.torch_utilities import NamedTensorTuple
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data.sampler import BatchSampler
 

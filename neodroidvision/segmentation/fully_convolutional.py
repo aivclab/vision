@@ -210,7 +210,7 @@ if __name__ == "__main__":
             final_act = torch.nn.LogSoftmax(1)  # across channels
 
         model = FCN(in_channels, n_classes, final_act=final_act)
-        optimizer = Adam(model.parameters(), 1e-4)
+        optimiser = Adam(model.parameters(), 1e-4)
 
         pred = model(torch.ones((4, in_channels, img_size, img_size)))
         print(pred)

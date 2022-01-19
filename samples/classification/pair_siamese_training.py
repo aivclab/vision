@@ -26,7 +26,7 @@ from draugr.torch_utilities import (
 from draugr.writers import MockWriter, Writer
 from torch import nn, optim
 from torch.nn import Module
-from torch.optim import Optimizer
+
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
@@ -62,7 +62,7 @@ def accuracy(*, distances, is_diff, threshold: float = 0.5):
 
 def train_siamese(
     model: Module,
-    optimiser: Optimizer,
+    optimiser: torch.optim.Optimizer,
     criterion: callable,
     *,
     writer: Writer = MockWriter(),

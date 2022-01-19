@@ -122,11 +122,11 @@ class Trainer:
             self.num_classes,
         ).to(self.device)
 
-        self.optimizer = torch.optim.Adam(
+        self.optimiser = torch.optim.Adam(
             self.model.parameters(), lr=self.config.init_lr
         )
         self.scheduler = ReduceLROnPlateau(
-            self.optimizer, "min", patience=self.lr_patience
+            self.optimiser, "min", patience=self.lr_patience
         )
 
     def reset(self):
@@ -167,7 +167,7 @@ class Trainer:
         for epoch in range(self.start_epoch, self.epochs):
 
             print(
-                f"\nEpoch: {epoch + 1}/{self.epochs} - LR: {self.optimizer.param_groups[0]['lr']:.6f}"
+                f"\nEpoch: {epoch + 1}/{self.epochs} - LR: {self.optimiser.param_groups[0]['lr']:.6f}"
             )
 
             # train for 1 epoch
@@ -202,7 +202,7 @@ class Trainer:
                 {
                     "epoch": epoch + 1,
                     "model_state": self.model.state_dict(),
-                    "optim_state": self.optimizer.state_dict(),
+                    "optim_state": self.optimiser.state_dict(),
                     "best_valid_acc": self.best_valid_acc,
                 },
                 is_best,
@@ -224,7 +224,7 @@ class Trainer:
         tic = time.time()
         with tqdm(total=self.num_train) as pbar:
             for i, (x, y) in enumerate(self.train_loader):
-                self.optimizer.zero_grad()
+                self.optimiser.zero_grad()
 
                 x, y = x.to(self.device), y.to(self.device)
 
@@ -291,7 +291,7 @@ class Trainer:
 
                 # compute gradients and update SGD
                 loss.backward()
-                self.optimizer.step()
+                self.optimiser.step()
 
                 # measure elapsed time
                 toc = time.time()
@@ -488,7 +488,7 @@ class Trainer:
             self.start_epoch = ckpt["epoch"]
             self.best_valid_acc = ckpt["best_valid_acc"]
             self.model.load_state_dict(ckpt["model_state"])
-            self.optimizer.load_state_dict(ckpt["optim_state"])
+            self.optimiser.load_state_dict(ckpt["optim_state"])
 
             if best:
                 print(

@@ -98,11 +98,11 @@ def main():
 
     criterion = torch.nn.CrossEntropyLoss().to(global_torch_device())
 
-    optimizer_ft = optim.SGD(
+    optimiser_ft = optim.SGD(
         model.parameters(), lr=learning_rate, momentum=momentum, weight_decay=wd
     )
     exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(
-        optimizer_ft, step_size=7, gamma=0.1
+        optimiser_ft, step_size=7, gamma=0.1
     )
 
     writer = TensorBoardPytorchWriter(this_log)
@@ -112,7 +112,7 @@ def main():
             model,
             train_iterator=train_iter,
             criterion=criterion,
-            optimizer=optimizer_ft,
+            optimiser=optimiser_ft,
             scheduler=exp_lr_scheduler,
             writer=writer,
             interrupted_path=interrupted_path,

@@ -23,7 +23,7 @@ from draugr.random_utilities import seed_stack
 from warg.functions import collate_first_dim
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.data.mixed import PennFudanDataset
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     load_model,

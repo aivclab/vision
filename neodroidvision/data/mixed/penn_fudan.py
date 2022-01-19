@@ -267,10 +267,9 @@ class PennFudanDataset(SupervisedDataset):
 
 if __name__ == "__main__":
 
-    def main_binary():
-        dataset = PennFudanDataset(
-            Path.home() / "Data" / "Datasets" / "PennFudanPed", SplitEnum.training
-        )
+    def main_binary(p=Path.home() / "Data" / "Datasets" / "PennFudanPed"):
+
+        dataset = PennFudanDataset(p, SplitEnum.training)
 
         global_torch_device(override=global_torch_device("cpu"))
 
@@ -283,9 +282,10 @@ if __name__ == "__main__":
         pyplot.imshow(mask.squeeze(0))
         pyplot.show()
 
-    def main_instanced():
+    def main_instanced(p=Path.home() / "Data" / "Datasets" / "PennFudanPed"):
+
         dataset = PennFudanDataset(
-            Path.home() / "Data" / "Datasets" / "PennFudanPed",
+            p,
             SplitEnum.training,
             return_variant=PennFudanDataset.PennFudanReturnVariantEnum.instanced,
         )
@@ -302,9 +302,10 @@ if __name__ == "__main__":
             pyplot.imshow(m.squeeze(0))
             pyplot.show()
 
-    def main_all_bb():
+    def main_all_bb(p=Path.home() / "Data" / "Datasets" / "PennFudanPed"):
+
         dataset = PennFudanDataset(
-            Path.home() / "Data" / "Datasets" / "PennFudanPed",
+            p,
             SplitEnum.training,
             return_variant=PennFudanDataset.PennFudanReturnVariantEnum.all,
         )
@@ -326,4 +327,7 @@ if __name__ == "__main__":
 
     # main_binary()
     # main_instanced()
-    main_all_bb()
+    main_all_bb(
+        Path.home() / "Data3" / "PennFudanPed",
+        # Path.home() / "Data" / "Datasets" / "PennFudanPed",
+    )

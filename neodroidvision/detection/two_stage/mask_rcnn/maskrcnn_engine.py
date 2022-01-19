@@ -11,7 +11,7 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import Writer
 from torch.nn import Module
-from torch.optim import Optimizer
+
 from torch.utils.data import DataLoader
 
 from neodroidvision.data.detection.coco import (
@@ -25,7 +25,7 @@ from neodroidvision.utilities import reduce_dict
 def maskrcnn_train_single_epoch(
     *,
     model: Module,
-    optimiser: Optimizer,
+    optimiser: torch.optim.Optimizer,
     data_loader: DataLoader,
     device: torch.device = global_torch_device(),
     writer: Writer = None,
@@ -70,7 +70,7 @@ def maskrcnn_train_single_epoch(
             if writer:
                 for k, v in {
                     "loss": losses_reduced,
-                    "lr": optimiser.param_groups[0]["lr"],
+                    "lr": torch.optim.Optimizer.param_groups[0]["lr"],
                     **loss_dict_reduced,
                 }.items():
                     writer.scalar(k, v)

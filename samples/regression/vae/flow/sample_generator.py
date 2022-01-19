@@ -94,7 +94,7 @@ if __name__ == "__main__":
     variational_encoder.to(global_torch_device())
 
     parameters = list(generator.parameters()) + list(variational_encoder.parameters())
-    optimizer = torch.optim.RMSprop(parameters, lr=cfg.learning_rate, centered=True)
+    optimiser = torch.optim.RMSprop(parameters, lr=cfg.learning_rate, centered=True)
 
     kwargs = {"num_workers": 0, "pin_memory": True} if cfg.use_gpu else {}
     train_data, valid_data, test_data = load_binary_mnist(cfg, **kwargs)

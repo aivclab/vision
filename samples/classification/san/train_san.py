@@ -95,7 +95,7 @@ def main_worker(gpu, ngpus_per_node, config):
         num_classes=train_set.response_shape[0],
     )
     criterion = nn.CrossEntropyLoss(ignore_index=CONFIG.ignore_label)
-    optimizer = torch.optim.SGD(
+    optimiser = torch.optim.SGD(
         model.parameters(),
         lr=CONFIG.base_lr,
         momentum=CONFIG.momentum,
@@ -103,10 +103,10 @@ def main_worker(gpu, ngpus_per_node, config):
     )
     if CONFIG.scheduler == "step":
         scheduler = lr_scheduler.MultiStepLR(
-            optimizer, milestones=CONFIG.step_epochs, gamma=0.1
+            optimiser, milestones=CONFIG.step_epochs, gamma=0.1
         )
     elif CONFIG.scheduler == "cosine":
-        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=CONFIG.epochs)
+        scheduler = lr_scheduler.CosineAnnealingLR(optimiser, T_max=CONFIG.epochs)
 
     if is_main_process():
         global logger, writer
@@ -153,7 +153,7 @@ def main_worker(gpu, ngpus_per_node, config):
             CONFIG.start_epoch = checkpoint["epoch"]
             best_acc1 = checkpoint["top1_val"]
             model.load_state_dict(checkpoint["state_dict"])
-            optimizer.load_state_dict(checkpoint["optimizer"])
+            optimiser.load_state_dict(checkpoint["optimiser"])
             scheduler.load_state_dict(checkpoint["scheduler"])
             if is_main_process():
                 global logger
@@ -199,7 +199,7 @@ def main_worker(gpu, ngpus_per_node, config):
             allAcc_train,
             top1_train,
             top5_train,
-        ) = train(train_loader, model, criterion, optimizer, epoch)
+        ) = train(train_loader, model, criterion, optimiser, epoch)
         loss_val, mIoU_val, mAcc_val, allAcc_val, top1_val, top5_val = validate(
             val_loader, model, criterion
         )
@@ -228,7 +228,7 @@ def main_worker(gpu, ngpus_per_node, config):
                 {
                     "epoch": epoch_log,
                     "state_dict": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
+                    "optimiser": torch.optim.Optimizer.state_dict(),
                     "scheduler": scheduler.state_dict(),
                     "top1_val": top1_val,
                     "top5_val": top5_val,
@@ -246,14 +246,14 @@ def main_worker(gpu, ngpus_per_node, config):
                 os.remove(deletename)
 
 
-def train(train_loader, model, criterion, optimizer, epoch):
+def train(train_loader, model, criterion, optimiser, epoch):
     """
 
     Args:
       train_loader:
       model:
       criterion:
-      optimizer:
+      optimiser:
       epoch:
 
     Returns:
@@ -289,9 +289,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
                 if CONFIG.label_smoothing
                 else criterion(output, target)
             )
-        optimizer.zero_grad()
+        optimiser.zero_grad()
         loss.backward()
-        optimizer.step()
+        optimiser.step()
 
         top1, top5 = cal_accuracy(output, target, topk=(1, 5))
         n = input.size(0)

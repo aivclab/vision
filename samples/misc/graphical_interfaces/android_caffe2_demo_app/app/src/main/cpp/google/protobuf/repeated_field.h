@@ -280,7 +280,7 @@ class RepeatedField {
 
   // Internal helper to delete all elements and deallocate the storage.
   // If Element has a trivial destructor (for example, if it's a fundamental
-  // type, like int32), the loop will be removed by the optimizer.
+  // type, like int32), the loop will be removed by the optimiser.
   void InternalDeallocate(Rep* rep, int size) {
     if (rep != NULL) {
       Element* e = &rep->elements[0];

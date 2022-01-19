@@ -15,6 +15,7 @@ class Decompress(nn.Module):
     def decompress(
         in_channels: int,
         out_channels: int,
+        *,
         mode: UpscaleMode = UpscaleMode.FractionalTranspose,
         factor: int = 2,
     ) -> nn.Module:
@@ -45,8 +46,10 @@ class Decompress(nn.Module):
         self,
         in_channels: int,
         out_channels: int,
+        *,
         merge_mode: MergeMode = MergeMode.Concat,
         upscale_mode: UpscaleMode = UpscaleMode.FractionalTranspose,
+        activation=torch.relu,
     ):
         super().__init__()
 
@@ -54,6 +57,7 @@ class Decompress(nn.Module):
         self.out_channels = out_channels
         self.merge_mode = merge_mode
         self.up_mode = upscale_mode
+        self.activation = activation
 
         self.upconv = self.decompress(
             self.in_channels, self.out_channels, mode=self.up_mode
@@ -103,4 +107,4 @@ class Decompress(nn.Module):
         else:
             x = from_up + from_down
 
-        return torch.relu(self.conv2(torch.relu(self.conv1(x))))
+        return self.activation(self.conv2(self.activation(self.conv1(x))))

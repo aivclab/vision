@@ -124,7 +124,7 @@ def predictor_response_train_model_neodroid_observations(
     *,
     train_iterator,
     criterion,
-    optimizer,
+    optimiser,
     scheduler,
     writer,
     interrupted_path,
@@ -139,7 +139,7 @@ def predictor_response_train_model_neodroid_observations(
       model:
       train_iterator:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       writer:
       interrupted_path:
@@ -178,12 +178,12 @@ def predictor_response_train_model_neodroid_observations(
                             true_label = to_tensor(
                                 true_label, dtype=torch.long, device=device
                             )
-                            optimizer.zero_grad()
+                            optimiser.zero_grad()
 
                             pred = model(rgb_imgs)
                             loss = criterion(pred, true_label)
                             loss.backward()
-                            optimizer.step()
+                            optimiser.step()
 
                             if last_out is None:
                                 last_out = pred

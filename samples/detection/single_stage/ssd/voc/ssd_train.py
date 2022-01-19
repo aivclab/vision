@@ -15,7 +15,7 @@ from draugr.torch_utilities import (
     WarmupMultiStepLR,
 )
 from torch.nn import Module
-from torch.optim import Optimizer
+
 from torch.utils.data import DataLoader
 from warg import NOD
 from warg.arguments import str2bool
@@ -44,7 +44,7 @@ def inner_train_ssd(
     cfg: NOD,
     model: Module,
     data_loader: DataLoader,
-    optimiser: Optimizer,
+    optimiser: torch.optim.Optimizer,
     scheduler: WarmupMultiStepLR,
     check_pointer: callable,
     device: callable,

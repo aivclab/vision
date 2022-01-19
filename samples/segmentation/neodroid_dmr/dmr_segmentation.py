@@ -36,28 +36,28 @@ __doc__ = r"""
 def reschedule(model, epoch, scheduler):
     "This can be improved its just a hacky way to write SGDWR"
     if epoch == 7:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.005)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
     if epoch == 13:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.005)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
     if epoch == 19:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.002)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
     if epoch == 25:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.002)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
 
     return model, scheduler
@@ -68,7 +68,7 @@ def train_d(
     train_loader,
     valid_loader,
     criterion,
-    optimizer,
+    optimiser,
     scheduler,
     save_model_path,
     n_epochs=0,
@@ -80,7 +80,7 @@ def train_d(
       train_loader:
       valid_loader:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       save_model_path:
       n_epochs:
@@ -102,12 +102,12 @@ def train_d(
                     data.to(global_torch_device()),
                     target.to(global_torch_device()),
                 )
-                optimizer.zero_grad()
+                optimiser.zero_grad()
                 output, *_ = model(data)
                 output = torch.sigmoid(output)
                 loss = criterion(output, target)
                 loss.backward()
-                optimizer.step()
+                optimiser.step()
                 train_loss += loss.item() * data.size(0)
                 train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
 
@@ -377,17 +377,17 @@ def main():
         model.load_state_dict(torch.load(str(save_model_path)))  # load last model
 
     criterion = BCEDiceLoss(eps=1.0)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-    current_lr = next(iter(optimizer.param_groups))["lr"]
+    optimiser = torch.optim.SGD(model.parameters(), lr=0.01)
+    current_lr = next(iter(optimiser.param_groups))["lr"]
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer, 7, eta_min=current_lr / 100, last_epoch=-1
+        optimiser, 7, eta_min=current_lr / 100, last_epoch=-1
     )
     model = train_d(
         model,
         train_loader,
         valid_loader,
         criterion,
-        optimizer,
+        optimiser,
         scheduler,
         str(save_model_path),
     )
