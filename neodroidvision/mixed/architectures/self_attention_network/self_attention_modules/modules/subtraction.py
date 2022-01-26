@@ -1,7 +1,11 @@
+import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
 
-from .. import functional as F
+from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.functional import (
+    subtraction,
+)
+from neodroidvision.mixed.architectures.self_attention_network.enums import PadModeEnum
 
 __all__ = ["Subtraction"]
 
@@ -9,7 +13,14 @@ __all__ = ["Subtraction"]
 class Subtraction(nn.Module):
     """ """
 
-    def __init__(self, kernel_size, stride, padding, dilation, pad_mode):
+    def __init__(
+        self,
+        kernel_size: int,
+        stride: int,
+        padding: int,
+        dilation: int,
+        pad_mode: PadModeEnum,
+    ):
         """
 
         :param kernel_size:
@@ -29,14 +40,14 @@ class Subtraction(nn.Module):
         self.dilation = _pair(dilation)
         self.pad_mode = pad_mode
 
-    def forward(self, input):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         """
 
         :param input:
         :type input:
         :return:
         :rtype:"""
-        return F.subtraction(
+        return subtraction(
             input,
             self.kernel_size,
             self.stride,

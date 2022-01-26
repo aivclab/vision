@@ -29,7 +29,7 @@ def maskrcnn_train_single_epoch(
     data_loader: DataLoader,
     device: torch.device = global_torch_device(),
     writer: Writer = None,
-):
+) -> None:
     """
 
     :param model:
@@ -82,7 +82,7 @@ def maskrcnn_evaluate(
     *,
     device=global_torch_device(),
     writer: Writer = None,
-):
+) -> torch.Tensor:
     """
 
     Args:
@@ -98,12 +98,12 @@ def maskrcnn_evaluate(
     # FIXME remove this and make paste_masks_in_image run on the GPU
     torch.set_num_threads(1)
     cpu_device = torch.device("cpu")
+    coco_evaluator = CocoEvaluator(
+        get_coco_api_from_dataset(data_loader.dataset), get_iou_types(model)
+    )
 
     with torch.no_grad():
         with TorchEvalSession(model):
-            coco_evaluator = CocoEvaluator(
-                get_coco_api_from_dataset(data_loader.dataset), get_iou_types(model)
-            )
 
             for image, targets in tqdm.tqdm(data_loader):
                 image = [img.to(device) for img in image]

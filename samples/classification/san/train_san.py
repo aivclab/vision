@@ -14,10 +14,10 @@ from torch import distributed, multiprocessing, nn
 from torch.backends import cudnn
 from torch.optim import lr_scheduler
 
-from neodroidvision.classification.architectures.self_attention_network import (
-    SelfAttentionTypeEnum,
+from mixed.architectures.self_attention_network import (
     make_san,
 )
+from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,

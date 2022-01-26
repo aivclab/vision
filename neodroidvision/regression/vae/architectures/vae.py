@@ -98,6 +98,8 @@ class VAE(torch.nn.Module):
     def reparameterise(mean, log_var) -> torch.Tensor:
         """
 
+        reparameterisation trick
+
         :param mean:
         :type mean:
         :param log_var:

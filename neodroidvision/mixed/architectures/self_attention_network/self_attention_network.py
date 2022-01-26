@@ -1,22 +1,20 @@
-from enum import Enum
+from typing import Sequence
 
 import torch
 import torch.nn as nn
 
-__all__ = ["SelfAttentionTypeEnum", "make_san"]
+__all__ = ["make_san"]
 
-from neodroidvision.classification.architectures.self_attention_network.self_attention_modules.modules import (
+from neodroidvision.mixed.architectures.self_attention_network.enums import (
+    PadModeEnum,
+    SelfAttentionTypeEnum,
+)
+
+from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.modules import (
     Aggregation,
     Subtraction,
     Subtraction2,
 )
-
-
-class SelfAttentionTypeEnum(Enum):
-    """ """
-
-    pairwise = 0  # pairwise subtraction
-    patchwise = 1  # patchwise unfolding
 
 
 class SelfAttentionModule(nn.Module):
@@ -25,10 +23,10 @@ class SelfAttentionModule(nn.Module):
     def __init__(
         self,
         self_attention_type: SelfAttentionTypeEnum,
-        in_planes,
-        rel_planes,
-        out_planes,
-        share_planes,
+        in_planes: int,
+        rel_planes: int,
+        out_planes: int,
+        share_planes: int,
         kernel_size: int = 3,
         stride: int = 1,
         dilation: int = 1,
@@ -61,6 +59,7 @@ class SelfAttentionModule(nn.Module):
         self.conv2 = nn.Conv2d(in_planes, rel_planes, kernel_size=1)
         self.conv3 = nn.Conv2d(in_planes, out_planes, kernel_size=1)
 
+        pad_mode = PadModeEnum.ref_pad
         if self_attention_type == SelfAttentionTypeEnum.pairwise:
             self.conv_w = nn.Sequential(
                 nn.BatchNorm2d(rel_planes + 2),
@@ -76,14 +75,14 @@ class SelfAttentionModule(nn.Module):
                 stride,
                 (dilation * (kernel_size - 1) + 1) // 2,
                 dilation,
-                pad_mode=1,
+                pad_mode=pad_mode,
             )
             self.subtraction2 = Subtraction2(
                 kernel_size,
                 stride,
                 (dilation * (kernel_size - 1) + 1) // 2,
                 dilation,
-                pad_mode=1,
+                pad_mode=pad_mode,
             )
             self.softmax = nn.Softmax(
                 dim=-2
@@ -123,7 +122,7 @@ class SelfAttentionModule(nn.Module):
             stride,
             (dilation * (kernel_size - 1) + 1) // 2,
             dilation,
-            pad_mode=1,
+            pad_mode=pad_mode,
         )
 
     def encode_position(
@@ -191,15 +190,15 @@ class SelfAttentionBottleneck(nn.Module):
     def __init__(
         self,
         self_attention_type: SelfAttentionTypeEnum,
-        in_planes,
-        rel_planes,
-        mid_planes,
-        out_planes,
+        in_planes: int,
+        rel_planes: int,
+        mid_planes: int,
+        out_planes: int,
         share_planes: int = 8,
         kernel_size: int = 7,
         stride: int = 1,
     ):
-        super(SelfAttentionBottleneck, self).__init__()
+        super().__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
         self.sam = SelfAttentionModule(
             self_attention_type,
@@ -297,14 +296,14 @@ class SelfAttentionNetwork(nn.Module):
     @staticmethod
     def _make_layer(
         self_attention_type: SelfAttentionTypeEnum,
-        block,
-        planes,
-        blocks,
+        block: callable,
+        planes: int,
+        num_blocks: int,
         kernel_size: int = 7,
         stride: int = 1,
     ) -> nn.Module:
         layers = []
-        for _ in range(0, blocks):
+        for _ in range(0, num_blocks):
             layers.append(
                 block(
                     self_attention_type,
@@ -340,9 +339,9 @@ class SelfAttentionNetwork(nn.Module):
 def make_san(
     *,
     self_attention_type: SelfAttentionTypeEnum = SelfAttentionTypeEnum.pairwise,
-    layers,
-    kernels,
-    num_classes,
+    layers: Sequence,
+    kernels: Sequence,
+    num_classes: int,
 ) -> nn.Module:
     """
 
@@ -366,12 +365,12 @@ if __name__ == "__main__":
         make_san(
             self_attention_type=SelfAttentionTypeEnum.pairwise,
             layers=(3, 4, 6, 8, 3),
-            kernels=[3, 7, 7, 7, 7],
-            num_classes=1000,
+            kernels=(3, 7, 7, 7, 7),
+            num_classes=3,
         )
         .cuda()
         .eval()
     )
     print(net)
-    y = net(torch.randn(4, 3, 224, 224).cuda())
+    y = net(torch.randn(2, 3, 111, 111).cuda())
     print(y.size())

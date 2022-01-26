@@ -63,6 +63,7 @@ class MultiDataset(SupervisedDataset):
         :type split:
         :return:
         :rtype:"""
+        super().__init__()
         assert len(sub_datasets) > 0, "No data found!"
 
         img_transform = SSDTransform(

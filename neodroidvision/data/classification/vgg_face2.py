@@ -102,8 +102,10 @@ class VggFace2(SupervisedDataset):
         self,
         dataset_path: Path,
         split: SplitEnum = SplitEnum.training,
+        *,
         resize_s: int = 256,
         raw_images: bool = False,
+        verbose: bool = False,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -160,7 +162,7 @@ class VggFace2(SupervisedDataset):
                 self._img_info.append(
                     {"class_id": class_id, "img": img_file, "label": label}
                 )
-                if i % 1000 == 0:
+                if verbose and i % 1000 == 0:
                     print(f"Processing: {i} images for {self._split} split")
 
     def __len__(self):

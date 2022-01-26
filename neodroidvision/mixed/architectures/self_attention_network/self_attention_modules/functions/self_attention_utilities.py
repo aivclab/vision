@@ -26,7 +26,7 @@ def get_dtype_str(t: torch.Tensor) -> str:
     raise NotImplemented(f"Tensor type {t} not supported")
 
 
-@cupy.util.memoize(for_each_device=True)
+@cupy.memoize(for_each_device=True)
 def load_kernel(kernel_name: Any, code: str, **kwargs) -> Any:
     """
 

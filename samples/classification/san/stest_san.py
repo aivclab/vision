@@ -14,10 +14,10 @@ from draugr.numpy_utilities import SplitEnum
 from matplotlib import pyplot
 from torch import nn
 
-from neodroidvision.classification.architectures.self_attention_network import (
-    SelfAttentionTypeEnum,
+from mixed.architectures.self_attention_network import (
     make_san,
 )
+from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
 from san_utilities import cal_accuracy, intersection_and_union_gpu
 
 if __name__ == "__main__":

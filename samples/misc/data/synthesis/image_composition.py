@@ -10,13 +10,17 @@ import numpy
 from PIL import Image, ImageEnhance
 from tqdm import tqdm
 
-from samples.misc.data.synthesis.mask_json_utilities import MaskJsonUtils
+from samples.misc.data.synthesis.json_generation.mask_json_utilities import (
+    MaskJsonUtils,
+)
 
 
 class ImageComposition:
     """Composes images together in random ways, applying transformations to the foreground to create a
     synthetic
       combined image."""
+
+    verbose = False
 
     def __init__(self):
         self.allowed_output_types = [".png", ".jpg", ".jpeg"]
@@ -179,8 +183,8 @@ class ImageComposition:
     def _generate_images(self):
         # Generates a number of images and creates segmentation masks, then
         # saves a mask_definitions.json file that describes the dataset.
-
-        print(f"Generating {self.count} images with masks...")
+        if ImageComposition.verbose:
+            print(f"Generating {self.count} images with masks...")
 
         mju = MaskJsonUtils(self.output_dir)
 
@@ -388,9 +392,10 @@ class ImageComposition:
             print("No problem. You can always create the json manually.")
             quit()
 
-        print(
-            "Note: you can always modify the json manually if you need to update this."
-        )
+        if ImageComposition.verbose:
+            print(
+                "Note: you can always modify the json manually if you need to update this."
+            )
         info = dict()
         info["description"] = input("Description: ")
         info["url"] = input("URL: ")
@@ -419,14 +424,15 @@ class ImageComposition:
         output_file_path = Path(self.output_dir) / "dataset_info.json"
         with open(output_file_path, "w+") as json_file:
             json_file.write(json.dumps(dataset_info))
-
-        print("Successfully created {output_file_path}")
+        if ImageComposition.verbose:
+            print(f"Successfully created {output_file_path}")
 
     def __call__(self, args):
         self._validate_and_process_args(args)
         self._generate_images()
         self._create_info()
-        print("Image composition completed.")
+        if ImageComposition.verbose:
+            print("Image composition completed.")
 
 
 if __name__ == "__main__":

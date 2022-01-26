@@ -13,8 +13,8 @@ from pathlib import Path
 if __name__ == "__main__":
 
     with open(str(Path.home() / "Downloads" / "imagenet_class_index.json")) as f:
-        with open("imagenet_2012_names.py", "w") as sfn:
-            with open("imagenet_2012_id.py", "w") as sfi:
+        with open("../imagenet_2012_names.py", "w") as sfn:
+            with open("../imagenet_2012_id.py", "w") as sfi:
                 class_idx = json.load(f)
                 sfn.write("categories = {")
                 sfi.write("categories = {")

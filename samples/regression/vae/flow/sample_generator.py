@@ -3,7 +3,11 @@
 from draugr.torch_utilities import global_torch_device
 from warg import NOD
 
-from architectures import Generator, VariationalFlow, VariationalMeanField
+from regression.vae.architectures.flow.architectures import (
+    Generator,
+    VariationalFlow,
+    VariationalMeanField,
+)
 from data_loader import load_binary_mnist
 
 __author__ = "Christian Heider Nielsen"

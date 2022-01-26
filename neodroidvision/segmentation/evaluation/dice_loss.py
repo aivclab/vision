@@ -1,6 +1,6 @@
 import numpy
 import torch
-from draugr.torch_utilities import ReductionMethodEnum
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 
 

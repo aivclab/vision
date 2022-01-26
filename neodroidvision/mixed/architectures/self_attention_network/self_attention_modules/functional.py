@@ -1,26 +1,21 @@
-from enum import Enum
+import torch
 
 from . import functions
 
 __all__ = ["aggregation", "subtraction", "subtraction2"]
 
-
-class PadModeEnum(Enum):
-    """ """
-
-    zero_pad = 0
-    ref_pad = 1
+from neodroidvision.mixed.architectures.self_attention_network.enums import PadModeEnum
 
 
 def aggregation(
-    input,
-    weight,
+    input: torch.Tensor,
+    weight: torch.Tensor,
     kernel_size: int = 3,
     stride: int = 1,
     padding: int = 0,
     dilation: int = 1,
     pad_mode: PadModeEnum = PadModeEnum.ref_pad,
-):
+) -> torch.Tensor:
     """
 
     :param input:
@@ -42,8 +37,8 @@ def aggregation(
     assert (
         input.shape[0] == weight.shape[0]
         and (input.shape[1] % weight.shape[1] == 0)
-        and pad_mode in [0, 1]
-    )
+        and pad_mode in PadModeEnum
+    ), f"{input.shape, weight.shape, pad_mode}"
     if input.is_cuda:
         if pad_mode == PadModeEnum.zero_pad:
             out = functions.aggregation_zeropad(
@@ -53,19 +48,21 @@ def aggregation(
             out = functions.aggregation_refpad(
                 input, weight, kernel_size, stride, padding, dilation
             )
+        else:
+            raise NotImplementedError(pad_mode)
     else:
         raise NotImplementedError
     return out
 
 
 def subtraction(
-    input,
+    input: torch.Tensor,
     kernel_size: int = 3,
     stride: int = 1,
     padding: int = 0,
     dilation: int = 1,
     pad_mode: PadModeEnum = PadModeEnum.ref_pad,
-):
+) -> torch.Tensor:
     """
 
     :param input:
@@ -82,7 +79,7 @@ def subtraction(
     :type pad_mode:
     :return:
     :rtype:"""
-    assert input.dim() == 4 and pad_mode in [0, 1]
+    assert input.dim() == 4 and pad_mode in PadModeEnum, f"{input.shape, pad_mode}"
     if input.is_cuda:
         if pad_mode == PadModeEnum.zero_pad:
             out = functions.subtraction_zeropad(
@@ -92,20 +89,22 @@ def subtraction(
             out = functions.subtraction_refpad(
                 input, kernel_size, stride, padding, dilation
             )
+        else:
+            raise NotImplementedError(pad_mode)
     else:
         raise NotImplementedError
     return out
 
 
 def subtraction2(
-    input1,
-    input2,
+    input1: torch.Tensor,
+    input2: torch.Tensor,
     kernel_size: int = 3,
     stride: int = 1,
     padding: int = 0,
     dilation: int = 1,
     pad_mode: PadModeEnum = PadModeEnum.ref_pad,
-):
+) -> torch.Tensor:
     """
 
     :param input1:
@@ -124,7 +123,9 @@ def subtraction2(
     :type pad_mode:
     :return:
     :rtype:"""
-    assert input1.dim() == 4 and input2.dim() == 4 and pad_mode in [0, 1]
+    assert (
+        input1.dim() == 4 and input2.dim() == 4 and pad_mode in PadModeEnum
+    ), f"{input1.shape, input2.shape, pad_mode}"
     if input1.is_cuda:
         if pad_mode == PadModeEnum.zero_pad:
             out = functions.subtraction2_zeropad(
@@ -134,6 +135,8 @@ def subtraction2(
             out = functions.subtraction2_refpad(
                 input1, input2, kernel_size, stride, padding, dilation
             )
+        else:
+            raise NotImplementedError(pad_mode)
     else:
         raise NotImplementedError
     return out

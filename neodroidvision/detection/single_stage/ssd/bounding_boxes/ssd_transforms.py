@@ -73,7 +73,7 @@ class SSDTransform(torch.nn.Module):
 
         self.transforms = CV2Compose(transform_list)
 
-    def __call__(self, *x):
+    def __call__(self, *x) -> torch.Tensor:
         """
 
         :param x:

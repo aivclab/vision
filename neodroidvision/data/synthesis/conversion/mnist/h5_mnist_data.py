@@ -9,6 +9,7 @@ __doc__ = r"""
 
 from pathlib import Path
 
+from draugr.tqdm_utilities import progress_bar
 from warg import Triple
 
 """Get the binarized MNIST dataset and convert to hdf5.
@@ -55,19 +56,19 @@ def parse_binary_mnist(data_dir: Path) -> Triple:
 
 
 def download_binary_mnist(
-    fname: str = "binary_mnist.h5",
+    file_path: str = "binary_mnist.h5",
     data_dir: Path = (PROJECT_APP_PATH.user_data / "vanilla_vae" / "data"),
 ):
     """
 
     Args:
-      fname:
+      file_path:
       data_dir:
     """
     if not data_dir.exists():
         data_dir.mkdir(parents=True)
     subdatasets = ["train", "valid", "test"]
-    for subdataset in subdatasets:
+    for subdataset in progress_bar(subdatasets):
         filename = f"binarized_mnist_{subdataset}.amat"
         url = (
             f"http://www.cs.toronto.edu/~larocheh/public/datasets/binarized_mnist"
@@ -79,12 +80,12 @@ def download_binary_mnist(
     train, validation, test = parse_binary_mnist(data_dir)
 
     data_dict = {"train": train, "valid": validation, "test": test}
-    f = h5py.File(fname, "w")
+    f = h5py.File(file_path, "w")
     f.create_dataset("train", data=data_dict["train"])
     f.create_dataset("valid", data=data_dict["valid"])
     f.create_dataset("test", data=data_dict["test"])
     f.close()
-    print(f"Saved binary MNIST data to: {fname}")
+    print(f"Saved binary MNIST data to: {file_path}")
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ import torch.utils
 import torch.utils.data
 from warg import Triple
 
-from h5_mnist_data import download_binary_mnist
+from data.synthesis.conversion.mnist.h5_mnist_data import download_binary_mnist
 
 
 def load_binary_mnist(cfg: Any, **kwcfg: MutableMapping) -> Triple:

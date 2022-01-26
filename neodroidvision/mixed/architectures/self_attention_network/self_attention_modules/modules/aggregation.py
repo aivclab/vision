@@ -1,15 +1,27 @@
+import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
 
-from .. import functional as F
-
 __all__ = ["Aggregation"]
+
+
+from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.functional import (
+    aggregation,
+)
+from neodroidvision.mixed.architectures.self_attention_network.enums import PadModeEnum
 
 
 class Aggregation(nn.Module):
     """ """
 
-    def __init__(self, kernel_size, stride, padding, dilation, pad_mode):
+    def __init__(
+        self,
+        kernel_size: int,
+        stride: int,
+        padding: int,
+        dilation: int,
+        pad_mode: PadModeEnum,
+    ):
         """
 
         :param kernel_size:
@@ -29,7 +41,7 @@ class Aggregation(nn.Module):
         self.dilation = _pair(dilation)
         self.pad_mode = pad_mode
 
-    def forward(self, input, weight):
+    def forward(self, input: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
         """
 
         :param input:
@@ -38,7 +50,7 @@ class Aggregation(nn.Module):
         :type weight:
         :return:
         :rtype:"""
-        return F.aggregation(
+        return aggregation(
             input,
             weight,
             self.kernel_size,
