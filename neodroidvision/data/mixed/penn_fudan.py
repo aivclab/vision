@@ -15,7 +15,7 @@ import numpy
 import torch
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum
-from draugr.opencv_utilities import cv2_resize
+from draugr.opencv_utilities import cv2_resize, InterpolationEnum
 from draugr.opencv_utilities.bounding_boxes import draw_boxes
 from draugr.torch_utilities import (
     SupervisedDataset,
@@ -41,8 +41,11 @@ class PennFudanDataset(SupervisedDataset):
     """ """
 
     predictor_channels = 3  # RGB input
-    response_channels = 2  # our dataset has two classes only - background and person
+    response_channels_two_classes = (
+        2  # our dataset has two classes only - background and person
+    )
     response_channels_binary = 1
+    response_channels_instanced = None
 
     image_size = (256, 256)
     image_size_T = image_size[::-1]
@@ -67,9 +70,10 @@ class PennFudanDataset(SupervisedDataset):
         elif (
             self._return_variant
             == PennFudanDataset.PennFudanReturnVariantEnum.instanced
-            or self._return_variant == PennFudanDataset.PennFudanReturnVariantEnum.all
         ):
-            return (*self.image_size_T, self.response_channels)
+            return (*self.image_size_T, self.response_channels_instanced)
+        elif self._return_variant == PennFudanDataset.PennFudanReturnVariantEnum.all:
+            return (*self.image_size_T, self.response_channels_two_classes)
         raise NotImplementedError
 
     @property
@@ -156,6 +160,20 @@ class PennFudanDataset(SupervisedDataset):
         self.masks = list(
             sorted(self._ped_path.iterdir())
         )  # ensure that they are aligned
+        if (
+            self._return_variant
+            == PennFudanDataset.PennFudanReturnVariantEnum.instanced
+        ):
+            max_num_instance = 0
+            for m in self.masks:
+                mask = numpy.array(Image.open(self._ped_path / m))
+                num_unique = numpy.unique(mask).shape[0]
+                if max_num_instance < num_unique:
+                    max_num_instance = num_unique
+            PennFudanDataset.response_channels_instanced = max_num_instance
+            self.zero_mask = numpy.zeros(
+                self.response_shape[::-1]
+            )  # reversed order numpy array of torch tensor output
 
     def __getitem__(self, idx: int):
         """
@@ -180,7 +198,7 @@ class PennFudanDataset(SupervisedDataset):
         mask[mask != 0] = 1.0
 
         img = cv2_resize(img, self.image_size_T)
-        mask = cv2_resize(mask, self.image_size_T)
+        mask = cv2_resize(mask, self.image_size_T, InterpolationEnum.nearest)
 
         return (
             uint_hwc_to_chw_float_tensor(to_tensor(img, dtype=torch.uint8)),
@@ -195,17 +213,24 @@ class PennFudanDataset(SupervisedDataset):
         :type idx:
         :return:
         :rtype:"""
-        img = to_tensor(Image.open(self._img_path / self.imgs[idx]).convert("RGB"))
-        mask = to_tensor(Image.open(self._ped_path / self.masks[idx]))
+        img = numpy.array(Image.open(self._img_path / self.imgs[idx]).convert("RGB"))
+        mask = numpy.array(Image.open(self._ped_path / self.masks[idx]))
 
-        obj_ids = torch.unique(mask)  # instances are encoded as different colors
+        img = cv2_resize(img, self.image_size_T)
+        mask = cv2_resize(mask, self.image_size_T, InterpolationEnum.nearest)
+
+        obj_ids = numpy.unique(mask)  # instances are encoded as different colors
         obj_ids = obj_ids[1:]  # first id is the background, so remove it
 
         # split the color-encoded mask into a set of binary masks
         masks = mask == obj_ids[:, None, None]
-        masks = torch.as_tensor(masks, dtype=torch.uint8)
+        zero_mask_clone = self.zero_mask.copy()
+        zero_mask_clone[: masks.shape[0]] = masks
 
-        return img, masks
+        return (
+            uint_hwc_to_chw_float_tensor(to_tensor(img, dtype=torch.uint8)),
+            torch.as_tensor(zero_mask_clone, dtype=torch.uint8),
+        )
 
     def get_all(self, idx):
         """
@@ -242,6 +267,8 @@ class PennFudanDataset(SupervisedDataset):
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         labels = torch.ones((num_objs,), dtype=torch.int64)  # there is only one class
         masks = torch.as_tensor(masks, dtype=torch.uint8)
+
+        # TODO: IMPLEMENT RESIZING OF PICTURES
 
         image_id = torch.tensor([idx])
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
@@ -325,9 +352,9 @@ if __name__ == "__main__":
         )
         pyplot.show()
 
-    # main_binary()
-    # main_instanced()
-    main_all_bb(
-        Path.home() / "Data3" / "PennFudanPed",
-        # Path.home() / "Data" / "Datasets" / "PennFudanPed",
-    )
+    p = (
+        Path.home() / "Data3" / "PennFudanPed"
+    )  # Path.home() / "Data" / "Datasets" / "PennFudanPed",
+    # main_binary(p)
+    main_instanced(p)
+    # main_all_bb(p    )
