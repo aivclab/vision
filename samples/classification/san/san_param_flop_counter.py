@@ -1,12 +1,11 @@
 import numpy
 import torch
 from draugr.torch_utilities import MODULES_MAPPING, get_model_complexity_info
+
+from neodroidvision.mixed.architectures.self_attention_network import make_san
 from neodroidvision.mixed.architectures.self_attention_network.enums import (
     SelfAttentionTypeEnum,
 )
-
-from neodroidvision.mixed.architectures.self_attention_network import make_san
-
 from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.modules import (
     Aggregation,
     Subtraction,

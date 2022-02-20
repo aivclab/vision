@@ -37,7 +37,7 @@ __doc__ = r"""
 
 def post_process_minsize(mask, min_size):
     """
-    Post processing of each predicted mask, components with lesser number of pixels
+    Postprocessing of each predicted mask, components with lesser number of pixels
     than `min_size` are ignored"""
     num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
     predictions, num = numpy.zeros(mask.shape), 0
@@ -52,7 +52,7 @@ def post_process_minsize(mask, min_size):
 def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
     """
     This is slightly different from other kernels as we draw convex hull here itself.
-    Post processing of each predicted mask, components with lesser number of pixels
+    Postprocessing of each predicted mask, components with lesser number of pixels
     than `min_size` are ignored"""
     mask = cv2.threshold(probability, threshold, 1, cv2.THRESH_BINARY)[1]
     mask = draw_convex_hull(mask.astype(numpy.uint8))

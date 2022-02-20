@@ -14,6 +14,8 @@ __doc__ = r"""
 
 __all__ = ["draw_masks", "ConvexHullEnum", "draw_convex_hull"]
 
+from sorcery import assigned_names
+
 
 def draw_masks(img2: numpy.ndarray, img_mask_list: List) -> numpy.ndarray:
     """
@@ -44,9 +46,7 @@ def draw_masks(img2: numpy.ndarray, img_mask_list: List) -> numpy.ndarray:
 
 
 class ConvexHullEnum(Enum):
-    rect = "rect"
-    convex = "convex"
-    minAreaRect = "minAreaRect"
+    rect, convex, min_area_rect = assigned_names()
 
 
 def draw_convex_hull(
@@ -71,9 +71,11 @@ def draw_convex_hull(
         if mode == ConvexHullEnum.convex:  # minimum convex hull
             hull = cv2.convexHull(c)
             cv2.drawContours(img, [hull], 0, (255, 255, 255), -1)
-        else:  # minimum area rectangle
+        elif mode == ConvexHullEnum.min_area_rect:  # minimum area rectangle
             rect = cv2.minAreaRect(c)
             box = cv2.boxPoints(rect)
             box = numpy.int0(box)
             cv2.drawContours(img, [box], 0, (255, 255, 255), -1)
+        else:
+            raise NotImplementedError
     return img / 255.0

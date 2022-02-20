@@ -3,8 +3,8 @@ import dlib
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib import (
     Dlib68faciallandmarksindices,
-    shape_to_ndarray,
     mouth_aspect_ratio,
+    shape_to_ndarray,
 )
 
 if __name__ == "__main__":

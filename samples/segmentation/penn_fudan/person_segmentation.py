@@ -1,34 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import time
 from pathlib import Path
 from tokenize import Number
 
 import numpy
 import torch
 from apppath import ensure_existence
-from draugr.numpy_utilities import chw_to_hwc, SplitEnum
+from draugr.numpy_utilities import SplitEnum, chw_to_hwc
 from draugr.opencv_utilities import cv2_resize
 from draugr.random_utilities import seed_stack
 
 # from draugr.opencv_utilities import cv2_resize
 from draugr.torch_utilities import (
+    TensorBoardPytorchWriter,
     TorchCacheSession,
     TorchDeviceSession,
     TorchEvalSession,
     TorchTrainSession,
     global_torch_device,
 )
+from draugr.writers import ImageWriterMixin, MockWriter, Writer
 from matplotlib import pyplot
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from draugr.writers import Writer, MockWriter, ImageWriterMixin
-from draugr.torch_utilities import TensorBoardPytorchWriter
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.segmentation import BCEDiceLoss, intersection_over_union
-import time
-
+from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.dice_loss import dice_loss
 
 __author__ = "Christian Heider Nielsen"

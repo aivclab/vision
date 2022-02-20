@@ -26,7 +26,6 @@ from draugr.torch_utilities import (
 from draugr.writers import MockWriter, Writer
 from torch import nn, optim
 from torch.nn import Module
-
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm

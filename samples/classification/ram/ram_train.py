@@ -17,9 +17,9 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 from warg import NOD
 
+from architecture.ram import RecurrentAttention
 from neodroidvision.data.classification import MNISTDataset
-from samples.classification.ram.architecture.ram import RecurrentAttention
-from samples.classification.ram.ram_params import get_ram_config
+from ram_params import get_ram_config
 
 model_file_ending = ".model.tar"
 
@@ -102,13 +102,13 @@ class Trainer:
 
         # configure tensorboard logging
         """
-    if self.use_tensorboard:
-    tensorboard_dir = self.logs_dir / self.model_name
-    print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
-    if not os.path.exists(tensorboard_dir):
-        os.makedirs(tensorboard_dir)
-    configure(tensorboard_dir)
-    """
+if self.use_tensorboard:
+tensorboard_dir = self.logs_dir / self.model_name
+print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
+if not os.path.exists(tensorboard_dir):
+    os.makedirs(tensorboard_dir)
+configure(tensorboard_dir)
+"""
 
         self.model = RecurrentAttention(
             self.patch_size,

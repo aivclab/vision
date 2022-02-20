@@ -107,21 +107,21 @@ def run_traced_webcam_demo(
         model = torch.jit.load(buffer)  # Load all tensors to the original device
 
         """
-    
-    buffer.seek(0)
-    torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
-    
-    
-    buffer.seek(0)
-    model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
-    
-    # Load with extra files.
-    extra_files = torch._C.ExtraFilesMap()
-    extra_files['foo.txt'] = 'bar'
-    torch.jit.load('torch_model.traced', _extra_files=extra_files)
-    print(extra_files['foo.txt'])
-    #exit(0)
-    """
+
+buffer.seek(0)
+torch.jit.load(buffer, map_location=torch.device('cpu'))     # Load all tensors onto CPU, using a device
+
+
+buffer.seek(0)
+model = torch.jit.load(buffer, map_location='cpu')     # Load all tensors onto CPU, using a string
+
+# Load with extra files.
+extra_files = torch._C.ExtraFilesMap()
+extra_files['foo.txt'] = 'bar'
+torch.jit.load('torch_model.traced', _extra_files=extra_files)
+print(extra_files['foo.txt'])
+#exit(0)
+"""
 
     with TorchDeviceSession(device=global_torch_device("cpu"), model=model):
         with TorchEvalSession(model):

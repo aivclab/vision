@@ -12,10 +12,10 @@ import dlib  # pip install dlib -U
 from _dlib_pybind11 import rectangle
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib import (
-    shape_to_ndarray,
-    mouth_aspect_ratio,
-    eye_aspect_ratio,
     Dlib68faciallandmarksindices,
+    eye_aspect_ratio,
+    mouth_aspect_ratio,
+    shape_to_ndarray,
 )
 from draugr.opencv_utilities.dlib.facealigner import align_face
 

@@ -3,7 +3,7 @@ from typing import Tuple
 import torch
 from torch import nn
 
-from samples.classification.ram.architecture import ram_modules
+from . import ram_modules
 
 
 class RecurrentAttention(nn.Module):

@@ -6,7 +6,6 @@ from pathlib import Path
 
 import torch
 import torch.utils.data
-from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -16,16 +15,16 @@ from draugr.torch_utilities import (
 from draugr.writers import Writer
 from torch import optim
 from torch.utils.data import DataLoader
+from torchvision.datasets import MNIST
 from torchvision.utils import save_image
 from tqdm import tqdm
 from warg import Number
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification import VggFace2
-from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.utilities import scatter_plot_encoding_space
 from objectives import kl_divergence, reconstruction_loss
+from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -38,15 +37,6 @@ torch.manual_seed(82375329)
 LOWEST_L = inf
 
 core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
-
-GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DL_KWARGS = (
-    {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
-)
-BASE_PATH = PROJECT_APP_PATH.user_data / "bvae"
-if not BASE_PATH.exists():
-    BASE_PATH.mkdir(parents=True)
-
 INPUT_SIZE = 64
 CHANNELS = 3
 
@@ -54,13 +44,16 @@ BATCH_SIZE = 1024
 EPOCHS = 1000
 LR = 3e-3
 ENCODING_SIZE = 10
-name = "vggface2"
-# name = 'vggface2'
-DATASET = VggFace2(
-    Path.home() / "Data" / "Datasets" / name,
-    split=SplitEnum.testing,
-    resize_s=INPUT_SIZE,
+name = "mnist"
+DATASET = MNIST(str(Path.home() / "Data" / "Datasets" / name))
+GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DL_KWARGS = (
+    {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
 )
+BASE_PATH = PROJECT_APP_PATH.user_data / name / "bvae"
+if not BASE_PATH.exists():
+    BASE_PATH.mkdir(parents=True)
+
 MODEL: VAE = HigginsBetaVae(CHANNELS, latent_size=ENCODING_SIZE).to(
     global_torch_device()
 )
@@ -214,7 +207,7 @@ if __name__ == "__main__":
         optimiser = optim.Adam(MODEL.parameters(), lr=LR, betas=(0.9, 0.999))
 
         with TensorBoardPytorchWriter(
-            PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
+            PROJECT_APP_PATH.user_log / name / f"{time.time()}"
         ) as metric_writer:
             for epoch in range(1, EPOCHS + 1):
                 if train_model_:

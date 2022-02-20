@@ -16,7 +16,7 @@ from kivy.uix.popup import Popup
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
-from neodroidvision.regression.vae.architectures.beta_vae import BurgessVae
+from regression.vae.architectures.disentangled.beta_vae import BurgessBetaVae
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -35,7 +35,7 @@ GLOBAL_DEVICE = torch.device("cpu")
 ENCODING_SIZE = 10
 
 DS = VggFace2
-MODEL = BurgessVae(CHANNELS, ENCODING_SIZE).to(global_torch_device())
+MODEL = BurgessBetaVae(CHANNELS, ENCODING_SIZE).to(global_torch_device())
 CHECKPOINT = torch.load(
     PROJECT_APP_PATH.user_data / "bvae" / "best_state_dict", map_location=GLOBAL_DEVICE
 )

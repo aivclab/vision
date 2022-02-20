@@ -12,7 +12,7 @@ from draugr.torch_utilities.images.conversion import quick_to_pil_image
 
 from tqdm import tqdm
 
-from draugr.opencv_utilities import frame_generator, draw_bounding_boxes
+from draugr.opencv_utilities import frame_generator, draw_bounding_boxes, WindowFlagEnum
 from draugr.torch_utilities import (
     global_torch_device,
     TorchEvalSession,
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
                     indices = scores > score_threshold
 
-                    cv2.namedWindow(model_name, cv2.WINDOW_NORMAL)
+                    cv2.namedWindow(model_name, WindowFlagEnum.normal)
                     cv2.imshow(
                         model_name,
                         draw_bounding_boxes(

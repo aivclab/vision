@@ -7,6 +7,7 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+import os
 import time
 from collections import defaultdict
 from math import inf
@@ -23,9 +24,9 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD
-import os
+
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
+from regression.vae.architectures.disentangled.conditional_vae import ConditionalVAE
 from objectives import loss_fn
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"

@@ -11,9 +11,9 @@ import cv2
 import dlib
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.opencv_utilities.dlib import (
-    shape_to_ndarray,
     Dlib68faciallandmarksindices,
     eye_aspect_ratio,
+    shape_to_ndarray,
 )
 
 

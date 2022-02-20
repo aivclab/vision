@@ -155,43 +155,43 @@ with keyboard.Listener(
         )
 
         """
-    new_camera_mtx, roi = cv2.getOptimalNewCameraMatrix(camera_mtx,
-                            dist_coef,
-                            shape_,
-                            1,
-                            shape_)
-    
-    
-    # This is the shortest path. Just call the function and use ROI obtained above to crop the result.
-    dst = cv2.undistort(img, camera_mtx, dist_coef, None, new_camera_mtx)
-    
-    #This is curved path. First find a mapping function from distorted image to undistorted image. Then use
-    the remap function.
-    #mapx,mapy = cv2.initUndistortRectifyMap(camera_mtx,dist_coef,None,new_camera_mtx,(w,h),5)
-    #dst = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
-    
-    x, y, w, h = roi
-    dst = dst[y:y + h, x:x + w]   # crop the image
-    
-    pyplot.imshow(dst)
-    pyplot.show()
-    
-    tot_error = 0
-    for i in range(len(object_points)):
-    point_projections, _ = cv2.projectPoints(object_points[i],
-                   rot_vecs[i],
-                   trans_vecs[i],
-                   camera_mtx,
-                   dist_coef)
-    
-    error = cv2.norm(img_points[i],
-       point_projections,
-       cv2.NORM_L2) / len(point_projections)
-    tot_error += error
-    
-    print(f"total error:{tot_error / len(object_points)}")
-    
-    """
+new_camera_mtx, roi = cv2.getOptimalNewCameraMatrix(camera_mtx,
+                        dist_coef,
+                        shape_,
+                        1,
+                        shape_)
+
+
+# This is the shortest path. Just call the function and use ROI obtained above to crop the result.
+dst = cv2.undistort(img, camera_mtx, dist_coef, None, new_camera_mtx)
+
+#This is curved path. First find a mapping function from distorted image to undistorted image. Then use
+the remap function.
+#mapx,mapy = cv2.initUndistortRectifyMap(camera_mtx,dist_coef,None,new_camera_mtx,(w,h),5)
+#dst = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
+
+x, y, w, h = roi
+dst = dst[y:y + h, x:x + w]   # crop the image
+
+pyplot.imshow(dst)
+pyplot.show()
+
+tot_error = 0
+for i in range(len(object_points)):
+point_projections, _ = cv2.projectPoints(object_points[i],
+               rot_vecs[i],
+               trans_vecs[i],
+               camera_mtx,
+               dist_coef)
+
+error = cv2.norm(img_points[i],
+   point_projections,
+   cv2.NORM_L2) / len(point_projections)
+tot_error += error
+
+print(f"total error:{tot_error / len(object_points)}")
+
+"""
 
     def load_and_draw():
         """ """

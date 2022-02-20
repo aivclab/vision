@@ -14,8 +14,9 @@ from typing import Tuple, Union
 import numpy
 import torch
 from PIL import Image
-from draugr.numpy_utilities import SplitEnum
-from draugr.opencv_utilities import cv2_resize, InterpolationEnum
+from draugr.numpy_utilities import SplitEnum, chw_to_hwc
+from draugr.numpy_utilities.mixing import mix_channels
+from draugr.opencv_utilities import cv2_resize, InterpolationEnum, draw_masks
 from draugr.opencv_utilities.bounding_boxes import draw_boxes
 from draugr.torch_utilities import (
     SupervisedDataset,
@@ -329,6 +330,50 @@ if __name__ == "__main__":
             pyplot.imshow(m.squeeze(0))
             pyplot.show()
 
+    def main_instanced_mixed(p=Path.home() / "Data" / "Datasets" / "PennFudanPed"):
+
+        dataset = PennFudanDataset(
+            p,
+            SplitEnum.training,
+            return_variant=PennFudanDataset.PennFudanReturnVariantEnum.instanced,
+        )
+
+        global_torch_device(override=global_torch_device("cpu"))
+
+        idx = -2
+        img, mask = dataset[idx]
+        print(img)
+        print(img.shape, mask.shape)
+        pyplot.imshow(float_chw_to_hwc_uint_tensor(img))
+        pyplot.show()
+        print(mask.shape)
+        pyplot.imshow(mix_channels(chw_to_hwc(mask.numpy())))
+        pyplot.show()
+
+    def main_instanced_single_channel(
+        p=Path.home() / "Data" / "Datasets" / "PennFudanPed",
+    ):
+
+        dataset = PennFudanDataset(
+            p,
+            SplitEnum.training,
+            return_variant=PennFudanDataset.PennFudanReturnVariantEnum.instanced,
+        )
+
+        global_torch_device(override=global_torch_device("cpu"))
+
+        idx = -2
+        img, mask = dataset[idx]
+        print(img)
+        print(img.shape, mask.shape)
+        i = float_chw_to_hwc_uint_tensor(img).numpy()
+        # pyplot.imshow(i)
+        # pyplot.show()
+        a, b = numpy.zeros_like(mask), mask.numpy()
+        print(a.shape, b.shape)
+        pyplot.imshow(draw_masks(i, b))
+        pyplot.show()
+
     def main_all_bb(p=Path.home() / "Data" / "Datasets" / "PennFudanPed"):
 
         dataset = PennFudanDataset(
@@ -352,9 +397,10 @@ if __name__ == "__main__":
         )
         pyplot.show()
 
-    p = (
-        Path.home() / "Data3" / "PennFudanPed"
-    )  # Path.home() / "Data" / "Datasets" / "PennFudanPed",
+    # p =         Path.home() / "Data3" / "PennFudanPed"
+    p = Path.home() / "Data" / "Datasets" / "PennFudanPed"
     # main_binary(p)
-    main_instanced(p)
+    # main_instanced(p)
+    # main_instanced_mixed(p)
+    main_instanced_single_channel(p)
     # main_all_bb(p    )

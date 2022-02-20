@@ -12,11 +12,13 @@ from torch import nn
 
 from neodroidvision.regression.vae.architectures.vae import VAE
 
-__all__ = ["HigginsVae", "BurgessVae"]
+__all__ = ["HigginsBetaVae", "BurgessBetaVae"]
 
 
-class HigginsVae(VAE):
-    """Model proposed in original beta-VAE paper(Higgins et al, ICLR, 2017)."""
+class HigginsBetaVae(VAE):
+    """
+    Model proposed in original beta-VAE paper(Higgins et al, ICLR, 2017).
+    """
 
     def __init__(self, input_channels=3, latent_size=10):
         super().__init__(latent_size)
@@ -149,8 +151,10 @@ class HigginsVae(VAE):
         return reconstruction, mu, log_var
 
 
-class BurgessVae(HigginsVae):
-    """Model proposed in understanding beta-VAE paper(Burgess et al, arxiv:1804.03599, 2018)."""
+class BurgessBetaVae(HigginsBetaVae):
+    """
+    Model proposed in understanding beta-VAE paper(Burgess et al, arxiv:1804.03599, 2018).
+    """
 
     def __init__(self, input_channels=3, latent_size=10):
         super().__init__(latent_size)

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from draugr.torch_utilities import global_torch_device
-from warg import NOD
-
 from regression.vae.architectures.flow.architectures import (
     Generator,
     VariationalFlow,
     VariationalMeanField,
 )
+from warg import NOD
+
 from data_loader import load_binary_mnist
 
 __author__ = "Christian Heider Nielsen"

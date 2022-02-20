@@ -236,26 +236,26 @@ MainLayout:
         return a
 
     '''
-  def on_request_close(self, *args):
-    self.textpopup(title='Exit', text='Are you sure?')
-    return True
-    def textpopup(self, title='', text=''):
-        """Open the pop-up with the name.
-  
-        :param title: title of the pop-up to open
-        :type title: str
-        :param text: main text of the pop-up to open
-        :type text: str
-        :rtype: None
-        """
-    box = BoxLayout(orientation='vertical')
-    box.add_widget(Label(text=text))
-    mybutton = Button(text='OK', size_hint=(1, 0.25))
-    box.add_widget(mybutton)
-    popup = Popup(title=title, content=box, size_hint=(None, None), size=(600, 300))
-    mybutton.bind(on_release=self.stop)
-    popup.open()
-    '''
+def on_request_close(self, *args):
+  self.textpopup(title='Exit', text='Are you sure?')
+  return True
+  def textpopup(self, title='', text=''):
+      """Open the pop-up with the name.
+
+      :param title: title of the pop-up to open
+      :type title: str
+      :param text: main text of the pop-up to open
+      :type text: str
+      :rtype: None
+      """
+  box = BoxLayout(orientation='vertical')
+  box.add_widget(Label(text=text))
+  mybutton = Button(text='OK', size_hint=(1, 0.25))
+  box.add_widget(mybutton)
+  popup = Popup(title=title, content=box, size_hint=(None, None), size=(600, 300))
+  mybutton.bind(on_release=self.stop)
+  popup.open()
+  '''
 
     def stop(self, *largs):
         """
@@ -264,10 +264,13 @@ MainLayout:
           self:
           *largs:
         """
-        # Open the popup you want to open and declare callback if user pressed `Yes`
-        popup = ExitPopup(title="Are you sure?")
-        popup.bind(on_confirm=partial(self.close_app, *largs))
-        popup.open()
+        if False:
+            # Open the popup you want to open and declare callback if user pressed `Yes`
+            popup = ExitPopup(title="Are you sure?")
+            popup.bind(on_confirm=partial(self.close_app, *largs))
+            popup.open()
+        else:
+            self.close_app()
 
     def close_app(self, *largs):
         """

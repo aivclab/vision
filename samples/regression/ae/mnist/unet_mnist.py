@@ -19,7 +19,6 @@ from draugr.visualisation import plot_side_by_side
 from draugr.writers import Writer
 from matplotlib import pyplot
 from torch.nn.modules.module import Module
-
 from torch.utils.data import DataLoader
 from torchvision import transforms
 

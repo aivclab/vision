@@ -15,7 +15,6 @@ from draugr.torch_utilities import (
     WarmupMultiStepLR,
 )
 from torch.nn import Module
-
 from torch.utils.data import DataLoader
 from warg import NOD
 from warg.arguments import str2bool
@@ -183,7 +182,7 @@ def inner_train_ssd(
             time.time() - start_training_time
         )  # compute training time
         logger.info(
-            f"Total training time: {datetime.timedelta(seconds=total_training_time)} ("
+            f"Total training time: {datetime.timedelta(seconds = total_training_time)} ("
             f"{total_training_time / max_iter:.4f} s / it)"
         )
         return model
