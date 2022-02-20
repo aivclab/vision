@@ -8,10 +8,11 @@ __doc__ = r"""
            """
 
 from abc import abstractmethod
-from draugr.numpy_utilities import Split
 from pathlib import Path
-from torch.utils.data import ConcatDataset
 from typing import Sequence, Tuple
+
+from draugr.numpy_utilities import SplitEnum
+from torch.utils.data import ConcatDataset
 
 __all__ = ["MultiDataset"]
 
@@ -40,13 +41,13 @@ class MultiDataset(SupervisedDataset):
         return (len(self.categories),)
 
     def __init__(
-            self,
-            *,
-            cfg,
-            dataset_type: callable,
-            data_root: Path,
-            sub_datasets: Tuple,
-            split: Split = Split.Training
+        self,
+        *,
+        cfg,
+        dataset_type: callable,
+        data_root: Path,
+        sub_datasets: Tuple,
+        split: SplitEnum = SplitEnum.training
     ):
         """
 
@@ -62,16 +63,16 @@ class MultiDataset(SupervisedDataset):
         :type split:
         :return:
         :rtype:"""
+        super().__init__()
         assert len(sub_datasets) > 0, "No data found!"
 
         img_transform = SSDTransform(
             image_size=cfg.input.image_size,
             pixel_mean=cfg.input.pixel_mean,
             split=split,
-
         )
 
-        if split == Split.Training:
+        if split == SplitEnum.training:
             annotation_transform = SSDAnnotationTransform(
                 image_size=cfg.input.image_size,
                 priors_cfg=cfg.model.box_head.priors,
@@ -96,7 +97,7 @@ class MultiDataset(SupervisedDataset):
             )
 
         # for testing, return a list of datasets
-        if not split == Split.Training:
+        if not split == SplitEnum.training:
             self.sub_datasets = datasets
         else:
             dataset = datasets[0]

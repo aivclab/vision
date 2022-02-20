@@ -7,12 +7,10 @@ __doc__ = r"""
            Created on 23/03/2020
            """
 
-import torch
-
 import typing
 
+import torch
 from draugr.writers import Writer
-
 from torch import distributed as dist
 
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
@@ -23,9 +21,15 @@ __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 
 
 def write_metrics_recursive(
-
-        eval_result: typing.Mapping, prefix: str, summary_writer: Writer, global_step: int
+    eval_result: typing.Mapping, prefix: str, summary_writer: Writer, global_step: int
 ) -> None:
+    """
+
+    :param eval_result:
+    :param prefix:
+    :param summary_writer:
+    :param global_step:
+    """
     for key in eval_result:
         value = eval_result[key]
         tag = f"{prefix}/{key}"

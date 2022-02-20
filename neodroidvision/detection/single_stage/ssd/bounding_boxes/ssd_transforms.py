@@ -7,9 +7,11 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
+from typing import Any, Tuple
+
 import numpy
 import torch
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import (
     CV2Compose,
     CV2Expand,
@@ -22,7 +24,6 @@ from draugr.opencv_utilities import (
     ConvertFromInts,
     SubtractMeans,
 )
-from typing import Any, Tuple
 from warg import NOD
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
@@ -41,7 +42,7 @@ __all__ = ["SSDTransform", "SSDAnnotationTransform"]
 class SSDTransform(torch.nn.Module):
     """ """
 
-    def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: Split):
+    def __init__(self, image_size: Tuple, pixel_mean: Tuple, split: SplitEnum):
         """
 
         :param image_size:
@@ -54,7 +55,7 @@ class SSDTransform(torch.nn.Module):
 
         transform_list = []
 
-        if split == Split.Training:
+        if split == SplitEnum.training:
             transform_list.extend(
                 [
                     ConvertFromInts(),
@@ -68,12 +69,11 @@ class SSDTransform(torch.nn.Module):
 
         transform_list.extend(
             [CV2Resize(image_size), SubtractMeans(pixel_mean), CV2ToTensor()]
-
         )
 
         self.transforms = CV2Compose(transform_list)
 
-    def __call__(self, *x):
+    def __call__(self, *x) -> torch.Tensor:
         """
 
         :param x:
@@ -87,13 +87,13 @@ class SSDAnnotationTransform(torch.nn.Module):
     """ """
 
     def __init__(
-            self,
-            *,
-            image_size: Any,
-            priors_cfg: NOD,
-            center_variance: Any,
-            size_variance: Any,
-            iou_threshold: Any
+        self,
+        *,
+        image_size: Any,
+        priors_cfg: NOD,
+        center_variance: Any,
+        size_variance: Any,
+        iou_threshold: Any
     ):
         """
 
@@ -134,7 +134,6 @@ class SSDAnnotationTransform(torch.nn.Module):
             gt_labels=gt_labels,
             corner_form_priors=self.corner_form_priors,
             iou_threshold=self.iou_threshold,
-
         )
         locations = convert_boxes_to_locations(
             center_form_boxes=corner_form_to_center_form(boxes),

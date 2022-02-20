@@ -1,12 +1,13 @@
-import cv2
 import time
+
+import cv2
 from PIL import Image
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.python_utilities.datetimes import now_repr
 from draugr.visualisation.pillow_utilities import pil_image_to_byte_array
 
 from mqtt_callbacks import get_mqtt_client
-from .config import MQTT_CAM_CONFIG
+from samples.misc.opencv_samples.mqtt_cam.config import MQTT_CAM_CONFIG
 
 MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]
 MQTT_PORT = MQTT_CAM_CONFIG["mqtt"]["port"]
@@ -18,9 +19,7 @@ FPS = MQTT_CAM_CONFIG["camera"]["fps"]
 
 
 def main():
-    """
-
-    """
+    """ """
     client = get_mqtt_client()
     client.connect(MQTT_BROKER, port=MQTT_PORT)
     time.sleep(4)  # Wait for connection setup to complete

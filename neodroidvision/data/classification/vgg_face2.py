@@ -8,22 +8,26 @@ __doc__ = r"""
            """
 
 import csv
-import torch
-from PIL import Image
-from draugr.numpy_utilities import Split
-from matplotlib import pyplot
 from pathlib import Path
-from torch.utils import data
-from torchvision import transforms
 from typing import Dict, Tuple
 
-__all__ = ["VggFaces2"]
+import torch
+from PIL import Image
+from draugr.numpy_utilities import SplitEnum
+from matplotlib import pyplot
+from torch.utils import data
+from torchvision import transforms
+
+__all__ = ["VggFace2"]
 
 from draugr.torch_utilities import SupervisedDataset
 
 
-class VggFaces2(SupervisedDataset):
-    """ """
+class VggFace2(SupervisedDataset):
+    """
+    Department of Engineering Science, University of Oxford
+    Visual Geometry Group Face 2 Dataset
+    """
 
     """"""
 
@@ -54,7 +58,7 @@ class VggFaces2(SupervisedDataset):
     )
 
     @staticmethod
-    def get_id_label_map(meta_file):
+    def get_id_label_map(meta_file: Path):
         """
 
         :param meta_file:
@@ -67,8 +71,11 @@ class VggFaces2(SupervisedDataset):
         N_IDENTITY_PRETRAIN = 8631  # the number of identities used in training by Caffe
         identity_list = meta_file
         df = pandas.read_csv(
-            identity_list, sep=",\s+", quoting=csv.QUOTE_ALL, encoding="utf-8"
-
+            identity_list,
+            sep=",\s+",
+            quoting=csv.QUOTE_ALL,
+            encoding="utf-8",
+            engine="python",
         )
         df["class"] = -1
         df.loc[df["Flag"] == 1, "class"] = range(N_IDENTITY_PRETRAIN)
@@ -80,23 +87,25 @@ class VggFaces2(SupervisedDataset):
         return id_label_dict
 
     @property
-    def split_names(self) -> Dict[Split, str]:
+    def split_names(self) -> Dict[SplitEnum, str]:
         """
 
         :return:
         :rtype:"""
         return {
-            Split.Training: "train",
-            Split.Validation: "validation",
-            Split.Testing: "test",
+            SplitEnum.training: "train",
+            SplitEnum.validation: "validation",
+            SplitEnum.testing: "test",
         }
 
     def __init__(
-            self,
-            dataset_path: Path,
-            split: Split = Split.Training,
-            resize_s: int = 256,
-            raw_images: bool = False,
+        self,
+        dataset_path: Path,
+        split: SplitEnum = SplitEnum.training,
+        *,
+        resize_s: int = 256,
+        raw_images: bool = False,
+        verbose: bool = False,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -105,7 +114,10 @@ class VggFaces2(SupervisedDataset):
         super().__init__()
         assert dataset_path.exists(), f"root: {dataset_path} not found."
         split = self.split_names[split]
-        self._resize_shape = (resize_s, resize_s, 3)
+        if isinstance(resize_s, int):
+            assert resize_s > 2, "resize_s should be >2"
+            resize_s = (resize_s, resize_s, 3)
+        self._resize_shape = (*resize_s, 3)
 
         self._dataset_path = dataset_path / split
         image_list_file_path = dataset_path / f"{split}_list.txt"
@@ -115,15 +127,17 @@ class VggFaces2(SupervisedDataset):
 
         self._image_list_file_path = image_list_file_path
         meta_id_path = dataset_path / "identity_meta.csv"
+        if not meta_id_path.exists():
+            meta_id_path = dataset_path.parent / "meta" / meta_id_path.name
         assert meta_id_path.exists(), f"meta id path {meta_id_path} does not exists"
-        assert resize_s > 2, "resize_s should be >2"
+
         self._split = split
         self._id_label_dict = self.get_id_label_map(meta_id_path)
-        self._raw_images = raw_images
+        self._return_raw_images = raw_images
 
         self.train_trans = transforms.Compose(
             [
-                transforms.RandomResizedCrop(resize_s),
+                transforms.RandomResizedCrop(self._resize_shape[:2]),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 # transforms.Normalize(self.mean, self.std)
@@ -132,8 +146,8 @@ class VggFaces2(SupervisedDataset):
 
         self.val_trans = transforms.Compose(
             [
-                transforms.Resize(resize_s),
-                transforms.CenterCrop(resize_s),
+                transforms.Resize(self._resize_shape[:2]),
+                transforms.CenterCrop(self._resize_shape[:2]),
                 transforms.ToTensor(),
                 # transforms.Normalize(self.mean, self.std)
             ]
@@ -148,7 +162,7 @@ class VggFaces2(SupervisedDataset):
                 self._img_info.append(
                     {"class_id": class_id, "img": img_file, "label": label}
                 )
-                if i % 1000 == 0:
+                if verbose and i % 1000 == 0:
                     print(f"Processing: {i} images for {self._split} split")
 
     def __len__(self):
@@ -159,8 +173,8 @@ class VggFaces2(SupervisedDataset):
         img_file = info["img"]
         img = Image.open(str(self._dataset_path / img_file))
 
-        if not self._raw_images:
-            if self._split == Split.Training:
+        if not self._return_raw_images:
+            if self._split == SplitEnum.training:
                 img = self.train_trans(img)
             else:
                 img = self.val_trans(img)
@@ -172,28 +186,35 @@ class VggFaces2(SupervisedDataset):
 
 
 if __name__ == "__main__":
-    import tqdm
 
-    batch_size = 32
+    def main():
+        import tqdm
 
-    dt = VggFaces2(
-        Path.home() / "Data/vggface2",
-        split=Split.Testing,
-        # raw_images=True
-    )
+        batch_size = 32
 
-    test_loader = torch.utils.data.DataLoader(dt, batch_size=batch_size, shuffle=False)
+        dt = VggFace2(
+            Path.home() / "Data" / "VGG-Face2" / "data",
+            split=SplitEnum.testing,
+            # raw_images=True
+        )
 
-    # test_loader = dt
+        test_loader = torch.utils.data.DataLoader(
+            dt, batch_size=batch_size, shuffle=False
+        )
 
-    for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
+        # test_loader = dt
+
+        for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
             enumerate(test_loader),
             total=len(test_loader),
-            desc="Bro",
+            desc=f"{test_loader.dataset}",
             ncols=80,
             leave=False,
-    ):
-        pyplot.imshow(dt.inverse_transform(imgs[0]))
-        # pyplot.imshow(imgs)
-        pyplot.show()
-        break
+        ):
+            pyplot.imshow(dt.inverse_transform(imgs[0]))
+            pyplot.title(f"{label[0], class_ids[0]}")
+            # pyplot.imshow(imgs)
+            pyplot.show()
+            break
+
+    main()

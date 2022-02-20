@@ -10,21 +10,21 @@ __doc__ = r"""
 import torch
 
 
-def cache_backbone_results(model:torch.Module)->None:
+def cache_backbone_results(model: torch.Module) -> None:
     """
     Cache and freeze the backbone part of the model and only update heads
     """
     pass
 
 
-def switch_target_head(model:torch.Module)->None:
+def switch_target_head(model: torch.Module) -> None:
     """
     Only single head at a time
     """
     pass
 
 
-def common_head_training(model:torch.Module)->None:
+def common_head_training(model: torch.Module) -> None:
     """
     Train all heads a the same time
     """

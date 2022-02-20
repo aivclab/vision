@@ -7,12 +7,13 @@ __doc__ = r"""
            Created on 30/11/2019
            """
 
+from pathlib import Path
+
 import albumentations
 import cv2
 import numpy
 import pandas
 from matplotlib import pyplot
-from pathlib import Path
 from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import Dataset
 
@@ -23,15 +24,14 @@ from draugr.numpy_utilities import (
     hwc_to_chw,
     float_chw_to_hwc_uint,
     chw_to_hwc,
-    Split,
+    SplitEnum,
 )
 from draugr.opencv_utilities import cv2_resize
 
 
 class CloudSegmentationDataset(Dataset):
-    """
+    """ """
 
-    """
     categories = {0: "Fish", 1: "Flower", 2: "Gravel", 3: "Sugar"}
     image_size = (640, 320)
     image_size_T = image_size[::-1]
@@ -75,18 +75,18 @@ class CloudSegmentationDataset(Dataset):
   '''
 
     def __init__(
-            self,
-            csv_path: Path,
-            image_data_path: Path,
-            subset: Split = Split.Training,
-            transp=True,
-            N_FOLDS=10,
-            SEED=246232,
+        self,
+        csv_path: Path,
+        image_data_path: Path,
+        subset: SplitEnum = SplitEnum.training,
+        transp=True,
+        N_FOLDS=10,
+        SEED=246232,
     ):
 
         self.transp = transp
 
-        if subset != subset.Testing:
+        if subset != subset.testing:
             data_frame = pandas.read_csv(csv_path / f"train.csv")
         else:
             data_frame = pandas.read_csv(csv_path / f"sample_submission.csv")
@@ -97,16 +97,16 @@ class CloudSegmentationDataset(Dataset):
         self.subset = subset
         self.base_image_data = image_data_path
 
-        if subset != subset.Testing:
+        if subset != subset.testing:
             id_mask_count = (
                 data_frame.loc[
                     data_frame["EncodedPixels"].isnull() == False, "Image_Label"
                 ]
-                    .apply(lambda x: x.split("_")[0])
-                    .value_counts()
-                    .sort_index()
-                    .reset_index()
-                    .rename(columns={"index": "img_id", "Image_Label": "count"})
+                .apply(lambda x: x.split("_")[0])
+                .value_counts()
+                .sort_index()
+                .reset_index()
+                .rename(columns={"index": "img_id", "Image_Label": "count"})
             )  # split data into train and val
 
             ids = id_mask_count["img_id"].values
@@ -119,20 +119,20 @@ class CloudSegmentationDataset(Dataset):
 
             self.image_data_path = image_data_path / "train_images_525"
 
-            if subset == subset.Validation:
+            if subset == SplitEnum.validation:
                 self.img_ids = ids[li[0][1]]
             else:
                 self.img_ids = ids[li[0][0]]
         else:
             self.img_ids = (
                 data_frame["Image_Label"]
-                    .apply(lambda x: x.split("_")[0])
-                    .drop_duplicates()
-                    .values
+                .apply(lambda x: x.split("_")[0])
+                .drop_duplicates()
+                .values
             )
             self.image_data_path = image_data_path / "test_images_525"
 
-        if subset == subset.Training:
+        if subset == SplitEnum.training:
             self.transforms = albumentations.Compose(
                 self.training_augmentations()  # +
                 #                   self.validation_augmentations()
@@ -186,7 +186,7 @@ class CloudSegmentationDataset(Dataset):
             masks = augmented["mask"]
         img_o = uint_hwc_to_chw_float(img_o)
         masks = hwc_to_chw(masks)
-        if self.subset == Split.Testing:
+        if self.subset == SplitEnum.testing:
             return img_o, masks, self.no_info_mask(img)
         return img_o, masks
 
@@ -236,12 +236,12 @@ class CloudSegmentationDataset(Dataset):
 
     @staticmethod
     def visualise_prediction(
-            processed_image,
-            processed_mask,
-            original_image=None,
-            original_mask=None,
-            raw_image=None,
-            raw_mask=None,
+        processed_image,
+        processed_mask,
+        original_image=None,
+        original_mask=None,
+        raw_image=None,
+        raw_mask=None,
     ):
         """
         Plot image and masks.

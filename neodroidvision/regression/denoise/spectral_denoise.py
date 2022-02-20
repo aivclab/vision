@@ -10,6 +10,8 @@ __doc__ = r"""
 import numpy
 from scipy import fftpack
 
+__all__ = ["fft_im_denoise"]
+
 
 def fft_im_denoise(img: numpy.ndarray, keep_fraction: float = 0.1) -> numpy.ndarray:
     """
@@ -47,23 +49,23 @@ def fft_im_denoise(img: numpy.ndarray, keep_fraction: float = 0.1) -> numpy.ndar
     # truncate coefficients.
     # Call ff a copy of the original transform. Numpy arrays have a copy
     # method for this purpose.
-    im_fft_cp = im_fft.copy()
+    im_fft_cp = im_fft  # .copy()
     num_row, num_columns = im_fft_cp.shape
 
     # Set to zero all rows with indices between r*keep_fraction and
     # r*(1-keep_fraction):
-    im_fft_cp[int(num_row * keep_fraction): int(num_row * (1 - keep_fraction))] = 0
+    im_fft_cp[int(num_row * keep_fraction) : int(num_row * (1 - keep_fraction))] = 0
     im_fft_cp[
-    :, int(num_columns * keep_fraction): int(num_columns * (1 - keep_fraction))
+        :, int(num_columns * keep_fraction) : int(num_columns * (1 - keep_fraction))
     ] = 0
 
-    # plt.figure()
+    # pyplot.figure()
     # plot_spectrum(im_fft)
-    # plt.title('Fourier transform')
+    # pyplot.title('Fourier transform')
 
-    # plt.figure()
+    # pyplot.figure()
     # plot_spectrum(im_fft_cp)
-    # plt.title('Filtered Spectrum')
+    # pyplot.title('Filtered Spectrum')
 
     # Reconstruct the denoised image from the filtered spectrum, keep only the
     # real part for display.

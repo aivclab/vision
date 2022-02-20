@@ -2,11 +2,11 @@ import numpy
 import torch
 from draugr.torch_utilities import MODULES_MAPPING, get_model_complexity_info
 
-from neodroidvision.classification.architectures.self_attention_network import (
+from neodroidvision.mixed.architectures.self_attention_network import make_san
+from neodroidvision.mixed.architectures.self_attention_network.enums import (
     SelfAttentionTypeEnum,
-    make_san,
 )
-from neodroidvision.classification.architectures.self_attention_network.self_attention_modules.modules import (
+from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.modules import (
     Aggregation,
     Subtraction,
     Subtraction2,
@@ -15,12 +15,10 @@ from neodroidvision.classification.architectures.self_attention_network.self_att
 if __name__ == "__main__":
     from samples.classification.san.configs.base_san_cfg import SAN_CONFIG
 
-
     def main():
-        """
-
-        """
+        """ """
         with torch.cuda.device(0):
+
             def subtraction_flops_counter_hook(module, input, output):
                 """
 
@@ -73,6 +71,5 @@ if __name__ == "__main__":
                 model.cuda(), (3, 224, 224), as_strings=True, print_per_layer_stat=True
             )
             print(f"Params/Flops: {params}/{flops}")
-
 
     main()

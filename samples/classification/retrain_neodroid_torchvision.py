@@ -3,6 +3,7 @@
 import argparse
 import os
 import time
+
 import torchvision
 from draugr import batch_generator
 from draugr.python_utilities import (
@@ -17,7 +18,6 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
 )
-
 from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
@@ -56,9 +56,7 @@ normalise = torchvision.transforms.Normalize(
 
 
 def main():
-    """
-
-    """
+    """ """
     args = argparse.ArgumentParser()
     args.add_argument("--inference", "-i", action="store_true")
     args.add_argument("--continue_training", "-c", action="store_true")
@@ -93,18 +91,18 @@ def main():
 
         if options.continue_training:
             _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
-            lastest_model_path = str(max(_list_of_files, key=os.path.getctime))
-            print(f"loading previous model: {lastest_model_path}")
-            if lastest_model_path is not None:
-                model.load_state_dict(torch.load(lastest_model_path))
+            latest_model_path = str(max(_list_of_files, key=os.path.getctime))
+            print(f"loading previous model: {latest_model_path}")
+            if latest_model_path is not None:
+                model.load_state_dict(torch.load(latest_model_path))
 
         criterion = torch.nn.CrossEntropyLoss().to(global_torch_device())
 
-        optimizer_ft = optim.SGD(
+        optimiser_ft = optim.SGD(
             model.parameters(), lr=learning_rate, momentum=momentum, weight_decay=wd
         )
         exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer_ft, step_size=7, gamma=0.1
+            optimiser_ft, step_size=7, gamma=0.1
         )
 
         with TensorBoardPytorchWriter(this_log) as writer:
@@ -113,7 +111,7 @@ def main():
                     model,
                     train_iter,
                     criterion,
-                    optimizer_ft,
+                    optimiser_ft,
                     exp_lr_scheduler,
                     writer,
                     interrupted_path,
@@ -128,8 +126,7 @@ def main():
                 )
             )
 
-            pred = model(rgb_imgs)
-            predicted = torch.argmax(pred, -1)
+            predicted = torch.argmax(model(rgb_imgs), -1)
             true_label = to_tensor(true_label, dtype=torch.long)
             print(predicted, true_label)
             horizontal_imshow(

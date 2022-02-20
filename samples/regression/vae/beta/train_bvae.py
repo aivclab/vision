@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import time
+from math import inf
+from pathlib import Path
+
 import torch
 import torch.utils.data
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     TorchEvalSession,
@@ -11,22 +14,24 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from draugr.writers import Writer
-from math import inf
-from pathlib import Path
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from tqdm import tqdm
+from warg import Number
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.deprec.s_vgg_face2 import VggFaces2
-from neodroidvision.regression.vae.architectures.beta_vae import HigginsVae
+from neodroidvision.data.classification import VggFace2
+from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
 from neodroidvision.regression.vae.architectures.vae import VAE
+from neodroidvision.utilities import scatter_plot_encoding_space
 from objectives import kl_divergence, reconstruction_loss
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
   Training for BetaVae's
+  
+  Distangled Representations
 """
 
 torch.manual_seed(82375329)
@@ -49,14 +54,20 @@ BATCH_SIZE = 1024
 EPOCHS = 1000
 LR = 3e-3
 ENCODING_SIZE = 10
-DATASET = VggFaces2(
-    Path.home() / "Data" / "vggface2", split=Split.Testing, resize_s=INPUT_SIZE
+name = "vggface2"
+# name = 'vggface2'
+DATASET = VggFace2(
+    Path.home() / "Data" / "Datasets" / name,
+    split=SplitEnum.testing,
+    resize_s=INPUT_SIZE,
 )
-MODEL: VAE = HigginsVae(CHANNELS, latent_size=ENCODING_SIZE).to(global_torch_device())
+MODEL: VAE = HigginsBetaVae(CHANNELS, latent_size=ENCODING_SIZE).to(
+    global_torch_device()
+)
 BETA = 4
 
 
-def loss_function(reconstruction, original, mean, log_var, beta=1):
+def loss_function(reconstruction, original, mean, log_var, beta: Number = 1):
     """
 
     Args:
@@ -75,12 +86,12 @@ def loss_function(reconstruction, original, mean, log_var, beta=1):
 
 
 def train_model(
-        model,
-        optimiser,
-        epoch_i: int,
-        metric_writer: Writer,
-        loader: DataLoader,
-        log_interval=10,
+    model,
+    optimiser,
+    epoch_i: int,
+    metric_writer: Writer,
+    loader: DataLoader,
+    log_interval=10,
 ):
     """
 
@@ -123,11 +134,11 @@ def train_model(
 
 
 def stest_model(
-        model: VAE,
-        epoch_i: int,
-        metric_writer: Writer,
-        loader: DataLoader,
-        save_images: bool = True,
+    model: VAE,
+    epoch_i: int,
+    metric_writer: Writer,
+    loader: DataLoader,
+    save_images: bool = True,
 ):
     """
 
@@ -161,13 +172,14 @@ def stest_model(
                             str(BASE_PATH / f"reconstruction_{str(epoch_i)}.png"),
                             nrow=n,
                         )
-                        """
-            scatter_plot_encoding_space(str(BASE_PATH /
-            f'encoding_space_{str(epoch_i)}.png'),
-            mean.to('cpu').numpy(),
-            log_var.to('cpu').numpy(),
-            labels)
-            """
+
+                scatter_plot_encoding_space(
+                    str(BASE_PATH / f"encoding_space_{str(epoch_i)}.png"),
+                    mean.to("cpu").numpy(),
+                    log_var.to("cpu").numpy(),
+                    labels,
+                )
+
                 break
 
         # test_loss /= len(loader.dataset)
@@ -184,7 +196,7 @@ def stest_model(
 
 if __name__ == "__main__":
 
-    def main():
+    def main(train_model_=False):
 
         """
         ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
@@ -202,11 +214,13 @@ if __name__ == "__main__":
         optimiser = optim.Adam(MODEL.parameters(), lr=LR, betas=(0.9, 0.999))
 
         with TensorBoardPytorchWriter(
-                PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
+            PROJECT_APP_PATH.user_log / "VggFace2" / "BetaVAE" / f"{time.time()}"
         ) as metric_writer:
             for epoch in range(1, EPOCHS + 1):
-                train_model(MODEL, optimiser, epoch, metric_writer, dataset_loader)
-                stest_model(MODEL, epoch, metric_writer, dataset_loader)
+                if train_model_:
+                    train_model(MODEL, optimiser, epoch, metric_writer, dataset_loader)
+                if not train_model_:
+                    stest_model(MODEL, epoch, metric_writer, dataset_loader)
                 with torch.no_grad():
                     inv_sample = DATASET.inverse_transform(
                         MODEL.sample().view(CHANNELS, INPUT_SIZE, INPUT_SIZE)
@@ -216,11 +230,10 @@ if __name__ == "__main__":
                         from neodroidvision.utilities import plot_manifold
 
                         plot_manifold(
-                            MODEL,
-                            out_path=str(BASE_PATH / f"manifold_{str(epoch)}.png"),
+                            MODEL.decoder,
+                            out_path=BASE_PATH / f"manifold_{str(epoch)}.png",
                             img_w=INPUT_SIZE,
                             img_h=INPUT_SIZE,
                         )
-
 
     main()

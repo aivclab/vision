@@ -18,7 +18,7 @@ __all__ = ["SSDBoxPredictor"]
 
 class SSDBoxPredictor(BoxPredictor):
     def category_block(
-            self, level: int, out_channels: int, boxes_per_location: int
+        self, level: int, out_channels: int, boxes_per_location: int
     ) -> nn.Module:
         """
 

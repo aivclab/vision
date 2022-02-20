@@ -1,2 +1,0 @@
-cupy-cuda101 # or cupy
-cython

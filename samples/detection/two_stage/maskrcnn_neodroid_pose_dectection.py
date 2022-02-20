@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
-import cv2
 import math
-import numpy
 import time
+
+import cv2
+import numpy
 import torch
 from PIL import Image, ImageDraw
 from matplotlib import animation, pyplot
@@ -186,9 +187,7 @@ def update_figures(i):
 
 
 def main():
-    """
-
-    """
+    """ """
     global image_axs
 
     env.reset()

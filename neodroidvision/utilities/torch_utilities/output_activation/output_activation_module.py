@@ -9,9 +9,10 @@ __doc__ = r"""
 
 __all__ = ["OutputActivationModule"]
 
+from typing import Tuple, Union
+
 import torch
 from torch.nn import Module
-from typing import Tuple, Union
 
 
 class OutputActivationModule(Module):

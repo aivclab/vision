@@ -3,24 +3,24 @@
 import copy
 import os
 import time
+from itertools import cycle
+from pathlib import Path
+from typing import Iterator
 
 from apppath import ensure_existence
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
-    TorchEvalSession, global_torch_device,
+    TorchEvalSession,
+    global_torch_device,
     to_device_iterator,
 )
-from draugr.visualisation import plot_img_array, plot_side_by_side
+from draugr.visualisation import plot_side_by_side
 from draugr.writers import Writer
-from itertools import cycle
 from matplotlib import pyplot
-from pathlib import Path
 from torch.nn.modules.module import Module
-from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from typing import Iterator
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
@@ -40,16 +40,16 @@ criterion = torch.nn.MSELoss()
 
 
 def training(
-        model: Module,
-        data_iterator: Iterator,
-        optimizer: Optimizer,
-        scheduler,
-        writer: Writer,
-        interrupted_path: Path,
-        *,
-        num_updates=2500000,
-        early_stop_threshold=1e-9,
-        denoise: bool = True,
+    model: Module,
+    data_iterator: Iterator,
+    optimiser: torch.optim.Optimizer,
+    scheduler,
+    writer: Writer,
+    interrupted_path: Path,
+    *,
+    num_updates=2500000,
+    early_stop_threshold=1e-9,
+    denoise: bool = True,
 ) -> Module:
     """
 
@@ -57,8 +57,8 @@ def training(
     :type model:
     :param data_iterator:
     :type data_iterator:
-    :param optimizer:
-    :type optimizer:
+    :param optimiser:
+    :type optimiser:
     :param scheduler:
     :type scheduler:
     :param writer:
@@ -79,10 +79,10 @@ def training(
     try:
         sess = tqdm(range(num_updates), leave=False, disable=False)
         for update_i in sess:
-            for phase in [Split.Training, Split.Validation]:
-                if phase == Split.Training:
+            for phase in [SplitEnum.training, SplitEnum.validation]:
+                if phase == SplitEnum.training:
 
-                    for param_group in optimizer.param_groups:
+                    for param_group in optimiser.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
 
                     model.train()
@@ -91,8 +91,8 @@ def training(
 
                 rgb_imgs, *_ = next(data_iterator)
 
-                optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == Split.Training):
+                optimiser.zero_grad()
+                with torch.set_grad_enabled(phase == SplitEnum.training):
                     if denoise:  # =='denoise':
                         model_input = rgb_imgs + torch.normal(
                             mean=0.0,
@@ -107,15 +107,15 @@ def training(
                     recon_pred, *_ = model(torch.clamp(model_input, 0.0, 1.0))
                     ret = criterion(recon_pred, rgb_imgs)
 
-                    if phase == Split.Training:
+                    if phase == SplitEnum.training:
                         ret.backward()
-                        optimizer.step()
+                        optimiser.step()
                         scheduler.step()
 
                 update_loss = ret.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == Split.Validation and update_loss < best_loss:
+                if phase == SplitEnum.validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     _format = "NCHW"
@@ -144,7 +144,9 @@ def training(
     return model
 
 
-def inference(model: Module, data_iterator: Iterator, denoise: bool = True, num: int = 3) -> None:
+def inference(
+    model: Module, data_iterator: Iterator, denoise: bool = True, num: int = 3
+) -> None:
     """
 
     :param model:
@@ -162,19 +164,23 @@ def inference(model: Module, data_iterator: Iterator, denoise: bool = True, num:
                 model_input = img
             model_input = torch.clamp(model_input, 0.0, 1.0)
             pred, *_ = model(model_input)
-            plot_side_by_side([pred.squeeze(1)[:num].cpu().numpy(),
-                               model_input.squeeze(1)[:num].cpu().numpy()])
+            plot_side_by_side(
+                [
+                    pred.squeeze(1)[:num].cpu().numpy(),
+                    model_input.squeeze(1)[:num].cpu().numpy(),
+                ]
+            )
             pyplot.show()
             return
             for i, (s, j, label) in enumerate(
-                    zip(pred.cpu().numpy(), model_input.cpu().numpy(), target)
+                zip(pred.cpu().numpy(), model_input.cpu().numpy(), target)
             ):
                 pyplot.imshow(j[0])
-                pyplot.title(f'sample_{i}, category: {label}')
+                pyplot.title(f"sample_{i}, category: {label}")
                 pyplot.show()
                 # plot_side_by_side(s)
                 pyplot.imshow(s[0])
-                pyplot.title(f'sample_{i}, category: {label}')
+                pyplot.title(f"sample_{i}, category: {label}")
                 pyplot.show()
                 break
 
@@ -201,10 +207,8 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
     home_path = PROJECT_APP_PATH
     model_file_ending = ".model"
     model_base_path = ensure_existence(PROJECT_APP_PATH.user_data / "unet_mnist")
-    interrupted_name = 'INTERRUPTED_BEST'
-    interrupted_path = (
-            model_base_path / f"{interrupted_name}{model_file_ending}"
-    )
+    interrupted_name = "INTERRUPTED_BEST"
+    interrupted_path = model_base_path / f"{interrupted_name}{model_file_ending}"
 
     torch.manual_seed(seed)
 
@@ -233,16 +237,20 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
         start_channels=unet_start_channels,
     ).to(global_torch_device())
 
-    optimizer_ft = optim.Adam(model.parameters(), lr=learning_rate)
+    optimiser_ft = optim.Adam(model.parameters(), lr=learning_rate)
 
     exp_lr_scheduler = optim.lr_scheduler.StepLR(
-        optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
+        optimiser_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
     )
 
     if load_earlier:
-        _list_of_files = list(model_base_path.rglob(f"{interrupted_name}{model_file_ending}"))
+        _list_of_files = list(
+            model_base_path.rglob(f"{interrupted_name}{model_file_ending}")
+        )
         if not len(_list_of_files):
-            print(f'found no trained models under {model_base_path}{os.path.sep}**{os.path.sep}{interrupted_name}{model_file_ending}')
+            print(
+                f"found no trained models under {model_base_path}{os.path.sep}**{os.path.sep}{interrupted_name}{model_file_ending}"
+            )
             exit(1)
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
@@ -254,14 +262,15 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
             model = training(
                 model,
                 data_iter,
-                optimizer_ft,
+                optimiser_ft,
                 exp_lr_scheduler,
                 writer,
                 interrupted_path,
                 denoise=denoise,
             )
             torch.save(
-                model.state_dict(), model_base_path / f"unet_mnist_final{model_file_ending}"
+                model.state_dict(),
+                model_base_path / f"unet_mnist_final{model_file_ending}",
             )
     else:
         inference(model, data_iter, denoise=denoise)
@@ -270,5 +279,5 @@ def train_mnist(load_earlier=False, train=True, denoise: bool = True):
 
 
 if __name__ == "__main__":
-    #train_mnist(load_earlier=False, train=True)
+    # train_mnist(load_earlier=False, train=True)
     train_mnist(load_earlier=True, train=False)

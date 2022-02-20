@@ -7,114 +7,27 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
+from pathlib import Path
+from typing import Sequence, Tuple
+
 import numpy
 import torch
-from draugr.numpy_utilities import Split, SplitIndexer
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils.data import Subset
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
-from torchvision.datasets import MNIST
-from typing import Sequence, Tuple
 
-__all__ = ["MNISTDataset", "MNISTDataset2"]
-
-
-class MNISTDataset2(SupervisedDataset):
-    """ """
-
-    @property
-    def response_shape(self) -> Tuple[int, ...]:
-        """
-
-        :return:
-        :rtype:"""
-        return (len(self.categories),)
-
-    @property
-    def predictor_shape(self) -> Tuple[int, ...]:
-        """
-
-        :return:
-        :rtype:"""
-        return self._resize_shape
-
-    def __init__(
-            self,
-            dataset_path: Path,
-            split: Split = Split.Training,
-            validation: float = 0.3,
-            resize_s: int = 28,
-            seed: int = 42,
-            download: bool = True,
-    ):
-        """
-        :param dataset_path: dataset directory
-        :param split: train, valid, test"""
-        super().__init__()
-
-        if not download:
-            assert dataset_path.exists(), f"root: {dataset_path} not found."
-
-        self._resize_shape = (1, resize_s, resize_s)
-
-        train_trans = transforms.Compose(
-            [
-                transforms.RandomResizedCrop(resize_s),
-                transforms.RandomHorizontalFlip(),
-                transforms.ToTensor(),
-            ]
-        )
-        val_trans = transforms.Compose(
-            [
-                transforms.Resize(resize_s),
-                # transforms.CenterCrop(resize_s),
-                transforms.ToTensor(),
-            ]
-        )
-
-        if split == Split.Training:
-            mnist_data = MNIST(
-                str(dataset_path), train=True, download=download, transform=train_trans
-            )
-        elif split == Split.Validation:
-            mnist_data = MNIST(
-                str(dataset_path), train=True, download=download, transform=val_trans
-            )
-        else:
-            mnist_data = MNIST(
-                str(dataset_path), train=False, download=download, transform=val_trans
-            )
-
-        if split != Split.Testing:
-            torch.manual_seed(seed)
-            train_ind, val_ind, test_ind = SplitIndexer(
-                len(mnist_data), validation=validation, testing=0.0
-            ).shuffled_indices()
-            if split == Split.Validation:
-                self.mnist_data_split = Subset(mnist_data, val_ind)
-            else:
-                self.mnist_data_split = Subset(mnist_data, train_ind)
-        else:
-            self.mnist_data_split = mnist_data
-
-        self.categories = mnist_data.classes
-
-    def __len__(self):
-        return len(self.mnist_data_split)
-
-    def __getitem__(self, index):
-        return self.mnist_data_split.__getitem__(index)
+__all__ = ["MNISTDataset"]
 
 
 class MNISTDataset(SupervisedDataset):
     """"""
 
-    def __init__(self, data_dir: Path, split: Split = Split.Training):
+    def __init__(self, data_dir: Path, split: SplitEnum = SplitEnum.training):
         super().__init__()
-        if split == Split.Training:
+        if split == SplitEnum.training:
             self._dataset = datasets.MNIST(
                 str(data_dir), train=True, download=True, transform=self.trans
             )
@@ -158,15 +71,15 @@ class MNISTDataset(SupervisedDataset):
 
     @staticmethod
     def get_train_valid_loader(
-            data_dir: Path,
-            batch_size: int,
-            random_seed: int,
-            *,
-            valid_size: float = 0.1,
-            shuffle: bool = True,
-            num_workers: int = 0,
-            pin_memory: bool = False,
-            using_cuda: bool = True,
+        data_dir: Path,
+        *,
+        batch_size: int,
+        random_seed: int,
+        valid_size: float = 0.1,
+        shuffle: bool = True,
+        num_workers: int = 0,
+        pin_memory: bool = False,
+        using_cuda: bool = True,
     ) -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoader]:
         """Train and validation data loaders.
 
@@ -242,12 +155,12 @@ class MNISTDataset(SupervisedDataset):
 
     @staticmethod
     def get_test_loader(
-            data_dir: Path,
-            batch_size: int,
-            *,
-            num_workers: int = 0,
-            pin_memory: bool = False,
-            using_cuda: bool = True,
+        data_dir: Path,
+        batch_size: int,
+        *,
+        num_workers: int = 0,
+        pin_memory: bool = False,
+        using_cuda: bool = True,
     ) -> torch.utils.data.DataLoader:
         """Test datalaoder.
 
@@ -276,7 +189,7 @@ class MNISTDataset(SupervisedDataset):
             # assert num_workers == 1
             # assert pin_memory == True
 
-        dataset = MNISTDataset(data_dir, split=Split.Testing)
+        dataset = MNISTDataset(data_dir, split=SplitEnum.testing)
 
         data_loader = torch.utils.data.DataLoader(
             dataset,
@@ -330,45 +243,8 @@ class MNISTDataset(SupervisedDataset):
 if __name__ == "__main__":
 
     def a():
+        """ """
         MNISTDataset(Path.home() / "Data" / "MNIST").sample()
         pyplot.show()
 
-
-    def siuadyh():
-        import tqdm
-
-        batch_size = 32
-
-        dt_t = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=Split.Training)
-
-        print(len(dt_t))
-
-        dt_v = MNISTDataset2(
-            Path(Path.home() / "Data" / "mnist"), split=Split.Validation
-        )
-
-        print(len(dt_v))
-
-        dt = MNISTDataset2(Path(Path.home() / "Data" / "mnist"), split=Split.Testing)
-
-        print(len(dt))
-
-        data_loader = torch.utils.data.DataLoader(
-            dt, batch_size=batch_size, shuffle=False
-        )
-
-        for batch_idx, (imgs, label) in tqdm.tqdm(
-                enumerate(data_loader),
-                total=len(data_loader),
-                desc="Bro",
-                ncols=80,
-                leave=False,
-        ):
-            # pyplot.imshow(dt.inverse_transform(imgs[0]))
-            # pyplot.imshow(imgs)
-            # pyplot.show()
-            print(imgs.shape)
-            break
-
-
-    siuadyh()
+    a()

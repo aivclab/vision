@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
+
 import cv2
 import numpy
 import pandas
 import torch
-from draugr.numpy_utilities import Split, chw_to_hwc, float_chw_to_hwc_uint
+from draugr.numpy_utilities import SplitEnum, chw_to_hwc, float_chw_to_hwc_uint
 from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchEvalSession,
@@ -13,7 +15,6 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -36,7 +37,7 @@ __doc__ = r"""
 
 def post_process_minsize(mask, min_size):
     """
-    Post processing of each predicted mask, components with lesser number of pixels
+    Postprocessing of each predicted mask, components with lesser number of pixels
     than `min_size` are ignored"""
     num_component, component = cv2.connectedComponents(mask.astype(numpy.uint8))
     predictions, num = numpy.zeros(mask.shape), 0
@@ -51,7 +52,7 @@ def post_process_minsize(mask, min_size):
 def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
     """
     This is slightly different from other kernels as we draw convex hull here itself.
-    Post processing of each predicted mask, components with lesser number of pixels
+    Postprocessing of each predicted mask, components with lesser number of pixels
     than `min_size` are ignored"""
     mask = cv2.threshold(probability, threshold, 1, cv2.THRESH_BINARY)[1]
     mask = draw_convex_hull(mask.astype(numpy.uint8))
@@ -67,14 +68,14 @@ def threshold_mask(probability, threshold, min_size=100, psize=(350, 525)):
 
 
 def train_model(
-        model,
-        train_loader,
-        valid_loader,
-        criterion,
-        optimizer,
-        scheduler,
-        save_model_path: Path,
-        n_epochs=99,
+    model,
+    train_loader,
+    valid_loader,
+    criterion,
+    optimiser,
+    scheduler,
+    save_model_path: Path,
+    n_epochs=99,
 ):
     """
 
@@ -83,7 +84,7 @@ def train_model(
       train_loader:
       valid_loader:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       save_model_path:
       n_epochs:
@@ -105,12 +106,12 @@ def train_model(
                     data.to(global_torch_device(), dtype=torch.float),
                     target.to(global_torch_device(), dtype=torch.float),
                 )
-                optimizer.zero_grad()
+                optimiser.zero_grad()
                 output, *_ = model(data)
                 output = torch.sigmoid(output)
                 loss = criterion(output, target)
                 loss.backward()
-                optimizer.step()
+                optimiser.step()
                 train_loss += loss.item() * data.size(0)
                 train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
 
@@ -227,7 +228,7 @@ def threshold_grid_search(model, valid_loader, max_samples=2000):
 
 
 def prepare_submission(
-        model, class_params, test_loader, submission_file_path="submission.csv"
+    model, class_params, test_loader, submission_file_path="submission.csv"
 ):
     """
 
@@ -279,9 +280,7 @@ def prepare_submission(
 
 
 def main():
-    """
-
-    """
+    """ """
     pyplot.style.use("bmh")
 
     base_dataset_path = Path.home() / "Data" / "Datasets" / "Clouds"
@@ -295,21 +294,25 @@ def main():
     seed_stack(SEED)
 
     train_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Training),
+        CloudSegmentationDataset(
+            base_dataset_path, image_path, subset=SplitEnum.training
+        ),
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
     )
     valid_loader = DataLoader(
         CloudSegmentationDataset(
-            base_dataset_path, image_path, subset=Split.Validation
+            base_dataset_path, image_path, subset=SplitEnum.validation
         ),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
     )
     test_loader = DataLoader(
-        CloudSegmentationDataset(base_dataset_path, image_path, subset=Split.Testing),
+        CloudSegmentationDataset(
+            base_dataset_path, image_path, subset=SplitEnum.testing
+        ),
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
@@ -328,9 +331,9 @@ def main():
 
     criterion = BCEDiceLoss(eps=1.0)
     lr = 3e-3
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+    optimiser = torch.optim.SGD(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-        optimizer, 7, eta_min=lr / 100, last_epoch=-1
+        optimiser, 7, eta_min=lr / 100, last_epoch=-1
     )
 
     model = train_model(
@@ -338,7 +341,7 @@ def main():
         train_loader,
         valid_loader,
         criterion,
-        optimizer,
+        optimiser,
         scheduler,
         save_model_path,
     )

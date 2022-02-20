@@ -48,9 +48,7 @@ class ConditionalBatchNorm2d(nn.Module):
 
 
 class GenBlock(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, in_channels, out_channels, num_classes):
         super(GenBlock, self).__init__()
@@ -157,9 +155,7 @@ class Generator(nn.Module):
 
 
 class DiscriminatorOptBlock(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, in_channels, out_channels):
         super().__init__()
@@ -210,9 +206,7 @@ class DiscriminatorOptBlock(nn.Module):
 
 
 class DiscriminatorBlock(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, in_channels, out_channels):
         super().__init__()

@@ -12,21 +12,43 @@ __all__ = ["plot_kernels"]
 from enum import Enum
 
 from matplotlib import pyplot
+from sorcery import assigned_names
+from torch import Tensor
 
 
-class cmapEnum(Enum):
-    gray = "gray"
+class CmapEnum(Enum):  # TODO: Add more
+    (gray, binary, viridis) = assigned_names()
 
 
-class interpolationEnum(Enum):
-    bilinear = "bilinear"
+class InterpolationEnum(Enum):
+    (
+        none,
+        antialiased,
+        nearest,
+        bilinear,
+        bicubic,
+        spline16,
+        spline36,
+        hanning,
+        hamming,
+        hermite,
+        kaiser,
+        quadric,
+        catrom,
+        gaussian,
+        bessel,
+        mitchell,
+        sinc,
+        lanczos,
+        blackman,
+    ) = assigned_names()
 
 
 def plot_kernels(
-        tensor,
-        number_cols: int = 5,
-        m_interpolation: interpolationEnum = interpolationEnum.bilinear,
-):
+    tensor: Tensor,
+    number_cols: int = 5,
+    m_interpolation: InterpolationEnum = InterpolationEnum.bilinear,
+) -> None:
     """
     Function to visualize the kernels.
 
@@ -45,6 +67,6 @@ def plot_kernels(
         ax1.imshow(
             tensor[i][0, :, :],
             interpolation=m_interpolation.value,
-            cmap=cmapEnum.gray.value,
+            cmap=CmapEnum.gray.value,
         )
         ax1.axis("off")

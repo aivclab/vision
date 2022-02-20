@@ -7,15 +7,17 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
-import numpy
 import random
-import torch
 from pathlib import Path
 from typing import Tuple
+
+import numpy
+import torch
 
 __all__ = ["TripletDataset"]
 
 from draugr.torch_utilities import global_pin_memory
+from torch.utils.data import DataLoader
 
 from neodroidvision.data.classification.nlet import PairDataset
 
@@ -58,12 +60,13 @@ class TripletDataset(
             self._dataset.sample(
                 t2, random.randint(0, self._dataset.category_sizes[t2])
             )[0],
+            *(t1, t2 if self.return_categories else ()),
         )
 
     def sample(self, horizontal_merge: bool = False) -> None:
         """ """
         dl = iter(
-            torch.utils.data.DataLoader(
+            DataLoader(
                 self,
                 batch_size=9,
                 shuffle=True,
@@ -72,22 +75,19 @@ class TripletDataset(
             )
         )
         for _ in range(3):
-            images1, images2, images3 = next(dl)
-            X1 = images1.numpy()
-            X1 = numpy.transpose(X1, [0, 2, 3, 1])
-            X2 = images2.numpy()
-            X2 = numpy.transpose(X2, [0, 2, 3, 1])
-            X3 = images3.numpy()
-            X3 = numpy.transpose(X3, [0, 2, 3, 1])
+            images1, images2, images3, *labels = next(dl)
+            X1 = numpy.transpose(images1.numpy(), [0, 2, 3, 1])
+            X2 = numpy.transpose(images2.numpy(), [0, 2, 3, 1])
+            X3 = numpy.transpose(images3.numpy(), [0, 2, 3, 1])
             if horizontal_merge:
                 X = numpy.dstack((X1, X2, X3))
             else:
                 X = numpy.hstack((X1, X2, X3))
-            PairDataset.plot_images(X)
+            PairDataset.plot_images(X, list(zip(*labels)))
 
 
 if __name__ == "__main__":
-    sd = TripletDataset(Path.home() / "Data" / "mnist_png")
+    sd = TripletDataset(Path.home() / "Data" / "mnist_png", return_categories=True)
     print(sd.predictor_shape)
     print(sd.response_shape)
     sd.sample()

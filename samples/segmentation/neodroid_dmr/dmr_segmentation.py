@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
+
 import cv2
 import numpy
 import pandas
 import seaborn
 import torch
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     TorchEvalSession,
@@ -14,7 +16,6 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -35,42 +36,42 @@ __doc__ = r"""
 def reschedule(model, epoch, scheduler):
     "This can be improved its just a hacky way to write SGDWR"
     if epoch == 7:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.005)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
     if epoch == 13:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.005)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.005)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
     if epoch == 19:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.002)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
     if epoch == 25:
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.002)
-        current_lr = next(iter(optimizer.param_groups))["lr"]
+        optimiser = torch.optim.SGD(model.parameters(), lr=0.002)
+        current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, 6, eta_min=current_lr / 100, last_epoch=-1
+            optimiser, 6, eta_min=current_lr / 100, last_epoch=-1
         )
 
     return model, scheduler
 
 
 def train_d(
-        model,
-        train_loader,
-        valid_loader,
-        criterion,
-        optimizer,
-        scheduler,
-        save_model_path,
-        n_epochs=0,
+    model,
+    train_loader,
+    valid_loader,
+    criterion,
+    optimiser,
+    scheduler,
+    save_model_path,
+    n_epochs=0,
 ):
     """
 
@@ -79,7 +80,7 @@ def train_d(
       train_loader:
       valid_loader:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       save_model_path:
       n_epochs:
@@ -101,12 +102,12 @@ def train_d(
                     data.to(global_torch_device()),
                     target.to(global_torch_device()),
                 )
-                optimizer.zero_grad()
+                optimiser.zero_grad()
                 output, *_ = model(data)
                 output = torch.sigmoid(output)
                 loss = criterion(output, target)
                 loss.backward()
-                optimizer.step()
+                optimiser.step()
                 train_loss += loss.item() * data.size(0)
                 train_set.set_postfix(ordered_dict={"train_loss": loss.item()})
 
@@ -260,7 +261,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
         CloudSegmentationDataset(
             df_path=base_path / "sample_submission.csv",
             resized_loc=resized_loc,
-            subset=Split.Testing,
+            subset=SplitEnum.testing,
         ),
         batch_size=batch_size,
         shuffle=False,
@@ -329,9 +330,7 @@ def submission(model, class_params, base_path, batch_size, resized_loc):
 
 
 def main():
-    """
-
-    """
+    """ """
     pyplot.style.use("bmh")
 
     base_path = Path.home() / "Data" / "Datasets" / "Clouds"
@@ -350,7 +349,7 @@ def main():
         CloudSegmentationDataset(
             df_path=base_path / "train.csv",
             resized_loc=resized_loc,
-            subset=Split.Training,
+            subset=SplitEnum.training,
         ),
         batch_size=batch_size,
         shuffle=True,
@@ -360,7 +359,7 @@ def main():
         CloudSegmentationDataset(
             df_path=base_path / "train.csv",
             resized_loc=resized_loc,
-            subset=Split.Validation,
+            subset=SplitEnum.validation,
         ),
         batch_size=batch_size,
         shuffle=False,
@@ -378,17 +377,17 @@ def main():
         model.load_state_dict(torch.load(str(save_model_path)))  # load last model
 
     criterion = BCEDiceLoss(eps=1.0)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-    current_lr = next(iter(optimizer.param_groups))["lr"]
+    optimiser = torch.optim.SGD(model.parameters(), lr=0.01)
+    current_lr = next(iter(optimiser.param_groups))["lr"]
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer, 7, eta_min=current_lr / 100, last_epoch=-1
+        optimiser, 7, eta_min=current_lr / 100, last_epoch=-1
     )
     model = train_d(
         model,
         train_loader,
         valid_loader,
         criterion,
-        optimizer,
+        optimiser,
         scheduler,
         str(save_model_path),
     )

@@ -7,12 +7,13 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
+from typing import List
+
 import torch
 from draugr.torch_utilities import conv2d_hw_shape
 from draugr.torch_utilities.operations.sizes.pad2d import pad2d_hw_shape
 from numpy import product
 from torch import nn
-from typing import List
 
 __all__ = ["NLetConvNet"]
 

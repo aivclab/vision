@@ -1,5 +1,6 @@
 import sys
-from draugr import pil_img_to_np_array
+
+from draugr.visualisation import pil_img_to_np_array
 
 from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     imgs = []
     paths = [config["data_dir"] / "lenna.jpg", config["data_dir"] / "cat.jpg"]
     for i in range(len(paths)):
-        img = pil_img_to_np_array(paths[i], desired_size=[512, 512], expand=True)
+        img = pil_img_to_np_array(paths[i], desired_size=(512, 512), expand=True)
         imgs.append(torch.from_numpy(img))
     imgs = torch.cat(imgs).permute((0, 3, 1, 2))
 

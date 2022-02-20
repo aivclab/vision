@@ -1,28 +1,27 @@
+from functools import reduce
+
 import numpy
 import torch
-from draugr import (
+from draugr.visualisation import (
     np_array_to_pil_img,
     pil_img_to_np_array,
     pil_merge_images,
 )
-from functools import reduce
 from matplotlib import pyplot
 
-from samples.classification.ram.architecture.ram_modules import GlimpseSensor
-from samples.classification.ram.ram_params import get_ram_config
+from ..architecture.ram_modules import GlimpseSensor
+from ..ram_params import get_ram_config
 
 
 def main():
-    """
-
-    """
+    """ """
     data_dir = get_ram_config()["data_dir"]
 
     # load images
     imgs = []
     paths = [data_dir / "lenna.jpg", data_dir / "cat.jpg"]
     for i in range(len(paths)):
-        img = pil_img_to_np_array(paths[i], desired_size=[512, 512], expand=True)
+        img = pil_img_to_np_array(paths[i], desired_size=(512, 512), expand=True)
         imgs.append(torch.from_numpy(img))
     imgs = torch.cat(imgs).permute(0, 3, 1, 2)
 

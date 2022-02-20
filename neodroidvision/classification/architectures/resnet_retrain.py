@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from typing import List, Tuple
+
 import torch
 import torchvision
-from typing import List, Tuple
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -24,10 +25,10 @@ from torchvision.models import ResNet
 
 
 def resnet_retrain(
-        num_classes: int,
-        freeze_first_num: int = 6,
-        pretrained: bool = True,
-        resnet_factory: callable = torchvision.models.resnet18,
+    num_classes: int,
+    freeze_first_num: int = 6,
+    pretrained: bool = True,
+    resnet_factory: callable = torchvision.models.resnet18,
 ) -> Tuple[ResNet, List[Parameter]]:
     """
 

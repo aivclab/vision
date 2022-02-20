@@ -4,25 +4,6 @@ import argparse
 import os
 import time
 
-import torchvision
-from draugr import (
-    batch_generator,
-    rgb_drop_alpha_batch_nhwc,
-    torch_vision_normalize_batch_nchw,
-)
-from draugr.torch_utilities import (
-    TensorBoardPytorchWriter,
-    ensure_directory_exist,
-    global_torch_device,
-    to_tensor,
-    uint_hwc_to_chw_float_tensor,
-)
-from draugr.visualisation import horizontal_imshow
-from matplotlib import pyplot
-from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
-    MixedObservationWrapper,
-)
-
 import torch
 import torchvision
 from draugr import (
@@ -74,9 +55,7 @@ __all__ = []
 
 
 def main():
-    """
-
-    """
+    """ """
     args = argparse.ArgumentParser()
     args.add_argument("--inference", "-i", action="store_true")
     args.add_argument("--continue_training", "-c", action="store_true")
@@ -119,11 +98,11 @@ def main():
 
     criterion = torch.nn.CrossEntropyLoss().to(global_torch_device())
 
-    optimizer_ft = optim.SGD(
+    optimiser_ft = optim.SGD(
         model.parameters(), lr=learning_rate, momentum=momentum, weight_decay=wd
     )
     exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(
-        optimizer_ft, step_size=7, gamma=0.1
+        optimiser_ft, step_size=7, gamma=0.1
     )
 
     writer = TensorBoardPytorchWriter(this_log)
@@ -133,7 +112,7 @@ def main():
             model,
             train_iterator=train_iter,
             criterion=criterion,
-            optimizer=optimizer_ft,
+            optimiser=optimiser_ft,
             scheduler=exp_lr_scheduler,
             writer=writer,
             interrupted_path=interrupted_path,

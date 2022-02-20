@@ -1,22 +1,23 @@
 import logging
-import numpy
 import os
 import random
 import shutil
 import time
+from pathlib import Path
+
+import numpy
 import torch
 from draugr import AverageMeter, find_unclaimed_port
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import TensorBoardPytorchWriter
-from pathlib import Path
+from mixed.architectures.self_attention_network import (
+    make_san,
+)
+from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
 from torch import distributed, multiprocessing, nn
 from torch.backends import cudnn
 from torch.optim import lr_scheduler
 
-from neodroidvision.classification.architectures.self_attention_network import (
-    SelfAttentionTypeEnum,
-    make_san,
-)
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,
@@ -58,7 +59,7 @@ def is_main_process():
 
     """
     return not CONFIG.multiprocessing_distributed or (
-            CONFIG.multiprocessing_distributed and CONFIG.rank % CONFIG.ngpus_per_node == 0
+        CONFIG.multiprocessing_distributed and CONFIG.rank % CONFIG.ngpus_per_node == 0
     )
 
 
@@ -72,8 +73,8 @@ def main_worker(gpu, ngpus_per_node, config):
     """
     global CONFIG, best_acc1
     CONFIG, best_acc1 = config, 0
-    train_set = config.dataset_type(CONFIG.dataset_path, Split.Training)
-    val_set = config.dataset_type(CONFIG.dataset_path, Split.Validation)
+    train_set = config.dataset_type(CONFIG.dataset_path, SplitEnum.training)
+    val_set = config.dataset_type(CONFIG.dataset_path, SplitEnum.validation)
 
     if CONFIG.distributed:
         if CONFIG.dist_url == "env://" and CONFIG.rank == -1:
@@ -94,7 +95,7 @@ def main_worker(gpu, ngpus_per_node, config):
         num_classes=train_set.response_shape[0],
     )
     criterion = nn.CrossEntropyLoss(ignore_index=CONFIG.ignore_label)
-    optimizer = torch.optim.SGD(
+    optimiser = torch.optim.SGD(
         model.parameters(),
         lr=CONFIG.base_lr,
         momentum=CONFIG.momentum,
@@ -102,10 +103,10 @@ def main_worker(gpu, ngpus_per_node, config):
     )
     if CONFIG.scheduler == "step":
         scheduler = lr_scheduler.MultiStepLR(
-            optimizer, milestones=CONFIG.step_epochs, gamma=0.1
+            optimiser, milestones=CONFIG.step_epochs, gamma=0.1
         )
     elif CONFIG.scheduler == "cosine":
-        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=CONFIG.epochs)
+        scheduler = lr_scheduler.CosineAnnealingLR(optimiser, T_max=CONFIG.epochs)
 
     if is_main_process():
         global logger, writer
@@ -152,7 +153,7 @@ def main_worker(gpu, ngpus_per_node, config):
             CONFIG.start_epoch = checkpoint["epoch"]
             best_acc1 = checkpoint["top1_val"]
             model.load_state_dict(checkpoint["state_dict"])
-            optimizer.load_state_dict(checkpoint["optimizer"])
+            optimiser.load_state_dict(checkpoint["optimiser"])
             scheduler.load_state_dict(checkpoint["scheduler"])
             if is_main_process():
                 global logger
@@ -198,7 +199,7 @@ def main_worker(gpu, ngpus_per_node, config):
             allAcc_train,
             top1_train,
             top5_train,
-        ) = train(train_loader, model, criterion, optimizer, epoch)
+        ) = train(train_loader, model, criterion, optimiser, epoch)
         loss_val, mIoU_val, mAcc_val, allAcc_val, top1_val, top5_val = validate(
             val_loader, model, criterion
         )
@@ -227,7 +228,7 @@ def main_worker(gpu, ngpus_per_node, config):
                 {
                     "epoch": epoch_log,
                     "state_dict": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
+                    "optimiser": torch.optim.Optimizer.state_dict(),
                     "scheduler": scheduler.state_dict(),
                     "top1_val": top1_val,
                     "top5_val": top5_val,
@@ -239,20 +240,20 @@ def main_worker(gpu, ngpus_per_node, config):
                 shutil.copyfile(filename, CONFIG.save_path / "model_best.pth")
             if epoch_log / CONFIG.save_freq > 2:
                 deletename = (
-                        CONFIG.save_path
-                        / f"train_epoch_{str(epoch_log - CONFIG.save_freq * 2)}.pth"
+                    CONFIG.save_path
+                    / f"train_epoch_{str(epoch_log - CONFIG.save_freq * 2)}.pth"
                 )
                 os.remove(deletename)
 
 
-def train(train_loader, model, criterion, optimizer, epoch):
+def train(train_loader, model, criterion, optimiser, epoch):
     """
 
     Args:
       train_loader:
       model:
       criterion:
-      optimizer:
+      optimiser:
       epoch:
 
     Returns:
@@ -288,9 +289,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
                 if CONFIG.label_smoothing
                 else criterion(output, target)
             )
-        optimizer.zero_grad()
+        optimiser.zero_grad()
         loss.backward()
-        optimizer.step()
+        optimiser.step()
 
         top1, top5 = cal_accuracy(output, target, topk=(1, 5))
         n = input.size(0)
@@ -470,9 +471,7 @@ def validate(val_loader, model, criterion):
 if __name__ == "__main__":
 
     def main():
-        """
-
-        """
+        """ """
         from samples.classification.san.configs.imagenet_san10_pairwise import (
             SAN_CONFIG,
         )
@@ -491,7 +490,7 @@ if __name__ == "__main__":
         if SAN_CONFIG.dist_url == "env://" and SAN_CONFIG.world_size == -1:
             SAN_CONFIG.world_size = int(os.environ["WORLD_SIZE"])
         SAN_CONFIG.distributed = (
-                SAN_CONFIG.world_size > 1 or SAN_CONFIG.multiprocessing_distributed
+            SAN_CONFIG.world_size > 1 or SAN_CONFIG.multiprocessing_distributed
         )
         SAN_CONFIG.ngpus_per_node = len(SAN_CONFIG.train_gpu)
         if len(SAN_CONFIG.train_gpu) == 1:
@@ -509,6 +508,5 @@ if __name__ == "__main__":
             )
         else:
             main_worker(SAN_CONFIG.train_gpu, SAN_CONFIG.ngpus_per_node, SAN_CONFIG)
-
 
     main()

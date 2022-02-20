@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import argparse
 import copy
 import os
 import time
+
 import torch
 import torchvision
+from data.classification.deprec.s_mnist import MNISTDataset2
 from draugr import recycle
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
-
     TensorBoardPytorchWriter,
     TorchEvalSession,
     TorchTrainSession,
@@ -19,28 +19,27 @@ from draugr.torch_utilities import (
     to_tensor,
     torch_clean_up,
 )
-
 from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from torch import optim
 from torch.utils.data import DataLoader
+from torchvision.transforms.functional import to_pil_image
 from tqdm import tqdm
+from warg import ContextWrapper
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
-
-from neodroidvision.data.classification import MNISTDataset2
 
 __author__ = "Christian Heider Nielsen"
 __all__ = []
 __doc__ = r""""""
 
 seed = 34874312
-batch_size = 16
+batch_size = 64
 tqdm.monitor_interval = 0
-learning_rate = 3e-5
+learning_rate = 3e-6
 momentum = 0.9
-wd = 3e-8
+wd = 3e-7
 test_batch_size = batch_size
 EARLY_STOP = 3e-6
 NUM_UPDATES = 6000
@@ -53,25 +52,26 @@ normalise = torchvision.transforms.Normalize(
 
 
 def predictor_response_train_model(
-        model,
-        *,
-        train_iterator,
-        criterion,
-        optimizer,
-        scheduler,
-        writer,
-        interrupted_path,
-        val_data_iterator=None,
-        num_updates: int = 250000,
-        device=global_torch_device(),
-        early_stop=None,
+    model,
+    *,
+    train_iterator,
+    criterion,
+    optimiser,
+    scheduler,
+    writer,
+    interrupted_path,
+    val_data_iterator=None,
+    num_updates: int = 250000,
+    device=global_torch_device(),
+    early_stop=None,
+    debug=False,
 ):
     """
 
     :param model:
     :param train_iterator:
     :param criterion:
-    :param optimizer:
+    :param optimiser:
     :param scheduler:
     :param writer:
     :param interrupted_path:
@@ -90,12 +90,10 @@ def predictor_response_train_model(
         val_loss = 0
         update_loss = 0
         val_acc = 0
-        last_val = None
-        last_out = None
-        with torch.autograd.detect_anomaly():
+        with ContextWrapper(torch.autograd.detect_anomaly, enabled=debug):
             for update_i in sess:
-                for phase in [Split.Training, Split.Validation]:
-                    if phase == Split.Training:
+                for phase in [SplitEnum.training, SplitEnum.validation]:
+                    if phase == SplitEnum.training:
                         with TorchTrainSession(model):
 
                             input, true_label = next(train_iterator)
@@ -106,12 +104,12 @@ def predictor_response_train_model(
                             true_label = to_tensor(
                                 true_label, dtype=torch.long, device=device
                             )
-                            optimizer.zero_grad()
+                            optimiser.zero_grad()
 
                             pred = model(rgb_imgs)
                             loss = criterion(pred, true_label)
                             loss.backward()
-                            optimizer.step()
+                            optimiser.step()
 
                             update_loss = loss.data.cpu().numpy()
                             writer.scalar(f"loss/train", update_loss, update_i)
@@ -172,19 +170,9 @@ def predictor_response_train_model(
     return model
 
 
-def main():
-    """
+def main(train_model=True, continue_training=True, no_cuda=False):
+    """ """
 
-    """
-    args = argparse.ArgumentParser()
-    args.add_argument("--inference", "-i", action="store_true")
-    args.add_argument("--continue_training", "-c", action="store_true")
-    args.add_argument("--real_data", "-r", action="store_true")
-    args.add_argument("--no_cuda", "-k", action="store_false")
-    args.add_argument("--export", "-e", action="store_true")
-    options = args.parse_args()
-
-    train_model = True
     timeas = str(time.time())
     this_model_path = PROJECT_APP_PATH.user_data / timeas
     this_log = PROJECT_APP_PATH.user_log / timeas
@@ -196,10 +184,12 @@ def main():
 
     torch.manual_seed(seed)
 
-    if not options.no_cuda:
+    if no_cuda:
         global_torch_device("cpu")
 
-    dataset = MNISTDataset2(PROJECT_APP_PATH.user_cache / "mnist", split=Split.Training)
+    dataset = MNISTDataset2(
+        PROJECT_APP_PATH.user_cache / "mnist", split=SplitEnum.training
+    )
     train_iter = iter(
         recycle(
             DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
@@ -210,7 +200,7 @@ def main():
         recycle(
             DataLoader(
                 MNISTDataset2(
-                    PROJECT_APP_PATH.user_cache / "mnist", split=Split.Validation
+                    PROJECT_APP_PATH.user_cache / "mnist", split=SplitEnum.validation
                 ),
                 batch_size=batch_size,
                 shuffle=True,
@@ -219,11 +209,13 @@ def main():
         )
     )
 
-    model, params_to_update = squeezenet_retrain(len(dataset.categories))
-    print(params_to_update)
+    model, params_to_update = squeezenet_retrain(
+        len(dataset.categories), train_only_last_layer=True
+    )
+    # print(params_to_update)
     model = model.to(global_torch_device())
 
-    if options.continue_training:
+    if continue_training:
         _list_of_files = list(PROJECT_APP_PATH.user_data.rglob("*.model"))
         latest_model_path = str(max(_list_of_files, key=os.path.getctime))
         print(f"loading previous model: {latest_model_path}")
@@ -232,11 +224,11 @@ def main():
 
     criterion = torch.nn.CrossEntropyLoss().to(global_torch_device())
 
-    optimizer_ft = optim.SGD(
+    optimiser_ft = optim.SGD(
         model.parameters(), lr=learning_rate, momentum=momentum, weight_decay=wd
     )
     exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(
-        optimizer_ft, step_size=7, gamma=0.1
+        optimiser_ft, step_size=7, gamma=0.1
     )
 
     with TensorBoardPytorchWriter(this_log) as writer:
@@ -245,7 +237,7 @@ def main():
                 model,
                 train_iterator=train_iter,
                 criterion=criterion,
-                optimizer=optimizer_ft,
+                optimiser=optimiser_ft,
                 scheduler=exp_lr_scheduler,
                 writer=writer,
                 interrupted_path=interrupted_path,
@@ -253,7 +245,7 @@ def main():
                 num_updates=NUM_UPDATES,
             )
 
-        inputs, true_label = next(train_iter)
+        inputs, true_label = next(val_iter)
         inputs = to_tensor(
             inputs, dtype=torch.float, device=global_torch_device()
         ).repeat(1, 3, 1, 1)
@@ -264,9 +256,11 @@ def main():
         pred = model(inputs)
         predicted = torch.argmax(pred, -1)
         true_label = to_tensor(true_label, dtype=torch.long)
-        print(predicted, true_label)
+        # print(predicted, true_label)
         horizontal_imshow(
-            inputs, [f"p:{int(p)},t:{int(t)}" for p, t in zip(predicted, true_label)]
+            [to_pil_image(i) for i in inputs],
+            [f"p:{int(p)},t:{int(t)}" for p, t in zip(predicted, true_label)],
+            num_columns=64 // 8,
         )
         pyplot.show()
 
@@ -279,4 +273,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(train_model=True, continue_training=False)

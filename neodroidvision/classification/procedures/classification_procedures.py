@@ -1,10 +1,12 @@
 import copy
-import numpy
 import string
 import time
+from pathlib import Path
+
+import numpy
 import torch
 import tqdm
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
@@ -20,7 +22,6 @@ from draugr.visualisation import confusion_matrix_plot
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.utilities.html_embeddings import generate_math_html, plt_html
-from pathlib import Path
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
 
@@ -115,16 +116,16 @@ def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
 
 
 def pred_target_train_model(
-        model,
-        train_iterator,
-        criterion,
-        optimizer,
-        scheduler,
-        writer,
-        interrupted_path,
-        test_data_iterator=None,
-        num_updates: int = 250000,
-        early_stop=None,
+    model,
+    train_iterator,
+    criterion,
+    optimiser,
+    scheduler,
+    writer,
+    interrupted_path,
+    test_data_iterator=None,
+    num_updates: int = 250000,
+    early_stop=None,
 ) -> torch.nn.Module:
     """
 
@@ -132,7 +133,7 @@ def pred_target_train_model(
       model:
       train_iterator:
       criterion:
-      optimizer:
+      optimiser:
       scheduler:
       writer:
       interrupted_path:
@@ -156,8 +157,8 @@ def pred_target_train_model(
         last_out = None
         with torch.autograd.detect_anomaly():
             for update_i in sess:
-                for phase in [Split.Training, Split.Validation]:
-                    if phase == Split.Training:
+                for phase in [SplitEnum.training, SplitEnum.validation]:
+                    if phase == SplitEnum.training:
                         with TorchTrainSession(model):
 
                             input, true_label = zip(*next(train_iterator))
@@ -168,12 +169,12 @@ def pred_target_train_model(
                                 )
                             )
                             true_label = to_tensor(true_label, dtype=torch.long)
-                            optimizer.zero_grad()
+                            optimiser.zero_grad()
 
                             pred = model(rgb_imgs)
                             loss = criterion(pred, true_label)
                             loss.backward()
-                            optimizer.step()
+                            optimiser.step()
 
                             if last_out is None:
                                 last_out = pred

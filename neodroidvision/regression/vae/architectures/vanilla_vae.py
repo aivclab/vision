@@ -6,6 +6,7 @@ __doc__ = ""
 
 import torch
 import torch.utils.data
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 from torch.nn.functional import binary_cross_entropy
 
@@ -15,9 +16,7 @@ __all__ = ["VanillaVAE"]
 
 
 class Encoder(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, input_size=784, output_size=20):
         super().__init__()
@@ -53,9 +52,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    """
-
-    """
+    """ """
 
     def __init__(self, input_size=20, output_size=784):
         super().__init__()
@@ -142,7 +139,9 @@ class VanillaVAE(VAE):
 
         """
         BCE = binary_cross_entropy(
-            recon_x, x.view(-1, self._input_size), reduction="sum"
+            recon_x,
+            x.view(-1, self._input_size),
+            reduction=ReductionMethodEnum.sum.value,
         )
 
         # see Appendix B from VAE paper:

@@ -8,18 +8,18 @@ from torch.nn.modules.conv import _ConvNd
 
 
 def step_learning_rate(
-        optimizer, base_lr, epoch, step_epoch, multiplier=0.1, clip=1e-6
+    optimiser, base_lr, epoch, step_epoch, multiplier=0.1, clip=1e-6
 ):
     """step learning rate policy"""
     lr = max(base_lr * (multiplier ** (epoch // step_epoch)), clip)
-    for param_group in optimizer.param_groups:
+    for param_group in optimiser.param_groups:
         param_group["lr"] = lr
 
 
-def poly_learning_rate(optimizer, base_lr, curr_iter, max_iter, power=0.9):
+def poly_learning_rate(optimiser, base_lr, curr_iter, max_iter, power=0.9):
     """poly learning rate policy"""
     lr = base_lr * (1 - float(curr_iter) / max_iter) ** power
-    for param_group in optimizer.param_groups:
+    for param_group in optimiser.param_groups:
         param_group["lr"] = lr
 
 
@@ -81,7 +81,7 @@ def intersection_and_union_gpu(output, target, K, ignore_index=255):
 
 
 def init_weights(
-        model, conv="kaiming", batchnorm="normal", linear="kaiming", lstm="kaiming"
+    model, conv="kaiming", batchnorm="normal", linear="kaiming", lstm="kaiming"
 ):
     """
     :param model: Pytorch Model which is nn.Module

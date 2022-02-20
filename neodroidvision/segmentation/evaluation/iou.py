@@ -9,10 +9,10 @@ __doc__ = r"""
 
 import numpy
 
-__all__ = ["intersection_over_union"]
+__all__ = ["intersection_over_union", "dice_coefficient"]
 
 
-def intersection_over_union(img1, img2) -> float:
+def dice_coefficient(img1, img2, threshold=0.5) -> float:
     """
 
     Args:
@@ -22,9 +22,17 @@ def intersection_over_union(img1, img2) -> float:
     Returns:
 
     """
-    img1 = numpy.asarray(img1).astype(numpy.bool)
-    img2 = numpy.asarray(img2).astype(numpy.bool)
+    img1 = numpy.asarray(img1) > threshold
+    img2 = numpy.asarray(img2) > threshold
 
     intersection = numpy.logical_and(img1, img2)
-
     return 2.0 * intersection.sum() / (img1.sum() + img2.sum())
+
+
+def intersection_over_union(img1, img2, threshold=0.5) -> float:
+    img1 = numpy.asarray(img1) > threshold
+    img2 = numpy.asarray(img2) > threshold
+
+    return numpy.sum(numpy.logical_and(img1, img2)) / numpy.sum(
+        numpy.logical_or(img1, img2)
+    )

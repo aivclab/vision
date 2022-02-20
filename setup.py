@@ -73,7 +73,7 @@ import re
 from setuptools import find_packages, setup
 
 with open(
-        Path(__file__).parent / "neodroidvision" / "__init__.py", "r"
+    Path(__file__).parent / "neodroidvision" / "__init__.py", "r"
 ) as project_init_file:
     str_reg_exp = "['\"]([^'\"]*)['\"]"
     content = project_init_file.read()  # get strings from module
@@ -84,9 +84,7 @@ __author__ = author
 
 
 class NeodroidVisionPackage:
-    '''
-
-    '''
+    """ """
 
     @property
     def test_dependencies(self) -> list:

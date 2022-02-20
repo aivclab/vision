@@ -1,0 +1,21 @@
+<html>
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js'></script>
+    <script src='../common/ndarray-browser-min.js'></script>
+    <script src='../common/imagenet.js'></script>
+    <script src='../common/image-loader.js'></script>
+    <script src='index.js'></script>
+    <script>
+        const imageSize = 224;
+
+    </script>
+</head>
+<body>
+<h1>Squeezenet Example</h1>
+<img id='imageSource' src='cat.jpg'/>
+<div>
+    <input onclick='runExample()' type='button' value='Run'>
+</div>
+<canvas id='predictions'></canvas>
+</body>
+</html>

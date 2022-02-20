@@ -1,6 +1,7 @@
+from typing import Tuple
+
 import torch
 from torch import nn
-from typing import Tuple
 
 __all__ = ["Compress"]
 
@@ -10,12 +11,20 @@ class Compress(nn.Module):
     A helper Module that performs 2 convolutions and 1 MaxPool.
     A ReLU activation follows each convolution."""
 
-    def __init__(self, in_channels: int, out_channels: int, pooling: bool = True):
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        *,
+        pooling: bool = True,
+        activation=torch.relu,
+    ):
         super().__init__()
 
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.pooling = pooling
+        self.activation = activation
 
         self.conv1 = nn.Conv2d(
             self.in_channels,
@@ -48,8 +57,7 @@ class Compress(nn.Module):
         Returns:
 
         """
-        x = torch.relu(self.conv1(x))
-        x = torch.relu(self.conv2(x))
+        x = self.activation(self.conv2(self.activation(self.conv1(x))))
         before_pool = x
 
         if self.pooling:

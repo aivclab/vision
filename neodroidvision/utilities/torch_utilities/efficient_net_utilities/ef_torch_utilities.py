@@ -46,5 +46,5 @@ def drop_connect(inputs: torch.Tensor, p: float, training: bool) -> torch.Tensor
     return inputs / keep_prob * binary_tensor
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(drop_connect(torch.ones(2, 2), 0.5, True))

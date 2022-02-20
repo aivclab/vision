@@ -7,12 +7,13 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import numpy
-from PIL import Image
-from draugr.numpy_utilities import Split
-from draugr.opencv_utilities import xywh_to_minmax
 from pathlib import Path
 from typing import Tuple
+
+import numpy
+from PIL import Image
+from draugr.numpy_utilities import SplitEnum
+from draugr.opencv_utilities import xywh_to_minmax
 
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
@@ -139,12 +140,12 @@ class COCODataset(ObjectDetectionDataset):
         raise NotImplementedError
 
     def __init__(
-            self,
-            data_root: Path,
-            dataset_name: str,
-            split: Split,
-            img_transform: callable = None,
-            annotation_transform: callable = None,
+        self,
+        data_root: Path,
+        dataset_name: str,
+        split: SplitEnum,
+        img_transform: callable = None,
+        annotation_transform: callable = None,
     ):
         """
 
@@ -162,7 +163,6 @@ class COCODataset(ObjectDetectionDataset):
         :type remove_empty:"""
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
-
         )
         from pycocotools.coco import COCO
 
@@ -170,7 +170,7 @@ class COCODataset(ObjectDetectionDataset):
         self._image_dir = data_root / self.image_dirs[dataset_name]
         self._img_transforms = img_transform
         self._annotation_transforms = annotation_transform
-        self._remove_empty = split == Split.Training
+        self._remove_empty = split == SplitEnum.training
         if self._remove_empty:
             self._ids = list(
                 self._coco_source.imgToAnns.keys()
@@ -227,7 +227,7 @@ class COCODataset(ObjectDetectionDataset):
         ).reshape((-1,))
 
         keep = (boxes[:, 3] > boxes[:, 1]) & (
-                boxes[:, 2] > boxes[:, 0]
+            boxes[:, 2] > boxes[:, 0]
         )  # remove invalid boxes
         return boxes[keep], labels[keep]
 

@@ -13,7 +13,7 @@ from pyfiglet import Figlet
 
 from neodroidvision import get_version
 
-sponsors = "SINTEF Ocean, Alexandra Institute, Norges Forskningsråd"
+sponsors = "Alexandra Institute"
 margin_percentage = 0 / 6
 terminal_width = draugr.get_terminal_size().columns
 margin = int(margin_percentage * terminal_width)
@@ -24,23 +24,19 @@ indent = " " * margin
 
 class NeodroidVisionCLI(object):
     def run(self) -> None:
-        """
-
-        """
+        """ """
         pass
 
     @staticmethod
     def version() -> None:
         """
-        Prints the version of this Neodroid installation."""
+        Prints the version of this Neodroid Vision installation."""
         draw_cli_header()
         print(f"Version: {get_version()}")
 
     @staticmethod
     def sponsors() -> None:
-        """
-
-        """
+        """ """
         print(sponsors)
 
 

@@ -1,9 +1,9 @@
-import torch
-
 from typing import Tuple
 
-from samples.classification.ram.architecture import ram_modules
+import torch
 from torch import nn
+
+from . import ram_modules
 
 
 class RecurrentAttention(nn.Module):
@@ -19,16 +19,16 @@ class RecurrentAttention(nn.Module):
     [1]: Minh et. al., https://arxiv.org/abs/1406.6247"""
 
     def __init__(
-            self,
-            size_glimpse,
-            num_patches_per_glimpse,
-            scale_factor_suc,
-            num_channels,
-            hidden_size_glimpse,
-            hidden_size_locator,
-            std_policy,
-            hidden_size_rnn,
-            num_classes,
+        self,
+        size_glimpse,
+        num_patches_per_glimpse,
+        scale_factor_suc,
+        num_channels,
+        hidden_size_glimpse,
+        hidden_size_locator,
+        std_policy,
+        hidden_size_rnn,
+        num_classes,
     ):
         """Constructor.
 
@@ -56,54 +56,52 @@ class RecurrentAttention(nn.Module):
         )
         self._rnn = ram_modules.CoreRNN(hidden_size_rnn, hidden_size_rnn)
         self._locator_policy = ram_modules.Locator(hidden_size_rnn, 2, std_policy)
-        self._action_classifier = ram_modules.Actor(hidden_size_rnn, num_classes)
+        self.classifier = ram_modules.Actor(hidden_size_rnn, num_classes)
         self._signal_baseline = ram_modules.SignalBaseline(hidden_size_rnn, 1)
 
     def forward(
-            self,
-            x: torch.Tensor,
-            l_t_prev: torch.Tensor,
-            h_t_prev: torch.Tensor,
-            last: bool = False,
+        self,
+        x: torch.Tensor,
+        l_t_prev: torch.Tensor,
+        h_t_prev: torch.Tensor,
+        last: bool = False,
     ) -> Tuple[torch.Tensor, ...]:
-        """Run RAM for one timestep on a minibatch of images.
+        """Run RAM for one step on a minibatch of images.
 
         Args:
         x: a 4D Tensor of shape (B, H, W, C). The minibatch
             of images.
         l_t_prev: a 2D tensor of shape (B, 2). The location vector
             containing the glimpse coordinates [x, y] for the previous
-            timestep `t-1`.
+            step `t-1`.
         h_t_prev: a 2D tensor of shape (B, hidden_size). The hidden
-            state vector for the previous timestep `t-1`.
-        last: a bool indicating whether this is the last timestep.
+            state vector for the previous step `t-1`.
+        last: a bool indicating whether this is the last step.
             If True, the action network returns an output probability
             vector over the classes and the baseline `b_t` for the
-            current timestep `t`. Else, the core network returns the
-            hidden state vector for the next timestep `t+1` and the
-            location vector for the next timestep `t+1`.
+            current step `t`. Else, the core network returns the
+            hidden state vector for the next step `t+1` and the
+            location vector for the next step `t+1`.
 
         Returns:
         h_t: a 2D tensor of shape (B, hidden_size). The hidden
-            state vector for the current timestep `t`.
+            state vector for the current step `t`.
         mu: a 2D tensor of shape (B, 2). The mean that parametrizes
             the Gaussian policy.
         l_t: a 2D tensor of shape (B, 2). The location vector
             containing the glimpse coordinates [x, y] for the
-            current timestep `t`.
+            current step `t`.
         b_t: a vector of length (B,). The baseline for the
             current time step `t`.
         log_probas: a 2D tensor of shape (B, num_classes). The
             output log probability vector over the classes.
         log_pi: a vector of length (B,)."""
-        g_t = self._sensor(x, l_t_prev)
-        h_t = self._rnn(g_t, h_t_prev)
+        h_t = self._rnn(self._sensor(x, l_t_prev), h_t_prev)
 
         log_pi, l_t = self._locator_policy(h_t)
         b_t = self._signal_baseline(h_t).squeeze()
 
         if last:
-            log_probas = self._action_classifier(h_t)
-            return h_t, l_t, b_t, log_probas, log_pi
+            return (h_t, l_t, b_t, self.classifier(h_t), log_pi)  # log_probas
 
         return h_t, l_t, b_t, log_pi

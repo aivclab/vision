@@ -7,13 +7,13 @@ class SeparableConv2d(nn.Module):
     """"""
 
     def __init__(
-            self,
-            in_channels: int,
-            out_channels: int,
-            kernel_size: int = 1,
-            stride: int = 1,
-            padding: int = 0,
-            onnx_compatible: bool = False,
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int = 1,
+        stride: int = 1,
+        padding: int = 0,
+        onnx_compatible: bool = False,
     ):
         """
 
@@ -43,4 +43,9 @@ class SeparableConv2d(nn.Module):
         )
 
     def forward(self, x):
+        """
+
+        :param x:
+        :return:
+        """
         return self.conv(x)

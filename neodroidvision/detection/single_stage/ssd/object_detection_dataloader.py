@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import torch
-from draugr.numpy_utilities import Split
 from pathlib import Path
-from torch.utils.data import ConcatDataset, DataLoader
 from typing import List, Optional, Union
+
+import torch
+from draugr.numpy_utilities import SplitEnum
+from torch.utils.data import ConcatDataset, DataLoader
 from warg import NOD
 
 from neodroidvision.data.detection.multi_dataset import MultiDataset
@@ -25,13 +26,13 @@ __all__ = ["object_detection_data_loaders"]
 
 
 def object_detection_data_loaders(
-        *,
-        data_root: Path,
-        cfg: NOD,
-        split: Split = Split.Training,
-        distributed: bool = False,
-        max_iter: Optional[int] = None,
-        start_iter: int = 0
+    *,
+    data_root: Path,
+    cfg: NOD,
+    split: SplitEnum = SplitEnum.training,
+    distributed: bool = False,
+    max_iter: Optional[int] = None,
+    start_iter: int = 0
 ) -> Union[List[DataLoader], DataLoader]:
     """
 
@@ -50,17 +51,17 @@ def object_detection_data_loaders(
     :return:
     :rtype:"""
 
-    shuffle = split == Split.Training or distributed
+    shuffle = split == SplitEnum.training or distributed
     data_loaders = []
 
     for dataset in MultiDataset(
-            cfg=cfg,
-            dataset_type=cfg.dataset_type,
-            data_root=data_root,
-            sub_datasets=cfg.datasets.train
-            if split == Split.Training
-            else cfg.datasets.test,
-            split=split,
+        cfg=cfg,
+        dataset_type=cfg.dataset_type,
+        data_root=data_root,
+        sub_datasets=cfg.datasets.train
+        if split == SplitEnum.training
+        else cfg.datasets.test,
+        split=split,
     ).sub_datasets:
         if distributed:
             sampler = DistributedSampler(dataset, shuffle=shuffle)
@@ -72,7 +73,7 @@ def object_detection_data_loaders(
         batch_sampler = torch.utils.data.sampler.BatchSampler(
             sampler=sampler,
             batch_size=cfg.solver.batch_size
-            if split == Split.Training
+            if split == SplitEnum.training
             else cfg.test.batch_size,
             drop_last=False,
         )
@@ -87,11 +88,11 @@ def object_detection_data_loaders(
                 num_workers=cfg.data_loader.num_workers,
                 batch_sampler=batch_sampler,
                 pin_memory=cfg.data_loader.pin_memory,
-                collate_fn=BatchCollator(split == Split.Training),
+                collate_fn=BatchCollator(split == SplitEnum.training),
             )
         )
 
-    if split == Split.Training:
+    if split == SplitEnum.training:
         # during training, a single (possibly concatenated) data_loader is returned
         assert len(data_loaders) == 1
         return data_loaders[0]

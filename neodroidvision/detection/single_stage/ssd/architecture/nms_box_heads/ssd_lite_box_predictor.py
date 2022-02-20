@@ -18,12 +18,10 @@ __all__ = ["SSDLiteBoxPredictor"]
 
 
 class SSDLiteBoxPredictor(BoxPredictor):
-    '''
-
-    '''
+    """ """
 
     def category_block(
-            self, level: int, out_channels: int, boxes_per_location: int
+        self, level: int, out_channels: int, boxes_per_location: int
     ) -> nn.Module:
         """
 
@@ -49,7 +47,7 @@ class SSDLiteBoxPredictor(BoxPredictor):
         )
 
     def location_block(
-            self, level: int, out_channels: int, boxes_per_location: int
+        self, level: int, out_channels: int, boxes_per_location: int
     ) -> nn.Module:
         """
 

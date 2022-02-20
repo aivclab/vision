@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import numpy
-from PIL import Image
 from pathlib import Path
 from typing import Tuple
 from xml.etree import ElementTree
+
+import numpy
+from PIL import Image
 
 __all__ = ["VOCDataset"]
 
@@ -19,7 +20,7 @@ from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
 
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities.tensors.tensor_container import NamedTensorTuple
 
 
@@ -87,12 +88,12 @@ class VOCDataset(ObjectDetectionDataset):
     }
 
     def __init__(
-            self,
-            data_root: Path,
-            dataset_name: str,
-            split: Split,
-            img_transform: callable = None,
-            annotation_transform: callable = None,
+        self,
+        data_root: Path,
+        dataset_name: str,
+        split: SplitEnum,
+        img_transform: callable = None,
+        annotation_transform: callable = None,
     ):
         """
 
@@ -117,7 +118,6 @@ class VOCDataset(ObjectDetectionDataset):
 
         super().__init__(
             data_root, dataset_name, split, img_transform, annotation_transform
-
         )
         self._data_dir = data_root / self.data_dirs[dataset_name]
         self._img_transforms = img_transform
@@ -126,7 +126,7 @@ class VOCDataset(ObjectDetectionDataset):
         self._ids = VOCDataset._read_image_ids(
             self._data_dir / "ImageSets" / "Main" / f"{self.splits[dataset_name]}.txt"
         )
-        self._keep_difficult = not split == Split.Training
+        self._keep_difficult = not split == SplitEnum.training
 
         self._class_dict = {
             class_name: i for i, class_name in enumerate(self.categories)

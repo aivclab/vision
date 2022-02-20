@@ -6,6 +6,8 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
+
 
 def loss_fn(recon_x, x, mean, log_var):
     """
@@ -21,7 +23,9 @@ def loss_fn(recon_x, x, mean, log_var):
     :return:
     :rtype:"""
     bce = torch.nn.functional.binary_cross_entropy(
-        recon_x.view(-1, 28 * 28), x.view(-1, 28 * 28), reduction="sum"
+        recon_x.view(-1, 28 * 28),
+        x.view(-1, 28 * 28),
+        reduction=ReductionMethodEnum.sum.value,
     )
     kld = -0.5 * torch.sum(1 + log_var - mean.pow(2) - log_var.exp())
 

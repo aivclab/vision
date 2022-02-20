@@ -1,6 +1,7 @@
 import math
 import sys
 import time
+
 import torch
 import tqdm
 from draugr.torch_utilities import (
@@ -10,7 +11,7 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import Writer
 from torch.nn import Module
-from torch.optim import Optimizer
+
 from torch.utils.data import DataLoader
 
 from neodroidvision.data.detection.coco import (
@@ -22,13 +23,13 @@ from neodroidvision.utilities import reduce_dict
 
 
 def maskrcnn_train_single_epoch(
-        *,
-        model: Module,
-        optimiser: Optimizer,
-        data_loader: DataLoader,
-        device: torch.device = global_torch_device(),
-        writer: Writer = None,
-):
+    *,
+    model: Module,
+    optimiser: torch.optim.Optimizer,
+    data_loader: DataLoader,
+    device: torch.device = global_torch_device(),
+    writer: Writer = None,
+) -> None:
     """
 
     :param model:
@@ -69,19 +70,19 @@ def maskrcnn_train_single_epoch(
             if writer:
                 for k, v in {
                     "loss": losses_reduced,
-                    "lr": optimiser.param_groups[0]["lr"],
+                    "lr": torch.optim.Optimizer.param_groups[0]["lr"],
                     **loss_dict_reduced,
                 }.items():
                     writer.scalar(k, v)
 
 
 def maskrcnn_evaluate(
-        model: Module,
-        data_loader: DataLoader,
-        *,
-        device=global_torch_device(),
-        writer: Writer = None,
-):
+    model: Module,
+    data_loader: DataLoader,
+    *,
+    device=global_torch_device(),
+    writer: Writer = None,
+) -> torch.Tensor:
     """
 
     Args:
@@ -97,12 +98,12 @@ def maskrcnn_evaluate(
     # FIXME remove this and make paste_masks_in_image run on the GPU
     torch.set_num_threads(1)
     cpu_device = torch.device("cpu")
+    coco_evaluator = CocoEvaluator(
+        get_coco_api_from_dataset(data_loader.dataset), get_iou_types(model)
+    )
 
     with torch.no_grad():
         with TorchEvalSession(model):
-            coco_evaluator = CocoEvaluator(
-                get_coco_api_from_dataset(data_loader.dataset), get_iou_types(model)
-            )
 
             for image, targets in tqdm.tqdm(data_loader):
                 image = [img.to(device) for img in image]

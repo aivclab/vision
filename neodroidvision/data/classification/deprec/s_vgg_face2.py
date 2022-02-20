@@ -8,14 +8,15 @@ __doc__ = r"""
            """
 
 import csv
+from pathlib import Path
+from typing import Tuple
+
 import torch
 from PIL import Image
-from draugr.numpy_utilities import Split
+from draugr.numpy_utilities import SplitEnum
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
-from typing import Tuple
 
 __all__ = ["VggFaces2"]
 
@@ -68,7 +69,6 @@ class VggFaces2(SupervisedDataset):
         identity_list = meta_file
         df = pandas.read_csv(
             identity_list, sep=",\s+", quoting=csv.QUOTE_ALL, encoding="utf-8"
-
         )
         df["class"] = -1
         df.loc[df["Flag"] == 1, "class"] = range(N_IDENTITY_PRETRAIN)
@@ -85,14 +85,18 @@ class VggFaces2(SupervisedDataset):
 
         :return:
         :rtype:"""
-        return "train", "validation", "test"
+        return {
+            SplitEnum.training: "train",
+            SplitEnum.validation: "validation",
+            SplitEnum.testing: "test",
+        }
 
     def __init__(
-            self,
-            dataset_path: Path,
-            split: Split = Split.Training,
-            resize_s: int = 256,
-            raw_images: bool = False,
+        self,
+        dataset_path: Path,
+        split: SplitEnum = SplitEnum.training,
+        resize_s: int = 256,
+        raw_images: bool = False,
     ):
         """
         :type resize_s: int or tuple(w,h)
@@ -100,17 +104,17 @@ class VggFaces2(SupervisedDataset):
         :param split: train, valid, test"""
         super().__init__()
         assert dataset_path.exists(), f"root: {dataset_path} not found."
-        split = self.split_names[split.value]
+        split = self.split_names[split]
         self._resize_shape = (3, resize_s, resize_s)
 
-        self._dataset_path = dataset_path / split
-        image_list_file_path = dataset_path / f"{split}_list.txt"
+        self._dataset_path = dataset_path / "data" / split
+        image_list_file_path = dataset_path / "meta" / f"{split}_list.txt"
         assert (
             image_list_file_path.exists()
         ), f"image_list_file: {image_list_file_path} not found."
 
         self._image_list_file_path = image_list_file_path
-        meta_id_path = dataset_path / "identity_meta.csv"
+        meta_id_path = dataset_path / "meta" / "identity_meta.csv"
         assert meta_id_path.exists(), f"meta id path {meta_id_path} does not exists"
         assert resize_s > 2, "resize_s should be >2"
         self._split = split
@@ -156,7 +160,7 @@ class VggFaces2(SupervisedDataset):
         img = Image.open(str(self._dataset_path / img_file))
 
         if not self._raw_images:
-            if self._split == Split.Training:
+            if self._split == SplitEnum.training:
                 img = self.train_trans(img)
             else:
                 img = self.val_trans(img)
@@ -168,28 +172,34 @@ class VggFaces2(SupervisedDataset):
 
 
 if __name__ == "__main__":
-    import tqdm
 
-    batch_size = 32
+    def main(p=Path(Path.home() / "Data" / "Datatsets" / "vggface2")):
+        import tqdm
 
-    dt = VggFaces2(
-        Path(Path.home() / "Data" / "vggface2"),
-        split=Split.Testing,
-        # raw_images=True
-    )
+        batch_size = 32
 
-    test_loader = torch.utils.data.DataLoader(dt, batch_size=batch_size, shuffle=False)
+        dt = VggFace2(
+            p,
+            split=SplitEnum.testing,
+            # raw_images=True
+        )
 
-    # test_loader = dt
+        test_loader = torch.utils.data.DataLoader(
+            dt, batch_size=batch_size, shuffle=False
+        )
 
-    for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
+        # test_loader = dt
+
+        for batch_idx, (imgs, label, img_files, class_ids) in tqdm.tqdm(
             enumerate(test_loader),
             total=len(test_loader),
             desc="Bro",
             ncols=80,
             leave=False,
-    ):
-        pyplot.imshow(dt.inverse_transform(imgs[0]))
-        # pyplot.imshow(imgs)
-        pyplot.show()
-        break
+        ):
+            pyplot.imshow(dt.inverse_transform(imgs[0]))
+            # pyplot.imshow(imgs)
+            pyplot.show()
+            break
+
+    main()

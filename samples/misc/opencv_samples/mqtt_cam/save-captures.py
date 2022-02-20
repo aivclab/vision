@@ -1,4 +1,5 @@
 import time
+
 from draugr.python_utilities.datetimes import now_repr
 from draugr.visualisation.pillow_utilities import byte_array_to_pil_image
 
@@ -37,9 +38,7 @@ def on_message(client, userdata, msg):
 
 
 def main():
-    """
-
-    """
+    """ """
     client = get_mqtt_client()
     client.on_message = on_message
     client.connect(MQTT_BROKER, port=MQTT_PORT)

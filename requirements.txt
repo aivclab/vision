@@ -4,7 +4,7 @@ numpy>=1.20.2
 scipy
 scikit-image
 tqdm
-Pillow
+Pillow>=9.0.0
 matplotlib>=3.4.1
 pip
 h5py
@@ -17,3 +17,6 @@ seaborn
 munin
 PyWavelets
 imageio
+pypng
+sorcery
+black[jupyter]

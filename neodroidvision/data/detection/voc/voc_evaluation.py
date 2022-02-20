@@ -9,12 +9,13 @@ __doc__ = r"""
 
 import itertools
 import logging
-import numpy
-import six
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
+
+import numpy
+import six
 
 __all__ = [
     "bbox_iou",
@@ -62,14 +63,14 @@ def bbox_iou(bbox_a: numpy.ndarray, bbox_b: numpy.ndarray) -> numpy.ndarray:
 
 
 def eval_detection_voc(
-        pred_bboxes,
-        pred_labels,
-        pred_scores,
-        gt_bboxes,
-        gt_labels,
-        gt_difficults=None,
-        iou_thresh: float = 0.5,
-        use_07_metric=False,
+    pred_bboxes,
+    pred_labels,
+    pred_scores,
+    gt_bboxes,
+    gt_labels,
+    gt_difficults=None,
+    iou_thresh: float = 0.5,
+    use_07_metric=False,
 ) -> Tuple:
     """Calculate average precisions based on evaluation code of PASCAL VOC.
 
@@ -145,13 +146,13 @@ def eval_detection_voc(
 
 
 def calc_detection_voc_prec_rec(
-        pred_bboxes,
-        pred_labels,
-        pred_scores,
-        gt_bboxes,
-        gt_labels,
-        gt_difficults=None,
-        iou_thresh: float = 0.5,
+    pred_bboxes,
+    pred_labels,
+    pred_scores,
+    gt_bboxes,
+    gt_labels,
+    gt_difficults=None,
+    iou_thresh: float = 0.5,
 ) -> Tuple:
     """Calculate precision and recall based on evaluation code of PASCAL VOC.
 
@@ -225,12 +226,12 @@ def calc_detection_voc_prec_rec(
     match = defaultdict(list)
 
     for (
-            pred_bbox,
-            pred_label,
-            pred_score,
-            gt_bbox,
-            gt_label,
-            gt_difficult,
+        pred_bbox,
+        pred_label,
+        pred_score,
+        gt_bbox,
+        gt_label,
+        gt_difficult,
     ) in six.moves.zip(
         pred_bboxes, pred_labels, pred_scores, gt_bboxes, gt_labels, gt_difficults
     ):
@@ -287,12 +288,12 @@ def calc_detection_voc_prec_rec(
                     match[l].append(0)
 
     for iter_ in (
-            pred_bboxes,
-            pred_labels,
-            pred_scores,
-            gt_bboxes,
-            gt_labels,
-            gt_difficults,
+        pred_bboxes,
+        pred_labels,
+        pred_scores,
+        gt_bboxes,
+        gt_labels,
+        gt_difficults,
     ):
         if next(iter_, None) is not None:
             raise ValueError("Length of input iterables need to be same.")
@@ -384,6 +385,14 @@ def calc_detection_voc_ap(prec, rec, use_07_metric=False):
 
 
 def voc_evaluation(dataset, predictions, output_dir: Path, iteration=None):
+    """
+
+    :param dataset:
+    :param predictions:
+    :param output_dir:
+    :param iteration:
+    :return:
+    """
     class_names = dataset.class_names
 
     pred_boxes_list = []

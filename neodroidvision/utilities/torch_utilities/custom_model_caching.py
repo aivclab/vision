@@ -9,8 +9,9 @@ __doc__ = r"""
 
 import os
 import sys
-import torch
 from pathlib import Path
+
+import torch
 
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     is_main_process,

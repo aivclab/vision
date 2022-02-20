@@ -10,11 +10,12 @@ __doc__ = r"""
 import logging
 import os
 import sys
+from pathlib import Path
+from typing import Any, List
+
 import torch
 import torch.utils.data
-from pathlib import Path
 from torch import distributed
-from typing import Any, List
 
 from neodroidvision.utilities.torch_utilities.distributing.serialisation import (
     deserialise_byte_tensor,
@@ -215,7 +216,7 @@ def synchronise_torch_barrier() -> None:
 
 
 def setup_distributed_logger(
-        name: str, distributed_rank: int, save_dir: Path = None
+    name: str, distributed_rank: int, save_dir: Path = None
 ) -> logging.Logger:
     """
 

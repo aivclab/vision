@@ -8,12 +8,12 @@ __doc__ = r"""
            """
 
 import logging
-import torch
 from pathlib import Path
+from typing import Any
+
+import torch
 from torch.nn import Module
 from torch.nn.parallel import DistributedDataParallel
-from torch.optim import Optimizer
-from typing import Any
 
 from neodroidvision.utilities.torch_utilities.custom_model_caching import (
     custom_cache_url,
@@ -28,20 +28,20 @@ class CheckPointer:
     _last_checkpoint_name = "last_checkpoint.txt"
 
     def __init__(
-            self,
-            model: Module,
-            optimizer: Optimizer = None,
-            scheduler: torch.optim.lr_scheduler = None,
-            save_dir: Path = Path.cwd(),
-            save_to_disk: bool = None,
-            logger: logging.Logger = None,
+        self,
+        model: Module,
+        optimiser: torch.optim.Optimizer = None,
+        scheduler: torch.optim.lr_scheduler = None,
+        save_dir: Path = Path.cwd(),
+        save_to_disk: bool = None,
+        logger: logging.Logger = None,
     ):
         """
 
         :param model:
         :type model:
-        :param optimizer:
-        :type optimizer:
+        :param optimiser:
+        :type optimiser:
         :param scheduler:
         :type scheduler:
         :param save_dir:
@@ -51,7 +51,7 @@ class CheckPointer:
         :param logger:
         :type logger:"""
         self.model = model
-        self.optimizer = optimizer
+        self.optimiser = optimiser
         self.scheduler = scheduler
         self.save_dir = save_dir
         self.save_to_disk = save_to_disk
@@ -81,8 +81,8 @@ class CheckPointer:
             data["model"] = self.model.module.state_dict()
         else:
             data["model"] = self.model.state_dict()
-        if self.optimizer is not None:
-            data["optimizer"] = self.optimizer.state_dict()
+        if self.optimiser is not None:
+            data["optimiser"] = self.optimiser.state_dict()
         if self.scheduler is not None:
             data["scheduler"] = self.scheduler.state_dict()
         data.update(kwargs)
@@ -124,9 +124,9 @@ class CheckPointer:
             model = self.model.module
 
         model.load_state_dict(checkpoint.pop("model"))
-        if "optimizer" in checkpoint and self.optimizer:
-            self.logger.info(f"Loading optimizer from {f}")
-            self.optimizer.load_state_dict(checkpoint.pop("optimizer"))
+        if "optimiser" in checkpoint and self.optimiser:
+            self.logger.info(f"Loading optimiser from {f}")
+            self.optimiser.load_state_dict(checkpoint.pop("optimiser"))
         if "scheduler" in checkpoint and self.scheduler:
             self.logger.info(f"Loading scheduler from {f}")
             self.scheduler.load_state_dict(checkpoint.pop("scheduler"))

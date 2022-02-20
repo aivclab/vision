@@ -2,17 +2,18 @@
 # -*- coding: utf-8 -*-
 import argparse
 import copy
-import draugr.visualisation.matplotlib_utilities
 import os
 import time
-from draugr.numpy_utilities import Split, hwc_to_chw
+from pathlib import Path
+
+import draugr.visualisation.matplotlib_utilities
+from draugr.numpy_utilities import SplitEnum, hwc_to_chw
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     global_torch_device,
 )
 from draugr.writers import ImageWriterMixin
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
-from pathlib import Path
 
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities
@@ -52,20 +53,20 @@ def get_metric_str(metrics, writer: ImageWriterMixin, update_i):
 
 
 def train_model(
-        model,
-        data_iterator,
-        optimizer,
-        scheduler,
-        writer: ImageWriterMixin,
-        interrupted_path,
-        num_updates=25000,
+    model,
+    data_iterator,
+    optimiser,
+    scheduler,
+    writer: ImageWriterMixin,
+    interrupted_path,
+    num_updates=25000,
 ):
     """
 
     Args:
       model:
       data_iterator:
-      optimizer:
+      optimiser:
       scheduler:
       writer:
       interrupted_path:
@@ -81,10 +82,10 @@ def train_model(
     try:
         sess = tqdm(range(num_updates), leave=False)
         for update_i in sess:
-            for phase in [Split.Training, Split.Validation]:
-                if phase == Split.Training:
+            for phase in [SplitEnum.training, SplitEnum.validation]:
+                if phase == SplitEnum.training:
                     scheduler.step()
-                    for param_group in optimizer.param_groups:
+                    for param_group in optimiser.param_groups:
                         writer.scalar("lr", param_group["lr"], update_i)
 
                     model.train()
@@ -95,8 +96,8 @@ def train_model(
                     data_iterator
                 )
 
-                optimizer.zero_grad()
-                with torch.set_grad_enabled(phase == Split.Training):
+                optimiser.zero_grad()
+                with torch.set_grad_enabled(phase == SplitEnum.training):
                     seg_pred, recon_pred, depth_pred, normals_pred = model(rgb_imgs)
                     ret = calculate_multi_auto_encoder_loss(
                         (seg_pred, seg_target),
@@ -105,14 +106,14 @@ def train_model(
                         (normals_pred, normals_target),
                     )
 
-                    if phase == Split.Training:
+                    if phase == SplitEnum.training:
                         ret.loss.backward()
-                        optimizer.step()
+                        optimiser.step()
 
                 update_loss = ret.loss.data.cpu().numpy()
                 writer.scalar(f"loss/accum", update_loss, update_i)
 
-                if phase == Split.Validation and update_loss < best_loss:
+                if phase == SplitEnum.validation and update_loss < best_loss:
                     best_loss = update_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
                     writer.image(f"rgb_imgs", rgb_imgs, update_i)
@@ -175,9 +176,7 @@ def test_model(model, data_iterator, load_path=None):
 
 
 def main():
-    """
-
-    """
+    """ """
     args = argparse.ArgumentParser()
     args.add_argument("-i", action="store_false")
     options = args.parse_args()
@@ -213,10 +212,10 @@ def main():
     )
     aeu_model = aeu_model.to(global_torch_device())
 
-    optimizer_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
+    optimiser_ft = optim.Adam(aeu_model.parameters(), lr=learning_rate)
 
     exp_lr_scheduler = lr_scheduler.StepLR(
-        optimizer_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
+        optimiser_ft, step_size=lr_sch_step_size, gamma=lr_sch_gamma
     )
 
     data_iter = iter(neodroid_camera_data_iterator(env, device, batch_size))
@@ -225,7 +224,7 @@ def main():
         trained_aeu_model = train_model(
             aeu_model,
             data_iter,
-            optimizer_ft,
+            optimiser_ft,
             exp_lr_scheduler,
             writer,
             interrupted_path,
@@ -234,7 +233,7 @@ def main():
     else:
         _list_of_files = list(home_path.glob("*"))
         latest_model_path = (
-                str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
+            str(max(_list_of_files, key=os.path.getctime)) + f"/{best_model_path}"
         )
         print("loading previous model: " + latest_model_path)
         test_model(aeu_model, data_iter, load_path=latest_model_path)

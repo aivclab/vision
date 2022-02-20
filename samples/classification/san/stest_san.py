@@ -1,22 +1,23 @@
 import logging
-import numpy
 import os
 import time
+from itertools import count
+from pathlib import Path
+
+import numpy
 import torch
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 from draugr import AverageMeter
-from draugr.numpy_utilities import Split
-from itertools import count
+from draugr.numpy_utilities import SplitEnum
 from matplotlib import pyplot
-from pathlib import Path
-from torch import nn
-
-from neodroidvision.classification.architectures.self_attention_network import (
-    SelfAttentionTypeEnum,
+from mixed.architectures.self_attention_network import (
     make_san,
 )
+from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
+from torch import nn
+
 from san_utilities import cal_accuracy, intersection_and_union_gpu
 
 if __name__ == "__main__":
@@ -52,7 +53,7 @@ if __name__ == "__main__":
             SAN_CONFIG,
         )
 
-        dataset = SAN_CONFIG.dataset_type(SAN_CONFIG.dataset_path, Split.Validation)
+        dataset = SAN_CONFIG.dataset_type(SAN_CONFIG.dataset_path, SplitEnum.validation)
 
         logger = get_logger()
         logger.info(SAN_CONFIG)
@@ -172,6 +173,5 @@ if __name__ == "__main__":
                 )
         logger.info("<<<<<<<<<<<<<<<<< End Evaluation <<<<<<<<<<<<<<<<<")
         print(loss_meter.avg, mIoU, mAcc, allAcc, top1_meter.avg, top5_meter.avg)
-
 
     main()

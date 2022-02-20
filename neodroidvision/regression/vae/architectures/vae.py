@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import torch
 from abc import abstractmethod
+
+import torch
 from torch import nn
 from torch.nn.init import kaiming_normal_
 
@@ -15,14 +16,10 @@ __all__ = ["VAE"]
 
 
 class VAE(torch.nn.Module):
-    """
-
-    """
+    """ """
 
     class View(nn.Module):
-        """
-
-        """
+        """ """
 
         def __init__(self, size):
             super().__init__()
@@ -56,9 +53,7 @@ class VAE(torch.nn.Module):
                 m.bias.data.fill_(0)
 
     def weight_init(self):
-        """
-
-        """
+        """ """
         for m in self.modules():
             self.kaiming_init(m)
 
@@ -102,6 +97,8 @@ class VAE(torch.nn.Module):
     @staticmethod
     def reparameterise(mean, log_var) -> torch.Tensor:
         """
+
+        reparameterisation trick
 
         :param mean:
         :type mean:

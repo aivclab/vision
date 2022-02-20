@@ -7,20 +7,26 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-import pandas as pd
-import seaborn as sns
+import os
 import time
-import torch
 from collections import defaultdict
+from math import inf
+
+import pandas
+import seaborn
+import torch
+from apppath import ensure_existence
 from draugr.torch_utilities import global_torch_device
+from draugr.tqdm_utilities import progress_bar
 from matplotlib import pyplot
+from torch.nn.functional import one_hot
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.conditional_vae import ConditionalVAE
+from regression.vae.architectures.disentangled.conditional_vae import ConditionalVAE
 from objectives import loss_fn
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"
@@ -37,6 +43,17 @@ config.print_every = 100
 GLOBAL_DEVICE = global_torch_device()
 timestamp = time.time()
 torch.manual_seed(config.seed)
+
+LOWEST_L = inf
+
+core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
+
+GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DL_KWARGS = (
+    {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
+)
+BASE_PATH = ensure_existence(PROJECT_APP_PATH.user_data / "cvae")
+
 if torch.cuda.is_available():
     torch.cuda.manual_seed(config.seed)
 
@@ -56,28 +73,16 @@ tmsp_path = fig_root / str(timestamp)
 if not tmsp_path.exists():
     tmsp_path.mkdir(parents=True)
 
-
-def one_hot(labels, num_labels, device="cpu"):
-    """
-
-    Args:
-      labels:
-      num_labels:
-      device:
-
-    Returns:
-
-    """
-    targets = torch.zeros(labels.size(0), num_labels)
-    for i, label in enumerate(labels):
-        targets[i, label] = 1
-    return targets.to(device=device)
+if True:
+    _list_of_files = list(fig_root.rglob("*.pth"))
+    latest_model_path = str(max(_list_of_files, key=os.path.getctime))
+    print(f"loading previous model: {latest_model_path}")
+    if latest_model_path is not None:
+        vae.load_state_dict(torch.load(latest_model_path))
 
 
 def main():
-    """
-
-    """
+    """ """
     data_loader = DataLoader(
         dataset=dataset, batch_size=config.batch_size, shuffle=True
     )
@@ -86,17 +91,17 @@ def main():
 
     logs = defaultdict(list)
 
-    for epoch in range(config.epochs):
+    for epoch_i in progress_bar(range(config.epochs)):
         tracker_epoch = defaultdict(lambda: defaultdict(dict))
 
-        for iteration, (original, label) in enumerate(data_loader):
+        for iteration, (original, label) in progress_bar(enumerate(data_loader)):
 
             original, label = (
                 original.to(global_torch_device()),
                 label.to(global_torch_device()),
             )
             reconstruction, mean, log_var, z = vae(
-                original, one_hot(label, 10, device=GLOBAL_DEVICE)
+                original, one_hot(label, 10).to(GLOBAL_DEVICE)
             )
 
             for i, yi in enumerate(label):
@@ -114,16 +119,14 @@ def main():
 
             if iteration % config.print_every == 0 or iteration == len(data_loader) - 1:
                 print(
-                    f"Epoch {epoch:02d}/{config.epochs:02d}"
+                    f"Epoch {epoch_i:02d}/{config.epochs:02d}"
                     f" Batch {iteration:04d}/{len(data_loader) - 1:d},"
                     f" Loss {loss.item():9.4f}"
                 )
 
-                condition_vector = (
-                    torch.arange(0, 10, device=GLOBAL_DEVICE).long().unsqueeze(1)
-                )
+                condition_vector = torch.arange(0, 10, device=GLOBAL_DEVICE).long()
                 sample = vae.sample(
-                    one_hot(condition_vector, 10, device=GLOBAL_DEVICE),
+                    one_hot(condition_vector, 10).to(GLOBAL_DEVICE),
                     num=condition_vector.size(0),
                 )
 
@@ -144,14 +147,14 @@ def main():
                     pyplot.axis("off")
 
                 pyplot.savefig(
-                    str(tmsp_path / f"Epoch{epoch:d}_Iter{iteration:d}.png"),
+                    str(tmsp_path / f"Epoch{epoch_i:d}_Iter{iteration:d}.png"),
                     dpi=300,
                 )
                 pyplot.clf()
                 pyplot.close("all")
 
-        df = pd.DataFrame.from_dict(tracker_epoch, orient="index")
-        g = sns.lmplot(
+        df = pandas.DataFrame.from_dict(tracker_epoch, orient="index")
+        g = seaborn.lmplot(
             x="x",
             y="y",
             hue="label",
@@ -160,9 +163,17 @@ def main():
             legend=True,
         )
         g.savefig(
-            str(tmsp_path / f"Epoch{epoch:d}_latent_space.png"),
+            str(tmsp_path / f"Epoch{epoch_i:d}_latent_space.png"),
             dpi=300,
         )
+        if True:
+            torch.save(
+                vae.state_dict(), BASE_PATH / f"model_state_dict{str(epoch_i)}.pth"
+            )
+
+        # if False and LOWEST_L > test_accum_loss:
+        #    LOWEST_L = test_accum_loss
+        #    torch.save(model.state_dict(), BASE_PATH / f"best_state_dict.pth")
 
 
 if __name__ == "__main__":

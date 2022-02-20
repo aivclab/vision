@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from functools import partial
+
 import cv2
 import imageio
-from functools import partial
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
@@ -27,9 +28,8 @@ Window.clearcolor = (0.9, 0.9, 0.9, 1)
 
 
 class MainLayout(BoxLayout):
-    """
+    """ """
 
-    """
     _video_capture = None
     _face_cascade = None
     _frame_name = (
@@ -92,9 +92,7 @@ class MainLayout(BoxLayout):
         # setattr(self.dropdown_btn, 'text', model)
 
     def build(self):
-        """
-
-        """
+        """ """
         apply_btn = Button(text="Apply", bold=True)
         apply_btn.bind(on_press=self.settings_process)
 
@@ -113,18 +111,14 @@ class MainLayout(BoxLayout):
         )
 
     def start(self):
-        """
-
-        """
+        """ """
         if self.ids.status.text == "Stop":
             self.stop_stream()
         else:
             self.start_stream()
 
     def start_stream(self):
-        """
-
-        """
+        """ """
         self.ids.status.text = "Stop"
         self._video_capture = cv2.VideoCapture(0)
         self._face_cascade = cv2.CascadeClassifier(
@@ -133,9 +127,7 @@ class MainLayout(BoxLayout):
         Clock.schedule_once(self.update)
 
     def stop_stream(self):
-        """
-
-        """
+        """ """
         self.ids.status.text = "Start"
         Clock.unschedule(self.update)
         self._video_capture.release()
@@ -165,18 +157,14 @@ class MainLayout(BoxLayout):
         Clock.schedule_once(self.update)
 
     def close(self):
-        """
-
-        """
+        """ """
         self.stop_stream()
         # self.stop()
         App.get_running_app().stop()
         # exit(0)
 
     def settings(self):
-        """
-
-        """
+        """ """
         self._popup.open()
 
     def settings_process(self, btn):
@@ -248,26 +236,26 @@ MainLayout:
         return a
 
     '''
-  def on_request_close(self, *args):
-    self.textpopup(title='Exit', text='Are you sure?')
-    return True
-    def textpopup(self, title='', text=''):
-        """Open the pop-up with the name.
-  
-        :param title: title of the pop-up to open
-        :type title: str
-        :param text: main text of the pop-up to open
-        :type text: str
-        :rtype: None
-        """
-    box = BoxLayout(orientation='vertical')
-    box.add_widget(Label(text=text))
-    mybutton = Button(text='OK', size_hint=(1, 0.25))
-    box.add_widget(mybutton)
-    popup = Popup(title=title, content=box, size_hint=(None, None), size=(600, 300))
-    mybutton.bind(on_release=self.stop)
-    popup.open()
-    '''
+def on_request_close(self, *args):
+  self.textpopup(title='Exit', text='Are you sure?')
+  return True
+  def textpopup(self, title='', text=''):
+      """Open the pop-up with the name.
+
+      :param title: title of the pop-up to open
+      :type title: str
+      :param text: main text of the pop-up to open
+      :type text: str
+      :rtype: None
+      """
+  box = BoxLayout(orientation='vertical')
+  box.add_widget(Label(text=text))
+  mybutton = Button(text='OK', size_hint=(1, 0.25))
+  box.add_widget(mybutton)
+  popup = Popup(title=title, content=box, size_hint=(None, None), size=(600, 300))
+  mybutton.bind(on_release=self.stop)
+  popup.open()
+  '''
 
     def stop(self, *largs):
         """
@@ -276,10 +264,13 @@ MainLayout:
           self:
           *largs:
         """
-        # Open the popup you want to open and declare callback if user pressed `Yes`
-        popup = ExitPopup(title="Are you sure?")
-        popup.bind(on_confirm=partial(self.close_app, *largs))
-        popup.open()
+        if False:
+            # Open the popup you want to open and declare callback if user pressed `Yes`
+            popup = ExitPopup(title="Are you sure?")
+            popup.bind(on_confirm=partial(self.close_app, *largs))
+            popup.open()
+        else:
+            self.close_app()
 
     def close_app(self, *largs):
         """
@@ -292,31 +283,23 @@ MainLayout:
 
 
 class ExitPopup(Popup):
-    """
-
-    """
+    """ """
 
     def __init__(self, **kwargs):
         super(ExitPopup, self).__init__(**kwargs)
         self.register_event_type("on_confirm")
 
     def on_confirm(self):
-        """
-
-        """
+        """ """
         pass
 
     def on_button_yes(self):
-        """
-
-        """
+        """ """
         self.dispatch("on_confirm")
 
 
 def main():
-    """
-
-    """
+    """ """
     VideoStreamApp().run()
 
 

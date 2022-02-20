@@ -1,10 +1,12 @@
+from pathlib import Path
+
 import numpy
 from matplotlib import pyplot
-from pathlib import Path
 
 from neodroidvision.regression.denoise.spectral_denoise import fft_im_denoise
 
 if __name__ == "__main__":
+
     def plot_spectrum(im_fft):
         """
 
@@ -15,7 +17,6 @@ if __name__ == "__main__":
         # A logarithmic colormap
         pyplot.imshow(numpy.abs(im_fft), norm=LogNorm(vmin=5))
         pyplot.colorbar()
-
 
     def blur_im(im):
         """
@@ -37,7 +38,6 @@ if __name__ == "__main__":
         pyplot.imshow(im_blur, pyplot.cm.gray)
         pyplot.title("Blurred image")
 
-
     def main(im_raw):
         """
 
@@ -52,7 +52,6 @@ if __name__ == "__main__":
         pyplot.figure()
         pyplot.imshow(im_denoised, pyplot.cm.gray)
         pyplot.title("Reconstructed Image")
-
 
     im22 = pyplot.imread(
         str(Path.home() / "Data" / "Datasets" / "Denoise" / "moonlanding.png")

@@ -15,9 +15,7 @@ __all__ = ["TupleToTensor", "TupleCompose", "TupleRandomHorizontalFlip"]
 
 
 class TupleCompose(object):
-    """
-
-    """
+    """ """
 
     def __init__(self, transforms):
         self.transforms = transforms
@@ -29,9 +27,7 @@ class TupleCompose(object):
 
 
 class TupleRandomHorizontalFlip(object):
-    """
-
-    """
+    """ """
 
     @staticmethod
     def _flip_coco_person_keypoints(kps, width):

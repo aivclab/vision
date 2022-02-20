@@ -27,7 +27,7 @@ class DistributedSampler(Sampler):
     rank (optional): Rank of the current process within num_replicas."""
 
     def __init__(
-            self, dataset: Sized, num_replicas: int = None, rank=None, shuffle: bool = True
+        self, dataset: Sized, num_replicas: int = None, rank=None, shuffle: bool = True
     ):
         """
 
@@ -67,7 +67,7 @@ class DistributedSampler(Sampler):
 
         # subsample
         offset = self.num_samples * self.rank
-        indices = indices[offset: offset + self.num_samples]
+        indices = indices[offset : offset + self.num_samples]
         assert len(indices) == self.num_samples
 
         return iter(indices)

@@ -1,10 +1,11 @@
+from typing import List, Tuple
+
 import torch
 import torchvision
 from draugr.torch_utilities import (
     set_all_parameter_requires_grad,
     trainable_parameters,
 )
-from typing import List, Tuple
 
 __all__ = ["squeezenet_retrain"]
 
@@ -13,7 +14,7 @@ from torchvision.models import SqueezeNet
 
 
 def squeezenet_retrain(
-        num_classes: int, pretrained: bool = True, train_only_last_layer: bool = False
+    num_classes: int, pretrained: bool = True, train_only_last_layer: bool = False
 ) -> Tuple[SqueezeNet, List[Parameter]]:
     """
 
@@ -30,7 +31,7 @@ def squeezenet_retrain(
         set_all_parameter_requires_grad(model)
 
     model.num_categories = num_classes
-    model._action_classifier[1] = torch.nn.Conv2d(
+    model.classifier[1] = torch.nn.Conv2d(
         512, num_classes, kernel_size=(1, 1), stride=(1, 1)
     )
 

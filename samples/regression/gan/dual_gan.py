@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import numpy
 import time
+from typing import Iterable
+
+import numpy
 import torchvision
 from draugr.torch_utilities import TensorBoardPytorchWriter
 from torch import nn
-from typing import Iterable
 
 from neodroidvision import PROJECT_APP_PATH
 
@@ -73,13 +74,11 @@ def sample_x(X, size):
 
     """
     start_idx = numpy.random.randint(0, X.shape[0] - size)
-    return X[start_idx: start_idx + size]
+    return X[start_idx : start_idx + size]
 
 
 def main():
-    """
-
-    """
+    """ """
     mnist_l = torchvision.datasets.MNIST(
         PROJECT_APP_PATH.user_cache / "data",
         train=True,
@@ -142,7 +141,7 @@ def main():
     del X_train  # Cleanup
 
     with TensorBoardPytorchWriter(
-            PROJECT_APP_PATH.user_log / str(time.time())
+        PROJECT_APP_PATH.user_log / str(time.time())
     ) as writer:
 
         for it in range(1000000):
@@ -227,7 +226,9 @@ def main():
                 samples2 = samples2.view(-1, 1, 28, 28)
                 real_generate_samples = torch.cat([real2, samples1, real1, samples2])
 
-                grid = torchvision.utils.make_grid(real_generate_samples, nrow=4)
+                grid = torchvision.utils.make_grid(
+                    real_generate_samples, nrow=4
+                ).unsqueeze(0)
 
                 writer.image(f"Samples", data=grid, step=it, cmap="Greys_r")
 

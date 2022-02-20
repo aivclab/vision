@@ -7,10 +7,12 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+from typing import Tuple
+
 import torch
+from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 from torch.nn import functional
-from typing import Tuple
 from warg import Number
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
@@ -32,11 +34,11 @@ class MultiBoxLoss(nn.Module):
         self._neg_pos_ratio = neg_pos_ratio
 
     def forward(
-            self,
-            confidence: torch.Tensor,
-            predicted_locations: torch.Tensor,
-            labels: torch.Tensor,
-            gt_locations: torch.Tensor,
+        self,
+        confidence: torch.Tensor,
+        predicted_locations: torch.Tensor,
+        labels: torch.Tensor,
+        gt_locations: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute classification loss and smooth l1 loss.
 
@@ -62,13 +64,13 @@ class MultiBoxLoss(nn.Module):
             functional.smooth_l1_loss(
                 predicted_locations[pos_mask, :].reshape(-1, 4),
                 gt_locations_masked,
-                reduction="sum",
+                reduction=ReductionMethodEnum.sum.value,
             )
             / num_pos,
             functional.cross_entropy(
                 confidence[mask, :].reshape(-1, confidence.size(2)),
                 labels[mask],
-                reduction="sum",
+                reduction=ReductionMethodEnum.sum.value,
             )
             / num_pos,
         )

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+
 import cv2
 import torch
-from pathlib import Path
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
@@ -11,7 +12,7 @@ from draugr.torch_utilities.images.conversion import quick_to_pil_image
 
 from tqdm import tqdm
 
-from draugr.opencv_utilities import frame_generator, draw_bounding_boxes
+from draugr.opencv_utilities import frame_generator, draw_bounding_boxes, WindowFlagEnum
 from draugr.torch_utilities import (
     global_torch_device,
     TorchEvalSession,
@@ -22,7 +23,7 @@ from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import load_model
 
 from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.segmentation import PennFudanDataset
+from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )
@@ -41,7 +42,9 @@ if __name__ == "__main__":
 
         seed_stack(3825)
 
-        dataset = PennFudanDataset  # (dataset_root / "PennFudanPed", Split.Training)
+        dataset = (
+            PennFudanDataset  # (dataset_root / "PennFudanPed", SplitEnum.training)
+        )
         categories = dataset.categories
 
         if True:
@@ -59,10 +62,10 @@ if __name__ == "__main__":
         with torch.no_grad():
             with TorchEvalSession(model):
                 for image in tqdm(
-                        to_tensor_generator(
-                            frame_generator(cv2.VideoCapture(0)),
-                            device=global_torch_device(),
-                        )
+                    to_tensor_generator(
+                        frame_generator(cv2.VideoCapture(0)),
+                        device=global_torch_device(),
+                    )
                 ):
                     prediction = model(
                         # torch_vision_normalize_batch_nchw(
@@ -78,7 +81,7 @@ if __name__ == "__main__":
 
                     indices = scores > score_threshold
 
-                    cv2.namedWindow(model_name, cv2.WINDOW_NORMAL)
+                    cv2.namedWindow(model_name, WindowFlagEnum.normal)
                     cv2.imshow(
                         model_name,
                         draw_bounding_boxes(
@@ -92,6 +95,5 @@ if __name__ == "__main__":
 
                     if cv2.waitKey(1) == 27:
                         break  # esc to quit
-
 
     main()

@@ -3,78 +3,77 @@
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
-            pip install opencv-python opencv-contrib-python -U
+            pip install opencv-python opencv_contrib_python opencv-contrib-python -U
 
            """
 
-import cv2
-import pygame
 import time
+
+import cv2
+import numpy
+import pygame
 from pygame import camera
 
 FACE_HAAR = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 )
-EYE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_righteye.xml")
-NOSE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_nose.xml")
-MOUTH_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mcs_mouth.xml")
+EYE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
+NOSE_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_nose.xml")
+MOUTH_HAAR = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_mouth.xml")
 
 # Screen settings
 SCREEN = [640, 360]
 
+try:
+    from cv2 import CreateImageHeader
+except:
+    pass
+    # raise ModuleNotFoundError("Try: pip install opencv-python opencv-contrib-python -U")
 
-def surface_to_string(surface):
+
+def surface_to_numpy(surface):
     """Convert a pygame surface into string"""
-    return pygame.image.tostring(surface, "RGB")
+    return pygame.surfarray.pixels3d(surface)
 
 
-def pygame_to_cvimage(surface):
-    """Convert a pygame surface into a cv image"""
-    cv_image = cv2.CreateImageHeader(surface.get_size(), cv2.IPL_DEPTH_8U, 3)
-    image_string = surface_to_string(surface)
-    cv2.SetData(cv_image, image_string)
-    return cv_image
-
-
-def cvimage_grayscale(cv_image):
+def rgb_to_grayscale(cv_image, rgb_weights=(0.2989, 0.5870, 0.1140)):
     """Converts a cvimage into grayscale"""
-    grayscale = cv2.CreateImage(cv2.GetSize(cv_image), 8, 1)
-    cv2.CvtColor(cv_image, grayscale, cv2.COLOR_RGB2GRAY)
-    return grayscale
+    return numpy.dot(cv_image[..., :3], rgb_weights).astype(numpy.uint8)
 
 
 def cvimage_to_pygame(image):
     """Convert cvimage into a pygame image"""
-    image_rgb = cv2.CreateMat(image._height, image._width, cv2.CV_8UC3)
-    cv2.CvtColor(image, image_rgb, cv2.COLOR_BGR2RGB)
-    return pygame.image.frombuffer(image.tostring(), cv2.GetSize(image_rgb), "RGB")
+    return pygame.surfarray.make_surface(image)
+    # return pygame.image.frombuffer(image.tostring(), image.size, "RGB")
 
 
 def detect_faces(cv_image):
     """Detects faces based on haar. Returns points"""
-    return FACE_HAAR.detectMultiScale(cvimage_grayscale(cv_image))
+    return FACE_HAAR.detectMultiScale(rgb_to_grayscale(cv_image))
 
 
 def detect_eyes(cv_image):
     """Detects eyes based on haar. Returns points"""
-    return EYE_HAAR.detectMultiScale(cvimage_grayscale(cv_image))
+    return EYE_HAAR.detectMultiScale(rgb_to_grayscale(cv_image))
 
 
 def detect_nose(cv_image):
     """Detects nose based on haar. Returns ponts"""
-    return NOSE_HAAR.detectMultiScale(cvimage_grayscale(cv_image))
+    return NOSE_HAAR.detectMultiScale(rgb_to_grayscale(cv_image))
 
 
 def detect_mouth(cv_image):
     """Detects mouth based on haar. Returns points"""
-    return MOUTH_HAAR.detectMultiScale(cvimage_grayscale(cv_image))
+    return MOUTH_HAAR.detectMultiScale(rgb_to_grayscale(cv_image))
 
 
 def draw_from_points(cv_image, points):
     """Takes the cv_image and points and draws a rectangle based on the points.
     Returns a cv_image."""
-    for (x, y, w, h), n in points:
-        cv2.rectangle(cv_image, (x, y), (x + w, y + h), 255)
+    cv_image = numpy.ascontiguousarray(cv_image, dtype=numpy.uint8)
+    for f in points:
+        for (x, y, w, h) in f:
+            cv2.rectangle(cv_image, (x, y), (x + w, y + h), 255)
     return cv_image
 
 
@@ -96,13 +95,13 @@ if __name__ == "__main__":
 
         image = cam.get_image()  # Get current webcam image
 
-        cv_image = pygame_to_cvimage(image)  # Create cv image from pygame image
+        cv_image = surface_to_numpy(image)  # Create cv image from pygame image
 
         points = (
-                detect_eyes(cv_image)
-                + detect_nose(cv_image)
-                + detect_mouth(cv_image)
-                + detect_faces(cv_image)
+            detect_eyes(cv_image),
+            # detect_nose(cv_image),
+            # detect_mouth(cv_image),
+            detect_faces(cv_image),
         )  # Get points of faces.
 
         cv_image = draw_from_points(cv_image, points)  # Draw points

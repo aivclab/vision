@@ -1,23 +1,13 @@
 import argparse
 from pathlib import Path
+
 from warg import NOD
+from warg.arguments import str2bool
 
 from neodroidvision import PROJECT_APP_PATH
 
 arg_lists = []
 parser = argparse.ArgumentParser(description="RAM")
-
-
-def str2bool(v):
-    """
-
-    Args:
-      v:
-
-    Returns:
-
-    """
-    return v.lower() in ("true", "1")
 
 
 def add_argument_group(name):
@@ -178,4 +168,4 @@ def get_ram_config():
     config.logs_dir = PROJECT_APP_PATH.user_log / ram_base / "logs"
     config.plot_dir = PROJECT_APP_PATH.user_log / ram_base / "plots"
 
-    return config  # , unparsed
+    return config
