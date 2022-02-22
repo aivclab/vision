@@ -24,7 +24,7 @@ from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.utilities import scatter_plot_encoding_space
-from objectives import kl_divergence, reconstruction_loss
+from objectives import kl_divergence, reconstruction_loss, loss_function
 from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
 
 __author__ = "Christian Heider Nielsen"
@@ -52,7 +52,7 @@ CHANNELS = 3
 
 BATCH_SIZE = 1024
 EPOCHS = 1000
-LR = 3e-3
+LR = 3e-4
 ENCODING_SIZE = 10
 name = "vggface2"
 # name = 'vggface2'
@@ -65,24 +65,6 @@ MODEL: VAE = HigginsBetaVae(CHANNELS, latent_size=ENCODING_SIZE).to(
     global_torch_device()
 )
 BETA = 4
-
-
-def loss_function(reconstruction, original, mean, log_var, beta: Number = 1):
-    """
-
-    Args:
-      reconstruction:
-      original:
-      mean:
-      log_var:
-      beta:
-
-    Returns:
-
-    """
-    return reconstruction_loss(reconstruction, original) + beta * kl_divergence(
-        mean, log_var
-    )
 
 
 def train_model(
@@ -109,9 +91,9 @@ def train_model(
         for batch_idx, (original, *_) in generator:
             original = original.to(global_torch_device())
 
-            optimiser.zero_grad()
             reconstruction, mean, log_var = model(original)
             loss = loss_function(reconstruction, original, mean, log_var)
+            optimiser.zero_grad()
             loss.backward()
             optimiser.step()
 
@@ -197,15 +179,6 @@ def stest_model(
 if __name__ == "__main__":
 
     def main(train_model_=False):
-
-        """
-        ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
-                 train=True,
-                 download=True,
-                 transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
-                                                                  train=False,
-                                                                  transform=transforms.ToTensor())]
-        """
 
         dataset_loader = DataLoader(
             DATASET, batch_size=BATCH_SIZE, shuffle=True, **DL_KWARGS

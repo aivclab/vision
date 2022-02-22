@@ -31,8 +31,11 @@ def compile_encoding_image(
 
     h_ = int(h * resize_factor)
     w_ = int(w * resize_factor)
+    r = []
+    if len(images.shape) > 3:
+        r = images.shape[3:]
 
-    img = numpy.zeros((h_ * size[0], w_ * size[1]))
+    img = numpy.zeros((h_ * size[0], w_ * size[1], *r))
 
     for idx, image in enumerate(images):
         i = int(idx % size[1])
@@ -113,8 +116,10 @@ def plot_manifold(
     :param sample_range:
     :return:"""
     vectors = sample_2d_latent_vectors(sample_range, n_img_x, n_img_y).to(device)
-    encodings = model(vectors).to("cpu")
+    encodings = torch.sigmoid(model(vectors)).to("cpu")
     images = encodings.reshape(n_img_x * n_img_y, img_h, img_w, -1).numpy()
+    images *= 255
+    images = numpy.uint8(images)
     compiled = compile_encoding_image(images, (n_img_y, n_img_x))
     if out_path:
         from imageio import imwrite

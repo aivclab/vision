@@ -52,6 +52,17 @@ class VAE(torch.nn.Module):
             if m.bias is not None:
                 m.bias.data.fill_(0)
 
+    @staticmethod
+    def normal_init(m, mean, std):
+        if isinstance(m, (nn.Linear, nn.Conv2d)):
+            m.weight.data.normal_(mean, std)
+            if m.bias.data is not None:
+                m.bias.data.zero_()
+        elif isinstance(m, (nn.BatchNorm2d, nn.BatchNorm1d)):
+            m.weight.data.fill_(1)
+            if m.bias.data is not None:
+                m.bias.data.zero_()
+
     def weight_init(self):
         """ """
         for m in self.modules():
@@ -91,8 +102,7 @@ class VAE(torch.nn.Module):
         z = torch.randn(num, self._latent_size).to(
             device=next(self.parameters()).device
         )
-        samples = self.decode(z, *x).to("cpu")
-        return samples
+        return self.decode(z, *x).to("cpu")
 
     @staticmethod
     def reparameterise(mean, log_var) -> torch.Tensor:
@@ -106,10 +116,9 @@ class VAE(torch.nn.Module):
         :type log_var:
         :return:
         :rtype:"""
-        std = torch.exp(0.5 * log_var)  # e^(1/2 * log(std^2))
+        std = log_var.div(2).exp()  # e^(1/2 * log(std^2))
         eps = torch.randn_like(std)  # random ~ N(0, 1)
-        z = eps.mul(std).add_(mean)  # Reparameterise distribution
-        return z
+        return eps.mul(std).add_(mean)  # Reparameterise distribution
 
     def sample_from(self, *encoding) -> torch.Tensor:
         """

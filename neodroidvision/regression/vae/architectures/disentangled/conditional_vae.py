@@ -146,8 +146,5 @@ class ConditionalVAE(VAE):
 
         """
         mean, log_var = self.encode(x, condition)
-
         z = self.reparameterise(mean, log_var)
-        reconstruction = self.decode(z, condition)
-
-        return reconstruction, mean, log_var, z
+        return self.decode(z, condition), mean, log_var, z

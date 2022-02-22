@@ -132,9 +132,7 @@ class HigginsBetaVae(VAE):
         Returns:
 
         """
-        out = self.decoder(*z)
-        out = torch.sigmoid(out)
-        return out
+        return self.decoder(*z)
 
     def forward(self, x) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
@@ -146,9 +144,7 @@ class HigginsBetaVae(VAE):
 
         """
         mu, log_var = self.encode(x)
-        z = self.reparameterise(mu, log_var)
-        reconstruction = self.decode(z)
-        return reconstruction, mu, log_var
+        return self.decode(self.reparameterise(mu, log_var)), mu, log_var
 
 
 class BurgessBetaVae(HigginsBetaVae):
