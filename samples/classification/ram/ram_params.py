@@ -6,6 +6,9 @@ from warg.arguments import str2bool
 
 from neodroidvision import PROJECT_APP_PATH
 
+__author__ = "Christian Heider Nielsen"
+__doc__ = r""""""
+
 arg_lists = []
 parser = argparse.ArgumentParser(description="RAM")
 

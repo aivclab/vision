@@ -3,7 +3,6 @@ import numpy
 
 
 def top_skelet():
-
     img = cv2.imread("sofsk.png", 0)
     size = numpy.size(img)
     skel = numpy.zeros(img.shape, numpy.uint8)

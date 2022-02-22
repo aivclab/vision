@@ -5,8 +5,6 @@ from pathlib import Path
 import cv2
 import torch
 
-__author__ = "Christian Heider Nielsen"
-__doc__ = ""
 
 from draugr.torch_utilities.images.conversion import quick_to_pil_image
 
@@ -27,6 +25,9 @@ from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = ""
 
 if __name__ == "__main__":
 

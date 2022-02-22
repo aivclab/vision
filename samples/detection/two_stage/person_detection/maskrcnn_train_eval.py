@@ -5,8 +5,6 @@ from pathlib import Path
 import torch
 from PIL import Image
 
-__author__ = "Christian Heider Nielsen"
-__doc__ = ""
 
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum, SplitIndexer
@@ -38,6 +36,9 @@ from neodroidvision.detection.two_stage.mask_rcnn.maskrcnn_engine import (
     maskrcnn_evaluate,
 )
 from warg import GDKC
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = ""
 
 if __name__ == "__main__":
 

@@ -32,11 +32,13 @@ from neodroidvision.classification import (
 
 # from warg.pooled_queue_processor import PooledQueueTask
 
-__author__ = "Christian Heider Nielsen"
 
 import torch
 from torch import optim
 from tqdm import tqdm
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r""""""
 
 seed = 34874312
 batch_size = 16

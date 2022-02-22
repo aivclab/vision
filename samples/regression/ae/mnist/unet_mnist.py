@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
 import copy
 import os
 import time
@@ -7,6 +9,7 @@ from itertools import cycle
 from pathlib import Path
 from typing import Iterator
 
+import torch
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -18,9 +21,12 @@ from draugr.torch_utilities import (
 from draugr.visualisation import plot_side_by_side
 from draugr.writers import Writer
 from matplotlib import pyplot
+from torch import optim
 from torch.nn.modules.module import Module
 from torch.utils.data import DataLoader
 from torchvision import transforms
+from torchvision.datasets import MNIST
+from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
@@ -30,11 +36,6 @@ __author__ = "Christian Heider Nielsen"
 
 __doc__ = r"""Denoising Example
 """
-
-import torch
-from torch import optim
-from tqdm import tqdm
-from torchvision.datasets import MNIST
 
 criterion = torch.nn.MSELoss()
 

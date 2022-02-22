@@ -23,6 +23,9 @@ from ram_params import get_ram_config
 
 model_file_ending = ".model.tar"
 
+__author__ = "Christian Heider Nielsen"
+__doc__ = r""""""
+
 
 class Trainer:
     """A Recurrent Attention Model trainer.
@@ -106,7 +109,7 @@ if self.use_tensorboard:
 tensorboard_dir = self.logs_dir / self.model_name
 print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
 if not os.path.exists(tensorboard_dir):
-    os.makedirs(tensorboard_dir)
+os.makedirs(tensorboard_dir)
 configure(tensorboard_dir)
 """
 

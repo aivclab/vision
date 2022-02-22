@@ -138,12 +138,12 @@ class SSDNmsBoxHead(nn.Module):
             scores = scores[:, 1:].reshape(-1)
 
             """ WILL NOT WORK FOR TRACED MODELS!
-      scores, boxes, labels = self.keep_above(scores,
-                boxes,
-                labels,
-                threshold=self.confidence_threshold)
-      
-      """
+scores, boxes, labels = self.keep_above(scores,
+          boxes,
+          labels,
+          threshold=self.confidence_threshold)
+
+"""
             scores, boxes, labels = self.sort_keep_top_k(
                 scores, boxes, labels, k=self.max_candidates
             )

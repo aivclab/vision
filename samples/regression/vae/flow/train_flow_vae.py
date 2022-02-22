@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from itertools import cycle
+from typing import Tuple
 
 from draugr.torch_utilities import global_torch_device
 from warg import NOD
 
 from data_loader import load_binary_mnist
-from regression.vae.architectures.flow.architectures import (
+from neodroidvision.regression.vae.architectures.flow.architectures import (
     Generator,
     VariationalFlow,
     VariationalMeanField,
 )
 
-__author__ = "Christian Heider Nielsen"
-__doc__ = r"""
-Fit a variational autoencoder to MNIST.
-           """
 
 import torch
 import torch.utils
@@ -25,17 +22,22 @@ import random
 
 from neodroidvision import PROJECT_APP_PATH
 
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+Fit a variational autoencoder to MNIST.
+           """
+
 
 def evaluate(
-    num_samples, generator, variational_encoder, evaluation_data, device
-) -> None:
+    num_samples, generator, variational_encoder, evaluation_loader, device
+) -> Tuple[float, float]:
     """
 
     Args:
       num_samples:
       generator:
       variational_encoder:
-      evaluation_data:
+      evaluation_loader:
       device:
 
     Returns:
@@ -44,7 +46,7 @@ def evaluate(
     generator.eval()
     total_log_p_x = 0.0
     total_elbo = 0.0
-    for batch in evaluation_data:
+    for batch in evaluation_loader:
         x = batch[0].to(device)
         z, log_q_z = variational_encoder(x, num_samples)
         log_p_x_and_z, _ = generator(z, x)
@@ -57,7 +59,7 @@ def evaluate(
             elbo.cpu().numpy().mean(1).sum()
         )  # average over sample dimension, sum over minibatch
         total_log_p_x += log_p_x.cpu().numpy().sum()  # sum over minibatch
-    n_data = len(evaluation_data.dataset)
+    n_data = len(evaluation_loader.dataset)
     return total_elbo / n_data, total_log_p_x / n_data
 
 

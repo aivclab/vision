@@ -27,7 +27,9 @@ from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.utilities import scatter_plot_encoding_space
 from objectives import loss_function
-from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
+from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
+    HigginsBetaVae,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

@@ -14,7 +14,7 @@ import torch.utils.data
 from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 
-from vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
+from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 
 
 class MLP(nn.Module):

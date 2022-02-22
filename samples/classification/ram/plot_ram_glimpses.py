@@ -8,6 +8,9 @@ from matplotlib import animation, pyplot
 
 from samples.classification.ram.ram_params import get_ram_config
 
+__author__ = "Christian Heider Nielsen"
+__doc__ = r""""""
+
 
 def main(plot_dir: Path, epoch=None):
     """

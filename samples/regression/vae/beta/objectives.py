@@ -3,10 +3,9 @@
 from numbers import Number
 
 import torch
+from draugr.writers import Writer, MockWriter
 from torch.nn.functional import (
     mse_loss,
-    binary_cross_entropy_with_logits,
-    binary_cross_entropy,
 )
 
 __author__ = "Christian Heider Nielsen"
@@ -15,7 +14,14 @@ Objective functions for beta vae's
            """
 
 
-def loss_function(reconstruction, original, mean, log_var, beta: Number = 1):
+def loss_function(
+    reconstruction,
+    original,
+    mean,
+    log_var,
+    beta: Number = 1,
+    writer: Writer = MockWriter(),
+):
     """
 
     Args:
@@ -28,9 +34,26 @@ def loss_function(reconstruction, original, mean, log_var, beta: Number = 1):
     Returns:
 
     """
-    return reconstruction_loss(reconstruction, original) + beta * kl_divergence(
-        mean, log_var
-    )
+
+    total_kld = kl_divergence(mean, log_var, writer)
+
+    if True:
+        beta_vae_loss = beta * total_kld
+    else:
+        beta_vae_loss = (
+            recon_loss
+            + self.gamma
+            * (
+                total_kld
+                - torch.clamp(
+                    self.C_max / self.C_stop_iter * self.global_iter,
+                    0,
+                    self.C_max.data[0],
+                )  # C
+            ).abs()
+        )
+
+    return reconstruction_loss(reconstruction, original) + beta_vae_loss
 
 
 def reconstruction_loss(reconstruction, original):
@@ -52,7 +75,7 @@ def reconstruction_loss(reconstruction, original):
     return mse_loss(reconstruction, original, size_average=False).div(batch_size)
 
 
-def kl_divergence(mean, log_var):
+def kl_divergence(mean, log_var, writer: Writer = MockWriter()) -> torch.Tensor:
     """
 
     Args:
@@ -72,8 +95,9 @@ def kl_divergence(mean, log_var):
         log_var = log_var.view(log_var.size(0), log_var.size(1))
 
     klds = -0.5 * (1 + log_var - mean.pow(2) - log_var.exp())
-    total_kld = klds.sum(1).mean(0, True)
-    # dimension_wise_kld = klds.mean(0)
-    # mean_kld = klds.mean(1).mean(0, True)
 
-    return total_kld  # , dimension_wise_kld, mean_kld
+    if writer:
+        writer.scalar("dimension_wise_kld", klds.mean(0))
+        writer.scalar("mean_kld", klds.mean(1).mean(0, True))
+
+    return klds.sum(1).mean(0, True)  # total_kld

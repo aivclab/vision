@@ -36,6 +36,9 @@ from neodroidvision.utilities import (
     write_metrics_recursive,
 )
 
+__author__ = "Christian Heider Nielsen"
+__doc__ = ""
+
 
 def inner_train_ssd(
     *,
@@ -182,7 +185,7 @@ def inner_train_ssd(
             time.time() - start_training_time
         )  # compute training time
         logger.info(
-            f"Total training time: {datetime.timedelta(seconds = total_training_time)} ("
+            f"Total training time: {datetime.timedelta(seconds=total_training_time)} ("
             f"{total_training_time / max_iter:.4f} s / it)"
         )
         return model
