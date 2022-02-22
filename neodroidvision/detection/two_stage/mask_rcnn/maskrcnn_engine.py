@@ -11,7 +11,6 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import Writer
 from torch.nn import Module
-
 from torch.utils.data import DataLoader
 
 from neodroidvision.data.detection.coco import (

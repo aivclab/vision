@@ -5,7 +5,7 @@ import math
 from typing import Sized
 
 import torch
-import torch.distributed as dist
+from torch import distributed
 from torch.utils.data.sampler import Sampler
 
 __all__ = ["DistributedSampler"]
@@ -37,13 +37,13 @@ class DistributedSampler(Sampler):
         :param rank:
         :param shuffle:"""
         if num_replicas is None:
-            if not dist.is_available():
+            if not distributed.is_available():
                 raise RuntimeError("Requires distributed package to be available")
-            num_replicas = dist.get_world_size()
+            num_replicas = distributed.get_world_size()
         if rank is None:
-            if not dist.is_available():
+            if not distributed.is_available():
                 raise RuntimeError("Requires distributed package to be available")
-            rank = dist.get_rank()
+            rank = distributed.get_rank()
         self.dataset = dataset
         self.num_replicas = num_replicas
         self.rank = rank

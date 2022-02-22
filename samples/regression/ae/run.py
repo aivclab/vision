@@ -21,7 +21,7 @@ from neodroidvision.segmentation.masks import plot_utilities
 __author__ = "Christian Heider Nielsen"
 
 import torch
-import torch.optim as optim
+from torch import optim
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 from matplotlib import pyplot

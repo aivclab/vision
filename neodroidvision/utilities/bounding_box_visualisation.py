@@ -1,4 +1,3 @@
-from enum import Enum
 from itertools import cycle
 from typing import Iterable, Optional, Sequence, Tuple, Union
 
@@ -10,7 +9,6 @@ from attr import dataclass
 from draugr.pandas_utilities import ColorEnum
 from draugr.visualisation.pillow_utilities import PilModesEnum
 from matplotlib import pyplot
-from sorcery import assigned_names
 from warg import Number
 from warg.mixins.dict_mixins import IterDictValuesMixin
 

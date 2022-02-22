@@ -10,14 +10,14 @@ import torch
 from draugr import AverageMeter, find_unclaimed_port
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import TensorBoardPytorchWriter
-from mixed.architectures.self_attention_network import (
-    make_san,
-)
-from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
 from torch import distributed, multiprocessing, nn
 from torch.backends import cudnn
 from torch.optim import lr_scheduler
 
+from mixed.architectures.self_attention_network import (
+    make_san,
+)
+from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,

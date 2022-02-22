@@ -22,10 +22,10 @@ from warg import Number
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
-from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.utilities import scatter_plot_encoding_space
 from objectives import kl_divergence, reconstruction_loss
+from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

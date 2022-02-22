@@ -26,8 +26,8 @@ from torchvision.datasets import MNIST
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
-from regression.vae.architectures.disentangled.conditional_vae import ConditionalVAE
 from objectives import loss_fn
+from regression.vae.architectures.disentangled.conditional_vae import ConditionalVAE
 
 fig_root = PROJECT_APP_PATH.user_data / "cvae"
 

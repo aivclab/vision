@@ -7,5 +7,5 @@ __doc__ = r"""
            Created on 05/03/2020
            """
 
-from .clouds import *
 from .cam_vid import *
+from .clouds import *

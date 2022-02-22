@@ -35,7 +35,7 @@ from neodroidvision.classification import (
 __author__ = "Christian Heider Nielsen"
 
 import torch
-import torch.optim as optim
+from torch import optim
 from tqdm import tqdm
 
 seed = 34874312

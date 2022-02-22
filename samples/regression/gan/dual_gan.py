@@ -17,7 +17,7 @@ __doc__ = r"""
 import torch
 import torch.nn
 
-import torch.optim as optim
+from torch import optim
 from torch.autograd import Variable
 from itertools import chain
 

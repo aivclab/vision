@@ -9,6 +9,7 @@ import torch.utils.data
 from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 from torch.nn.functional import binary_cross_entropy
+from warg import Number
 
 from neodroidvision.regression.vae.architectures.vae import VAE
 
@@ -18,7 +19,7 @@ __all__ = ["VanillaVAE"]
 class Encoder(nn.Module):
     """ """
 
-    def __init__(self, input_size=784, output_size=20):
+    def __init__(self, input_size: Number = 784, output_size: Number = 20):
         super().__init__()
         self.fcs = nn.Sequential(
             nn.Linear(input_size, 400), nn.ReLU(), nn.Linear(400, 200), nn.ReLU()
@@ -54,7 +55,7 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     """ """
 
-    def __init__(self, input_size=20, output_size=784):
+    def __init__(self, input_size: Number = 20, output_size: Number = 784):
         super().__init__()
         self.fcs = nn.Sequential(
             nn.Linear(input_size, 200),

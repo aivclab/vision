@@ -6,7 +6,6 @@ import time
 
 import torch
 import torchvision
-from data.classification.deprec.s_mnist import MNISTDataset2
 from draugr import recycle
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -27,6 +26,7 @@ from torchvision.transforms.functional import to_pil_image
 from tqdm import tqdm
 from warg import ContextWrapper
 
+from data.classification.deprec.s_mnist import MNISTDataset2
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
 
