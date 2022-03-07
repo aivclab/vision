@@ -2,7 +2,7 @@ import numpy
 from draugr.numpy_utilities.raster_grid_3d_masking import sphere_mask
 from matplotlib import pyplot
 
-from neodroidvision.regression.denoise.spectral_denoise_3d import fft3_im_denoise
+from regression.patching.denoise import fft3_im_denoise
 
 if __name__ == "__main__":
 

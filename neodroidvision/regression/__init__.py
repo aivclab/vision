@@ -4,7 +4,7 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from .denoise import *
+from .patching import *
 from .flow import *
 from .generative import *
 from .metric import *

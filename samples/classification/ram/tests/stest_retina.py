@@ -9,7 +9,7 @@ from draugr.visualisation import (
 )
 from matplotlib import pyplot
 
-from ..architecture.ram_modules import GlimpseSensor
+from classification.mechanims.attention.foveal.architecture import GlimpseSensor
 from ..ram_params import get_ram_config
 
 

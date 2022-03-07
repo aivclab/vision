@@ -9,8 +9,6 @@ from torch.autograd import Variable
 
 __all__ = ["FocalLoss"]
 
-import samples.regression.gan.gan_utilities
-
 
 class FocalLoss(nn.Module):
     r"""
@@ -72,7 +70,7 @@ class FocalLoss(nn.Module):
 
         probs = (P * class_mask).sum(1).reshape(-1, 1)
 
-        log_p = samples.regression.gan.gan_utilities.log()
+        log_p = probs.log()
 
         batch_loss = -alpha * (torch.pow((1 - probs), self.gamma)) * log_p
 

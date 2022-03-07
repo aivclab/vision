@@ -10,12 +10,12 @@ from draugr.torch_utilities.sessions import TorchCacheSession
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.ssd_evaluation import do_ssd_evaluation
-from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     global_distribution_rank,
     set_benchmark_device_dist,
     setup_distributed_logger,
 )
+from utilities.torch_utilities.persistence.check_pointer import CheckPointer
 
 
 def main():

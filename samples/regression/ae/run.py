@@ -26,10 +26,7 @@ from torch.optim import lr_scheduler
 from tqdm import tqdm
 from matplotlib import pyplot
 
-from samples.segmentation.neodroid_dmr.dmr_data import (
-    calculate_multi_auto_encoder_loss,
-    neodroid_camera_data_iterator,
-)
+from .dmr_data import calculate_multi_auto_encoder_loss, neodroid_camera_data_iterator
 
 
 def get_metric_str(metrics, writer: ImageWriterMixin, update_i):

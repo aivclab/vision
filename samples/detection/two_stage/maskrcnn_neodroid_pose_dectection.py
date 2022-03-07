@@ -17,7 +17,6 @@ from torchvision.models.detection import keypointrcnn_resnet50_fpn
 from torchvision.transforms.functional import to_tensor
 from warg import NOD
 
-
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 

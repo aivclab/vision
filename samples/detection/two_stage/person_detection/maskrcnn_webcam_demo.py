@@ -4,21 +4,22 @@ from pathlib import Path
 
 import cv2
 import torch
-
-
-from draugr.torch_utilities.images.conversion import quick_to_pil_image
-
-from tqdm import tqdm
-
-from draugr.opencv_utilities import frame_generator, draw_bounding_boxes, WindowFlagEnum
+from draugr.opencv_utilities import (
+    frame_generator,
+    draw_bounding_boxes,
+    WindowFlagEnum,
+    show_image,
+)
+from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
     global_torch_device,
     TorchEvalSession,
     to_tensor_generator,
     uint_hwc_to_chw_float_tensor,
 )
-from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import load_model
+from draugr.torch_utilities.images.conversion import quick_to_pil_image
+from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.mixed import PennFudanDataset
@@ -82,9 +83,7 @@ if __name__ == "__main__":
 
                     indices = scores > score_threshold
 
-                    cv2.namedWindow(model_name, WindowFlagEnum.normal)
-                    cv2.imshow(
-                        model_name,
+                    if show_image(
                         draw_bounding_boxes(
                             quick_to_pil_image(image),
                             boxes[indices],
@@ -92,9 +91,9 @@ if __name__ == "__main__":
                             scores=scores[indices],
                             categories=categories,
                         ),
-                    )
-
-                    if cv2.waitKey(1) == 27:
+                        model_name,
+                        wait=True,
+                    ):
                         break  # esc to quit
 
     main()

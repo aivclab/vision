@@ -5,12 +5,14 @@ from torch import nn
 from torch.nn import functional
 from torch.nn.init import xavier_uniform_
 
-from neodroidvision.utilities.torch_utilities.mechanims.attention import (
+from classification.mechanims.attention import (
     SelfAttentionModule,
     init_weights,
+)
+from classification.mechanims.attention.self.spectral_norm import (
     spectral_norm_conv2d,
-    spectral_norm_embedding,
     spectral_norm_linear,
+    spectral_norm_embedding,
 )
 
 __author__ = "Christian Heider Nielsen"

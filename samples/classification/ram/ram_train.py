@@ -17,7 +17,9 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 from warg import NOD
 
-from architecture.ram import RecurrentAttention
+from classification.mechanims.attention.foveal.architecture.ram import (
+    RecurrentAttention,
+)
 from neodroidvision.data.classification import MNISTDataset
 from ram_params import get_ram_config
 

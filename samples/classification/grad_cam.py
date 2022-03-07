@@ -45,11 +45,11 @@ if __name__ == "__main__":
 model = models.resnet18(pretrained=True)
 #print(list(model.named_parameters()))
 grad_cam = GradientClassActivationMapping(
-  model=model,
-  feature_module=model.layer4,
-  target_layer_names=["1"],
-  use_cuda=use_cuda,
-  )
+model=model,
+feature_module=model.layer4,
+target_layer_names=["1"],
+use_cuda=use_cuda,
+)
 """
         img = cv2.imread(image_path, 1)
         img = numpy.float32(img) / 255

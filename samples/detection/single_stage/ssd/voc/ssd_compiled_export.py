@@ -19,7 +19,7 @@ from neodroidvision.detection.single_stage.ssd.architecture import (
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
-from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
+from utilities.torch_utilities.persistence.check_pointer import CheckPointer
 
 
 @torch.no_grad()

@@ -21,12 +21,12 @@ from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
-from neodroidvision.regression.vae.architectures.vae import VAE
-from neodroidvision.utilities import scatter_plot_encoding_space
-from objectives import loss_function
 from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
     HigginsBetaVae,
 )
+from neodroidvision.regression.vae.architectures.vae import VAE
+from neodroidvision.utilities import scatter_plot_encoding_space
+from objectives import loss_function
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

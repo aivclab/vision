@@ -12,7 +12,7 @@ import dlib
 
 # initialize dlib's face detector (HOG-based) and then create
 # the facial landmark predictor
-from draugr.opencv_utilities import AsyncVideoStream
+from draugr.opencv_utilities import AsyncVideoStream, show_image
 from draugr.opencv_utilities.dlib_utilities import shape_to_ndarray
 
 p = "shape_predictor_68_face_landmarks.dat"
@@ -34,10 +34,9 @@ for image in AsyncVideoStream():
         for (x, y) in shape_to_ndarray(predictor(gray, rect)):
             cv2.circle(image, (x, y), 2, (0, 255, 0), -1)
 
-    # show the output image with the face detections + facial landmarks
-    cv2.imshow("Output", image)
-
-    if (cv2.waitKey(5) & 0xFF) == 27:
+    if show_image(
+        image, wait=5, char="q"
+    ):  # show the output image with the face detections + facial landmarks
         break
 
 cv2.destroyAllWindows()

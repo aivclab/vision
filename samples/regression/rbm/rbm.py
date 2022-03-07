@@ -13,8 +13,6 @@ from torch.nn import functional
 from torchvision import datasets, transforms
 from torchvision.utils import make_grid
 
-import samples.regression.gan.gan_utilities
-
 
 def show_adn_save(file_name, img):
     npimg = numpy.transpose(img.numpy(), (1, 2, 0))
@@ -58,7 +56,7 @@ class RBM(nn.Module):
     def free_energy(self, v):
         vbias_term = v.mv(self.v_bias)
         wx_b = functional.linear(v, self.W, self.h_bias)
-        hidden_term = samples.regression.gan.gan_utilities.log().sum(1)
+        hidden_term = wx_b.log().sum(1)
         return (-hidden_term - vbias_term).mean()
 
 

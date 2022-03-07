@@ -5,10 +5,11 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from .metric_utilities import *
-from .metric_utilities import *
-from .processing import *
+from .misc import *
 from .torch_utilities import *
 
 # from .tf_utilities import *
 from .visualisation import *
+
+# from  .skimage_utilities import *
+from .opencv_utilities import *

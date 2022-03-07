@@ -4,6 +4,7 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
+from .bounding_box_visualisation import *
 from .encoder_utilities import *
 from .encoding_space import *
 from .grad_cam import *

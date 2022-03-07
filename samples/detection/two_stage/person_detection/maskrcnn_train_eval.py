@@ -4,30 +4,27 @@ from pathlib import Path
 
 import torch
 from PIL import Image
-
-
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum, SplitIndexer
-
-from torch.utils.data import DataLoader, Subset
-from tqdm import tqdm
-
-from draugr.torch_utilities import (
-    global_torch_device,
-    TorchEvalSession,
-    TorchTrainSession,
-)
 from draugr.random_utilities import seed_stack
-from warg.functions import collate_first_dim
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.mixed import PennFudanDataset
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     load_model,
     save_model,
     trainable_parameters,
 )
+from draugr.torch_utilities import (
+    global_torch_device,
+    TorchEvalSession,
+    TorchTrainSession,
+)
+from torch.utils.data import DataLoader, Subset
+from tqdm import tqdm
+from warg import GDKC
+from warg.functions import collate_first_dim
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )
@@ -35,7 +32,6 @@ from neodroidvision.detection.two_stage.mask_rcnn.maskrcnn_engine import (
     maskrcnn_train_single_epoch,
     maskrcnn_evaluate,
 )
-from warg import GDKC
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""

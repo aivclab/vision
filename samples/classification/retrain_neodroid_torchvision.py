@@ -4,6 +4,7 @@ import argparse
 import os
 import time
 
+import torch
 import torchvision
 from draugr import batch_generator
 from draugr.python_utilities import (
@@ -23,6 +24,8 @@ from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
 )
+from torch import optim
+from tqdm import tqdm
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import (
@@ -31,11 +34,6 @@ from neodroidvision.classification import (
 )
 
 # from warg.pooled_queue_processor import PooledQueueTask
-
-
-import torch
-from torch import optim
-from tqdm import tqdm
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r""""""

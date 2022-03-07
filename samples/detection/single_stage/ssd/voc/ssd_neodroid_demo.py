@@ -7,7 +7,11 @@ import numpy
 import torch
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
-from draugr.opencv_utilities import draw_bounding_boxes, gamma_correct_float_to_byte
+from draugr.opencv_utilities import (
+    draw_bounding_boxes,
+    gamma_correct_float_to_byte,
+    show_image,
+)
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
@@ -83,9 +87,7 @@ def run_webcam_demo(
 
             indices = scores > score_threshold
 
-            cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-            cv2.imshow(
-                window_name,
+            if show_image(
                 draw_bounding_boxes(
                     image,
                     boxes[indices],
@@ -93,8 +95,9 @@ def run_webcam_demo(
                     scores=scores[indices],
                     categories=categories,
                 ).astype(numpy.uint8),
-            )
-            if cv2.waitKey(1) == 27:
+                window_name,
+                wait=1,
+            ):
                 break  # esc to quit
 
 

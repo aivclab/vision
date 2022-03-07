@@ -2,9 +2,8 @@ from typing import Iterable
 
 import numpy
 import torch
-from torch import nn
-
 from sklearn.preprocessing import LabelEncoder
+from torch import nn
 
 one_hot_encoder = LabelEncoder()
 one_hot_encoder.fit(range(10))

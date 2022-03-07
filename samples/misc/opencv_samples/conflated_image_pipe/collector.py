@@ -2,6 +2,7 @@ from typing import Optional
 
 import cv2
 import zmq
+from draugr.opencv_utilities import show_image
 
 from samples.misc.exclude import SOCKET_ADDRESS2
 from samples.misc.opencv_samples.conflated_image_pipe.configuration import ComArchEnum
@@ -37,8 +38,7 @@ if __name__ == "__main__":
                     frame = zmq_socket.recv_pyobj(
                         # flags=zmq.NOBLOCK
                     )
-                    cv2.imshow("frame", frame)
-                    if cv2.waitKey(1) & 0xFF == ord("q"):
+                    if show_image(frame):
                         break
 
     main()
