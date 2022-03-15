@@ -41,8 +41,12 @@ if __name__ == "__main__":
     image_dir = base_path / "images"
     label_dir = base_path / "annotations"
     for impath in image_dir.glob("*.png"):
-        labels, bboxes_XYXY = read_labels(label_dir / f"{impath.stem}".endswith(".csv"))
+        labels, bboxes_XYXY = read_labels(
+            (label_dir / f"{impath.stem}").with_suffix(".csv")
+        )
         im = Image.open(str(impath))  # .convert('RGB')
 
         pyplot.imshow(draw_boxes.draw_bounding_boxes(im, bboxes_XYXY, labels=labels))
         pyplot.show()
+    else:
+        print("Found no images")

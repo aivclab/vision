@@ -32,14 +32,12 @@ def fft3_im_denoise(img: numpy.ndarray, keep_fraction: float = 0.1) -> numpy.nda
     Filter in FFT
     Reconstruct the final image
 
+    :param keep_fraction:
+    :type keep_fraction:
     :param img:
     :type img:
     :return:
-    :rtype:
-
-      Parameters
-      ----------
-      keep_fraction"""
+    :rtype:"""
     assert 0.0 < keep_fraction < 1.0
     im_fft = numpy.fft.fftn(img)
 

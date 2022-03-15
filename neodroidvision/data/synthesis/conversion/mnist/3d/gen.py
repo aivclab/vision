@@ -188,7 +188,7 @@ if __name__ == "__main__":
 
     from draugr.numpy_utilities import SplitEnum
 
-    with gzip.open(Path("exclude") / "mnist.pkl.gz", "rb") as f:
+    with gzip.open(PROJECT_APP_PATH.user_data / "mnist.pkl.gz", "rb") as f:
         train_set, valid_set, test_set = pickle.load(f, encoding="iso-8859-1")
 
     N_VALID = 100
@@ -200,5 +200,5 @@ if __name__ == "__main__":
             set_[0][:N_VALID],
             set_[1][:N_VALID],
             make_voxel(),
-            Path("exclude") / split.value,
+            PROJECT_APP_PATH.user_data / "mnist3d" / split.value,
         )

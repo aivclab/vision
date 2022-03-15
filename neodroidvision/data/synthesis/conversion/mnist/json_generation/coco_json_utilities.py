@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy
 from PIL import Image
-from shapely.geometry import MultiPolygon, Polygon
+
 from skimage import measure
 from tqdm import tqdm
 from warg import NOD
@@ -100,6 +100,8 @@ class AnnotationJsonUtils:
                     self.isolated_masks[pixel_rgb_str].putpixel((x + 1, y + 1), 1)
 
     def _create_annotations(self):
+        from shapely.geometry import MultiPolygon, Polygon
+
         # Creates annotations for each isolated mask
 
         # Each image may have multiple annotations, so create an array

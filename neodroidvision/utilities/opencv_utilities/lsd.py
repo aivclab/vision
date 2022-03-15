@@ -1,16 +1,13 @@
-# Read gray image
-import cv2
 from pathlib import Path
+from typing import Any
 
 import cv2
 from draugr.opencv_utilities import show_image
 
 
-def detect_lines(img, debug=True):
+def detect_lines(img: Any, debug: bool = True) -> Any:
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
     lsd = cv2.createLineSegmentDetector(0)
-
     lines = lsd.detect(img)[0]
 
     if debug:

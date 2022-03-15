@@ -7,7 +7,6 @@ import torch
 from draugr.opencv_utilities import (
     frame_generator,
     draw_bounding_boxes,
-    WindowFlagEnum,
     show_image,
 )
 from draugr.random_utilities import seed_stack

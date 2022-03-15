@@ -8,12 +8,15 @@ __doc__ = r"""
            """
 
 from pathlib import Path
-
+from neodroidvision import PROJECT_APP_PATH
 import h5py
 import plotly.offline
+from apppath import ensure_existence
 from plotly.graph_objs import Figure, Layout, Scatter3d
 
-with h5py.File(Path("exclude") / "testing.h5", "r") as points_dataset:
+with h5py.File(
+    PROJECT_APP_PATH.user_data / "mnist3d" / "testing.h5", "r"
+) as points_dataset:
     digits = []
     for i in range(10):
         digit = (
@@ -48,4 +51,9 @@ for i in range(3):
         ],
         layout=layout,
     )
-    plotly.offline.plot(fig, filename=str(Path("exclude") / "temp-plot.html"))
+    plotly.offline.plot(
+        fig,
+        filename=str(
+            ensure_existence(PROJECT_APP_PATH.user_cache / "mnist3d") / "temp-plot.html"
+        ),
+    )

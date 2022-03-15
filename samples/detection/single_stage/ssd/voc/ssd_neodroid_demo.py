@@ -2,7 +2,6 @@ import argparse
 from pathlib import Path
 from typing import Sequence
 
-import cv2
 import numpy
 import torch
 from apppath import ensure_existence

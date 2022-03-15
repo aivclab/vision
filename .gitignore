@@ -168,3 +168,5 @@ samples/misc/imgui.ini
 samples/misc/libtorch_samples/eye/build/
 
 samples/misc/libtorch_samples/example-app/build/
+
+.dccache

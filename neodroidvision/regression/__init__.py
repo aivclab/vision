@@ -4,8 +4,8 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from .patching import *
 from .flow import *
 from .generative import *
 from .metric import *
+from .patching import *
 from .vae import *

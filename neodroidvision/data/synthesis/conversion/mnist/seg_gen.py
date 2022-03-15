@@ -200,8 +200,8 @@ def generate_dataset(
 
             im[y0 : y0 + width, x0 : x0 + width] += digit
             im[im > max_image_value] = max_image_value
-        image_target_path = image_dir / f"{image_id}.png"
-        label_target_path = label_dir / f"{image_id}".endswith(".csv")
+        image_target_path = (image_dir / f"{image_id}").with_suffix(".png")
+        label_target_path = (label_dir / f"{image_id}").with_suffix(".csv")
         im = im.astype(numpy.uint8)
         cv2.imwrite(str(image_target_path), im)
         with open(label_target_path, "w") as fp:

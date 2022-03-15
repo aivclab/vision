@@ -14,9 +14,13 @@ from pathlib import Path
 import numpy
 from draugr.numpy_utilities import SplitEnum
 from tqdm import trange
+from neodroidvision import PROJECT_APP_PATH
 
 from augmentation import rotate_y
 from gen import make_voxel, img_to_point_cloud
+
+
+__all__ = ["save_dataset"]
 
 
 def save_dataset(X, y, voxel, output, shape=(28, 28)):
@@ -43,13 +47,16 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
 
         if i == 1:
             # data = numpy.zeros((70, 800, 600))
-            nrrd.write(str(Path("exclude") / f"{y[i]}.nrrd"), data[:, :3])
+            nrrd.write(
+                str(PROJECT_APP_PATH.user_data / "mnist3d" / f"{y[i]}.nrrd"),
+                data[:, :3],
+            )
             exit(0)
 
 
 if __name__ == "__main__":
 
-    with gzip.open(Path("exclude") / "mnist.pkl.gz", "rb") as f:
+    with gzip.open(PROJECT_APP_PATH.user_data / "mnist.pkl.gz", "rb") as f:
         train_set, valid_set, test_set = pickle.load(f, encoding="iso-8859-1")
 
         N_VALID = 100
@@ -61,5 +68,5 @@ if __name__ == "__main__":
                 set_[0][:N_VALID],
                 set_[1][:N_VALID],
                 make_voxel(),
-                Path("exclude") / split.value,
+                PROJECT_APP_PATH.user_data / "mnist3d" / split.value,
             )

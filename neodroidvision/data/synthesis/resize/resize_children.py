@@ -6,6 +6,8 @@ import cv2
 from apppath import ensure_existence
 from sorcery import assigned_names
 from warg import Number
+from draugr.tqdm_utilities import progress_bar
+from draugr.opencv_utilities import cv2_resize, InterpolationEnum
 
 __all__ = ["ResizeMethodEnum", "resize", "resize_children"]
 
@@ -14,7 +16,7 @@ class ResizeMethodEnum(Enum):
     crop, scale, scale_crop = assigned_names()
 
 
-def resize(image, width=None, height=None, inter=cv2.INTER_AREA):
+def resize(image, width=None, height=None, inter=InterpolationEnum.area):
     # initialize the dimensions of the image to be resized and
     # grab the image size
     dim = None
@@ -39,7 +41,7 @@ def resize(image, width=None, height=None, inter=cv2.INTER_AREA):
         r = width / float(w)
         dim = (width, int(h * r))
 
-    return cv2.resize(image, dim, interpolation=inter)
+    return cv2_resize(image, dim, interpolation=inter)
 
 
 def resize_children(
@@ -56,11 +58,11 @@ def resize_children(
     dst_path = Path(dst_path)
     if not dst_path.root:
         dst_path = src_path.parent / dst_path
-    for ext in from_extensions:
-        for c in src_path.rglob(f'*.{ext.rstrip("*").rstrip(".")}'):
+    for ext in progress_bar(from_extensions):
+        for c in progress_bar(src_path.rglob(f'*.{ext.rstrip("*").rstrip(".")}')):
             image = cv2.imread(str(c))
             if resize_method == resize_method.scale:
-                resized = cv2.resize(image, target_size)
+                resized = cv2_resize(image, target_size, InterpolationEnum.area)
             elif resize_method == resize_method.crop:
                 center = (image.shape[0] / 2, image.shape[1] / 2)
                 x = int(center[1] - target_size[0] / 2)

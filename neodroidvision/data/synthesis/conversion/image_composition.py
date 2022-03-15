@@ -8,9 +8,10 @@ from pathlib import Path
 
 import numpy
 from PIL import Image, ImageEnhance
+
 from tqdm import tqdm
 
-from samples.misc.data.synthesis.json_generation.mask_json_utilities import (
+from neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities import (
     MaskJsonUtils,
 )
 
@@ -446,7 +447,7 @@ if __name__ == "__main__":
         required=True,
         help=(
             "The input directory. This contains a 'backgrounds' directory of pngs or jpgs, and a 'foregrounds' "
-            "directory which contains supercategory directories (e.g. 'animal', 'vehicle'), each of which contain "
+            "directory which contains super category directories (e.g. 'animal', 'vehicle'), each of which contain "
             "category directories (e.g. 'horse', 'bear'). Each category directory contains png images of that item on "
             "a transparent background (e.g. a grizzly bear on a transparent background)."
         ),
