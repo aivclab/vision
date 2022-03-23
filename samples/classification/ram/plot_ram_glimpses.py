@@ -5,8 +5,10 @@ from pathlib import Path
 import numpy
 from draugr.visualisation import denormalise_minusoneone, matplotlib_bounding_box
 from matplotlib import animation, pyplot
-
 from samples.classification.ram.ram_params import get_ram_config
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r""""""
 
 
 def main(plot_dir: Path, epoch=None):

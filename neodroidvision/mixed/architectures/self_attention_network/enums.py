@@ -11,6 +11,7 @@ from enum import Enum
 
 from sorcery import assigned_names
 
+
 # TODO: WARNING NOTE ON ENUMS
 # When you reload the module, you've effectively have two seperate types, and most types consider the type itself
 # in  equality comparisons, e.g. if isinstance(other, Foo): return self.value == other.value else return NotImplemented.

@@ -1,8 +1,9 @@
 import sys
 
+from classification.mechanims.attention.foveal.architecture.ram import (
+    RecurrentAttention,
+)
 from draugr.visualisation import pil_img_to_np_array
-
-from samples.classification.ram.architecture.ram import RecurrentAttention
 from samples.classification.ram.ram_params import get_ram_config
 
 sys.path.append("..")

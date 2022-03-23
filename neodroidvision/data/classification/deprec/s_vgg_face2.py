@@ -18,7 +18,7 @@ from matplotlib import pyplot
 from torch.utils import data
 from torchvision import transforms
 
-__all__ = ["VggFaces2"]
+__all__ = ["sVggFace2"]
 
 from draugr.torch_utilities import SupervisedDataset
 
@@ -28,7 +28,7 @@ N_IDENTITY = 9131  # total number of identities in VGG Face2
 N_IDENTITY_PRETRAIN = 8631  # the number of identities used in training by Caffe
 
 
-class VggFaces2(SupervisedDataset):
+class sVggFace2(SupervisedDataset):
     """ """
 
     @property
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
         batch_size = 32
 
-        dt = VggFace2(
+        dt = sVggFace2(
             p,
             split=SplitEnum.testing,
             # raw_images=True

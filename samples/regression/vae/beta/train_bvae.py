@@ -18,14 +18,15 @@ from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from tqdm import tqdm
-from warg import Number
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
-from regression.vae.architectures.disentangled.beta_vae import HigginsBetaVae
+from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
+    HigginsBetaVae,
+)
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.utilities import scatter_plot_encoding_space
-from objectives import kl_divergence, reconstruction_loss
+from objectives import loss_function
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -33,56 +34,6 @@ __doc__ = r"""
   
   Distangled Representations
 """
-
-torch.manual_seed(82375329)
-LOWEST_L = inf
-
-core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
-
-GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DL_KWARGS = (
-    {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
-)
-BASE_PATH = PROJECT_APP_PATH.user_data / "bvae"
-if not BASE_PATH.exists():
-    BASE_PATH.mkdir(parents=True)
-
-INPUT_SIZE = 64
-CHANNELS = 3
-
-BATCH_SIZE = 1024
-EPOCHS = 1000
-LR = 3e-3
-ENCODING_SIZE = 10
-name = "vggface2"
-# name = 'vggface2'
-DATASET = VggFace2(
-    Path.home() / "Data" / "Datasets" / name,
-    split=SplitEnum.testing,
-    resize_s=INPUT_SIZE,
-)
-MODEL: VAE = HigginsBetaVae(CHANNELS, latent_size=ENCODING_SIZE).to(
-    global_torch_device()
-)
-BETA = 4
-
-
-def loss_function(reconstruction, original, mean, log_var, beta: Number = 1):
-    """
-
-    Args:
-      reconstruction:
-      original:
-      mean:
-      log_var:
-      beta:
-
-    Returns:
-
-    """
-    return reconstruction_loss(reconstruction, original) + beta * kl_divergence(
-        mean, log_var
-    )
 
 
 def train_model(
@@ -109,9 +60,9 @@ def train_model(
         for batch_idx, (original, *_) in generator:
             original = original.to(global_torch_device())
 
-            optimiser.zero_grad()
             reconstruction, mean, log_var = model(original)
             loss = loss_function(reconstruction, original, mean, log_var)
+            optimiser.zero_grad()
             loss.backward()
             optimiser.step()
 
@@ -196,16 +147,41 @@ def stest_model(
 
 if __name__ == "__main__":
 
-    def main(train_model_=False):
+    torch.manual_seed(82375329)
+    LOWEST_L = inf
 
-        """
-        ds = [datasets.MNIST(PROJECT_APP_PATH.user_data,
-                 train=True,
-                 download=True,
-                 transform=transforms.ToTensor()), datasets.MNIST(PROJECT_APP_PATH.user_data,
-                                                                  train=False,
-                                                                  transform=transforms.ToTensor())]
-        """
+    core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
+
+    GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    DL_KWARGS = (
+        {"num_workers": core_count, "pin_memory": True}
+        if torch.cuda.is_available()
+        else {}
+    )
+    BASE_PATH = PROJECT_APP_PATH.user_data / "bvae"
+    if not BASE_PATH.exists():
+        BASE_PATH.mkdir(parents=True)
+
+    INPUT_SIZE = 64
+    CHANNELS = 3
+
+    BATCH_SIZE = 1024
+    EPOCHS = 1000
+    LR = 3e-4
+    ENCODING_SIZE = 10
+    name = "vggface2"
+    # name = 'vggface2'
+    DATASET = VggFace2(
+        Path.home() / "Data" / "Datasets" / name,
+        split=SplitEnum.testing,
+        resize_s=INPUT_SIZE,
+    )
+    MODEL: VAE = HigginsBetaVae(CHANNELS, latent_size=ENCODING_SIZE).to(
+        global_torch_device()
+    )
+    BETA = 4
+
+    def main(train_model_=False):
 
         dataset_loader = DataLoader(
             DATASET, batch_size=BATCH_SIZE, shuffle=True, **DL_KWARGS

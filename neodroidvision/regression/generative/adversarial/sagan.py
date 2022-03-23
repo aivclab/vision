@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import torch
-import torch.nn.functional as F
-from torch import nn
-from torch.nn.init import xavier_uniform_
-
-from neodroidvision.utilities.torch_utilities.mechanims.attention import (
+from classification.mechanims.attention import (
     SelfAttentionModule,
     init_weights,
-    spectral_norm_conv2d,
-    spectral_norm_embedding,
-    spectral_norm_linear,
 )
+from classification.mechanims.attention.self.spectral_norm import (
+    spectral_norm_conv2d,
+    spectral_norm_linear,
+    spectral_norm_embedding,
+)
+from torch import nn
+from torch.nn import functional
+from torch.nn.init import xavier_uniform_
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -91,13 +92,13 @@ class GenBlock(nn.Module):
 
         x = self.cond_bn1(x, labels)
         x = self.relu(x)
-        x = F.interpolate(x, scale_factor=2, mode="nearest")  # upsample
+        x = functional.interpolate(x, scale_factor=2, mode="nearest")  # upsample
         x = self.spectral_norm_conv2d1(x)
         x = self.cond_bn2(x, labels)
         x = self.relu(x)
         x = self.spectral_norm_conv2d2(x)
 
-        x0 = F.interpolate(x0, scale_factor=2, mode="nearest")  # upsample
+        x0 = functional.interpolate(x0, scale_factor=2, mode="nearest")  # upsample
         x0 = self.spectral_norm_conv2d0(x0)
 
         return x + x0

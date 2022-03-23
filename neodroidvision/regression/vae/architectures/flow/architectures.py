@@ -14,7 +14,7 @@ import torch.utils.data
 from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 
-from vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
+from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 
 
 class MLP(nn.Module):
@@ -151,7 +151,7 @@ class NormalLogProb(nn.Module):
         :type z:
         :return:
         :rtype:"""
-        var = scale ** 2
+        var = scale**2
         return -0.5 * torch.log(2 * numpy.pi * var) - torch.pow(z - loc, 2) / (2 * var)
 
 

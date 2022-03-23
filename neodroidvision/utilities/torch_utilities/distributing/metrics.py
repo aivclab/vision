@@ -11,7 +11,7 @@ import typing
 
 import torch
 from draugr.writers import Writer
-from torch import distributed as dist
+from torch import distributed
 
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     global_world_size,
@@ -56,8 +56,8 @@ def reduce_loss_dict(loss_dict: dict) -> dict:
             loss_names.append(k)
             all_losses.append(loss_dict[k])
         all_losses = torch.stack(all_losses, dim=0)
-        dist.reduce(all_losses, dst=0)
-        if dist.get_rank() == 0:
+        distributed.reduce(all_losses, dst=0)
+        if distributed.get_rank() == 0:
             # only main process gets accumulated, so only divide by world_size in this case
             all_losses /= world_size
         reduced_losses = {k: v for k, v in zip(loss_names, all_losses)}

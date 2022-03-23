@@ -26,7 +26,7 @@ def jaccard_similarity_score(
     target_flat = target.reshape(-1)
 
     intersection = (pred_flat * target_flat).sum() + epsilon
-    union = (target_flat ** 2).sum() + (pred_flat ** 2).sum() + epsilon
+    union = (target_flat**2).sum() + (pred_flat**2).sum() + epsilon
 
     dice_coefficient = intersection / (union - intersection)
 

@@ -17,7 +17,7 @@ import torch
 from PIL import ImageFont
 from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
-from draugr.opencv_utilities import draw_bounding_boxes, frame_generator
+from draugr.opencv_utilities import draw_bounding_boxes, frame_generator, show_image
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from tqdm import tqdm
 from warg import NOD
@@ -86,9 +86,7 @@ def run_webcam_demo(
 
             indices = scores > score_threshold
 
-            cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-            cv2.imshow(
-                window_name,
+            if show_image(
                 draw_bounding_boxes(
                     image,
                     boxes[indices],
@@ -100,8 +98,9 @@ def run_webcam_demo(
                         24,
                     ),
                 ).astype(numpy.uint8),
-            )
-            if cv2.waitKey(1) == 27:
+                window_name,
+                wait=1,
+            ):
                 break  # esc to quit
 
 

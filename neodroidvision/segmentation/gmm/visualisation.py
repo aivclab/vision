@@ -1,7 +1,7 @@
 import os
 
-import matplotlib.cm as cmx
 import numpy
+from matplotlib import cm
 from matplotlib import patches, pyplot
 
 __all__ = ["visualise_3d_gmm", "visualise_2D_gmm"]
@@ -34,7 +34,7 @@ def plot_sphere(
     x = sigma_multiplier * r[0] * sin(phi) * cos(theta) + c[0]
     y = sigma_multiplier * r[1] * sin(phi) * sin(theta) + c[1]
     z = sigma_multiplier * r[2] * cos(phi) + c[2]
-    cmap = cmx.ScalarMappable()
+    cmap = cm.ScalarMappable()
     cmap.set_cmap("jet")
     c = cmap.to_rgba(w)
 
@@ -64,7 +64,7 @@ def visualise_3d_gmm(points, w, mu, std_dev, export=False):
     axes.set_ylim([-1, 1])
     axes.set_zlim([-1, 1])
     pyplot.set_cmap("Set1")
-    colors = cmx.Set1(numpy.linspace(0, 1, n_components))
+    colors = cm.Set1(numpy.linspace(0, 1, n_components))
     for i in range(n_components):
         idx = range(i * N, (i + 1) * N)
         axes.scatter(
@@ -103,7 +103,7 @@ def visualise_2D_gmm(points, w, mu, std_dev, export=False):
     axes.set_xlim([-1, 1])
     axes.set_ylim([-1, 1])
     pyplot.set_cmap("Set1")
-    colors = cmx.Set1(numpy.linspace(0, 1, n_components))
+    colors = cm.Set1(numpy.linspace(0, 1, n_components))
     for i in range(n_components):
         idx = range(i * N, (i + 1) * N)
         pyplot.scatter(points[idx, 0], points[idx, 1], alpha=0.3, c=colors[i])

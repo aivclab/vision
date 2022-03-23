@@ -16,7 +16,7 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import 
 
 __all__ = ["SSDNmsBoxHead", "SSDOut"]
 
-from neodroidvision.utilities.torch_utilities.non_maximum_suppression import (
+from neodroidvision.utilities.torch_utilities.output_activation.ops.non_maximum_suppression import (
     batched_non_maximum_suppression,
 )
 from warg import drop_unused_kws
@@ -138,12 +138,12 @@ class SSDNmsBoxHead(nn.Module):
             scores = scores[:, 1:].reshape(-1)
 
             """ WILL NOT WORK FOR TRACED MODELS!
-      scores, boxes, labels = self.keep_above(scores,
-                boxes,
-                labels,
-                threshold=self.confidence_threshold)
-      
-      """
+scores, boxes, labels = self.keep_above(scores,
+boxes,
+labels,
+threshold=self.confidence_threshold)
+
+"""
             scores, boxes, labels = self.sort_keep_top_k(
                 scores, boxes, labels, k=self.max_candidates
             )

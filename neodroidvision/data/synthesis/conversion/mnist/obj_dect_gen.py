@@ -153,7 +153,7 @@ def dataset_exists(dirpath: pathlib.Path, num_images):
         error_msg2 = f"You can delete the directory by running: rm -r {dirpath.parent}"
         impath = dirpath / "images" / f"{image_id}.png"
         assert impath.is_file(), f"{error_msg} {impath} \n\t{error_msg2}"
-        label_path = dirpath / "annotations" / f"{image_id}".endswith(".csv")
+        label_path = (dirpath / "annotations" / f"{image_id}").with_suffix(".csv")
         assert label_path.is_file(), f"{error_msg} {impath} \n\t{error_msg2}"
     return True
 
@@ -204,8 +204,8 @@ def generate_dataset(
 
             im[y0 : y0 + width, x0 : x0 + width] += digit
             im[im > max_image_value] = max_image_value
-        image_target_path = image_dir / f"{image_id}.png"
-        label_target_path = label_dir / f"{image_id}".endswith(".csv")
+        image_target_path = (image_dir / f"{image_id}").with_suffix(".png")
+        label_target_path = (label_dir / f"{image_id}").with_suffix(".csv")
         im = im.astype(numpy.uint8)
         cv2.imwrite(str(image_target_path), im)
         with open(label_target_path, "w") as fp:

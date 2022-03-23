@@ -12,7 +12,7 @@ https://github.com/ikostrikov/pytorch-flows"""
 import numpy
 import torch
 from torch import nn
-from torch.nn import functional as F
+from torch.nn import functional
 
 
 class InverseAutoregressiveFlow(nn.Module):
@@ -92,7 +92,9 @@ class MaskedLinear(nn.Module):
         Returns:
 
         """
-        output = F.linear(input, self.mask * self.linear.weight, self.linear.bias)
+        output = functional.linear(
+            input, self.mask * self.linear.weight, self.linear.bias
+        )
         if context is None:
             return output
         else:

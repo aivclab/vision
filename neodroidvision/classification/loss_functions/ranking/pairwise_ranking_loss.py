@@ -8,7 +8,7 @@ __doc__ = r"""
            """
 
 import torch
-from torch.nn import functional as F
+from torch.nn import functional
 
 __all__ = ["PairwiseRankingLoss"]
 
@@ -48,8 +48,8 @@ class PairwiseRankingLoss(torch.nn.Module):
         # assert s2.is_contiguous()
         # assert is_same.is_contiguous()
 
-        euclidean_distance = F.pairwise_distance(anchor, other)
+        euclidean_distance = functional.pairwise_distance(anchor, other)
         return torch.mean(
-            (1 - is_diff) * euclidean_distance ** 2
+            (1 - is_diff) * euclidean_distance**2
             + is_diff * torch.clamp(self._margin - euclidean_distance, min=0.0) ** 2
         )  # if distance is larger than margin(desirable), clip to 0 loss.

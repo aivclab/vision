@@ -26,68 +26,19 @@ from torchvision.datasets import MNIST
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
-from regression.vae.architectures.disentangled.conditional_vae import ConditionalVAE
+from neodroidvision.regression.vae.architectures.disentangled.conditional_vae import (
+    ConditionalVAE,
+)
 from objectives import loss_fn
 
-fig_root = PROJECT_APP_PATH.user_data / "cvae"
 
-config = NOD()
-config.seed = 58329583
-config.epochs = 1000
-config.batch_size = 256
-config.learning_rate = 0.001
-config.encoder_layer_sizes = [784, 256]
-config.decoder_layer_sizes = [256, 784]
-config.latent_size = 10
-config.print_every = 100
-GLOBAL_DEVICE = global_torch_device()
-timestamp = time.time()
-torch.manual_seed(config.seed)
-
-LOWEST_L = inf
-
-core_count = 0  # min(8, multiprocessing.cpu_count() - 1)
-
-GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DL_KWARGS = (
-    {"num_workers": core_count, "pin_memory": True} if torch.cuda.is_available() else {}
-)
-BASE_PATH = ensure_existence(PROJECT_APP_PATH.user_data / "cvae")
-
-if torch.cuda.is_available():
-    torch.cuda.manual_seed(config.seed)
-
-vae = ConditionalVAE(
-    encoder_layer_sizes=config.encoder_layer_sizes,
-    latent_size=config.latent_size,
-    decoder_layer_sizes=config.decoder_layer_sizes,
-    num_conditions=10,
-).to(global_torch_device())
-dataset = MNIST(
-    root=str(PROJECT_APP_PATH.user_data / "MNIST"),
-    train=True,
-    transform=transforms.ToTensor(),
-    download=True,
-)
-tmsp_path = fig_root / str(timestamp)
-if not tmsp_path.exists():
-    tmsp_path.mkdir(parents=True)
-
-if True:
-    _list_of_files = list(fig_root.rglob("*.pth"))
-    latest_model_path = str(max(_list_of_files, key=os.path.getctime))
-    print(f"loading previous model: {latest_model_path}")
-    if latest_model_path is not None:
-        vae.load_state_dict(torch.load(latest_model_path))
-
-
-def main():
+def main(config, model, tmsp_path):
     """ """
     data_loader = DataLoader(
-        dataset=dataset, batch_size=config.batch_size, shuffle=True
+        dataset=DATASET, batch_size=config.batch_size, shuffle=True
     )
 
-    optimiser = torch.optim.Adam(vae.parameters(), lr=config.learning_rate)
+    optimiser = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
 
     logs = defaultdict(list)
 
@@ -100,7 +51,7 @@ def main():
                 original.to(global_torch_device()),
                 label.to(global_torch_device()),
             )
-            reconstruction, mean, log_var, z = vae(
+            reconstruction, mean, log_var, z = model(
                 original, one_hot(label, 10).to(GLOBAL_DEVICE)
             )
 
@@ -125,7 +76,7 @@ def main():
                 )
 
                 condition_vector = torch.arange(0, 10, device=GLOBAL_DEVICE).long()
-                sample = vae.sample(
+                sample = model.sample(
                     one_hot(condition_vector, 10).to(GLOBAL_DEVICE),
                     num=condition_vector.size(0),
                 )
@@ -168,7 +119,7 @@ def main():
         )
         if True:
             torch.save(
-                vae.state_dict(), BASE_PATH / f"model_state_dict{str(epoch_i)}.pth"
+                model.state_dict(), BASE_PATH / f"model_state_dict{str(epoch_i)}.pth"
             )
 
         # if False and LOWEST_L > test_accum_loss:
@@ -177,4 +128,59 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    CONFIG = NOD()
+    CONFIG.seed = 58329583
+    CONFIG.epochs = 1000
+    CONFIG.batch_size = 256
+    CONFIG.learning_rate = 0.001
+    CONFIG.encoder_layer_sizes = [784, 256]
+    CONFIG.decoder_layer_sizes = [256, 784]
+    CONFIG.latent_size = 10
+    CONFIG.print_every = 100
+    GLOBAL_DEVICE = global_torch_device()
+    TIMESTAMP = time.time()
+
+    LOWEST_L = inf
+
+    CORE_COUNT = 0  # min(8, multiprocessing.cpu_count() - 1)
+
+    GLOBAL_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    DL_KWARGS = (
+        {"num_workers": CORE_COUNT, "pin_memory": True}
+        if torch.cuda.is_available()
+        else {}
+    )
+    BASE_PATH = ensure_existence(PROJECT_APP_PATH.user_data / "cvae")
+
+    torch.manual_seed(CONFIG.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(CONFIG.seed)
+
+    NAME = "MNIST"
+    MODEL = ConditionalVAE(
+        encoder_layer_sizes=CONFIG.encoder_layer_sizes,
+        latent_size=CONFIG.latent_size,
+        decoder_layer_sizes=CONFIG.decoder_layer_sizes,
+        num_conditions=10,
+    ).to(global_torch_device())
+    DATASET = MNIST(
+        root=str(PROJECT_APP_PATH.user_data / NAME),
+        train=True,
+        transform=transforms.ToTensor(),
+        download=True,
+    )
+
+    USER_DATA_PATH = PROJECT_APP_PATH.user_data / NAME / "cvae"
+    TMSP_PATH = USER_DATA_PATH / str(TIMESTAMP)
+    if not TMSP_PATH.exists():
+        TMSP_PATH.mkdir(parents=True)
+
+    if True:
+        _list_of_files = list(USER_DATA_PATH.rglob("*.pth"))
+        _latest_model_path = str(max(_list_of_files, key=os.path.getctime))
+        print(f"loading previous model: {_latest_model_path}")
+        if _latest_model_path is not None:
+            MODEL.load_state_dict(torch.load(_latest_model_path))
+
+    main(CONFIG, MODEL, TMSP_PATH)

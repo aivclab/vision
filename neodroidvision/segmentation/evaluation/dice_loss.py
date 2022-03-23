@@ -3,7 +3,6 @@ import torch
 from draugr.torch_utilities.operations.enums import ReductionMethodEnum
 from torch import nn
 
-
 __all__ = ["dice_loss", "soft_dice_coefficient", "DiceLoss", "BCEDiceLoss"]
 
 

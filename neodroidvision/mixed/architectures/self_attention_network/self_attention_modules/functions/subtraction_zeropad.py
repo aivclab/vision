@@ -291,7 +291,7 @@ if __name__ == "__main__":
             kernel_size=kernel_size, dilation=dilation, padding=padding, stride=stride
         )
         y2 = unfold_i(x).view(n, c, 1, out_height * out_width) - unfold_j(x).view(
-            n, c, kernel_size ** 2, out_height * out_width
+            n, c, kernel_size**2, out_height * out_width
         )
         # y2 = unfold_i(x[..., kernel_size//2:-(kernel_size//2), kernel_size//2:-(kernel_size//2)]).view(n, c,
         # 1, out_height * out_width) - unfold_j(x).view(n, c, kernel_size**2, out_height * out_width)

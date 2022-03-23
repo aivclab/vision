@@ -5,13 +5,12 @@ __doc__ = r"""
 """
 
 import math
-from itertools import count
-from pathlib import Path
-
 import numpy
 import torch
-import torch.nn.functional as F
 import torchvision.utils
+
+from itertools import count
+from pathlib import Path
 from draugr import IgnoreInterruptSignal
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -26,6 +25,7 @@ from draugr.torch_utilities import (
 from draugr.writers import MockWriter, Writer
 from torch import optim
 from torch.nn import TripletMarginLoss
+from torch.nn.functional import pairwise_distance
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
@@ -271,16 +271,12 @@ def train_siamese(
                         o = model(*[t.to(global_torch_device()) for t in tsv])
                         a_v = criterion(*o).cpu().item()
                         valid_positive_acc = (
-                            accuracy(
-                                distances=F.pairwise_distance(o[0], o[1]), is_diff=0
-                            )
+                            accuracy(distances=pairwise_distance(o[0], o[1]), is_diff=0)
                             .cpu()
                             .item()
                         )
                         valid_negative_acc = (
-                            accuracy(
-                                distances=F.pairwise_distance(o[0], o[2]), is_diff=1
-                            )
+                            accuracy(distances=pairwise_distance(o[0], o[2]), is_diff=1)
                             .cpu()
                             .item()
                         )

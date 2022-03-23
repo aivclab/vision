@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import random
+
+import numpy
+import torch.utils.data
 from draugr.torch_utilities import global_torch_device
-from regression.vae.architectures.flow.architectures import (
+from warg import NOD
+
+from data_loader import load_binary_mnist
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.flow.architectures import (
     Generator,
     VariationalFlow,
     VariationalMeanField,
 )
-from warg import NOD
-
-from data_loader import load_binary_mnist
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
 Fit a variational autoencoder to MNIST.
            """
-
-import torch.utils.data
-import numpy
-import random
-
-from neodroidvision import PROJECT_APP_PATH
 
 
 def evaluate(generator, evaluation_data, device):

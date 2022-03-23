@@ -1,10 +1,12 @@
 import pickle
 import shutil
 import time
-from pathlib import Path
-
 import torch
+
 from apppath import ensure_existence
+from classification.mechanims.attention.foveal.architecture.ram import (
+    RecurrentAttention,
+)
 from draugr import AverageMeter
 from draugr.torch_utilities.writers.tensorboard.tensorboard_pytorch_writer import (
     PytorchTensorboardWriter,
@@ -16,12 +18,14 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 from warg import NOD
-
-from architecture.ram import RecurrentAttention
+from pathlib import Path
 from neodroidvision.data.classification import MNISTDataset
 from ram_params import get_ram_config
 
 model_file_ending = ".model.tar"
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r""""""
 
 
 class Trainer:
@@ -106,7 +110,7 @@ if self.use_tensorboard:
 tensorboard_dir = self.logs_dir / self.model_name
 print(f"[*] Saving tensorboard logs to {tensorboard_dir}")
 if not os.path.exists(tensorboard_dir):
-    os.makedirs(tensorboard_dir)
+os.makedirs(tensorboard_dir)
 configure(tensorboard_dir)
 """
 

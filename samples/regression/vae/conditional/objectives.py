@@ -7,6 +7,7 @@ __doc__ = r"""
            """
 
 from draugr.torch_utilities.operations.enums import ReductionMethodEnum
+from torch.nn.functional import binary_cross_entropy
 
 
 def loss_fn(recon_x, x, mean, log_var):
@@ -22,7 +23,7 @@ def loss_fn(recon_x, x, mean, log_var):
     :type log_var:
     :return:
     :rtype:"""
-    bce = torch.nn.functional.binary_cross_entropy(
+    bce = binary_cross_entropy(
         recon_x.view(-1, 28 * 28),
         x.view(-1, 28 * 28),
         reduction=ReductionMethodEnum.sum.value,

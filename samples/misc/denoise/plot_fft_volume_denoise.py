@@ -2,7 +2,7 @@ import numpy
 from draugr.numpy_utilities.raster_grid_3d_masking import sphere_mask
 from matplotlib import pyplot
 
-from neodroidvision.regression.denoise.spectral_denoise_3d import fft3_im_denoise
+from regression.patching.denoise.spectral_denoise_3d import fft3_im_denoise
 
 if __name__ == "__main__":
 
@@ -19,6 +19,7 @@ if __name__ == "__main__":
         print(im_raw[index])
         im_denoised = fft3_im_denoise(im_raw, keep_fraction=0.2)
         print(im_denoised[index])
+        # plot_voxelgrid()
         # pyplot.figure()
         # pyplot.imshow(im_denoised, pyplot.cm.gray)
         # pyplot.title("Reconstructed Image")

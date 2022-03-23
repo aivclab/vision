@@ -4,7 +4,6 @@ from torch.nn.modules.utils import _pair
 
 __all__ = ["Aggregation"]
 
-
 from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.functional import (
     aggregation,
 )

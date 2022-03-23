@@ -19,6 +19,7 @@ import torchvision
 from numpy.core.multiarray import ndarray
 from pycocotools import mask
 from pycocotools.coco import COCO
+from pycocotools.mask import frPyObjects, decode
 from torch.utils.data import Dataset
 from torchvision.transforms import Compose
 
@@ -100,8 +101,8 @@ def convert_coco_poly_to_mask(
     :rtype:"""
     masks = []
     for polygons in segmentations:
-        rles = mask.frPyObjects(polygons, height, width)
-        mask = mask.decode(rles)
+        rles = frPyObjects(polygons, height, width)
+        mask = decode(rles)
         if len(mask.shape) < 3:
             mask = mask[..., None]
         mask = torch.as_tensor(mask, dtype=torch.uint8)

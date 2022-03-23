@@ -4,7 +4,7 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
-from .vae import *
-from .flow import *
-from .vanilla_vae import *
 from .disentangled import *
+from .flow import *
+from .vae import *
+from .vanilla_vae import *

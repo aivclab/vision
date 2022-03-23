@@ -2,6 +2,8 @@ from typing import Any
 
 from torch import nn
 
+__all__ = ["SSDBackbone"]
+
 
 class SSDBackbone(nn.Module):
     """ """

@@ -6,6 +6,8 @@ from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbo
     SSDBackbone,
 )
 
+__all__ = ["MobileNetV2"]
+
 
 class MobileNetV2(SSDBackbone):
     """ """

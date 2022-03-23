@@ -1,4 +1,4 @@
-#cv2 # conda OpenCv
+# opencv-python #cv2 # conda OpenCv
 imageio
 pygame
 kivy

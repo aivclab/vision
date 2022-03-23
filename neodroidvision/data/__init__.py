@@ -5,6 +5,10 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = ""
 
 # from .datasets import *
-from .neodroid_environments import *
-
-# from .mixed import*
+# from .neodroid_environments import *
+# from .classification import *
+# from .detection import *
+# from .segmentation import *
+# from .synthesis import *
+# from .flow import *
+# from .mixed import *

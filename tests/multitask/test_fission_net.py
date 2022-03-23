@@ -3,15 +3,16 @@
 import numpy
 import torch
 
-from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
+from neodroidvision.multitask.fission.skip_hourglass import (
+    SkipHourglassFission,
+    MergeMode,
+)
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
 
            Created on 29/10/2019
            """
-
-from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode
 
 
 def test_skip_fission_multi_dict():
@@ -62,3 +63,8 @@ def test_skip_fission_multi_int():
     print(im2.shape)
     pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
     # pyplot.show()
+
+
+if __name__ == "__main__":
+    test_skip_fission_multi_int()
+    test_skip_fission_multi_dict()

@@ -1,80 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
-from typing import Iterable
-
-import numpy
-import torchvision
-from draugr.torch_utilities import TensorBoardPytorchWriter
-from torch import nn
-
-from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-import torch
-import torch.nn
-
-import torch.optim as optim
-from torch.autograd import Variable
+import time
 from itertools import chain
 
+import torch
+import torch.nn
+import torchvision
+from draugr.torch_utilities import TensorBoardPytorchWriter
+from torch import optim
+from torch.autograd import Variable
+
+from neodroidvision import PROJECT_APP_PATH
+from .gan_utilities import reset_grads, sample_x
+
 BATCH_SIZE = 32
-from sklearn.preprocessing import LabelEncoder
-
-one_hot_encoder = LabelEncoder()
-one_hot_encoder.fit(range(10))
-
-
-def to_one_hot(values):
-    """
-
-    Args:
-      values:
-
-    Returns:
-
-    """
-    value_idxs = one_hot_encoder.transform([values])
-    return torch.eye(len(one_hot_encoder.classes_))[value_idxs]
-
-
-def log(x):
-    """
-
-    Args:
-      x:
-
-    Returns:
-
-    """
-    return torch.log(x + 1e-8)
-
-
-def reset_grads(modules: Iterable[nn.Module]):
-    """
-
-    Args:
-      modules:
-    """
-    for m in modules:
-        m.zero_grad()
-
-
-def sample_x(X, size):
-    """
-
-    Args:
-      X:
-      size:
-
-    Returns:
-
-    """
-    start_idx = numpy.random.randint(0, X.shape[0] - size)
-    return X[start_idx : start_idx + size]
 
 
 def main():
@@ -162,8 +106,7 @@ def main():
                 D1_loss.backward(retain_graph=True)
                 Discriminator1_solver.step()
 
-                # Weight clipping
-                for p in Discriminator1.parameters():
+                for p in Discriminator1.parameters():  # Weight clipping
                     p.data.clamp_(-0.01, 0.01)
 
                 reset_grads([Generator1, Generator2, Discriminator1, Discriminator2])
@@ -178,8 +121,7 @@ def main():
                 D2_loss.backward()
                 Discriminator2_solver.step()
 
-                # Weight clipping
-                for p in Discriminator2.parameters():
+                for p in Discriminator2.parameters():  # Weight clipping
                     p.data.clamp_(-0.01, 0.01)
 
                 reset_grads([Generator1, Generator2, Discriminator1, Discriminator2])

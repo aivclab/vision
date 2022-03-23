@@ -69,10 +69,10 @@ class CloudSegmentationDataset(Dataset):
         ]
 
     '''
-  def un_standardise(self, img):
-  """Add paddings to make image shape divisible by 32"""
-  return (img * self.std + self.mean).astype(numpy.uint8)
-  '''
+def un_standardise(self, img):
+"""Add paddings to make image shape divisible by 32"""
+return (img * self.std + self.mean).astype(numpy.uint8)
+'''
 
     def __init__(
         self,

@@ -10,6 +10,7 @@ from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import global_torch_device
 from torch import onnx, quantization
 from tqdm import tqdm
+from utilities.torch_utilities.persistence.check_pointer import CheckPointer
 from warg import NOD
 
 from neodroidvision import PROJECT_APP_PATH
@@ -17,7 +18,6 @@ from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDet
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
-from neodroidvision.utilities.torch_utilities.check_pointer import CheckPointer
 
 
 @torch.no_grad()

@@ -7,10 +7,7 @@ __doc__ = r"""
            Created on 05/03/2020
            """
 
-from neodroidvision.utilities.torch_utilities.custom_model_caching import (
-    load_state_dict_from_url,
-)
-
+from neodroidvision.utilities import load_state_dict_from_url
 from .efficient_net import EfficientNet
 from .mobilenet import MobileNetV2
 from .vgg import VGG

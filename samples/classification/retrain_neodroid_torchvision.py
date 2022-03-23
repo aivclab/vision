@@ -3,8 +3,9 @@
 import argparse
 import os
 import time
-
+import torch
 import torchvision
+
 from draugr import batch_generator
 from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
@@ -23,7 +24,8 @@ from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
     MixedObservationWrapper,
 )
-
+from torch import optim
+from tqdm import tqdm
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import (
     pred_target_train_model,
@@ -33,10 +35,7 @@ from neodroidvision.classification import (
 # from warg.pooled_queue_processor import PooledQueueTask
 
 __author__ = "Christian Heider Nielsen"
-
-import torch
-import torch.optim as optim
-from tqdm import tqdm
+__doc__ = r""""""
 
 seed = 34874312
 batch_size = 16

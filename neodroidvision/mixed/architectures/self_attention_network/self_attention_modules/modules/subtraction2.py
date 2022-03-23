@@ -2,10 +2,10 @@ import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
 
+from neodroidvision.mixed.architectures.self_attention_network.enums import PadModeEnum
 from neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.functional import (
     subtraction2,
 )
-from neodroidvision.mixed.architectures.self_attention_network.enums import PadModeEnum
 
 __all__ = ["Subtraction2"]
 

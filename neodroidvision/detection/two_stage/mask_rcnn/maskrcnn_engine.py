@@ -11,7 +11,6 @@ from draugr.torch_utilities import (
 )
 from draugr.writers import Writer
 from torch.nn import Module
-
 from torch.utils.data import DataLoader
 
 from neodroidvision.data.detection.coco import (
@@ -20,6 +19,8 @@ from neodroidvision.data.detection.coco import (
     get_iou_types,
 )
 from neodroidvision.utilities import reduce_dict
+
+__all__ = ["maskrcnn_train_single_epoch", "maskrcnn_evaluate"]
 
 
 def maskrcnn_train_single_epoch(
@@ -82,7 +83,7 @@ def maskrcnn_evaluate(
     *,
     device=global_torch_device(),
     writer: Writer = None,
-) -> torch.Tensor:
+) -> CocoEvaluator:
     """
 
     Args:

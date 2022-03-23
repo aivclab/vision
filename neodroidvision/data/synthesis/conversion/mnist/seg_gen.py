@@ -28,6 +28,15 @@ filename = [
 SAVE_PATH = pathlib.Path(PROJECT_APP_PATH.user_data / "Data" / "mnist_original")
 
 
+__all__ = [
+    "download_mnist",
+    "extract_mnist",
+    "calculate_iou",
+    "compute_iou_all",
+    "tight_bbox",
+]
+
+
 def download_mnist():
     SAVE_PATH.mkdir(exist_ok=True, parents=True)
     base_url = "http://yann.lecun.com/exdb/mnist/"
@@ -200,8 +209,8 @@ def generate_dataset(
 
             im[y0 : y0 + width, x0 : x0 + width] += digit
             im[im > max_image_value] = max_image_value
-        image_target_path = image_dir / f"{image_id}.png"
-        label_target_path = label_dir / f"{image_id}".endswith(".csv")
+        image_target_path = (image_dir / f"{image_id}").with_suffix(".png")
+        label_target_path = (label_dir / f"{image_id}").with_suffix(".csv")
         im = im.astype(numpy.uint8)
         cv2.imwrite(str(image_target_path), im)
         with open(label_target_path, "w") as fp:

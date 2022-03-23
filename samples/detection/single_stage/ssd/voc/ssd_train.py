@@ -182,7 +182,7 @@ def inner_train_ssd(
             time.time() - start_training_time
         )  # compute training time
         logger.info(
-            f"Total training time: {datetime.timedelta(seconds = total_training_time)} ("
+            f"Total training time: {datetime.timedelta(seconds=total_training_time)} ("
             f"{total_training_time / max_iter:.4f} s / it)"
         )
         return model

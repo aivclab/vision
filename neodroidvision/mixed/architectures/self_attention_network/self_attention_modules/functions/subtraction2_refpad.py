@@ -374,7 +374,7 @@ if __name__ == "__main__":
         pad = torch.nn.ReflectionPad2d(padding)
         y2 = unfold_i(x1).view(n, c, 1, out_height * out_width) - unfold_j(
             pad(x2)
-        ).view(n, c, kernel_size ** 2, out_height * out_width)
+        ).view(n, c, kernel_size**2, out_height * out_width)
         assert (y1 - y2).abs().max() < 1e-9
 
         gx11 = torch.autograd.grad(y1.mean(), x1, retain_graph=True)[0]
