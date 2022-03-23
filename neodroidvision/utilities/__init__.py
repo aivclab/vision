@@ -6,10 +6,9 @@ __doc__ = r"""
            """
 
 from .misc import *
-
-# from  .skimage_utilities import *
 from .opencv_utilities import *
 from .torch_utilities import *
+from .visualisation import *
 
 # from .tf_utilities import *
-from .visualisation import *
+# from  .skimage_utilities import *

@@ -327,7 +327,7 @@ if __name__ == "__main__":
         )
         pad = torch.nn.ReflectionPad2d(padding)
         y2 = unfold_i(x).view(n, c, 1, out_height * out_width) - unfold_j(pad(x)).view(
-            n, c, kernel_size ** 2, out_height * out_width
+            n, c, kernel_size**2, out_height * out_width
         )
         assert (y1 - y2).abs().max() < 1e-9
 

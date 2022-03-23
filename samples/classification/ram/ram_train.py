@@ -1,10 +1,12 @@
 import pickle
 import shutil
 import time
-from pathlib import Path
-
 import torch
+
 from apppath import ensure_existence
+from classification.mechanims.attention.foveal.architecture.ram import (
+    RecurrentAttention,
+)
 from draugr import AverageMeter
 from draugr.torch_utilities.writers.tensorboard.tensorboard_pytorch_writer import (
     PytorchTensorboardWriter,
@@ -16,10 +18,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 from warg import NOD
-
-from classification.mechanims.attention.foveal.architecture.ram import (
-    RecurrentAttention,
-)
+from pathlib import Path
 from neodroidvision.data.classification import MNISTDataset
 from ram_params import get_ram_config
 

@@ -3,9 +3,9 @@
 import argparse
 import os
 import time
-
 import torch
 import torchvision
+
 from draugr import batch_generator
 from draugr.python_utilities import (
     rgb_drop_alpha_batch_nhwc,
@@ -26,7 +26,6 @@ from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import (
 )
 from torch import optim
 from tqdm import tqdm
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import (
     pred_target_train_model,

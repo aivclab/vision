@@ -1,14 +1,26 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian"
+__doc__ = r"""
+
+           Created on 29/03/2020
+           """
 
 import json
 from pathlib import Path
 
 import numpy
 from PIL import Image
-
 from skimage import measure
 from tqdm import tqdm
 from warg import NOD
+
+__all__ = [
+    "create_coco_image",
+    "AnnotationJsonUtils",
+    "CocoJsonCreator",
+]
 
 
 def create_coco_image(image_path, image_id, image_license):
@@ -100,7 +112,7 @@ class AnnotationJsonUtils:
                     self.isolated_masks[pixel_rgb_str].putpixel((x + 1, y + 1), 1)
 
     def _create_annotations(self):
-        from shapely.geometry import MultiPolygon, Polygon
+        from shapely.geometry import MultiPolygon, Polygon  # pip install shapely
 
         # Creates annotations for each isolated mask
 

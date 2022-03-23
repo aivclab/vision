@@ -28,6 +28,15 @@ filename = [
 SAVE_PATH = pathlib.Path(PROJECT_APP_PATH.user_data / "Data" / "mnist_original")
 
 
+__all__ = [
+    "download_mnist",
+    "extract_mnist",
+    "calculate_iou",
+    "compute_iou_all",
+    "tight_bbox",
+]
+
+
 def download_mnist():
     SAVE_PATH.mkdir(exist_ok=True, parents=True)
     base_url = "http://yann.lecun.com/exdb/mnist/"

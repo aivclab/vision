@@ -8,7 +8,7 @@ if __name__ == "__main__":
     K = 2
     if img is not None:
         Z = img.reshape((-1, 3))
-        Z = numpy.float32(Z)  # convert to np.float32
+        Z = numpy.float32(Z)  # convert to numpy.float32
 
         criteria = (
             cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER,

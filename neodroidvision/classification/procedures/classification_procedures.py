@@ -27,6 +27,10 @@ from warg import NOD
 
 __all__ = ["test_model", "pred_target_train_model"]
 
+from neodroidvision.data.neodroid_environments.classification.data import (
+    default_torch_retransform,
+)
+
 
 def test_model(model, data_iterator, latest_model_path, num_columns: int = 2):
     model = model.eval().to(global_torch_device())

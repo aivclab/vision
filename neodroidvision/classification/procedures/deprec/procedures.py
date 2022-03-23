@@ -7,7 +7,6 @@ import numpy
 import torch
 import tqdm
 from draugr import (
-    confusion_matrix_plot,
     rgb_drop_alpha_batch_nhwc,
     torch_vision_normalize_batch_nchw,
 )
@@ -19,9 +18,11 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
+from draugr.visualisation import confusion_matrix_plot
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
-from munin.utilities.html_embeddings import generate_math_html, plt_html
+from munin.html_embeddings import plt_html, generate_math_html
+
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
 

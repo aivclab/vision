@@ -1,13 +1,16 @@
 from enum import Enum
 from typing import List, Union
 
-import torch.nn.functional as F
 from torch import Tensor, nn
+from torch.nn.functional import relu
 
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
 from neodroidvision.utilities.torch_utilities import L2Norm
+
+
+__all__ = ["VGG"]
 
 
 class VGG(SSDBackbone):
@@ -180,7 +183,7 @@ class VGG(SSDBackbone):
         features.append(x)
 
         for k, v in enumerate(self.extras):
-            x = F.relu(v(x), inplace=True)
+            x = relu(v(x), inplace=True)
             if k % 2 == 1:
                 features.append(x)
 

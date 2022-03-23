@@ -4,7 +4,7 @@
 __author__ = "Christian"
 __doc__ = r"""
 
-           Created on {date}
+           Created on 22/03/2020
            """
 
 __all__ = ["convert_to_mnist_png", "generate_mnist_png"]

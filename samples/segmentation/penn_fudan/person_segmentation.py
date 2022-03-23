@@ -58,7 +58,7 @@ def reschedule_learning_rate(
         print(f"Current LR: {current_lr}")
     if epoch == 13:
         optimiser = torch.optim.SGD(
-            model.parameters(), lr=starting_learning_rate / 2 ** 2
+            model.parameters(), lr=starting_learning_rate / 2**2
         )
         current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
@@ -67,7 +67,7 @@ def reschedule_learning_rate(
         print(f"Current LR: {current_lr}")
     if epoch == 19:
         optimiser = torch.optim.SGD(
-            model.parameters(), lr=starting_learning_rate / 2 ** 3
+            model.parameters(), lr=starting_learning_rate / 2**3
         )
         current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
@@ -76,7 +76,7 @@ def reschedule_learning_rate(
         print(f"Current LR: {current_lr}")
     if epoch == 25:
         optimiser = torch.optim.SGD(
-            model.parameters(), lr=starting_learning_rate / 2 ** 4
+            model.parameters(), lr=starting_learning_rate / 2**4
         )
         current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
@@ -85,7 +85,7 @@ def reschedule_learning_rate(
         print(f"Current LR: {current_lr}")
     if epoch == 50:
         optimiser = torch.optim.SGD(
-            model.parameters(), lr=starting_learning_rate / 2 ** 5
+            model.parameters(), lr=starting_learning_rate / 2**5
         )
         current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
@@ -94,7 +94,7 @@ def reschedule_learning_rate(
         print(f"Current LR: {current_lr}")
     if epoch == 75:
         optimiser = torch.optim.SGD(
-            model.parameters(), lr=starting_learning_rate / 2 ** 6
+            model.parameters(), lr=starting_learning_rate / 2**6
         )
         current_lr = next(iter(optimiser.param_groups))["lr"]
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(

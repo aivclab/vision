@@ -3,9 +3,9 @@
 import copy
 import os
 import time
-
 import torch
 import torchvision
+
 from draugr import recycle
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -25,14 +25,14 @@ from torch.utils.data import DataLoader
 from torchvision.transforms.functional import to_pil_image
 from tqdm import tqdm
 from warg import ContextWrapper
-
-from data.classification.deprec.s_mnist import MNISTDataset2
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
 
 __author__ = "Christian Heider Nielsen"
 __all__ = []
 __doc__ = r""""""
+
+from neodroidvision.data.classification.deprec.s_mnist import MNISTDataset2
 
 seed = 34874312
 batch_size = 64

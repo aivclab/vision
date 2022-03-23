@@ -1,7 +1,7 @@
 from typing import Sequence
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 __all__ = ["make_san"]
 
@@ -89,10 +89,10 @@ class SelfAttentionModule(nn.Module):
             )  # TODO: USE log softmax? Check dim maybe it should be 1
         elif self_attention_type == SelfAttentionTypeEnum.patchwise:
             self.conv_w = nn.Sequential(
-                nn.BatchNorm2d(rel_planes * (kernel_size ** 2 + 1)),
+                nn.BatchNorm2d(rel_planes * (kernel_size**2 + 1)),
                 nn.ReLU(inplace=True),
                 nn.Conv2d(
-                    rel_planes * (kernel_size ** 2 + 1),
+                    rel_planes * (kernel_size**2 + 1),
                     out_planes // share_planes,
                     kernel_size=1,
                     bias=False,
@@ -101,7 +101,7 @@ class SelfAttentionModule(nn.Module):
                 nn.ReLU(inplace=True),
                 nn.Conv2d(
                     out_planes // share_planes,
-                    kernel_size ** 2 * out_planes // share_planes,
+                    kernel_size**2 * out_planes // share_planes,
                     kernel_size=1,
                 ),
             )
@@ -177,7 +177,7 @@ class SelfAttentionModule(nn.Module):
             x1 = x1.view(x.shape[0], -1, 1, torch.prod(x.shape[2:]).item())
             x2 = self.unfold_j(self.pad(x2)).view(x.shape[0], -1, 1, x1.shape[-1])
             w = self.conv_w(torch.cat([x1, x2], 1)).view(
-                x.shape[0], -1, self.kernel_size ** 2, x1.shape[-1]
+                x.shape[0], -1, self.kernel_size**2, x1.shape[-1]
             )
         else:
             raise NotImplemented()

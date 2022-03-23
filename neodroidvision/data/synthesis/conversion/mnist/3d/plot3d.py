@@ -4,7 +4,7 @@
 __author__ = "Christian"
 __doc__ = r"""
 
-           Created on {date}
+           Created on 29/03/2020
            """
 
 from pathlib import Path

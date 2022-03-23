@@ -4,18 +4,18 @@
 __author__ = "Christian"
 __doc__ = r"""
 
-           Created on {date}
+           Created on 29/03/2020
            """
 
 import gzip
 import pickle
-from pathlib import Path
 
 import h5py
 import numpy
 from tqdm import trange
 
 from augmentation import rotate_y
+
 
 MIN_X, MAX_X = (-0.5, 0.5)
 MIN_Y, MAX_Y = (-0.5, 0.5)
@@ -185,7 +185,7 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
 
 
 if __name__ == "__main__":
-
+    from neodroidvision import PROJECT_APP_PATH
     from draugr.numpy_utilities import SplitEnum
 
     with gzip.open(PROJECT_APP_PATH.user_data / "mnist.pkl.gz", "rb") as f:

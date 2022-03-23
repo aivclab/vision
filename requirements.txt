@@ -8,7 +8,7 @@ Pillow>=9.0.0
 matplotlib>=3.4.1
 pip
 h5py
-torch>=1.8.1
+torch>=1.11.0
 torchvision
 pycocotools>=2.0.2
 albumentations>=0.5.2

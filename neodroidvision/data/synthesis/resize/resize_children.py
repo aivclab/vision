@@ -4,10 +4,10 @@ from typing import Iterable, Union, Tuple
 
 import cv2
 from apppath import ensure_existence
+from draugr.opencv_utilities import cv2_resize, InterpolationEnum
+from draugr.tqdm_utilities import progress_bar
 from sorcery import assigned_names
 from warg import Number
-from draugr.tqdm_utilities import progress_bar
-from draugr.opencv_utilities import cv2_resize, InterpolationEnum
 
 __all__ = ["ResizeMethodEnum", "resize", "resize_children"]
 

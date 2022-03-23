@@ -7,12 +7,12 @@ __doc__ = r"""
            Created on {date}
            """
 
-from pathlib import Path
-from neodroidvision import PROJECT_APP_PATH
 import h5py
 import plotly.offline
 from apppath import ensure_existence
 from plotly.graph_objs import Figure, Layout, Scatter3d
+
+from neodroidvision import PROJECT_APP_PATH
 
 with h5py.File(
     PROJECT_APP_PATH.user_data / "mnist3d" / "testing.h5", "r"

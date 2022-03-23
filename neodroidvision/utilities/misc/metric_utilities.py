@@ -15,8 +15,10 @@ from neodroidvision.utilities.torch_utilities.distributing.distributing_utilitie
 
 
 class SmoothedValue(object):
-    """Track a series of values and provide access to smoothed values over a
-    window or the global series average."""
+    """
+    Track a series of values and provide access to smoothed values over a
+    window or the global series average.
+    """
 
     def __init__(self, window_size=20, fmt: Optional[str] = None):
         if fmt is None:

@@ -1,7 +1,6 @@
 import numpy
-from sklearn.mixture import GaussianMixture
-
 from segmentation.gmm import visualise_2D_gmm, visualise_3d_gmm
+from sklearn.mixture import GaussianMixture
 
 if __name__ == "__main__":
 

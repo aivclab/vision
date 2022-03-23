@@ -4,6 +4,9 @@ import cv2
 from sorcery import assigned_names
 
 
+__all__ = ["ApproximateShapeEnum", "approximate_shape"]
+
+
 class ApproximateShapeEnum(Enum):
     triangle, square, rectangle, pentagon, circle = assigned_names()
 

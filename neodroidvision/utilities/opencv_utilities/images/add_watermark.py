@@ -1,9 +1,9 @@
 import math
-from enum import Enum
-
 import cv2
 import numpy
+
 from sorcery import assigned_names
+from enum import Enum
 
 
 def rotate_image(image, angle, center=None, scale=1.0):
@@ -12,11 +12,7 @@ def rotate_image(image, angle, center=None, scale=1.0):
     if center is None:
         center = (w / 2, h / 2)
 
-    # Perform the rotation
-    M = cv2.getRotationMatrix2D(center, angle, scale)
-    rotated = cv2.warpAffine(image, M, (w, h))
-
-    return rotated
+    return cv2.warpAffine(image, cv2.getRotationMatrix2D(center, angle, scale), (w, h))
 
 
 class PositionEnum(Enum):

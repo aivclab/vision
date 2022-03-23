@@ -8,12 +8,13 @@ from pathlib import Path
 
 import numpy
 from PIL import Image, ImageEnhance
-
 from tqdm import tqdm
 
 from neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities import (
     MaskJsonUtils,
 )
+
+__all__ = ["ImageComposition"]
 
 
 class ImageComposition:
@@ -459,7 +460,7 @@ if __name__ == "__main__":
         required=True,
         help="The directory where "
         "images, masks, \
-                                                     and json files will be placed",
+                                                      and json files will be placed",
     )
     parser.add_argument(
         "--count",

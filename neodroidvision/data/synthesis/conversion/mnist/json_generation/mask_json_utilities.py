@@ -10,6 +10,8 @@ __doc__ = r"""
 import json
 from pathlib import Path
 
+__all__ = ["MaskJsonUtils"]
+
 
 class MaskJsonUtils:
     """Creates a JSON definition file for image masks."""

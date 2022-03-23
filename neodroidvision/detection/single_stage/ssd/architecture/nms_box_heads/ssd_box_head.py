@@ -139,9 +139,9 @@ class SSDNmsBoxHead(nn.Module):
 
             """ WILL NOT WORK FOR TRACED MODELS!
 scores, boxes, labels = self.keep_above(scores,
-    boxes,
-    labels,
-    threshold=self.confidence_threshold)
+boxes,
+labels,
+threshold=self.confidence_threshold)
 
 """
             scores, boxes, labels = self.sort_keep_top_k(

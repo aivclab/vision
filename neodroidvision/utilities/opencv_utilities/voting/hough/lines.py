@@ -1,7 +1,7 @@
 from typing import Any
 
 import cv2
-import numpy as np
+import numpy
 from draugr.opencv_utilities import to_gray, show_image, ThresholdTypeFlag
 
 
@@ -11,7 +11,7 @@ def hough_lines(
     sigma=1.4,  # 0
     aperture_size=3,
     rho=1,
-    theta=np.pi / 180,
+    theta=numpy.pi / 180,
     min_votes=99,
     lines=100,
     min_line_length=10,
@@ -55,7 +55,6 @@ def hough_lines(
             rho=rho,
             theta=theta,
             threshold=min_votes,
-            lines=lines,
             minLineLength=min_line_length,
             maxLineGap=max_line_gap,
         )

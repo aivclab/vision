@@ -4,21 +4,19 @@
 __author__ = "Christian"
 __doc__ = r"""
 
-           Created on {date}
+           Created on 29/03/2020
            """
 
 import gzip
 import pickle
-from pathlib import Path
 
 import numpy
 from draugr.numpy_utilities import SplitEnum
 from tqdm import trange
-from neodroidvision import PROJECT_APP_PATH
 
 from augmentation import rotate_y
 from gen import make_voxel, img_to_point_cloud
-
+from neodroidvision import PROJECT_APP_PATH
 
 __all__ = ["save_dataset"]
 

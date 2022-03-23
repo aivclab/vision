@@ -50,6 +50,6 @@ class PairwiseRankingLoss(torch.nn.Module):
 
         euclidean_distance = functional.pairwise_distance(anchor, other)
         return torch.mean(
-            (1 - is_diff) * euclidean_distance ** 2
+            (1 - is_diff) * euclidean_distance**2
             + is_diff * torch.clamp(self._margin - euclidean_distance, min=0.0) ** 2
         )  # if distance is larger than margin(desirable), clip to 0 loss.

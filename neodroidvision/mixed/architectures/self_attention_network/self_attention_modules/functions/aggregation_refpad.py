@@ -364,7 +364,7 @@ if __name__ == "__main__":
         x = torch.randn(n, c_x, in_height, in_width, requires_grad=True).double().cuda()
         w = (
             torch.randn(
-                n, c_w, kernel_size ** 2, out_height * out_width, requires_grad=True
+                n, c_w, kernel_size**2, out_height * out_width, requires_grad=True
             )
             .double()
             .cuda()
@@ -383,7 +383,7 @@ if __name__ == "__main__":
         )
         pad = torch.nn.ReflectionPad2d(padding)
         x2 = unfold_j(pad(x)).view(
-            n, c_x // c_w, c_w, kernel_size ** 2, out_height * out_width
+            n, c_x // c_w, c_w, kernel_size**2, out_height * out_width
         )
         y2 = (w.unsqueeze(1) * x2).sum(-2).view(n, c_x, out_height, out_width)
         assert (y1 - y2).abs().max() < 1e-9
