@@ -7,8 +7,8 @@ __doc__ = r"""
            Created on 29/10/2019
            """
 
-from .skip_hourglass_fission import *
 from .modes import *
+from .skip_hourglass_fission import *
 
 # from .compress import *
 # from .decompress import *

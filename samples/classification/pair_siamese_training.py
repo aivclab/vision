@@ -6,9 +6,12 @@ __doc__ = r"""
 
 import math
 import time
+from itertools import count
+from pathlib import Path
+from typing import Tuple
+
 import torch
 import torchvision
-
 from draugr import IgnoreInterruptSignal
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -26,9 +29,7 @@ from torch.nn import Module
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
-from itertools import count
-from pathlib import Path
-from typing import Tuple
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset
 from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankingSiamese

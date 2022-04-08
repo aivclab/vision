@@ -8,12 +8,14 @@ __doc__ = r"""
 
            Created on 14-02-2021
            """
-import cv2
-import numpy
 
 from pathlib import Path
+
+import cv2
+import numpy
 from draugr.torch_utilities import GuidedBackPropReLUModel
 from torchvision import models
+
 from neodroidvision.utilities import (
     GradientClassActivationMapping,
     overlay_cam_on_image,

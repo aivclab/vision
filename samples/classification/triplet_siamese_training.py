@@ -5,12 +5,12 @@ __doc__ = r"""
 """
 
 import math
+from itertools import count
+from pathlib import Path
+
 import numpy
 import torch
 import torchvision.utils
-
-from itertools import count
-from pathlib import Path
 from draugr import IgnoreInterruptSignal
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (

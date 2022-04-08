@@ -20,10 +20,10 @@ from draugr.opencv_utilities import (
     CV2RandomSampleCrop,
     CV2Resize,
     CV2ToPercentCoords,
-    CV2ToTensor,
     ConvertFromInts,
     SubtractMeans,
 )
+from draugr.torch_utilities import CV2ToTensor
 from warg import NOD
 
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (

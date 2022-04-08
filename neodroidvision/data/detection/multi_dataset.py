@@ -47,7 +47,7 @@ class MultiDataset(SupervisedDataset):
         dataset_type: callable,
         data_root: Path,
         sub_datasets: Tuple,
-        split: SplitEnum = SplitEnum.training
+        split: SplitEnum = SplitEnum.training,
     ):
         """
 

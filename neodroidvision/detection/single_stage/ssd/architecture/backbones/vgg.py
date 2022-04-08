@@ -9,7 +9,6 @@ from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbo
 )
 from neodroidvision.utilities.torch_utilities import L2Norm
 
-
 __all__ = ["VGG"]
 
 

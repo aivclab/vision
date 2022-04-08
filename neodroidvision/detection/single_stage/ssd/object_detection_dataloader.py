@@ -32,7 +32,7 @@ def object_detection_data_loaders(
     split: SplitEnum = SplitEnum.training,
     distributed: bool = False,
     max_iter: Optional[int] = None,
-    start_iter: int = 0
+    start_iter: int = 0,
 ) -> Union[List[DataLoader], DataLoader]:
     """
 

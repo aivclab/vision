@@ -10,9 +10,10 @@ __doc__ = r"""
 import collections
 import re
 from typing import List, Tuple
-import torch
 
+import torch
 from torch import nn
+
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )

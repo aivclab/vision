@@ -38,7 +38,7 @@ class SSDNmsBoxHead(nn.Module):
         max_per_image: Any,
         center_variance: Any,
         size_variance: Any,
-        max_candidates: int = 100
+        max_candidates: int = 100,
     ):
         """
 

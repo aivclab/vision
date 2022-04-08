@@ -1,8 +1,9 @@
 import pickle
 import shutil
 import time
-import torch
+from pathlib import Path
 
+import torch
 from apppath import ensure_existence
 from classification.mechanims.attention.foveal.architecture.ram import (
     RecurrentAttention,
@@ -18,7 +19,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 from warg import NOD
-from pathlib import Path
+
 from neodroidvision.data.classification import MNISTDataset
 from ram_params import get_ram_config
 

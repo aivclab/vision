@@ -16,7 +16,6 @@ from tqdm import trange
 
 from augmentation import rotate_y
 
-
 MIN_X, MAX_X = (-0.5, 0.5)
 MIN_Y, MAX_Y = (-0.5, 0.5)
 MIN_Z, MAX_Z = (-3, 3)

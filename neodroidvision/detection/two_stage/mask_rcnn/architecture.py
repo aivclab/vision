@@ -12,7 +12,6 @@ from torch.nn import Module
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
-
 __all__ = ["get_pretrained_instance_segmentation_maskrcnn"]
 
 

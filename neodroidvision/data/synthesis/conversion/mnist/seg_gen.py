@@ -27,7 +27,6 @@ filename = [
 ]
 SAVE_PATH = pathlib.Path(PROJECT_APP_PATH.user_data / "Data" / "mnist_original")
 
-
 __all__ = [
     "download_mnist",
     "extract_mnist",

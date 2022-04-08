@@ -166,9 +166,9 @@ def train_person_segmentor(
                     ) = model(  # forward pass: compute predicted outputs by passing inputs to the model
                         data.to(global_torch_device())
                     )
-                    validation_loss = criterion(  # calculate the batch loss
+                    validation_loss = criterion(
                         output, target.to(global_torch_device())
-                    )
+                    )  # calculate the batch loss
                     writer.scalar(
                         "dice_validation",
                         dice_loss(output, target.to(global_torch_device())),

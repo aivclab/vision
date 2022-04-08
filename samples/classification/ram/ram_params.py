@@ -1,8 +1,9 @@
 import argparse
-
 from pathlib import Path
+
 from warg import NOD
 from warg.arguments import str2bool
+
 from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"

@@ -15,8 +15,8 @@ def to_byte_tensor(data: Any, *, device: str = "cuda") -> torch.ByteTensor:
     """
     return torch.ByteTensor(
         torch.ByteStorage.from_buffer(
-            pickle.dumps(data)  # gets a byte representation for the data
-        )
+            pickle.dumps(data)
+        )  # gets a byte representation for the data
     ).to(
         device
     )  # convert this byte string into a byte tensor

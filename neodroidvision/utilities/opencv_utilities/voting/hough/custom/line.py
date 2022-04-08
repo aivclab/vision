@@ -1,9 +1,8 @@
 import math
+from pathlib import Path
 
 import imageio
 import numpy
-
-from pathlib import Path
 from draugr.opencv_utilities import to_gray
 from matplotlib import pyplot
 from tqdm import tqdm

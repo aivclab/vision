@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from matplotlib import pyplot
 import numpy
 from matplotlib import cm
+from matplotlib import pyplot
 from skimage import color
 from skimage import io
 from skimage.draw import line

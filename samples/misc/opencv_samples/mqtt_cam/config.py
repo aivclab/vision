@@ -4,8 +4,8 @@ from warg import NOD
 
 MQTT_CAM_CONFIG = NOD(
     mqtt=NOD(
-        broker="localhost", port=1883, QOS=1  # or an ip address like 192.168.1.74
-    ),
+        broker="localhost", port=1883, QOS=1
+    ),  # or an ip address like 192.168.1.74
     camera=NOD(
         video_source=0,
         fps=30,  # 2

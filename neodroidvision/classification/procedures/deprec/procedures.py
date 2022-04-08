@@ -22,7 +22,6 @@ from draugr.visualisation import confusion_matrix_plot
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.html_embeddings import plt_html, generate_math_html
-
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
 

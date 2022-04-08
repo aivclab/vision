@@ -3,7 +3,6 @@ from enum import Enum
 import cv2
 from sorcery import assigned_names
 
-
 __all__ = ["ApproximateShapeEnum", "approximate_shape"]
 
 

@@ -84,7 +84,7 @@ def plot_conditioned_manifold(
     img_h: int = 28,
     img_w: int = 28,
     sample_range: Number = 1,
-    device: Optional[torch.device] = global_torch_device()
+    device: Optional[torch.device] = global_torch_device(),
 ) -> None:
     condition_vector = torch.arange(0, 10, device=device).long().unsqueeze(1)
     sample = model.sample(
@@ -103,7 +103,7 @@ def plot_manifold(
     img_h: int = 28,
     img_w: int = 28,
     sample_range: Number = 1,
-    device: Optional[torch.device] = global_torch_device()
+    device: Optional[torch.device] = global_torch_device(),
 ) -> None:
     """
 

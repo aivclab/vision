@@ -1,9 +1,9 @@
 import math
+from enum import Enum
+
 import cv2
 import numpy
-
 from sorcery import assigned_names
-from enum import Enum
 
 
 def rotate_image(image, angle, center=None, scale=1.0):

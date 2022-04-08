@@ -35,8 +35,8 @@ def hough_lines(
             edges = cv2.adaptiveThreshold(gray, 255, adapt_type, thresh_type, 11, 2)
     else:
         laplacian = cv2.Laplacian(
-            gray, cv2.CV_8UC1, ksize=3  # ,cv2.CV_16UC1, #cv2.CV_16S, # cv2.CV_64F
-        )
+            gray, cv2.CV_8UC1, ksize=3
+        )  # ,cv2.CV_16UC1, #cv2.CV_16S, # cv2.CV_64F
         # blurryness = resLap.var()
         # sobelx = cv.Sobel(img, cv.CV_64F, 1, 0, ksize=5)
         # sobely = cv.Sobel(img, cv.CV_64F, 0, 1, ksize=5)

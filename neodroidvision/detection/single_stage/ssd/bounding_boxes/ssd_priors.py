@@ -29,7 +29,7 @@ def build_priors(
     max_sizes: torch.Tensor,
     strides: torch.Tensor,
     aspect_ratios: torch.Tensor,
-    clip: bool = True
+    clip: bool = True,
 ) -> torch.Tensor:
     """Generate SSD Prior Boxes.
     It returns the center, height and width of the priors. The values are relative to the image size
@@ -77,7 +77,7 @@ def ssd_assign_priors(
     gt_boxes: torch.Tensor,
     gt_labels: torch.Tensor,
     corner_form_priors: torch.Tensor,
-    iou_threshold: torch.Tensor
+    iou_threshold: torch.Tensor,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     """Assign ground truth boxes and targets to priors.
 

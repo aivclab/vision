@@ -119,7 +119,7 @@ class NeodroidVisionPackage:
         Returns:
 
         """
-        return "https://github.com/sintefneodroid/Vision"
+        return "https://github.com/aivclab/Vision"
 
     @property
     def download_url(self):
