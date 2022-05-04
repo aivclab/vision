@@ -1,4 +1,4 @@
-from data.synthesis.conversion.image_composition import ImageComposition
+from neodroidvision.data.synthesis.conversion.image_composition import ImageComposition
 
 if __name__ == "__main__":
     import argparse
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         required=True,
         help="The directory where "
         "images, masks, \
-                                                       and json files will be placed",
+                                                        and json files will be placed",
     )
     parser.add_argument(
         "--count",

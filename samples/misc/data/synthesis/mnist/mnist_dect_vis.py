@@ -12,7 +12,6 @@ from typing import Tuple
 
 import numpy
 from PIL import Image
-from draugr.opencv_utilities.bounding_boxes import draw_boxes
 from matplotlib import pyplot
 from numpy import ndarray
 
@@ -34,6 +33,7 @@ def read_labels(label_path: pathlib.Path) -> Tuple[ndarray, ndarray]:
 
 
 if __name__ == "__main__":
+    from draugr.opencv_utilities.drawing import draw_boxes
 
     base_path = pathlib.Path(
         PROJECT_APP_PATH.user_data / "Data" / "mnist_detection" / "train"

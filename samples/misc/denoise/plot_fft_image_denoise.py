@@ -2,7 +2,8 @@ from pathlib import Path
 
 import numpy
 from matplotlib import pyplot
-from regression.patching.denoise import fft_im_denoise
+
+from neodroidvision.regression.patching.denoise import fft_im_denoise
 
 if __name__ == "__main__":
 

@@ -5,7 +5,8 @@ from pathlib import Path
 
 import cv2
 import numpy
-from draugr.opencv_utilities.opencv_drawing_utilities import draw_cube
+from draugr.opencv_utilities import draw_cube
+
 from matplotlib import pyplot
 from pynput import keyboard
 
@@ -156,10 +157,10 @@ with keyboard.Listener(
 
         """
 new_camera_mtx, roi = cv2.getOptimalNewCameraMatrix(camera_mtx,
-        dist_coef,
-        shape_,
-        1,
-        shape_)
+dist_coef,
+shape_,
+1,
+shape_)
 
 
 # This is the shortest path. Just call the function and use ROI obtained above to crop the result.
