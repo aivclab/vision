@@ -11,7 +11,7 @@ from apppath import AppPath
 
 __project__ = "NeodroidVision"
 __author__ = "Christian Heider Nielsen"
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 __doc__ = r"""
 .. module:: neodroidvision
    :platform: Unix, Windows
@@ -32,7 +32,7 @@ from typing import Any
 
 def dist_is_editable(dist: Any) -> bool:
     """
-    Return True if given Distribution is an editable install."""
+    Return True if given Distribution is an editable installation."""
     import sys
     from pathlib import Path
 

@@ -190,10 +190,10 @@ if __name__ == "__main__":
         bin_img, rho=2, theta=numpy.pi / 180, threshold=350
     )  # Detect lines
     """
-  if False:
-      img_with_all_lines = numpy.copy(img)
-      draw_lines(img_with_all_lines, lines)
-      show_image(img_with_all_lines, wait=True)
-  """
+if False:
+    img_with_all_lines = numpy.copy(img)
+    draw_lines(img_with_all_lines, lines)
+    show_image(img_with_all_lines, wait=True)
+"""
     centroids = find_intersections(lines)
     show_image(draw_markers(image.copy(), centroids), wait=True)

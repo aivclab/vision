@@ -1,6 +1,6 @@
-# Contributing To The Neodroid Platform
+# Contributing To Vision
 
-These guidelines are universal for the entire [Neodroid](https://github.com/sintefneodroid) Platform
+These guidelines are universal for the entire [Vision](https://github.com/aivclab/vision) Platform
 
 ## Pull Requests
 
@@ -21,5 +21,5 @@ able to reproduce the issue.
 
 ## License
 
-By contributing to the [Neodroid](https://github.com/sintefneodroid) platform, you agree that your contributions will be
+By contributing to the [Vision](https://github.com/aivclab/vision) platform, you agree that your contributions will be
 licensed under the LICENSE file in the root directory of this repository.
