@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.utilities.misc.perlin &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/graphviz.css'/>
+    <script data-url_root='../../../../' id='documentation_options' src='../../../../_static/documentation_options.js'></script>
+    <script src='../../../../_static/jquery.js'></script>
+    <script src='../../../../_static/underscore.js'></script>
+    <script src='../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/utilities/misc/perlin.html'/>
+    <link rel='index' title='Index' href='../../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.utilities.misc.perlin</h1>
+            <div class='highlight'><pre>
+<span></span><span class='kn'>import</span> <span class='nn'>math</span>
+<span class='kn'>import</span> <span class='nn'>random</span>
+<span class='kn'>from</span> <span class='nn'>itertools</span> <span class='kn'>import</span> <span class='n'>product</span>
+
+<span class='kn'>import</span> <span class='nn'>numpy</span>
+
+
+<div class='viewcode-block' id='smoothstep'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.misc.perlin.smoothstep.html#neodroidvision.utilities.misc.perlin.smoothstep'>[docs]</a><span class='k'>def</span> <span class='nf'>smoothstep</span><span class='p'>(</span><span class='n'>t</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;Smooth curve with a zero derivative at 0 and 1, making it useful for</span>
+<span class='sd'>    interpolating.</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+    <span class='k'>return</span> <span class='n'>t</span> <span class='o'>*</span> <span class='n'>t</span> <span class='o'>*</span> <span class='p'>(</span><span class='mf'>3.0</span> <span class='o'>-</span> <span class='mf'>2.0</span> <span class='o'>*</span> <span class='n'>t</span><span class='p'>)</span></div>
+
+
+<div class='viewcode-block' id='lerp'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.misc.perlin.lerp.html#neodroidvision.utilities.misc.perlin.lerp'>[docs]</a><span class='k'>def</span> <span class='nf'>lerp</span><span class='p'>(</span><span class='n'>t</span><span class='p'>,</span> <span class='n'>a</span><span class='p'>,</span> <span class='n'>b</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;Linear interpolation between a and b, given a fraction t.&quot;&quot;&quot;</span>
+    <span class='k'>return</span> <span class='n'>a</span> <span class='o'>+</span> <span class='n'>t</span> <span class='o'>*</span> <span class='p'>(</span><span class='n'>b</span> <span class='o'>-</span> <span class='n'>a</span><span class='p'>)</span></div>
+
+
+<div class='viewcode-block' id='PerlinNoiseGenerator'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.misc.perlin.PerlinNoiseGenerator.html#neodroidvision.utilities.misc.perlin.PerlinNoiseGenerator'>[docs]</a><span class='k'>class</span> <span class='nc'>PerlinNoiseGenerator</span><span class='p'>(</span><span class='nb'>object</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;Callable that produces Perlin noise for an arbitrary point in an</span>
+<span class='sd'>    arbitrary number of dimensions.  The underlying grid is aligned with the</span>
+<span class='sd'>    integers.</span>
+<span class='sd'>    There is no limit to the coordinates used; new gradients are generated on</span>
+<span class='sd'>    the fly as necessary.</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+
+<div class='viewcode-block' id='PerlinNoiseGenerator.__init__'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.misc.perlin.PerlinNoiseGenerator.html#neodroidvision.utilities.misc.perlin.PerlinNoiseGenerator.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>dimension</span><span class='p'>,</span> <span class='n'>octaves</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span> <span class='n'>tile</span><span class='o'>=</span><span class='p'>(),</span> <span class='n'>unbias</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;Create a new Perlin noise factory in the given number of dimensions,</span>
+<span class='sd'>        which should be an integer and at least 1.</span>
+<span class='sd'>        More octaves create a foggier and more-detailed noise pattern.  More</span>
+<span class='sd'>        than 4 octaves is rather excessive.</span>
+<span class='sd'>        ``tile`` can be used to make a seamlessly tiling pattern.  For example:</span>
+<span class='sd'>            pnf = PerlinNoiseGenerator(2, tile=(0, 3))</span>
+<span class='sd'>        This will produce noise that tiles every 3 units vertically, but never</span>
+<span class='sd'>        tiles horizontally.</span>
+<span class='sd'>        If ``unbias`` is true, the smoothstep function will be applied to the</span>
+<span class='sd'>        output before returning it, to counteract some of Perlin noise&#39;s</span>
+<span class='sd'>        significant bias towards the center of its output range.</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span> <span class='o'>=</span> <span class='n'>dimension</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>octaves</span> <span class='o'>=</span> <span class='n'>octaves</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>tile</span> <span class='o'>=</span> <span class='n'>tile</span> <span class='o'>+</span> <span class='p'>(</span><span class='mi'>0</span><span class='p'>,)</span> <span class='o'>*</span> <span class='n'>dimension</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>unbias</span> <span class='o'>=</span> <span class='n'>unbias</span>
+
+        <span class='c1'># For n dimensions, the range of Perlin noise is ±sqrt(n)/2; multiply</span>
+        <span class='c1'># by this to scale to ±1</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>scale_factor</span> <span class='o'>=</span> <span class='mi'>2</span> <span class='o'>*</span> <span class='n'>dimension</span><span class='o'>**-</span><span class='mf'>0.5</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>gradient</span> <span class='o'>=</span> <span class='p'>{}</span></div>
+
+    <span class='k'>def</span> <span class='nf'>_generate_gradient</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
+        <span class='c1'># Generate a random unit vector at each grid point -- this is the</span>
+        <span class='c1'># &quot;gradient&quot; vector, in that the grid tile slopes towards it</span>
+
+        <span class='c1'># 1 dimension is special, since the only unit vector is trivial;</span>
+        <span class='c1'># instead, use a slope between -1 and 1</span>
+        <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span> <span class='o'>==</span> <span class='mi'>1</span><span class='p'>:</span>
+            <span class='k'>return</span> <span class='p'>(</span><span class='n'>random</span><span class='o'>.</span><span class='n'>uniform</span><span class='p'>(</span><span class='o'>-</span><span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),)</span>
+
+        <span class='c1'># Generate a random point on the surface of the unit n-hypersphere;</span>
+        <span class='c1'># this is the same as a random unit vector in n dimensions.  Thanks</span>
+        <span class='c1'># to: http://mathworld.wolfram.com/SpherePointPicking.html</span>
+        <span class='c1'># Pick n normal random variables with stddev 1</span>
+        <span class='n'>random_point</span> <span class='o'>=</span> <span class='p'>[</span><span class='n'>random</span><span class='o'>.</span><span class='n'>gauss</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>)</span> <span class='k'>for</span> <span class='n'>_</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span><span class='p'>)]</span>
+        <span class='c1'># Then scale the result to a unit vector</span>
+        <span class='n'>scale</span> <span class='o'>=</span> <span class='nb'>sum</span><span class='p'>(</span><span class='n'>n</span> <span class='o'>*</span> <span class='n'>n</span> <span class='k'>for</span> <span class='n'>n</span> <span class='ow'>in</span> <span class='n'>random_point</span><span class='p'>)</span> <span class='o'>**</span> <span class='o'>-</span><span class='mf'>0.5</span>
+        <span class='k'>return</span> <span class='nb'>tuple</span><span class='p'>(</span><span class='n'>coord</span> <span class='o'>*</span> <span class='n'>scale</span> <span class='k'>for</span> <span class='n'>coord</span> <span class='ow'>in</span> <span class='n'>random_point</span><span class='p'>)</span>
+
+<div class='viewcode-block' id='PerlinNoiseGenerator.get_plain_noise'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.misc.perlin.PerlinNoiseGenerator.html#neodroidvision.utilities.misc.perlin.PerlinNoiseGenerator.get_plain_noise'>[docs]</a>    <span class='k'>def</span> <span class='nf'>get_plain_noise</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='o'>*</span><span class='n'>point</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;Get plain noise for a single point, without taking into account</span>
+<span class='sd'>        either octaves or tiling.</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='k'>if</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>point</span><span class='p'>)</span> <span class='o'>!=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span><span class='p'>:</span>
+            <span class='k'>raise</span> <span class='ne'>ValueError</span><span class='p'>(</span>
+                <span class='s2'>&quot;Expected </span><span class='si'>{}</span><span class='s2'> values, got </span><span class='si'>{}</span><span class='s2'>&quot;</span><span class='o'>.</span><span class='n'>format</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span><span class='p'>,</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>point</span><span class='p'>))</span>
+            <span class='p'>)</span>
+
+        <span class='c1'># Build a list of the (min, max) bounds in each dimension</span>
+        <span class='n'>grid_coords</span> <span class='o'>=</span> <span class='p'>[]</span>
+        <span class='k'>for</span> <span class='n'>coord</span> <span class='ow'>in</span> <span class='n'>point</span><span class='p'>:</span>
+            <span class='n'>min_coord</span> <span class='o'>=</span> <span class='n'>math</span><span class='o'>.</span><span class='n'>floor</span><span class='p'>(</span><span class='n'>coord</span><span class='p'>)</span>
+            <span class='n'>max_coord</span> <span class='o'>=</span> <span class='n'>min_coord</span> <span class='o'>+</span> <span class='mi'>1</span>
+            <span class='n'>grid_coords</span><span class='o'>.</span><span class='n'>append</span><span class='p'>((</span><span class='n'>min_coord</span><span class='p'>,</span> <span class='n'>max_coord</span><span class='p'>))</span>
+
+        <span class='c1'># Compute the dot product of each gradient vector and the point&#39;s</span>
+        <span class='c1'># distance from the corresponding grid point.  This gives you each</span>
+        <span class='c1'># gradient&#39;s &quot;influence&quot; on the chosen point.</span>
+        <span class='n'>dots</span> <span class='o'>=</span> <span class='p'>[]</span>
+        <span class='k'>for</span> <span class='n'>grid_point</span> <span class='ow'>in</span> <span class='n'>product</span><span class='p'>(</span><span class='o'>*</span><span class='n'>grid_coords</span><span class='p'>):</span>
+            <span class='k'>if</span> <span class='n'>grid_point</span> <span class='ow'>not</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>gradient</span><span class='p'>:</span>
+                <span class='bp'>self</span><span class='o'>.</span><span class='n'>gradient</span><span class='p'>[</span><span class='n'>grid_point</span><span class='p'>]</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_generate_gradient</span><span class='p'>()</span>
+            <span class='n'>gradient</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>gradient</span><span class='p'>[</span><span class='n'>grid_point</span><span class='p'>]</span>
+
+            <span class='n'>dot</span> <span class='o'>=</span> <span class='mi'>0</span>
+            <span class='k'>for</span> <span class='n'>i</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span><span class='p'>):</span>
+                <span class='n'>dot</span> <span class='o'>+=</span> <span class='n'>gradient</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]</span> <span class='o'>*</span> <span class='p'>(</span><span class='n'>point</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]</span> <span class='o'>-</span> <span class='n'>grid_point</span><span class='p'>[</span><span class='n'>i</span><span class='p'>])</span>
+            <span class='n'>dots</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>dot</span><span class='p'>)</span>
+
+        <span class='c1'># Interpolate all those dot products together.  The interpolation is</span>
+        <span class='c1'># done with smoothstep to smooth out the slope as you pass from one</span>
+        <span class='c1'># grid cell into the next.</span>
+        <span class='c1'># Due to the way product() works, dot products are ordered such that</span>
+        <span class='c1'># the last dimension alternates: (..., min), (..., max), etc.  So we</span>
+        <span class='c1'># can interpolate adjacent pairs to &quot;collapse&quot; that last dimension.  Then</span>
+        <span class='c1'># the results will alternate in their second-to-last dimension, and so</span>
+        <span class='c1'># forth, until we only have a single value left.</span>
+        <span class='n'>dim</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>dimension</span>
+        <span class='k'>while</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>dots</span><span class='p'>)</span> <span class='o'>&gt;</span> <span class='mi'>1</span><span class='p'>:</span>
+            <span class='n'>dim</span> <span class='o'>-=</span> <span class='mi'>1</span>
+            <span class='n'>s</span> <span class='o'>=</span> <span class='n'>smoothstep</span><span class='p'>(</span><span class='n'>point</span><span class='p'>[</span><span class='n'>dim</span><span class='p'>]</span> <span class='o'>-</span> <span class='n'>grid_coords</span><span class='p'>[</span><span class='n'>dim</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>])</span>
+
+            <span class='n'>next_dots</span> <span class='o'>=</span> <span class='p'>[]</span>
+            <span class='k'>while</span> <span class='n'>dots</span><span class='p'>:</span>
+                <span class='n'>next_dots</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>lerp</span><span class='p'>(</span><span class='n'>s</span><span class='p'>,</span> <span class='n'>dots</span><span class='o'>.</span><span class='n'>pop</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>),</span> <span class='n'>dots</span><span class='o'>.</span><span class='n'>pop</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>)))</span>
+
+            <span class='n'>dots</span> <span class='o'>=</span> <span class='n'>next_dots</span>
+
+        <span class='k'>return</span> <span class='n'>dots</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span> <span class='o'>*</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>scale_factor</span></div>
+
+    <span class='k'>def</span> <span class='fm'>__call__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='o'>*</span><span class='n'>point</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;Get the value of this Perlin noise function at the given point.  The</span>
+<span class='sd'>        number of values given should match the number of dimensions.</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='n'>ret</span> <span class='o'>=</span> <span class='mi'>0</span>
+        <span class='k'>for</span> <span class='n'>o</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>octaves</span><span class='p'>):</span>
+            <span class='n'>o2</span> <span class='o'>=</span> <span class='mi'>1</span> <span class='o'>&lt;&lt;</span> <span class='n'>o</span>
+            <span class='n'>new_point</span> <span class='o'>=</span> <span class='p'>[]</span>
+            <span class='k'>for</span> <span class='n'>i</span><span class='p'>,</span> <span class='n'>coord</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span><span class='n'>point</span><span class='p'>):</span>
+                <span class='n'>coord</span> <span class='o'>*=</span> <span class='n'>o2</span>
+                <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>tile</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]:</span>
+                    <span class='n'>coord</span> <span class='o'>%=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>tile</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]</span> <span class='o'>*</span> <span class='n'>o2</span>
+                <span class='n'>new_point</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>coord</span><span class='p'>)</span>
+            <span class='n'>ret</span> <span class='o'>+=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>get_plain_noise</span><span class='p'>(</span><span class='o'>*</span><span class='n'>new_point</span><span class='p'>)</span> <span class='o'>/</span> <span class='n'>o2</span>
+
+        <span class='c1'># Need to scale n back down since adding all those extra octaves has</span>
+        <span class='c1'># probably expanded it beyond ±1</span>
+        <span class='c1'># 1 octave: ±1</span>
+        <span class='c1'># 2 octaves: ±1½</span>
+        <span class='c1'># 3 octaves: ±1¾</span>
+        <span class='n'>ret</span> <span class='o'>/=</span> <span class='mi'>2</span> <span class='o'>-</span> <span class='mi'>2</span> <span class='o'>**</span> <span class='p'>(</span><span class='mi'>1</span> <span class='o'>-</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>octaves</span><span class='p'>)</span>
+
+        <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>unbias</span><span class='p'>:</span>
+            <span class='c1'># The output of the plain Perlin noise algorithm has a fairly</span>
+            <span class='c1'># strong bias towards the center due to the central limit theorem</span>
+            <span class='c1'># -- in fact the top and bottom 1/8 virtually never happen.  That&#39;s</span>
+            <span class='c1'># a quarter of our entire output range!  If only we had a function</span>
+            <span class='c1'># in [0..1] that could introduce a bias towards the endpoints...</span>
+            <span class='n'>r</span> <span class='o'>=</span> <span class='p'>(</span><span class='n'>ret</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>/</span> <span class='mi'>2</span>
+            <span class='c1'># Doing it this many times is a completely made-up heuristic.</span>
+            <span class='k'>for</span> <span class='n'>_</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='nb'>int</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>octaves</span> <span class='o'>/</span> <span class='mi'>2</span> <span class='o'>+</span> <span class='mf'>0.5</span><span class='p'>)):</span>
+                <span class='n'>r</span> <span class='o'>=</span> <span class='n'>smoothstep</span><span class='p'>(</span><span class='n'>r</span><span class='p'>)</span>
+            <span class='n'>ret</span> <span class='o'>=</span> <span class='n'>r</span> <span class='o'>*</span> <span class='mi'>2</span> <span class='o'>-</span> <span class='mi'>1</span>
+
+        <span class='k'>return</span> <span class='n'>ret</span></div>
+
+
+<div class='viewcode-block' id='generate_perlin_noise'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.misc.perlin.generate_perlin_noise.html#neodroidvision.utilities.misc.perlin.generate_perlin_noise'>[docs]</a><span class='k'>def</span> <span class='nf'>generate_perlin_noise</span><span class='p'>(</span><span class='n'>size</span><span class='o'>=</span><span class='p'>(</span><span class='mi'>50</span><span class='p'>,</span> <span class='mi'>50</span><span class='p'>)):</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>    :param size:</span>
+<span class='sd'>    :type size:</span>
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+    <span class='n'>noise</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>zeros</span><span class='p'>(</span><span class='n'>size</span><span class='p'>)</span>
+    <span class='n'>png</span> <span class='o'>=</span> <span class='n'>PerlinNoiseGenerator</span><span class='p'>(</span><span class='mi'>2</span><span class='p'>)</span>
+    <span class='k'>for</span> <span class='n'>i</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='n'>noise</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]):</span>
+        <span class='k'>for</span> <span class='n'>j</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='n'>noise</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>]):</span>
+            <span class='n'>noise</span><span class='p'>[</span><span class='n'>i</span><span class='p'>,</span> <span class='n'>j</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>png</span><span class='p'>(</span><span class='n'>i</span> <span class='o'>/</span> <span class='n'>noise</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>],</span> <span class='n'>j</span> <span class='o'>/</span> <span class='n'>noise</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>])</span>
+    <span class='k'>return</span> <span class='n'>noise</span></div>
+
+
+<span class='k'>if</span> <span class='vm'>__name__</span> <span class='o'>==</span> <span class='s2'>&quot;__main__&quot;</span><span class='p'>:</span>
+    <span class='nb'>print</span><span class='p'>(</span><span class='n'>generate_perlin_noise</span><span class='p'>())</span>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

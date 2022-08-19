@@ -1,0 +1,22 @@
+devpack # warg, draugr, apppath
+neodroid
+numpy>=1.20.2
+scipy
+scikit-image
+tqdm
+Pillow>=9.0.0
+matplotlib>=3.4.1
+pip
+h5py
+torch>=1.11.0
+torchvision
+pycocotools>=2.0.2
+albumentations>=0.5.2
+opencv-python>=4.5.1.48
+seaborn
+munin
+PyWavelets
+imageio
+pypng
+sorcery
+black[jupyter]

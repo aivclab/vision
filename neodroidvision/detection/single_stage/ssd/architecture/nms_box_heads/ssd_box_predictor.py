@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 11/05/2020
+           """
+
+from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
+    BoxPredictor,
+)
+from torch import nn
+
+__all__ = ["SSDBoxPredictor"]
+
+
+class SSDBoxPredictor(BoxPredictor):
+    def category_block(
+        self, level: int, out_channels: int, boxes_per_location: int
+    ) -> nn.Module:
+        """
+
+        :param level:
+        :type level:
+        :param out_channels:
+        :type out_channels:
+        :param boxes_per_location:
+        :type boxes_per_location:
+        :return:
+        :rtype:"""
+        return nn.Conv2d(
+            out_channels,
+            boxes_per_location * self.num_categories,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+        )
+
+    def location_block(self, level, out_channels, boxes_per_location) -> nn.Module:
+        """
+
+        :param level:
+        :type level:
+        :param out_channels:
+        :type out_channels:
+        :param boxes_per_location:
+        :type boxes_per_location:
+        :return:
+        :rtype:"""
+        return nn.Conv2d(
+            out_channels, boxes_per_location * 4, kernel_size=3, stride=1, padding=1
+        )

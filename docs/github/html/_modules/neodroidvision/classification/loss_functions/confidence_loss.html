@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.classification.loss_functions.confidence_loss &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/graphviz.css'/>
+    <script data-url_root='../../../../' id='documentation_options' src='../../../../_static/documentation_options.js'></script>
+    <script src='../../../../_static/jquery.js'></script>
+    <script src='../../../../_static/underscore.js'></script>
+    <script src='../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/classification/loss_functions/confidence_loss.html'/>
+    <link rel='index' title='Index' href='../../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.classification.loss_functions.confidence_loss</h1>
+            <div class='highlight'><pre>
+<span></span><span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>A collection of loss functions for pytorch and torchvision</span>
+<span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='kn'>import</span> <span class='nn'>copy</span>
+
+<span class='kn'>import</span> <span class='nn'>torch</span>
+<span class='kn'>from</span> <span class='nn'>torch</span> <span class='kn'>import</span> <span class='n'>nn</span>
+<span class='kn'>from</span> <span class='nn'>torch.nn</span> <span class='kn'>import</span> <span class='n'>functional</span>
+
+
+<div class='viewcode-block' id='ConfidenceLoss'><a class='viewcode-back' href='../../../../generated/neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.html#neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss'>[docs]</a><span class='k'>class</span> <span class='nc'>ConfidenceLoss</span><span class='p'>(</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Module</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>    An almost copy paste of https://github.com/aivclab/confidence_classification_loss_pytorch</span>
+<span class='sd'>    The function uses the nn.Module internal state &quot;training&quot; to determine when to update</span>
+<span class='sd'>        lambda. You must call .eval() and .train() yourself</span>
+<span class='sd'>     Implements</span>
+<span class='sd'>       &quot;Learning Confidence for Out-of-Distribution Detection in Neural Networks&quot;</span>
+<span class='sd'>       https://arxiv.org/pdf/1802.04865.pdf</span>
+<span class='sd'>     A Softmax-cross-entropy classification loss, which provides an</span>
+<span class='sd'>     additional &quot;confidence&quot; output, which signals whether the softmax output</span>
+<span class='sd'>     is confident.</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+
+<div class='viewcode-block' id='ConfidenceLoss.__init__'><a class='viewcode-back' href='../../../../generated/neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.html#neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>hint_budget</span><span class='o'>=</span><span class='mf'>0.3</span><span class='p'>,</span> <span class='n'>lmbda</span><span class='o'>=</span><span class='mf'>0.1</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        Parameters</span>
+<span class='sd'>        ---------------------</span>
+<span class='sd'>        hint_budget : float</span>
+<span class='sd'>           Refer to the paper.</span>
+<span class='sd'>        lambda : float</span>
+<span class='sd'>           Refer to the paper.</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='nb'>super</span><span class='p'>()</span><span class='o'>.</span><span class='fm'>__init__</span><span class='p'>()</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>hint_budget</span> <span class='o'>=</span> <span class='n'>hint_budget</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_initial_lmbda</span> <span class='o'>=</span> <span class='n'>copy</span><span class='o'>.</span><span class='n'>copy</span><span class='p'>(</span><span class='n'>lmbda</span><span class='p'>)</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>lmbda</span> <span class='o'>=</span> <span class='n'>lmbda</span></div>
+
+<div class='viewcode-block' id='ConfidenceLoss.reset'><a class='viewcode-back' href='../../../../generated/neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.html#neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.reset'>[docs]</a>    <span class='k'>def</span> <span class='nf'>reset</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        Set lambda to initial lambda</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>lmbda</span> <span class='o'>=</span> <span class='n'>copy</span><span class='o'>.</span><span class='n'>copy</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_initial_lmbda</span><span class='p'>)</span></div>
+
+    <span class='k'>def</span> <span class='nf'>_update_lmbda</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>conf_loss</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        Updates current lambda. Ensure .eval() has been called if lambda should not update</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>training</span><span class='p'>:</span>
+            <span class='bp'>self</span><span class='o'>.</span><span class='n'>lmbda</span> <span class='o'>=</span> <span class='p'>(</span>
+                <span class='bp'>self</span><span class='o'>.</span><span class='n'>lmbda</span> <span class='o'>/</span> <span class='mf'>1.01</span>
+                <span class='k'>if</span> <span class='n'>conf_loss</span><span class='o'>.</span><span class='n'>item</span><span class='p'>()</span> <span class='o'>&lt;</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>hint_budget</span>
+                <span class='k'>else</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>lmbda</span> <span class='o'>/</span> <span class='mf'>0.99</span>
+            <span class='p'>)</span>
+
+<div class='viewcode-block' id='ConfidenceLoss.predict'><a class='viewcode-back' href='../../../../generated/neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.html#neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.predict'>[docs]</a>    <span class='nd'>@classmethod</span>
+    <span class='k'>def</span> <span class='nf'>predict</span><span class='p'>(</span><span class='bp'>cls</span><span class='p'>,</span> <span class='nb'>input</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        Compute prediction pseudo probabilities and confidence from logits</span>
+
+<span class='sd'>        Parameters</span>
+<span class='sd'>        ----------</span>
+<span class='sd'>        input : torch.tensor (BxK) float where K=&lt;number_of_classes&gt; + 1</span>
+<span class='sd'>           Classification logits + confidence logit</span>
+
+<span class='sd'>        Returns</span>
+<span class='sd'>        -------</span>
+<span class='sd'>        (prediction, conf) prediction softmax probabilities and confidence level</span>
+
+<span class='sd'>        Example</span>
+<span class='sd'>        -------</span>
+<span class='sd'>          (prediction, conf) = ConfidenceLoss.predict(logit_tensor)</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='n'>input_pred</span> <span class='o'>=</span> <span class='nb'>input</span><span class='p'>[</span><span class='o'>...</span><span class='p'>,</span> <span class='p'>:</span><span class='o'>-</span><span class='mi'>1</span><span class='p'>]</span>
+        <span class='n'>input_conf</span> <span class='o'>=</span> <span class='nb'>input</span><span class='p'>[</span><span class='o'>...</span><span class='p'>,</span> <span class='o'>-</span><span class='mi'>1</span><span class='p'>]</span>
+        <span class='n'>pred</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>softmax</span><span class='p'>(</span><span class='n'>input_pred</span><span class='p'>,</span> <span class='n'>dim</span><span class='o'>=-</span><span class='mi'>1</span><span class='p'>)</span>
+        <span class='n'>conf</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>sigmoid</span><span class='p'>(</span><span class='n'>input_conf</span><span class='p'>)</span>
+        <span class='k'>return</span> <span class='p'>(</span><span class='n'>pred</span><span class='p'>,</span> <span class='n'>conf</span><span class='p'>)</span></div>
+
+<div class='viewcode-block' id='ConfidenceLoss.forward'><a class='viewcode-back' href='../../../../generated/neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.html#neodroidvision.classification.loss_functions.confidence_loss.ConfidenceLoss.forward'>[docs]</a>    <span class='k'>def</span> <span class='nf'>forward</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='nb'>input</span><span class='p'>,</span> <span class='n'>target</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        Compute loss</span>
+
+<span class='sd'>        Parameters</span>
+<span class='sd'>        ----------</span>
+<span class='sd'>        input : torch.tensor (BxK) float where K=&lt;number_of_classes&gt; + 1</span>
+<span class='sd'>           Classification logits + confidence logit</span>
+<span class='sd'>        target : torch.tensor (Bx1) long</span>
+<span class='sd'>           Target class</span>
+
+<span class='sd'>        Returns</span>
+<span class='sd'>        -------</span>
+<span class='sd'>        loss value</span>
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='n'>pred_orig</span><span class='p'>,</span> <span class='n'>conf_orig</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>predict</span><span class='p'>(</span><span class='nb'>input</span><span class='p'>)</span>
+        <span class='n'>target_1hot</span> <span class='o'>=</span> <span class='n'>functional</span><span class='o'>.</span><span class='n'>one_hot</span><span class='p'>(</span><span class='n'>target</span><span class='p'>,</span> <span class='n'>pred_orig</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>[</span><span class='o'>-</span><span class='mi'>1</span><span class='p'>])</span>
+
+        <span class='c1'># Clamp</span>
+        <span class='n'>eps</span> <span class='o'>=</span> <span class='mf'>1e-12</span>
+        <span class='n'>pred_orig</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>clamp</span><span class='p'>(</span><span class='n'>pred_orig</span><span class='p'>,</span> <span class='n'>eps</span><span class='p'>,</span> <span class='mi'>1</span> <span class='o'>-</span> <span class='n'>eps</span><span class='p'>)</span>
+        <span class='n'>conf_orig</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>clamp</span><span class='p'>(</span><span class='n'>conf_orig</span><span class='p'>,</span> <span class='n'>eps</span><span class='p'>,</span> <span class='mi'>1</span> <span class='o'>-</span> <span class='n'>eps</span><span class='p'>)</span>
+        <span class='c1'># Randomly set half of predictions to 100% confidence</span>
+        <span class='n'>b</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>empty_like</span><span class='p'>(</span><span class='n'>conf_orig</span><span class='p'>)</span><span class='o'>.</span><span class='n'>uniform_</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>)</span><span class='o'>.</span><span class='n'>round</span><span class='p'>()</span>
+        <span class='n'>conf_new</span> <span class='o'>=</span> <span class='n'>conf_orig</span> <span class='o'>*</span> <span class='n'>b</span> <span class='o'>+</span> <span class='mi'>1</span> <span class='o'>-</span> <span class='n'>b</span>
+        <span class='n'>pred_new</span> <span class='o'>=</span> <span class='n'>pred_orig</span> <span class='o'>*</span> <span class='n'>conf_new</span><span class='p'>[:,</span> <span class='kc'>None</span><span class='p'>]</span> <span class='o'>+</span> <span class='n'>target_1hot</span> <span class='o'>*</span> <span class='p'>(</span><span class='mi'>1</span> <span class='o'>-</span> <span class='n'>conf_new</span><span class='p'>[:,</span> <span class='kc'>None</span><span class='p'>])</span>
+        <span class='n'>pred_new</span> <span class='o'>=</span> <span class='n'>pred_new</span><span class='o'>.</span><span class='n'>log</span><span class='p'>()</span>
+        <span class='n'>pred_loss</span> <span class='o'>=</span> <span class='n'>functional</span><span class='o'>.</span><span class='n'>nll_loss</span><span class='p'>(</span><span class='n'>pred_new</span><span class='p'>,</span> <span class='n'>target</span><span class='p'>)</span>
+        <span class='n'>conf_loss</span> <span class='o'>=</span> <span class='o'>-</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>log</span><span class='p'>(</span><span class='n'>conf_new</span><span class='p'>)</span><span class='o'>.</span><span class='n'>mean</span><span class='p'>()</span>
+        <span class='n'>tot_loss</span> <span class='o'>=</span> <span class='n'>pred_loss</span> <span class='o'>+</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>lmbda</span> <span class='o'>*</span> <span class='n'>conf_loss</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_update_lmbda</span><span class='p'>(</span><span class='n'>conf_loss</span><span class='p'>)</span>
+
+        <span class='k'>return</span> <span class='n'>tot_loss</span></div></div>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.data.classification.imagenet.imagenet_2012 &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/graphviz.css'/>
+    <script data-url_root='../../../../../' id='documentation_options' src='../../../../../_static/documentation_options.js'></script>
+    <script src='../../../../../_static/jquery.js'></script>
+    <script src='../../../../../_static/underscore.js'></script>
+    <script src='../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/data/classification/imagenet/imagenet_2012.html'/>
+    <link rel='index' title='Index' href='../../../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.data.classification.imagenet.imagenet_2012</h1>
+            <div class='highlight'><pre>
+<span></span><span class='ch'>#!/usr/bin/env python3</span>
+<span class='c1'># -*- coding: utf-8 -*-</span>
+
+<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;Christian Heider Nielsen&quot;</span>
+<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
+
+<span class='s2'>           Created on 27/06/2020</span>
+<span class='s2'>           &quot;&quot;&quot;</span>
+
+<span class='kn'>from</span> <span class='nn'>pathlib</span> <span class='kn'>import</span> <span class='n'>Path</span>
+<span class='kn'>from</span> <span class='nn'>typing</span> <span class='kn'>import</span> <span class='n'>Dict</span><span class='p'>,</span> <span class='n'>Tuple</span>
+
+<span class='kn'>import</span> <span class='nn'>numpy</span>
+<span class='kn'>import</span> <span class='nn'>torch</span>
+<span class='kn'>import</span> <span class='nn'>torchvision</span>
+<span class='kn'>from</span> <span class='nn'>draugr.numpy_utilities</span> <span class='kn'>import</span> <span class='n'>SplitEnum</span>
+<span class='kn'>from</span> <span class='nn'>draugr.torch_utilities</span> <span class='kn'>import</span> <span class='n'>SupervisedDataset</span>
+<span class='kn'>from</span> <span class='nn'>matplotlib</span> <span class='kn'>import</span> <span class='n'>pyplot</span>
+<span class='kn'>from</span> <span class='nn'>torch.utils</span> <span class='kn'>import</span> <span class='n'>data</span>
+<span class='kn'>from</span> <span class='nn'>torchvision</span> <span class='kn'>import</span> <span class='n'>transforms</span>
+
+<span class='kn'>from</span> <span class='nn'>neodroidvision.data.classification.imagenet.imagenet_2012_id</span> <span class='kn'>import</span> <span class='n'>categories_id</span>
+<span class='kn'>from</span> <span class='nn'>neodroidvision.data.classification.imagenet.imagenet_2012_names</span> <span class='kn'>import</span> <span class='p'>(</span>
+    <span class='n'>categories_names</span><span class='p'>,</span>
+<span class='p'>)</span>
+
+<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;ImageNet2012&quot;</span><span class='p'>]</span>
+
+
+<div class='viewcode-block' id='ImageNet2012'><a class='viewcode-back' href='../../../../../generated/neodroidvision.data.classification.imagenet.imagenet_2012.ImageNet2012.html#neodroidvision.data.classification.imagenet.imagenet_2012.ImageNet2012'>[docs]</a><span class='k'>class</span> <span class='nc'>ImageNet2012</span><span class='p'>(</span><span class='n'>SupervisedDataset</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+
+    <span class='n'>mean</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>array</span><span class='p'>([</span><span class='mf'>0.485</span><span class='p'>,</span> <span class='mf'>0.456</span><span class='p'>,</span> <span class='mf'>0.406</span><span class='p'>])</span>
+    <span class='n'>std</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>array</span><span class='p'>([</span><span class='mf'>0.229</span><span class='p'>,</span> <span class='mf'>0.224</span><span class='p'>,</span> <span class='mf'>0.225</span><span class='p'>])</span>
+
+    <span class='n'>category_names</span> <span class='o'>=</span> <span class='n'>categories_names</span>
+    <span class='n'>category_id</span> <span class='o'>=</span> <span class='n'>categories_id</span>
+
+    <span class='n'>inverse_base_transform</span> <span class='o'>=</span> <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Compose</span><span class='p'>(</span>
+        <span class='p'>[</span>
+            <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Normalize</span><span class='p'>((</span><span class='o'>-</span><span class='n'>mean</span> <span class='o'>/</span> <span class='n'>std</span><span class='p'>)</span><span class='o'>.</span><span class='n'>tolist</span><span class='p'>(),</span> <span class='p'>(</span><span class='mf'>1.0</span> <span class='o'>/</span> <span class='n'>std</span><span class='p'>)</span><span class='o'>.</span><span class='n'>tolist</span><span class='p'>()),</span>
+            <span class='n'>transforms</span><span class='o'>.</span><span class='n'>ToPILImage</span><span class='p'>(),</span>
+        <span class='p'>]</span>
+    <span class='p'>)</span>
+
+    <span class='n'>base_transform</span> <span class='o'>=</span> <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Compose</span><span class='p'>(</span>
+        <span class='p'>[</span><span class='n'>transforms</span><span class='o'>.</span><span class='n'>ToTensor</span><span class='p'>(),</span> <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Normalize</span><span class='p'>(</span><span class='n'>mean</span><span class='p'>,</span> <span class='n'>std</span><span class='p'>)]</span>
+    <span class='p'>)</span>
+
+    <span class='nd'>@property</span>
+    <span class='k'>def</span> <span class='nf'>response_shape</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Tuple</span><span class='p'>[</span><span class='nb'>int</span><span class='p'>,</span> <span class='o'>...</span><span class='p'>]:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>        :return:</span>
+<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
+        <span class='k'>return</span> <span class='p'>(</span><span class='mi'>1000</span><span class='p'>,)</span>
+
+    <span class='nd'>@property</span>
+    <span class='k'>def</span> <span class='nf'>predictor_shape</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Tuple</span><span class='p'>[</span><span class='nb'>int</span><span class='p'>,</span> <span class='o'>...</span><span class='p'>]:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>        :return:</span>
+<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
+        <span class='k'>return</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_crop_size</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_crop_size</span>
+
+    <span class='nd'>@property</span>
+    <span class='k'>def</span> <span class='nf'>split_names</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Dict</span><span class='p'>[</span><span class='n'>SplitEnum</span><span class='p'>,</span> <span class='nb'>str</span><span class='p'>]:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>        :return:</span>
+<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
+        <span class='k'>return</span> <span class='p'>{</span>
+            <span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>training</span><span class='p'>:</span> <span class='s2'>&quot;train&quot;</span><span class='p'>,</span>
+            <span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>validation</span><span class='p'>:</span> <span class='s2'>&quot;val&quot;</span><span class='p'>,</span>
+            <span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>testing</span><span class='p'>:</span> <span class='s2'>&quot;test&quot;</span><span class='p'>,</span>
+        <span class='p'>}</span>
+
+<div class='viewcode-block' id='ImageNet2012.__init__'><a class='viewcode-back' href='../../../../../generated/neodroidvision.data.classification.imagenet.imagenet_2012.ImageNet2012.html#neodroidvision.data.classification.imagenet.imagenet_2012.ImageNet2012.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span>
+        <span class='bp'>self</span><span class='p'>,</span>
+        <span class='n'>dataset_path</span><span class='p'>:</span> <span class='n'>Path</span><span class='p'>,</span>
+        <span class='n'>split</span><span class='p'>:</span> <span class='n'>SplitEnum</span> <span class='o'>=</span> <span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>training</span><span class='p'>,</span>
+        <span class='n'>resize_s</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>256</span><span class='p'>,</span>
+        <span class='n'>crop_size</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>224</span><span class='p'>,</span>
+    <span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        :type resize_s: int or tuple(w,h)</span>
+<span class='sd'>        :param dataset_path: dataset directory</span>
+<span class='sd'>        :param split: train, valid, test&quot;&quot;&quot;</span>
+        <span class='nb'>super</span><span class='p'>()</span><span class='o'>.</span><span class='fm'>__init__</span><span class='p'>()</span>
+        <span class='k'>if</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>dataset_path</span><span class='p'>,</span> <span class='nb'>str</span><span class='p'>):</span>
+            <span class='n'>dataset_path</span> <span class='o'>=</span> <span class='n'>Path</span><span class='p'>(</span><span class='n'>dataset_path</span><span class='p'>)</span>
+        <span class='k'>assert</span> <span class='n'>dataset_path</span><span class='o'>.</span><span class='n'>exists</span><span class='p'>(),</span> <span class='sa'>f</span><span class='s2'>&quot;root: </span><span class='si'>{</span><span class='n'>dataset_path</span><span class='si'>}</span><span class='s2'> not found.&quot;</span>
+        <span class='k'>assert</span> <span class='n'>resize_s</span> <span class='o'>&gt;</span> <span class='mi'>2</span><span class='p'>,</span> <span class='s2'>&quot;resize_s should be &gt;2&quot;</span>
+        <span class='k'>assert</span> <span class='n'>crop_size</span> <span class='o'>&gt;</span> <span class='mi'>2</span><span class='p'>,</span> <span class='s2'>&quot;crop_size should be &gt;2&quot;</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_crop_size</span> <span class='o'>=</span> <span class='n'>crop_size</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_split</span> <span class='o'>=</span> <span class='n'>split</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_path</span> <span class='o'>=</span> <span class='n'>dataset_path</span> <span class='o'>/</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>split_names</span><span class='p'>[</span><span class='n'>split</span><span class='p'>]</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>train_trans</span> <span class='o'>=</span> <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Compose</span><span class='p'>(</span>
+            <span class='p'>[</span>
+                <span class='n'>transforms</span><span class='o'>.</span><span class='n'>RandomResizedCrop</span><span class='p'>(</span><span class='n'>crop_size</span><span class='p'>),</span>
+                <span class='n'>transforms</span><span class='o'>.</span><span class='n'>RandomHorizontalFlip</span><span class='p'>(),</span>
+                <span class='bp'>self</span><span class='o'>.</span><span class='n'>base_transform</span><span class='p'>,</span>
+            <span class='p'>]</span>
+        <span class='p'>)</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>val_trans</span> <span class='o'>=</span> <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Compose</span><span class='p'>(</span>
+            <span class='p'>[</span>
+                <span class='n'>transforms</span><span class='o'>.</span><span class='n'>Resize</span><span class='p'>(</span><span class='n'>resize_s</span><span class='p'>),</span>
+                <span class='n'>transforms</span><span class='o'>.</span><span class='n'>CenterCrop</span><span class='p'>(</span><span class='n'>crop_size</span><span class='p'>),</span>
+                <span class='bp'>self</span><span class='o'>.</span><span class='n'>base_transform</span><span class='p'>,</span>
+            <span class='p'>]</span>
+        <span class='p'>)</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_image_folder</span> <span class='o'>=</span> <span class='n'>torchvision</span><span class='o'>.</span><span class='n'>datasets</span><span class='o'>.</span><span class='n'>ImageFolder</span><span class='p'>(</span>
+            <span class='nb'>str</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_path</span><span class='p'>),</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>val_trans</span>
+        <span class='p'>)</span></div>
+
+    <span class='k'>def</span> <span class='fm'>__len__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='nb'>int</span><span class='p'>:</span>
+        <span class='k'>return</span> <span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_image_folder</span><span class='p'>)</span>
+
+    <span class='k'>def</span> <span class='fm'>__getitem__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>index</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Tuple</span><span class='p'>[</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>,</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>]:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        return image and category</span>
+
+<span class='sd'>        :param index:</span>
+<span class='sd'>        :type index:</span>
+<span class='sd'>        :return:</span>
+<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
+        <span class='k'>return</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_image_folder</span><span class='p'>[</span><span class='n'>index</span><span class='p'>]</span></div>
+
+
+<span class='k'>if</span> <span class='vm'>__name__</span> <span class='o'>==</span> <span class='s2'>&quot;__main__&quot;</span><span class='p'>:</span>
+
+    <span class='k'>def</span> <span class='nf'>main</span><span class='p'>():</span>
+        <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+        <span class='kn'>import</span> <span class='nn'>tqdm</span>
+
+        <span class='n'>batch_size</span> <span class='o'>=</span> <span class='mi'>32</span>
+
+        <span class='n'>dt</span> <span class='o'>=</span> <span class='n'>ImageNet2012</span><span class='p'>(</span>
+            <span class='n'>Path</span><span class='o'>.</span><span class='n'>home</span><span class='p'>()</span> <span class='o'>/</span> <span class='s2'>&quot;Data&quot;</span> <span class='o'>/</span> <span class='s2'>&quot;Datasets&quot;</span> <span class='o'>/</span> <span class='s2'>&quot;ILSVRC2012&quot;</span><span class='p'>,</span> <span class='n'>split</span><span class='o'>=</span><span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>validation</span>
+        <span class='p'>)</span>
+
+        <span class='n'>val_loader</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>utils</span><span class='o'>.</span><span class='n'>data</span><span class='o'>.</span><span class='n'>DataLoader</span><span class='p'>(</span>
+            <span class='n'>dt</span><span class='p'>,</span> <span class='n'>batch_size</span><span class='o'>=</span><span class='n'>batch_size</span><span class='p'>,</span> <span class='n'>shuffle</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>,</span> <span class='n'>num_workers</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span> <span class='n'>pin_memory</span><span class='o'>=</span><span class='kc'>True</span>
+        <span class='p'>)</span>
+
+        <span class='k'>for</span> <span class='n'>batch_idx</span><span class='p'>,</span> <span class='p'>(</span><span class='n'>imgs</span><span class='p'>,</span> <span class='n'>categories</span><span class='p'>)</span> <span class='ow'>in</span> <span class='n'>tqdm</span><span class='o'>.</span><span class='n'>tqdm</span><span class='p'>(</span>
+            <span class='nb'>enumerate</span><span class='p'>(</span><span class='n'>val_loader</span><span class='p'>),</span>
+            <span class='n'>total</span><span class='o'>=</span><span class='nb'>len</span><span class='p'>(</span><span class='n'>val_loader</span><span class='p'>),</span>
+            <span class='n'>desc</span><span class='o'>=</span><span class='s2'>&quot;Bro&quot;</span><span class='p'>,</span>
+            <span class='n'>ncols</span><span class='o'>=</span><span class='mi'>80</span><span class='p'>,</span>
+            <span class='n'>leave</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>,</span>
+        <span class='p'>):</span>
+            <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>imshow</span><span class='p'>(</span><span class='n'>dt</span><span class='o'>.</span><span class='n'>inverse_base_transform</span><span class='p'>(</span><span class='n'>imgs</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]))</span>
+            <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>title</span><span class='p'>(</span><span class='n'>dt</span><span class='o'>.</span><span class='n'>category_names</span><span class='p'>[</span><span class='n'>categories</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span><span class='o'>.</span><span class='n'>item</span><span class='p'>()])</span>
+            <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>show</span><span class='p'>()</span>
+            <span class='k'>break</span>
+
+    <span class='n'>main</span><span class='p'>()</span>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

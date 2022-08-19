@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.segmentation.fully_convolutional &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../_static/graphviz.css'/>
+    <script data-url_root='../../../' id='documentation_options' src='../../../_static/documentation_options.js'></script>
+    <script src='../../../_static/jquery.js'></script>
+    <script src='../../../_static/underscore.js'></script>
+    <script src='../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/segmentation/fully_convolutional.html'/>
+    <link rel='index' title='Index' href='../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.segmentation.fully_convolutional</h1>
+            <div class='highlight'><pre>
+<span></span><span class='ch'>#!/usr/bin/env python3</span>
+<span class='c1'># -*- coding: utf-8 -*-</span>
+
+<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;Christian Heider Nielsen&quot;</span>
+<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
+
+<span class='s2'>           Created on 18/07/2020</span>
+<span class='s2'>           &quot;&quot;&quot;</span>
+
+<span class='kn'>import</span> <span class='nn'>math</span>
+
+<span class='kn'>import</span> <span class='nn'>torch</span>
+<span class='kn'>from</span> <span class='nn'>torch</span> <span class='kn'>import</span> <span class='n'>nn</span>
+<span class='kn'>from</span> <span class='nn'>torch.optim</span> <span class='kn'>import</span> <span class='n'>Adam</span>
+
+<span class='kn'>from</span> <span class='nn'>neodroidvision.segmentation</span> <span class='kn'>import</span> <span class='n'>dice_loss</span>
+
+<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;FullyConvolutional&quot;</span><span class='p'>,</span> <span class='s2'>&quot;FCN&quot;</span><span class='p'>]</span>
+
+
+<div class='viewcode-block' id='FullyConvolutional'><a class='viewcode-back' href='../../../generated/neodroidvision.segmentation.fully_convolutional.FullyConvolutional.html#neodroidvision.segmentation.fully_convolutional.FullyConvolutional'>[docs]</a><span class='k'>class</span> <span class='nc'>FullyConvolutional</span><span class='p'>(</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Module</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+
+    <span class='nd'>@staticmethod</span>
+    <span class='k'>def</span> <span class='nf'>_pad</span><span class='p'>(</span><span class='n'>kernel_size</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span> <span class='n'>stride</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span> <span class='n'>dilation</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='nb'>int</span><span class='p'>:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        if length % stride == 0:</span>
+<span class='sd'>        out_length = length // stride</span>
+<span class='sd'>        else:</span>
+<span class='sd'>        out_length = length // stride + 1</span>
+
+<span class='sd'>        return math.ceil((out_length * stride + kernel_size - length - stride) / 2)&quot;&quot;&quot;</span>
+        <span class='k'>return</span> <span class='n'>math</span><span class='o'>.</span><span class='n'>ceil</span><span class='p'>((</span><span class='mi'>1</span> <span class='o'>-</span> <span class='n'>stride</span> <span class='o'>+</span> <span class='n'>dilation</span> <span class='o'>*</span> <span class='p'>(</span><span class='n'>kernel_size</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>))</span> <span class='o'>/</span> <span class='mi'>2</span><span class='p'>)</span>
+
+<div class='viewcode-block' id='FullyConvolutional.conv2d_pool_block'><a class='viewcode-back' href='../../../generated/neodroidvision.segmentation.fully_convolutional.FullyConvolutional.html#neodroidvision.segmentation.fully_convolutional.FullyConvolutional.conv2d_pool_block'>[docs]</a>    <span class='nd'>@staticmethod</span>
+    <span class='k'>def</span> <span class='nf'>conv2d_pool_block</span><span class='p'>(</span>
+        <span class='n'>in_channels</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span> <span class='n'>out_channels</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span> <span class='n'>ext</span><span class='p'>:</span> <span class='nb'>bool</span> <span class='o'>=</span> <span class='kc'>False</span>
+    <span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Module</span><span class='p'>:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>        Args:</span>
+<span class='sd'>          in_channels:</span>
+<span class='sd'>          out_channels:</span>
+<span class='sd'>          ext:</span>
+
+<span class='sd'>        Returns:</span>
+
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='n'>base_c</span> <span class='o'>=</span> <span class='p'>[</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
+                <span class='n'>in_channels</span><span class='o'>=</span><span class='n'>in_channels</span><span class='p'>,</span>
+                <span class='n'>out_channels</span><span class='o'>=</span><span class='n'>out_channels</span><span class='p'>,</span>
+                <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>3</span><span class='p'>,</span>
+                <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>3</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),</span>
+            <span class='p'>),</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ELU</span><span class='p'>(),</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
+                <span class='n'>in_channels</span><span class='o'>=</span><span class='n'>out_channels</span><span class='p'>,</span>
+                <span class='n'>out_channels</span><span class='o'>=</span><span class='n'>out_channels</span><span class='p'>,</span>
+                <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>3</span><span class='p'>,</span>
+                <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>3</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),</span>
+            <span class='p'>),</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ELU</span><span class='p'>(),</span>
+        <span class='p'>]</span>
+        <span class='k'>if</span> <span class='n'>ext</span><span class='p'>:</span>
+            <span class='n'>base_c</span><span class='o'>.</span><span class='n'>extend</span><span class='p'>(</span>
+                <span class='p'>[</span>
+                    <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
+                        <span class='n'>in_channels</span><span class='o'>=</span><span class='n'>out_channels</span><span class='p'>,</span>
+                        <span class='n'>out_channels</span><span class='o'>=</span><span class='n'>out_channels</span><span class='p'>,</span>
+                        <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>3</span><span class='p'>,</span>
+                        <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>3</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),</span>
+                    <span class='p'>),</span>
+                    <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ELU</span><span class='p'>(),</span>
+                <span class='p'>]</span>
+            <span class='p'>)</span>
+        <span class='n'>base_c</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>MaxPool2d</span><span class='p'>(</span><span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span> <span class='n'>stride</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span> <span class='n'>padding</span><span class='o'>=</span><span class='mi'>0</span><span class='p'>)</span>
+        <span class='p'>)</span>  <span class='c1'># Valid padding</span>
+        <span class='k'>return</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sequential</span><span class='p'>(</span><span class='o'>*</span><span class='n'>base_c</span><span class='p'>)</span></div>
+
+<div class='viewcode-block' id='FullyConvolutional.__init__'><a class='viewcode-back' href='../../../generated/neodroidvision.segmentation.fully_convolutional.FullyConvolutional.html#neodroidvision.segmentation.fully_convolutional.FullyConvolutional.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span>
+        <span class='bp'>self</span><span class='p'>,</span>
+        <span class='n'>in_channels</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span>
+        <span class='n'>num_categories</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span>
+        <span class='o'>*</span><span class='p'>,</span>
+        <span class='n'>final_act</span><span class='p'>:</span> <span class='n'>callable</span><span class='p'>,</span>
+        <span class='n'>base</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>4</span><span class='p'>,</span>
+        <span class='n'>t</span><span class='o'>=</span><span class='mi'>8</span><span class='p'>,</span>
+    <span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>        FCN8</span>
+
+<span class='sd'>        :param num_categories:</span>
+<span class='sd'>        :type num_categories:</span>
+<span class='sd'>        :param base:</span>
+<span class='sd'>        :type base:&quot;&quot;&quot;</span>
+
+        <span class='nb'>super</span><span class='p'>()</span><span class='o'>.</span><span class='fm'>__init__</span><span class='p'>()</span>
+        <span class='n'>i_c</span> <span class='o'>=</span> <span class='n'>in_channels</span>
+        <span class='k'>for</span> <span class='n'>ith_block</span> <span class='ow'>in</span> <span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>):</span>
+            <span class='n'>i_c_n</span> <span class='o'>=</span> <span class='mi'>2</span> <span class='o'>**</span> <span class='p'>(</span><span class='n'>base</span> <span class='o'>+</span> <span class='n'>ith_block</span><span class='p'>)</span>
+            <span class='nb'>setattr</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='sa'>f</span><span class='s2'>&quot;pool_block</span><span class='si'>{</span><span class='n'>ith_block</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>conv2d_pool_block</span><span class='p'>(</span><span class='n'>i_c</span><span class='p'>,</span> <span class='n'>i_c_n</span><span class='p'>))</span>
+            <span class='n'>i_c</span> <span class='o'>=</span> <span class='n'>i_c_n</span>
+
+        <span class='k'>for</span> <span class='n'>ith_block</span> <span class='ow'>in</span> <span class='p'>(</span><span class='mi'>2</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>):</span>
+            <span class='n'>i_c_n</span> <span class='o'>=</span> <span class='mi'>2</span> <span class='o'>**</span> <span class='p'>(</span><span class='n'>base</span> <span class='o'>+</span> <span class='n'>ith_block</span><span class='p'>)</span>
+            <span class='nb'>setattr</span><span class='p'>(</span>
+                <span class='bp'>self</span><span class='p'>,</span>
+                <span class='sa'>f</span><span class='s2'>&quot;pool_block</span><span class='si'>{</span><span class='n'>ith_block</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
+                <span class='bp'>self</span><span class='o'>.</span><span class='n'>conv2d_pool_block</span><span class='p'>(</span><span class='n'>i_c</span><span class='p'>,</span> <span class='n'>i_c_n</span><span class='p'>,</span> <span class='n'>ext</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>),</span>
+            <span class='p'>)</span>
+            <span class='n'>i_c</span> <span class='o'>=</span> <span class='n'>i_c_n</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>pool_block4</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>conv2d_pool_block</span><span class='p'>(</span><span class='n'>i_c</span><span class='p'>,</span> <span class='mi'>2</span> <span class='o'>**</span> <span class='p'>(</span><span class='n'>base</span> <span class='o'>+</span> <span class='mi'>3</span><span class='p'>),</span> <span class='n'>ext</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>)</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>conv5</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sequential</span><span class='p'>(</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
+                <span class='n'>i_c</span><span class='p'>,</span> <span class='mi'>2048</span><span class='p'>,</span> <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>7</span><span class='p'>,</span> <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>7</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>)</span>
+            <span class='p'>),</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Dropout</span><span class='p'>(</span><span class='mf'>0.5</span><span class='p'>),</span>
+        <span class='p'>)</span>
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>conv6</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sequential</span><span class='p'>(</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
+                <span class='mi'>2048</span><span class='p'>,</span> <span class='mi'>2048</span><span class='p'>,</span> <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span> <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>)</span>
+            <span class='p'>),</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Dropout</span><span class='p'>(</span><span class='mf'>0.5</span><span class='p'>),</span>
+        <span class='p'>)</span>
+
+        <span class='k'>for</span> <span class='n'>ith_block</span><span class='p'>,</span> <span class='n'>ic2</span> <span class='ow'>in</span> <span class='nb'>zip</span><span class='p'>((</span><span class='mi'>2</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>),</span> <span class='p'>(</span><span class='n'>num_categories</span><span class='p'>,</span> <span class='mi'>2048</span><span class='p'>)):</span>
+            <span class='n'>i_c_n</span> <span class='o'>=</span> <span class='mi'>2</span> <span class='o'>**</span> <span class='p'>(</span><span class='n'>base</span> <span class='o'>+</span> <span class='n'>ith_block</span><span class='p'>)</span>
+            <span class='nb'>setattr</span><span class='p'>(</span>
+                <span class='bp'>self</span><span class='p'>,</span>
+                <span class='sa'>f</span><span class='s2'>&quot;skip_block</span><span class='si'>{</span><span class='n'>ith_block</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
+                <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sequential</span><span class='p'>(</span>
+                    <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
+                        <span class='n'>i_c_n</span><span class='p'>,</span>
+                        <span class='n'>num_categories</span><span class='p'>,</span>
+                        <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span>
+                        <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),</span>
+                    <span class='p'>),</span>
+                    <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ELU</span><span class='p'>(),</span>
+                <span class='p'>),</span>
+            <span class='p'>)</span>
+            <span class='nb'>setattr</span><span class='p'>(</span>
+                <span class='bp'>self</span><span class='p'>,</span>
+                <span class='sa'>f</span><span class='s2'>&quot;transpose_block</span><span class='si'>{</span><span class='n'>ith_block</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
+                <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ConvTranspose2d</span><span class='p'>(</span>
+                    <span class='n'>ic2</span><span class='p'>,</span>
+                    <span class='n'>num_categories</span><span class='p'>,</span>
+                    <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span>
+                    <span class='n'>stride</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span>
+                    <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>2</span><span class='p'>,</span> <span class='mi'>2</span><span class='p'>),</span>
+                <span class='p'>),</span>
+            <span class='p'>)</span>
+
+        <span class='bp'>self</span><span class='o'>.</span><span class='n'>head</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sequential</span><span class='p'>(</span>
+            <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ConvTranspose2d</span><span class='p'>(</span>
+                <span class='n'>num_categories</span><span class='p'>,</span>
+                <span class='n'>num_categories</span><span class='p'>,</span>
+                <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>8</span><span class='p'>,</span>
+                <span class='n'>stride</span><span class='o'>=</span><span class='mi'>8</span><span class='p'>,</span>
+                <span class='n'>padding</span><span class='o'>=</span><span class='n'>FullyConvolutional</span><span class='o'>.</span><span class='n'>_pad</span><span class='p'>(</span><span class='mi'>8</span><span class='p'>,</span> <span class='mi'>8</span><span class='p'>),</span>
+            <span class='p'>),</span>
+            <span class='n'>final_act</span><span class='p'>,</span>
+        <span class='p'>)</span></div>
+
+<div class='viewcode-block' id='FullyConvolutional.forward'><a class='viewcode-back' href='../../../generated/neodroidvision.segmentation.fully_convolutional.FullyConvolutional.html#neodroidvision.segmentation.fully_convolutional.FullyConvolutional.forward'>[docs]</a>    <span class='k'>def</span> <span class='nf'>forward</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>x</span><span class='p'>:</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>:</span>
+        <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>        Args:</span>
+<span class='sd'>          x:</span>
+
+<span class='sd'>        Returns:</span>
+
+<span class='sd'>        &quot;&quot;&quot;</span>
+        <span class='k'>for</span> <span class='n'>ith_block</span> <span class='ow'>in</span> <span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>):</span>
+            <span class='n'>x</span> <span class='o'>=</span> <span class='nb'>getattr</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='sa'>f</span><span class='s2'>&quot;pool_block</span><span class='si'>{</span><span class='n'>ith_block</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)(</span><span class='n'>x</span><span class='p'>)</span>
+
+        <span class='n'>pool2</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>pool_block2</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
+        <span class='n'>pool3</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>pool_block3</span><span class='p'>(</span><span class='n'>pool2</span><span class='p'>)</span>
+        <span class='n'>x</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>conv6</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>conv5</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>pool_block4</span><span class='p'>(</span><span class='n'>pool3</span><span class='p'>)))</span>
+
+        <span class='n'>s1</span><span class='p'>,</span> <span class='n'>t1</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>skip_block3</span><span class='p'>(</span><span class='n'>pool3</span><span class='p'>),</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>transpose_block3</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
+        <span class='nb'>print</span><span class='p'>(</span><span class='n'>s1</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>,</span> <span class='n'>t1</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>)</span>
+        <span class='n'>x</span> <span class='o'>=</span> <span class='n'>s1</span> <span class='o'>+</span> <span class='n'>t1</span>
+        <span class='n'>x</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>skip_block2</span><span class='p'>(</span><span class='n'>pool2</span><span class='p'>)</span> <span class='o'>+</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>transpose_block2</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
+
+        <span class='k'>return</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>head</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span></div></div>
+
+
+<span class='n'>FCN</span> <span class='o'>=</span> <span class='n'>FullyConvolutional</span>
+
+<span class='k'>if</span> <span class='vm'>__name__</span> <span class='o'>==</span> <span class='s2'>&quot;__main__&quot;</span><span class='p'>:</span>
+
+    <span class='k'>def</span> <span class='nf'>a</span><span class='p'>():</span>
+        <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+        <span class='n'>img_size</span> <span class='o'>=</span> <span class='mi'>224</span>
+        <span class='n'>in_channels</span> <span class='o'>=</span> <span class='mi'>5</span>
+        <span class='n'>n_classes</span> <span class='o'>=</span> <span class='mi'>2</span>
+        <span class='n'>metrics</span> <span class='o'>=</span> <span class='n'>dice_loss</span>
+
+        <span class='k'>if</span> <span class='n'>n_classes</span> <span class='o'>==</span> <span class='mi'>1</span><span class='p'>:</span>
+            <span class='c1'># loss = &#39;binary_crossentropy&#39;</span>
+            <span class='n'>loss</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>BCELoss</span><span class='p'>()</span>
+            <span class='n'>final_act</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sigmoid</span><span class='p'>()</span>
+        <span class='k'>elif</span> <span class='n'>n_classes</span> <span class='o'>&gt;</span> <span class='mi'>1</span><span class='p'>:</span>
+            <span class='c1'># loss = &#39;categorical_crossentropy&#39;</span>
+            <span class='n'>loss</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>CrossEntropyLoss</span><span class='p'>()</span>
+            <span class='n'>final_act</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>LogSoftmax</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>)</span>  <span class='c1'># across channels</span>
+
+        <span class='n'>model</span> <span class='o'>=</span> <span class='n'>FCN</span><span class='p'>(</span><span class='n'>in_channels</span><span class='p'>,</span> <span class='n'>n_classes</span><span class='p'>,</span> <span class='n'>final_act</span><span class='o'>=</span><span class='n'>final_act</span><span class='p'>)</span>
+        <span class='n'>optimiser</span> <span class='o'>=</span> <span class='n'>Adam</span><span class='p'>(</span><span class='n'>model</span><span class='o'>.</span><span class='n'>parameters</span><span class='p'>(),</span> <span class='mf'>1e-4</span><span class='p'>)</span>
+
+        <span class='n'>pred</span> <span class='o'>=</span> <span class='n'>model</span><span class='p'>(</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>ones</span><span class='p'>((</span><span class='mi'>4</span><span class='p'>,</span> <span class='n'>in_channels</span><span class='p'>,</span> <span class='n'>img_size</span><span class='p'>,</span> <span class='n'>img_size</span><span class='p'>)))</span>
+        <span class='nb'>print</span><span class='p'>(</span><span class='n'>pred</span><span class='p'>)</span>
+
+    <span class='n'>a</span><span class='p'>()</span>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

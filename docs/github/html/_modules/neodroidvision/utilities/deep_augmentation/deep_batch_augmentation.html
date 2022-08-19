@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.utilities.deep_augmentation.deep_batch_augmentation &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../_static/graphviz.css'/>
+    <script data-url_root='../../../../' id='documentation_options' src='../../../../_static/documentation_options.js'></script>
+    <script src='../../../../_static/jquery.js'></script>
+    <script src='../../../../_static/underscore.js'></script>
+    <script src='../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/utilities/deep_augmentation/deep_batch_augmentation.html'/>
+    <link rel='index' title='Index' href='../../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.utilities.deep_augmentation.deep_batch_augmentation</h1>
+            <div class='highlight'><pre>
+<span></span><span class='ch'>#!/usr/bin/env python3</span>
+<span class='c1'># -*- coding: utf-8 -*-</span>
+
+<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;heider&quot;</span>
+<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
+
+<span class='s2'>           Created on 5/5/22</span>
+
+<span class='s2'>          At any representation level, domain and representation agnostic !</span>
+
+
+
+
+<span class='s2'>           &quot;&quot;&quot;</span>
+<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[]</span>
+
+
+<div class='viewcode-block' id='gauss_sample_deep_aug'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.gauss_sample_deep_aug.html#neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.gauss_sample_deep_aug'>[docs]</a><span class='k'>def</span> <span class='nf'>gauss_sample_deep_aug</span><span class='p'>():</span>
+    <span class='sd'>&quot;&quot;&quot;Use category balanced batches, ensuring at least 3-5 instance of a category. Then per category in batch, find local</span>
+<span class='sd'>    manifold by finding the</span>
+<span class='sd'>    covariance matrix at</span>
+<span class='sd'>     representation level</span>
+<span class='sd'>    and</span>
+<span class='sd'>    sample a</span>
+<span class='sd'>    multi</span>
+<span class='sd'>    var gauss</span>
+<span class='sd'>    for new</span>
+<span class='sd'>    samples</span>
+<span class='sd'>    for further forward passes&quot;&quot;&quot;</span>
+
+    <span class='k'>pass</span>
+
+    <span class='k'>class</span> <span class='nc'>BatchAugmentation</span><span class='p'>(</span><span class='nb'>object</span><span class='p'>):</span>
+        <span class='sd'>&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
+        <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
+            <span class='k'>pass</span>
+
+        <span class='k'>def</span> <span class='fm'>__call__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>batch</span><span class='p'>):</span>
+            <span class='k'>pass</span></div>
+
+
+<div class='viewcode-block' id='space_partition_deep_aug'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.space_partition_deep_aug.html#neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.space_partition_deep_aug'>[docs]</a><span class='k'>def</span> <span class='nf'>space_partition_deep_aug</span><span class='p'>():</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>    Partition the space into a grid of regions or clusters and sample from the vicinity of each region.</span>
+
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+    <span class='k'>pass</span></div>
+
+
+<div class='viewcode-block' id='category_cover_space_sample_deep_aug'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.category_cover_space_sample_deep_aug.html#neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.category_cover_space_sample_deep_aug'>[docs]</a><span class='k'>def</span> <span class='nf'>category_cover_space_sample_deep_aug</span><span class='p'>():</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>    cover the space with n gaussians(or other distribution) for each category and sample along ridges</span>
+
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+    <span class='k'>pass</span></div>
+
+
+<div class='viewcode-block' id='linear_interpolate_pairs_deep_aug'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.linear_interpolate_pairs_deep_aug.html#neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.linear_interpolate_pairs_deep_aug'>[docs]</a><span class='k'>def</span> <span class='nf'>linear_interpolate_pairs_deep_aug</span><span class='p'>():</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>    Find a pair and linearly interpolate between pairs of each category</span>
+
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+
+    <span class='k'>pass</span></div>
+
+
+<div class='viewcode-block' id='non_linear_interpolate_pairs_deep_aug'><a class='viewcode-back' href='../../../../generated/neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.non_linear_interpolate_pairs_deep_aug.html#neodroidvision.utilities.deep_augmentation.deep_batch_augmentation.non_linear_interpolate_pairs_deep_aug'>[docs]</a><span class='k'>def</span> <span class='nf'>non_linear_interpolate_pairs_deep_aug</span><span class='p'>():</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>    Find a pair and use a learned interpolator to interpolate between points.</span>
+
+<span class='sd'>    for the learned interpolation regularize the representation by adding a small amount of noise to the representation abd impose penalty on l2 norms, and so on to avoid degenaracy/mode collapse. Same a avoid overfitting a generative model.</span>
+
+<span class='sd'>    Look at variational autoencoders for this.</span>
+
+
+<span class='sd'>    OTHER NOTES:</span>
+<span class='sd'>    Ties to generative diffusion models?</span>
+
+<span class='sd'>    Look up LINDA: learning to interpolate for data augmentation.</span>
+<span class='sd'>    and SSMBA: state space model for data augmentation.</span>
+<span class='sd'>    and Mixup: non-local data augmentation.</span>
+
+<span class='sd'>    Domain specific: combine multiple Facial features from different people. set of eye from person A  and mouth from person B.</span>
+
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+
+    <span class='k'>pass</span></div>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

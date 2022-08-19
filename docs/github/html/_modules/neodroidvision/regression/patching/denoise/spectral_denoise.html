@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.regression.patching.denoise.spectral_denoise &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/graphviz.css'/>
+    <script data-url_root='../../../../../' id='documentation_options' src='../../../../../_static/documentation_options.js'></script>
+    <script src='../../../../../_static/jquery.js'></script>
+    <script src='../../../../../_static/underscore.js'></script>
+    <script src='../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/regression/patching/denoise/spectral_denoise.html'/>
+    <link rel='index' title='Index' href='../../../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.regression.patching.denoise.spectral_denoise</h1>
+            <div class='highlight'><pre>
+<span></span><span class='ch'>#!/usr/bin/env python3</span>
+<span class='c1'># -*- coding: utf-8 -*-</span>
+
+<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;Christian Heider Nielsen&quot;</span>
+<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
+
+<span class='s2'>           Created on 09/04/2020</span>
+<span class='s2'>           &quot;&quot;&quot;</span>
+
+<span class='kn'>import</span> <span class='nn'>numpy</span>
+<span class='kn'>from</span> <span class='nn'>scipy</span> <span class='kn'>import</span> <span class='n'>fftpack</span>
+
+<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;fft_im_denoise&quot;</span><span class='p'>]</span>
+
+
+<div class='viewcode-block' id='fft_im_denoise'><a class='viewcode-back' href='../../../../../generated/neodroidvision.regression.patching.denoise.spectral_denoise.fft_im_denoise.html#neodroidvision.regression.patching.denoise.spectral_denoise.fft_im_denoise'>[docs]</a><span class='k'>def</span> <span class='nf'>fft_im_denoise</span><span class='p'>(</span><span class='n'>img</span><span class='p'>:</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>ndarray</span><span class='p'>,</span> <span class='n'>keep_fraction</span><span class='p'>:</span> <span class='nb'>float</span> <span class='o'>=</span> <span class='mf'>0.1</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>ndarray</span><span class='p'>:</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+<span class='sd'>    a blur with an FFT</span>
+
+<span class='sd'>    Implements, via FFT, the following convolution:</span>
+
+<span class='sd'>    .. math::</span>
+
+<span class='sd'>    f_1(t) = \int dt&#39;\, K(t-t&#39;) f_0(t&#39;)</span>
+
+<span class='sd'>    .. math::</span>
+
+<span class='sd'>    \tilde{f}_1(\omega) = \tilde{K}(\omega) \tilde{f}_0(\omega)</span>
+
+<span class='sd'>    # keep_fraction - Define the fraction of coefficients (in each direction) we keep</span>
+
+<span class='sd'>    Compute the 2d FFT of the input image</span>
+<span class='sd'>    Filter in FFT</span>
+<span class='sd'>    Reconstruct the final image</span>
+
+<span class='sd'>    :param keep_fraction:</span>
+<span class='sd'>    :type keep_fraction:</span>
+<span class='sd'>    :param img:</span>
+<span class='sd'>    :type img:</span>
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:&quot;&quot;&quot;</span>
+    <span class='k'>assert</span> <span class='mf'>0.0</span> <span class='o'>&lt;</span> <span class='n'>keep_fraction</span> <span class='o'>&lt;</span> <span class='mf'>1.0</span>
+
+    <span class='n'>im_fft</span> <span class='o'>=</span> <span class='n'>fftpack</span><span class='o'>.</span><span class='n'>fft2</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span>
+
+    <span class='c1'># In the lines following, we&#39;ll make a copy of the original spectrum and</span>
+    <span class='c1'># truncate coefficients.</span>
+    <span class='c1'># Call ff a copy of the original transform. Numpy arrays have a copy</span>
+    <span class='c1'># method for this purpose.</span>
+    <span class='n'>im_fft_cp</span> <span class='o'>=</span> <span class='n'>im_fft</span>  <span class='c1'># .copy()</span>
+    <span class='n'>num_row</span><span class='p'>,</span> <span class='n'>num_columns</span> <span class='o'>=</span> <span class='n'>im_fft_cp</span><span class='o'>.</span><span class='n'>shape</span>
+
+    <span class='c1'># Set to zero all rows with indices between r*keep_fraction and</span>
+    <span class='c1'># r*(1-keep_fraction):</span>
+    <span class='n'>im_fft_cp</span><span class='p'>[</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>num_row</span> <span class='o'>*</span> <span class='n'>keep_fraction</span><span class='p'>)</span> <span class='p'>:</span> <span class='nb'>int</span><span class='p'>(</span><span class='n'>num_row</span> <span class='o'>*</span> <span class='p'>(</span><span class='mi'>1</span> <span class='o'>-</span> <span class='n'>keep_fraction</span><span class='p'>))]</span> <span class='o'>=</span> <span class='mi'>0</span>
+    <span class='n'>im_fft_cp</span><span class='p'>[</span>
+        <span class='p'>:,</span> <span class='nb'>int</span><span class='p'>(</span><span class='n'>num_columns</span> <span class='o'>*</span> <span class='n'>keep_fraction</span><span class='p'>)</span> <span class='p'>:</span> <span class='nb'>int</span><span class='p'>(</span><span class='n'>num_columns</span> <span class='o'>*</span> <span class='p'>(</span><span class='mi'>1</span> <span class='o'>-</span> <span class='n'>keep_fraction</span><span class='p'>))</span>
+    <span class='p'>]</span> <span class='o'>=</span> <span class='mi'>0</span>
+
+    <span class='c1'># pyplot.figure()</span>
+    <span class='c1'># plot_spectrum(im_fft)</span>
+    <span class='c1'># pyplot.title(&#39;Fourier transform&#39;)</span>
+
+    <span class='c1'># pyplot.figure()</span>
+    <span class='c1'># plot_spectrum(im_fft_cp)</span>
+    <span class='c1'># pyplot.title(&#39;Filtered Spectrum&#39;)</span>
+
+    <span class='c1'># Reconstruct the denoised image from the filtered spectrum, keep only the</span>
+    <span class='c1'># real part for display.</span>
+    <span class='k'>return</span> <span class='n'>fftpack</span><span class='o'>.</span><span class='n'>ifft2</span><span class='p'>(</span><span class='n'>im_fft_cp</span><span class='p'>)</span><span class='o'>.</span><span class='n'>real</span>  <span class='c1'># Inverse / Reconstruction</span></div>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

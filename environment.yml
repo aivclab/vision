@@ -1,0 +1,14 @@
+name: py38
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.8
+  - pip>=18.0
+  - conda>=4.5.9
+  - pytorch
+  - torchvision
+  - cudatoolkit=11.3
+  - pip:
+      - devpack

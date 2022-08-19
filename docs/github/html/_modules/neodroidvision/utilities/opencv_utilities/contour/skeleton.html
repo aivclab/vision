@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>neodroidvision.utilities.opencv_utilities.contour.skeleton &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/pygments.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/alabaster.css'/>
+    <link rel='stylesheet' type='text/css' href='../../../../../_static/graphviz.css'/>
+    <script data-url_root='../../../../../' id='documentation_options' src='../../../../../_static/documentation_options.js'></script>
+    <script src='../../../../../_static/jquery.js'></script>
+    <script src='../../../../../_static/underscore.js'></script>
+    <script src='../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
+    <script src='../../../../../_static/doctools.js'></script>
+    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/utilities/opencv_utilities/contour/skeleton.html'/>
+    <link rel='index' title='Index' href='../../../../../genindex.html'/>
+    <link rel='search' title='Search' href='../../../../../search.html'/>
+
+    <link rel='stylesheet' href='../../../../../_static/custom.css' type='text/css'/>
+
+
+    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+
+  </head>
+  <body>
+
+
+    <div class='document'>
+      <div class='documentwrapper'>
+        <div class='bodywrapper'>
+
+
+          <div class='body' role='main'>
+
+            <h1>Source code for neodroidvision.utilities.opencv_utilities.contour.skeleton</h1>
+            <div class='highlight'><pre>
+<span></span><span class='kn'>import</span> <span class='nn'>cv2</span>
+<span class='kn'>import</span> <span class='nn'>numpy</span>
+<span class='kn'>from</span> <span class='nn'>draugr.opencv_utilities</span> <span class='kn'>import</span> <span class='n'>show_image</span><span class='p'>,</span> <span class='n'>to_gray</span>
+
+<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;skeletonise&quot;</span><span class='p'>,</span> <span class='s2'>&quot;top_skeleton&quot;</span><span class='p'>,</span> <span class='s2'>&quot;thin&quot;</span><span class='p'>]</span>
+
+
+<div class='viewcode-block' id='top_skeleton'><a class='viewcode-back' href='../../../../../generated/neodroidvision.utilities.opencv_utilities.contour.skeleton.top_skeleton.html#neodroidvision.utilities.opencv_utilities.contour.skeleton.top_skeleton'>[docs]</a><span class='k'>def</span> <span class='nf'>top_skeleton</span><span class='p'>(</span><span class='n'>img</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>    :param img:</span>
+<span class='sd'>    :type img:</span>
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+    <span class='n'>size</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>size</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span>
+
+    <span class='n'>element</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>getStructuringElement</span><span class='p'>(</span><span class='n'>cv2</span><span class='o'>.</span><span class='n'>MORPH_CROSS</span><span class='p'>,</span> <span class='p'>(</span><span class='mi'>3</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>))</span>
+    <span class='n'>done</span> <span class='o'>=</span> <span class='kc'>False</span>
+    <span class='n'>skel</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>zeros</span><span class='p'>(</span><span class='n'>img</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>,</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>uint8</span><span class='p'>)</span>
+
+    <span class='k'>while</span> <span class='ow'>not</span> <span class='n'>done</span><span class='p'>:</span>
+        <span class='n'>eroded</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>erode</span><span class='p'>(</span><span class='n'>img</span><span class='p'>,</span> <span class='n'>element</span><span class='p'>)</span>
+        <span class='n'>skel</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>bitwise_or</span><span class='p'>(</span><span class='n'>skel</span><span class='p'>,</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>subtract</span><span class='p'>(</span><span class='n'>img</span><span class='p'>,</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>dilate</span><span class='p'>(</span><span class='n'>eroded</span><span class='p'>,</span> <span class='n'>element</span><span class='p'>)))</span>
+        <span class='n'>img</span> <span class='o'>=</span> <span class='n'>eroded</span><span class='o'>.</span><span class='n'>copy</span><span class='p'>()</span>
+
+        <span class='k'>if</span> <span class='n'>size</span> <span class='o'>-</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>countNonZero</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span> <span class='o'>==</span> <span class='n'>size</span><span class='p'>:</span>
+            <span class='n'>done</span> <span class='o'>=</span> <span class='kc'>True</span>
+
+    <span class='k'>return</span> <span class='n'>skel</span></div>
+
+
+<div class='viewcode-block' id='skeletonise'><a class='viewcode-back' href='../../../../../generated/neodroidvision.utilities.opencv_utilities.contour.skeleton.skeletonise.html#neodroidvision.utilities.opencv_utilities.contour.skeleton.skeletonise'>[docs]</a><span class='k'>def</span> <span class='nf'>skeletonise</span><span class='p'>(</span><span class='n'>image</span><span class='p'>):</span>
+    <span class='sd'>&quot;&quot;&quot;</span>
+
+<span class='sd'>    :param image:</span>
+<span class='sd'>    :type image:</span>
+<span class='sd'>    :return:</span>
+<span class='sd'>    :rtype:</span>
+<span class='sd'>    &quot;&quot;&quot;</span>
+    <span class='k'>return</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>ximgproc</span><span class='o'>.</span><span class='n'>thinning</span><span class='p'>(</span><span class='n'>image</span><span class='p'>)</span></div>
+
+
+<span class='n'>thin</span> <span class='o'>=</span> <span class='n'>skeletonise</span>
+
+<span class='k'>if</span> <span class='vm'>__name__</span> <span class='o'>==</span> <span class='s2'>&quot;__main__&quot;</span><span class='p'>:</span>
+
+    <span class='k'>def</span> <span class='nf'>uahsd</span><span class='p'>():</span>
+        <span class='sd'>&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class='c1'># file = &quot;360_F_108702068_Z9VGab1DfiyPzq2v5Xgm2wRljttzRGgq.jpg&quot;</span>
+        <span class='n'>file</span> <span class='o'>=</span> <span class='s2'>&quot;NdNLO.jpg&quot;</span>
+
+        <span class='kn'>from</span> <span class='nn'>pathlib</span> <span class='kn'>import</span> <span class='n'>Path</span>
+
+        <span class='n'>img</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>imread</span><span class='p'>(</span><span class='nb'>str</span><span class='p'>(</span><span class='n'>Path</span><span class='o'>.</span><span class='n'>home</span><span class='p'>()</span> <span class='o'>/</span> <span class='s2'>&quot;Pictures&quot;</span> <span class='o'>/</span> <span class='n'>file</span><span class='p'>))</span>
+        <span class='n'>img</span> <span class='o'>=</span> <span class='n'>to_gray</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span>
+        <span class='n'>ret</span><span class='p'>,</span> <span class='n'>img</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>threshold</span><span class='p'>(</span><span class='n'>img</span><span class='p'>,</span> <span class='mi'>127</span><span class='p'>,</span> <span class='mi'>255</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>)</span>
+        <span class='n'>skel</span> <span class='o'>=</span> <span class='n'>top_skeleton</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span>
+        <span class='n'>show_image</span><span class='p'>(</span><span class='n'>skel</span><span class='p'>,</span> <span class='n'>wait</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>)</span>
+        <span class='n'>cv2</span><span class='o'>.</span><span class='n'>destroyAllWindows</span><span class='p'>()</span>
+
+    <span class='k'>def</span> <span class='nf'>uahsd2</span><span class='p'>():</span>
+        <span class='sd'>&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class='c1'># file = &quot;360_F_108702068_Z9VGab1DfiyPzq2v5Xgm2wRljttzRGgq.jpg&quot;</span>
+        <span class='n'>file</span> <span class='o'>=</span> <span class='s2'>&quot;NdNLO.jpg&quot;</span>
+
+        <span class='kn'>from</span> <span class='nn'>pathlib</span> <span class='kn'>import</span> <span class='n'>Path</span>
+
+        <span class='n'>img</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>imread</span><span class='p'>(</span><span class='nb'>str</span><span class='p'>(</span><span class='n'>Path</span><span class='o'>.</span><span class='n'>home</span><span class='p'>()</span> <span class='o'>/</span> <span class='s2'>&quot;Pictures&quot;</span> <span class='o'>/</span> <span class='n'>file</span><span class='p'>))</span>
+        <span class='n'>img</span> <span class='o'>=</span> <span class='n'>to_gray</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span>
+        <span class='n'>ret</span><span class='p'>,</span> <span class='n'>img</span> <span class='o'>=</span> <span class='n'>cv2</span><span class='o'>.</span><span class='n'>threshold</span><span class='p'>(</span><span class='n'>img</span><span class='p'>,</span> <span class='mi'>127</span><span class='p'>,</span> <span class='mi'>255</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>)</span>
+        <span class='n'>skel</span> <span class='o'>=</span> <span class='n'>skeletonise</span><span class='p'>(</span><span class='n'>img</span><span class='p'>)</span>
+        <span class='n'>show_image</span><span class='p'>(</span><span class='n'>skel</span><span class='p'>,</span> <span class='n'>wait</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>)</span>
+        <span class='n'>cv2</span><span class='o'>.</span><span class='n'>destroyAllWindows</span><span class='p'>()</span>
+
+    <span class='n'>uahsd2</span><span class='p'>()</span>
+</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
+        <div class='sphinxsidebarwrapper'>
+          <h1 class='logo'><a href='../../../../../index.html'>neodroidvision</a></h1>
+
+
+          <h3>Navigation</h3>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
+          </ul>
+          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
+          <ul>
+            <li class='toctree-l1'><a class='reference internal' href='../../../../../getting_started.html'>Getting Started</a></li>
+          </ul>
+
+          <div class='relations'>
+            <h3>Related Topics</h3>
+            <ul>
+              <li><a href='../../../../../index.html'>Documentation overview</a>
+                <ul>
+                  <li><a href='../../../../index.html'>Module code</a>
+                    <ul>
+                      <li><a href='../../../../neodroidvision.html'>neodroidvision</a>
+                        <ul>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id='searchbox' style='display: none' role='search'>
+            <h3 id='searchlabel'>Quick search</h3>
+            <div class='searchformwrapper'>
+              <form class='search' action='../../../../../search.html' method='get'>
+                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
+                <input type='submit' value='Go'/>
+              </form>
+            </div>
+          </div>
+          <script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+        </div>
+      </div>
+      <div class='clearer'></div>
+    </div>
+    <div class='footer'>
+      &copy;.
+
+      |
+      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
+      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
+
+    </div>
+
+
+  </body>
+</html>

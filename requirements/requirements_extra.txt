@@ -1,0 +1,17 @@
+#SAN
+
+#cupy pip install cupy-cuda115
+
+#To enable features provided by additional CUDA libraries (cuTENSOR / NCCL / cuDNN), you need to install them manually. If you installed CuPy via wheels, you can use the installer command below to setup these libraries in case you don’t have a previous installation:
+#$ python -m cupyx.tools.install_library --cuda 11.2 --library cutensor
+
+#cupy>=9.0.0
+#conda install -c conda-forge cupy
+#conda install -c conda-forge cupy cudatoolkit=11.0
+#conda install -c conda-forge cupy cudnn cutensor nccl
+
+# Pointcloud
+polyscope>=0.1.6
+pycocotools
+#cupy # pip install cupy-cudaXXX -f https://pip.cupy.dev/pre
+#cython
