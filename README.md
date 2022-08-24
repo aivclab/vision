@@ -16,9 +16,7 @@ library format under [neodroidvision](neodroidvision), while also comprising a r
 
 ---
 
-_[Neodroid](https://github.com/sintefneodroid) is developed with support from Research Council of Norway Grant
-
-# 262900. ([https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900](https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900))_
+_[Neodroid](https://github.com/sintefneodroid) is developed with support from Research Council of Norway Grant #262900. ([https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900](https://www.forskningsradet.no/prosjektbanken/#/project/NFR/262900))_
 
 ---
 
