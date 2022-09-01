@@ -12,7 +12,7 @@ from pathlib import Path
 
 import cv2
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import global_torch_device

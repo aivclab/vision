@@ -15,7 +15,7 @@ import cv2
 import numpy
 import torch
 from PIL import ImageFont
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator, show_image
 from draugr.torch_utilities import TorchEvalSession, global_torch_device

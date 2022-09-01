@@ -7,7 +7,7 @@ __doc__ = r"""
 
 import h5py
 import plotly.offline
-from apppath import ensure_existence
+from warg import ensure_existence
 from neodroidvision import PROJECT_APP_PATH
 from plotly.graph_objs import Figure, Layout, Scatter3d
 

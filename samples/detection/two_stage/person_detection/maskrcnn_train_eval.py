@@ -4,7 +4,7 @@ from pathlib import Path
 
 import torch
 from PIL import Image
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum, SplitIndexer
 from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (

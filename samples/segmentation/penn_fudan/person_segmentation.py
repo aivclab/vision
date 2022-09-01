@@ -6,7 +6,7 @@ from tokenize import Number
 
 import numpy
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum, chw_to_hwc
 from draugr.opencv_utilities import cv2_resize
 from draugr.random_utilities import seed_stack

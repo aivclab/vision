@@ -16,7 +16,7 @@ from typing import Sequence
 import numpy
 import torch
 from PIL import Image, ImageFont
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes
 from draugr.torch_utilities import global_torch_device

@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable, Sequence, Tuple, Union
 
 import cv2
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.opencv_utilities import InterpolationEnum, cv2_resize
 from draugr.tqdm_utilities import progress_bar
 from sorcery import assigned_names

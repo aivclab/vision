@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TorchCacheSession,

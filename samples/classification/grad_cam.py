@@ -29,7 +29,7 @@ if __name__ == "__main__":
         and computes intermediate activations.
         """
 
-        from apppath import ensure_existence
+        from warg import ensure_existence
 
         use_cuda = True
         image_path = str(Path.home() / "Data" / "ok.png")

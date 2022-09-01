@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterator
 
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     ImprovementDetector,

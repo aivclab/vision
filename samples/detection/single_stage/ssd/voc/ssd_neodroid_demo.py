@@ -13,7 +13,7 @@ from typing import Sequence
 
 import numpy
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import (
     draw_bounding_boxes,

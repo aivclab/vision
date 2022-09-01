@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr import AverageMeter
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,

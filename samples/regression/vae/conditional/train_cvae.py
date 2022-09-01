@@ -15,7 +15,7 @@ from math import inf
 import pandas
 import seaborn
 import torch
-from apppath import ensure_existence
+from warg import ensure_existence
 from draugr.torch_utilities import ImprovementDetector, global_torch_device
 from draugr.tqdm_utilities import progress_bar
 from matplotlib import pyplot
