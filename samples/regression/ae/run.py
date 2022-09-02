@@ -20,7 +20,7 @@ from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     global_torch_device,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.writers import ImageWriterMixin
 from draugr.writers.mixins.scalar_writer_mixin import ScalarWriterMixin
 from matplotlib import pyplot

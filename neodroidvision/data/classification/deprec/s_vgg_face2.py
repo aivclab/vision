@@ -14,7 +14,7 @@ from typing import Tuple
 import torch
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib import pyplot
 from torch.utils import data
 from torchvision import transforms

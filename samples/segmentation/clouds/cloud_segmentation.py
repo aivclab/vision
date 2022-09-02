@@ -19,7 +19,7 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     global_torch_device,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import CloudSegmentationDataset

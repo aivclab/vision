@@ -16,7 +16,7 @@ from draugr.torch_utilities import (
     save_model,
     trainable_parameters,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import numpy
 from PIL import Image
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from skimage import measure
 from warg import NOD
 

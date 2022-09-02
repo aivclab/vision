@@ -15,7 +15,7 @@ from draugr import AverageMeter
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
 from neodroidvision.classification.mechanims.attention.foveal.architecture.ram import (
     RecurrentAttention,

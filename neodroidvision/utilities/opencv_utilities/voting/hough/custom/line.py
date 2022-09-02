@@ -4,7 +4,7 @@ from pathlib import Path
 import imageio
 import numpy
 from draugr.opencv_utilities import to_gray
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib import pyplot
 
 

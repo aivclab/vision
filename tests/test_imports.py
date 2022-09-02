@@ -11,54 +11,54 @@ __all__ = []
 
 
 def test_import():
-  import neodroidvision
+    import neodroidvision
 
-  print(neodroidvision.__version__)
+    print(neodroidvision.__version__)
 
 
 def test_package_data() -> None:
-  import neodroidvision
+    import neodroidvision
 
-  print(neodroidvision.PACKAGE_DATA_PATH / "Lato-Regular.ttf")
+    print(neodroidvision.PACKAGE_DATA_PATH / "Lato-Regular.ttf")
 
 
 def test_import_regression():
-  from neodroidvision import regression
+    from neodroidvision import regression
 
-  print(regression.__doc__)
+    print(regression.__doc__)
 
 
 def test_import_multitask():
-  from neodroidvision import multitask
+    from neodroidvision import multitask
 
-  print(multitask.__doc__)
+    print(multitask.__doc__)
 
 
 def test_import_classification():
-  from neodroidvision import classification
+    from neodroidvision import classification
 
-  print(classification.__doc__)
+    print(classification.__doc__)
 
 
 def test_import_segmentation():
-  from neodroidvision import segmentation
+    from neodroidvision import segmentation
 
-  print(segmentation.__doc__)
+    print(segmentation.__doc__)
 
 
 def test_import_detection():
-  from neodroidvision import detection
+    from neodroidvision import detection
 
-  print(detection.__doc__)
+    print(detection.__doc__)
 
 
 def test_import_utilities():
-  from neodroidvision import utilities
+    from neodroidvision import utilities
 
-  print(utilities.__doc__)
+    print(utilities.__doc__)
 
 
 def test_import_data():
-  from neodroidvision import data
+    from neodroidvision import data
 
-  print(data.__doc__)
+    print(data.__doc__)

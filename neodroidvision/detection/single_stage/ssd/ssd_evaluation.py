@@ -13,7 +13,7 @@ from typing import Any, List
 
 import torch
 import torch.utils.data
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.detection.coco import COCODataset, coco_evaluation
 from neodroidvision.data.detection.voc import VOCDataset, voc_evaluation

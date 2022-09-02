@@ -19,7 +19,7 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_device_iterator,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.visualisation import plot_side_by_side
 from draugr.writers import Writer
 from matplotlib import pyplot

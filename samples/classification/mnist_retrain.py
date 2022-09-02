@@ -23,7 +23,7 @@ from draugr.torch_utilities import (
     to_tensor,
     torch_clean_up,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.visualisation import horizontal_imshow
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH

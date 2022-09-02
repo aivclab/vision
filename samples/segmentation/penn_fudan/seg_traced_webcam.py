@@ -15,7 +15,7 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     global_torch_device,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib.pyplot import show
 from neodroidvision import PROJECT_APP_PATH
 from torchvision import transforms

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import numpy
 from PIL import Image, ImageEnhance
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities import (
     MaskJsonUtils,
 )

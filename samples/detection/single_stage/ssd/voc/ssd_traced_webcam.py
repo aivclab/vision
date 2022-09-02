@@ -21,7 +21,7 @@ from draugr.torch_utilities import (
     TorchEvalSession,
     global_torch_device,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SSDOut
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (

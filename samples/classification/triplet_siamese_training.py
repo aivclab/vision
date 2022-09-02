@@ -28,7 +28,7 @@ from draugr.torch_utilities import (
     save_model_parameters,
     to_tensor,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset, TripletDataset

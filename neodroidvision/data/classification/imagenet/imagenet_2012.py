@@ -15,7 +15,7 @@ import torch
 import torchvision
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib import pyplot
 from neodroidvision.data.classification.imagenet.imagenet_2012_id import categories_id
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
