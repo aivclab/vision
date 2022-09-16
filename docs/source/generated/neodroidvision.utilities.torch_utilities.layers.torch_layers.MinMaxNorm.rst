@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.layers.torch\_layers.MinMaxNorm
       ~MinMaxNorm.get_parameter
       ~MinMaxNorm.get_submodule
       ~MinMaxNorm.half
+      ~MinMaxNorm.ipu
       ~MinMaxNorm.load_state_dict
       ~MinMaxNorm.modules
       ~MinMaxNorm.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.layers.torch\_layers.MinMaxNorm
       ~MinMaxNorm.register_forward_hook
       ~MinMaxNorm.register_forward_pre_hook
       ~MinMaxNorm.register_full_backward_hook
+      ~MinMaxNorm.register_load_state_dict_post_hook
       ~MinMaxNorm.register_module
       ~MinMaxNorm.register_parameter
       ~MinMaxNorm.requires_grad_

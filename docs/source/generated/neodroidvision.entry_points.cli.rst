@@ -1,4 +1,4 @@
-﻿neodroidvision.entry\_points.cli
+neodroidvision.entry\_points.cli
 ================================
 
 .. automodule:: neodroidvision.entry_points.cli

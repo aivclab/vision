@@ -13,11 +13,15 @@ __all__ = ["UpscaleMode", "MergeMode"]
 
 
 class MergeMode(Enum):
+    """ """
+
     Concat = 0
     Add = 1
 
 
 class UpscaleMode(Enum):
+    """ """
+
     FractionalTranspose = 0
     Upsample = 1
 

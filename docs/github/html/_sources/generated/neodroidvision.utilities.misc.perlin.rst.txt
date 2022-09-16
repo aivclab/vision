@@ -9,15 +9,6 @@ neodroidvision.utilities.misc.perlin
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-   
-      generate_perlin_noise
-      lerp
-      smoothstep
-   
    
 
    

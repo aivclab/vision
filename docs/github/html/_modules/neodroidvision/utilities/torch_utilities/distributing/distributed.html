@@ -1,187 +1,205 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>neodroidvision.utilities.torch_utilities.distributing.distributed &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/graphviz.css'/>
-    <script data-url_root='../../../../../' id='documentation_options' src='../../../../../_static/documentation_options.js'></script>
-    <script src='../../../../../_static/jquery.js'></script>
-    <script src='../../../../../_static/underscore.js'></script>
-    <script src='../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../../../../../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/utilities/torch_utilities/distributing/distributed.html'/>
-    <link rel='index' title='Index' href='../../../../../genindex.html'/>
-    <link rel='search' title='Search' href='../../../../../search.html'/>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/utilities/torch_utilities/distributing/distributed.html" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel='stylesheet' href='../../../../../_static/custom.css' type='text/css'/>
+  </head><body>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.utilities.torch_utilities.distributing.distributed</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
 
-  </head>
-  <body>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;heider&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 
+<span class="s2">           Created on 5/5/22</span>
+<span class="s2">           &quot;&quot;&quot;</span>
 
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
+<span class="c1"># Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.</span>
+<span class="c1"># Code is copy-pasted exactly as in torch.utils.data.distributed.</span>
+<span class="c1"># FIXME remove this once c10d fixes the bug it has</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sized</span>
 
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributed</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data.sampler</span> <span class="kn">import</span> <span class="n">Sampler</span>
 
-          <div class='body' role='main'>
-
-            <h1>Source code for neodroidvision.utilities.torch_utilities.distributing.distributed</h1>
-            <div class='highlight'><pre>
-<span></span><span class='c1'># Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.</span>
-<span class='c1'># Code is copy-pasted exactly as in torch.utils.data.distributed.</span>
-<span class='c1'># FIXME remove this once c10d fixes the bug it has</span>
-<span class='kn'>import</span> <span class='nn'>math</span>
-<span class='kn'>from</span> <span class='nn'>typing</span> <span class='kn'>import</span> <span class='n'>Sized</span>
-
-<span class='kn'>import</span> <span class='nn'>torch</span>
-<span class='kn'>from</span> <span class='nn'>torch</span> <span class='kn'>import</span> <span class='n'>distributed</span>
-<span class='kn'>from</span> <span class='nn'>torch.utils.data.sampler</span> <span class='kn'>import</span> <span class='n'>Sampler</span>
-
-<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;DistributedSampler&quot;</span><span class='p'>]</span>
-
-
-<span class='c1'># from torchvision.datasets.samplers import DistributedSampler</span>
-<div class='viewcode-block' id='DistributedSampler'><a class='viewcode-back' href='../../../../../generated/neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.html#neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler'>[docs]</a><span class='k'>class</span> <span class='nc'>DistributedSampler</span><span class='p'>(</span><span class='n'>Sampler</span><span class='p'>):</span>
-    <span class='sd'>&quot;&quot;&quot;Sampler that restricts data loading to a subset of the dataset.</span>
-<span class='sd'>    It is especially useful in conjunction with</span>
-<span class='sd'>    :class:`torch.nn.parallel.DistributedDataParallel`. In such case, each</span>
-<span class='sd'>    process can pass a DistributedSampler instance as a DataLoader sampler,</span>
-<span class='sd'>    and load a subset of the original dataset that is exclusive to it.</span>
-<span class='sd'>    .. note::</span>
-<span class='sd'>    Dataset is assumed to be of constant size.</span>
-<span class='sd'>    Arguments:</span>
-<span class='sd'>    dataset: Dataset used for sampling.</span>
-<span class='sd'>    num_replicas (optional): Number of processes participating in</span>
-<span class='sd'>    distributed training.</span>
-<span class='sd'>    rank (optional): Rank of the current process within num_replicas.&quot;&quot;&quot;</span>
-
-<div class='viewcode-block' id='DistributedSampler.__init__'><a class='viewcode-back' href='../../../../../generated/neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.html#neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span>
-        <span class='bp'>self</span><span class='p'>,</span> <span class='n'>dataset</span><span class='p'>:</span> <span class='n'>Sized</span><span class='p'>,</span> <span class='n'>num_replicas</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='kc'>None</span><span class='p'>,</span> <span class='n'>rank</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span> <span class='n'>shuffle</span><span class='p'>:</span> <span class='nb'>bool</span> <span class='o'>=</span> <span class='kc'>True</span>
-    <span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DistributedSampler&quot;</span><span class="p">]</span>
 
 
-<span class='sd'>        :param dataset:</span>
-<span class='sd'>        :param num_replicas:</span>
-<span class='sd'>        :param rank:</span>
-<span class='sd'>        :param shuffle:&quot;&quot;&quot;</span>
-        <span class='k'>if</span> <span class='n'>num_replicas</span> <span class='ow'>is</span> <span class='kc'>None</span><span class='p'>:</span>
-            <span class='k'>if</span> <span class='ow'>not</span> <span class='n'>distributed</span><span class='o'>.</span><span class='n'>is_available</span><span class='p'>():</span>
-                <span class='k'>raise</span> <span class='ne'>RuntimeError</span><span class='p'>(</span><span class='s2'>&quot;Requires distributed package to be available&quot;</span><span class='p'>)</span>
-            <span class='n'>num_replicas</span> <span class='o'>=</span> <span class='n'>distributed</span><span class='o'>.</span><span class='n'>get_world_size</span><span class='p'>()</span>
-        <span class='k'>if</span> <span class='n'>rank</span> <span class='ow'>is</span> <span class='kc'>None</span><span class='p'>:</span>
-            <span class='k'>if</span> <span class='ow'>not</span> <span class='n'>distributed</span><span class='o'>.</span><span class='n'>is_available</span><span class='p'>():</span>
-                <span class='k'>raise</span> <span class='ne'>RuntimeError</span><span class='p'>(</span><span class='s2'>&quot;Requires distributed package to be available&quot;</span><span class='p'>)</span>
-            <span class='n'>rank</span> <span class='o'>=</span> <span class='n'>distributed</span><span class='o'>.</span><span class='n'>get_rank</span><span class='p'>()</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>dataset</span> <span class='o'>=</span> <span class='n'>dataset</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_replicas</span> <span class='o'>=</span> <span class='n'>num_replicas</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>rank</span> <span class='o'>=</span> <span class='n'>rank</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>epoch</span> <span class='o'>=</span> <span class='mi'>0</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_samples</span> <span class='o'>=</span> <span class='nb'>int</span><span class='p'>(</span><span class='n'>math</span><span class='o'>.</span><span class='n'>ceil</span><span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>dataset</span><span class='p'>)</span> <span class='o'>*</span> <span class='mf'>1.0</span> <span class='o'>/</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_replicas</span><span class='p'>))</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>total_size</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_samples</span> <span class='o'>*</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_replicas</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>shuffle</span> <span class='o'>=</span> <span class='n'>shuffle</span></div>
+<span class="c1"># from torchvision.datasets.samplers import DistributedSampler</span>
+<div class="viewcode-block" id="DistributedSampler"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.html#neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler">[docs]</a><span class="k">class</span> <span class="nc">DistributedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sampler that restricts data loading to a subset of the dataset.</span>
+<span class="sd">    It is especially useful in conjunction with</span>
+<span class="sd">    :class:`torch.nn.parallel.DistributedDataParallel`. In such case, each</span>
+<span class="sd">    process can pass a DistributedSampler instance as a DataLoader sampler,</span>
+<span class="sd">    and load a subset of the original dataset that is exclusive to it.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">    Dataset is assumed to be of constant size.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    dataset: Dataset used for sampling.</span>
+<span class="sd">    num_replicas (optional): Number of processes participating in</span>
+<span class="sd">    distributed training.</span>
+<span class="sd">    rank (optional): Rank of the current process within num_replicas.&quot;&quot;&quot;</span>
 
-    <span class='k'>def</span> <span class='fm'>__iter__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>shuffle</span><span class='p'>:</span>
-            <span class='c1'># deterministically shuffle based on epoch</span>
-            <span class='n'>g</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Generator</span><span class='p'>()</span>
-            <span class='n'>g</span><span class='o'>.</span><span class='n'>manual_seed</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>epoch</span><span class='p'>)</span>
-            <span class='n'>indices</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>randperm</span><span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>dataset</span><span class='p'>),</span> <span class='n'>generator</span><span class='o'>=</span><span class='n'>g</span><span class='p'>)</span><span class='o'>.</span><span class='n'>tolist</span><span class='p'>()</span>
-        <span class='k'>else</span><span class='p'>:</span>
-            <span class='n'>indices</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>arange</span><span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>dataset</span><span class='p'>))</span><span class='o'>.</span><span class='n'>tolist</span><span class='p'>()</span>
+<div class="viewcode-block" id="DistributedSampler.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.html#neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Sized</span><span class="p">,</span> <span class="n">num_replicas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 
-        <span class='c1'># add extra samples to make it evenly divisible</span>
-        <span class='n'>indices</span> <span class='o'>+=</span> <span class='n'>indices</span><span class='p'>[:</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>total_size</span> <span class='o'>-</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>indices</span><span class='p'>))]</span>
-        <span class='k'>assert</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>indices</span><span class='p'>)</span> <span class='o'>==</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>total_size</span>
 
-        <span class='c1'># subsample</span>
-        <span class='n'>offset</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_samples</span> <span class='o'>*</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>rank</span>
-        <span class='n'>indices</span> <span class='o'>=</span> <span class='n'>indices</span><span class='p'>[</span><span class='n'>offset</span> <span class='p'>:</span> <span class='n'>offset</span> <span class='o'>+</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_samples</span><span class='p'>]</span>
-        <span class='k'>assert</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>indices</span><span class='p'>)</span> <span class='o'>==</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_samples</span>
+<span class="sd">        :param dataset:</span>
+<span class="sd">        :param num_replicas:</span>
+<span class="sd">        :param rank:</span>
+<span class="sd">        :param shuffle:&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_replicas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">distributed</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Requires distributed package to be available&quot;</span><span class="p">)</span>
+            <span class="n">num_replicas</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">distributed</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Requires distributed package to be available&quot;</span><span class="p">)</span>
+            <span class="n">rank</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_replicas</span> <span class="o">=</span> <span class="n">num_replicas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">rank</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_replicas</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_replicas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span> <span class="o">=</span> <span class="n">shuffle</span></div>
 
-        <span class='k'>return</span> <span class='nb'>iter</span><span class='p'>(</span><span class='n'>indices</span><span class='p'>)</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">:</span>
+            <span class="c1"># deterministically shuffle based on epoch</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">)</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">),</span> <span class="n">generator</span><span class="o">=</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
-    <span class='k'>def</span> <span class='fm'>__len__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='k'>return</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>num_samples</span>
+        <span class="c1"># add extra samples to make it evenly divisible</span>
+        <span class="n">indices</span> <span class="o">+=</span> <span class="n">indices</span><span class="p">[:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_size</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">))]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_size</span>
 
-<div class='viewcode-block' id='DistributedSampler.set_epoch'><a class='viewcode-back' href='../../../../../generated/neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.html#neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.set_epoch'>[docs]</a>    <span class='k'>def</span> <span class='nf'>set_epoch</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>epoch</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
+        <span class="c1"># subsample</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">offset</span> <span class="p">:</span> <span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span>
 
-<span class='sd'>        :param epoch:</span>
-<span class='sd'>        :type epoch:</span>
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>epoch</span> <span class='o'>=</span> <span class='n'>epoch</span></div></div>
-</pre>
-            </div>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span>
+
+<div class="viewcode-block" id="DistributedSampler.set_epoch"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.html#neodroidvision.utilities.torch_utilities.distributing.distributed.DistributedSampler.set_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param epoch:</span>
+<span class="sd">        :type epoch:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span></div></div>
+</pre></div>
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../../../../../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../index.html">
+              <img class="logo" src="../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../../../../../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='../../../../index.html'>Module code</a>
-                    <ul>
-                      <li><a href='../../../../neodroidvision.html'>neodroidvision</a>
-                        <ul>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../../../../../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
 
+    
 
+    
   </body>
 </html>

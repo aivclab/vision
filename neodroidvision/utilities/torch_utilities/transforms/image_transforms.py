@@ -1,4 +1,11 @@
-"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+
 A package of torchvision transforms
 Add examples to the __main__ routine as necessary for visualization
 """
@@ -9,6 +16,14 @@ import numpy
 import torch
 from PIL import Image
 from torchvision.transforms.functional import to_pil_image, to_tensor
+
+__all__ = [
+    "tuplemulti",
+    "BaseTorchTransform",
+    "RandomRGBNoise",
+    "RandomFlipColor",
+    "Black2RGB",
+]
 
 
 def roundtoint(x):

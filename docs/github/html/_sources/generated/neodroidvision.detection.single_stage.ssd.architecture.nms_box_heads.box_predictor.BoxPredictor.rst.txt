@@ -35,6 +35,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.nms\_box\_heads.box\_pre
       ~BoxPredictor.get_parameter
       ~BoxPredictor.get_submodule
       ~BoxPredictor.half
+      ~BoxPredictor.ipu
       ~BoxPredictor.load_state_dict
       ~BoxPredictor.location_block
       ~BoxPredictor.modules
@@ -48,6 +49,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.nms\_box\_heads.box\_pre
       ~BoxPredictor.register_forward_hook
       ~BoxPredictor.register_forward_pre_hook
       ~BoxPredictor.register_full_backward_hook
+      ~BoxPredictor.register_load_state_dict_post_hook
       ~BoxPredictor.register_module
       ~BoxPredictor.register_parameter
       ~BoxPredictor.requires_grad_

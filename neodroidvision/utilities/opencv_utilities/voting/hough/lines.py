@@ -1,8 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 from typing import Any
 
 import cv2
 import numpy
 from draugr.opencv_utilities import ThresholdTypeFlag, show_image, to_gray
+
+__all__ = ["hough_lines"]
 
 
 def hough_lines(

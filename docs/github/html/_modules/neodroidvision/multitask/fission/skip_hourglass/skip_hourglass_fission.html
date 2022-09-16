@@ -1,320 +1,338 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/graphviz.css'/>
-    <script data-url_root='../../../../../' id='documentation_options' src='../../../../../_static/documentation_options.js'></script>
-    <script src='../../../../../_static/jquery.js'></script>
-    <script src='../../../../../_static/underscore.js'></script>
-    <script src='../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../../../../../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/multitask/fission/skip_hourglass/skip_hourglass_fission.html'/>
-    <link rel='index' title='Index' href='../../../../../genindex.html'/>
-    <link rel='search' title='Search' href='../../../../../search.html'/>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/multitask/fission/skip_hourglass/skip_hourglass_fission.html" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel='stylesheet' href='../../../../../_static/custom.css' type='text/css'/>
+  </head><body>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
 
-  </head>
-  <body>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 
-
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
-
-
-          <div class='body' role='main'>
-
-            <h1>Source code for neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission</h1>
-            <div class='highlight'><pre>
-<span></span><span class='kn'>from</span> <span class='nn'>typing</span> <span class='kn'>import</span> <span class='n'>Dict</span><span class='p'>,</span> <span class='n'>Iterable</span><span class='p'>,</span> <span class='n'>Sequence</span><span class='p'>,</span> <span class='n'>Tuple</span><span class='p'>,</span> <span class='n'>Union</span>
-
-<span class='kn'>import</span> <span class='nn'>numpy</span>
-<span class='kn'>import</span> <span class='nn'>torch</span>
-<span class='kn'>from</span> <span class='nn'>draugr.torch_utilities</span> <span class='kn'>import</span> <span class='n'>to_tensor</span>
-<span class='kn'>from</span> <span class='nn'>torch</span> <span class='kn'>import</span> <span class='n'>nn</span>
-<span class='kn'>from</span> <span class='nn'>torch.nn</span> <span class='kn'>import</span> <span class='n'>init</span>
-
-<span class='kn'>from</span> <span class='nn'>neodroidvision.multitask.fission.skip_hourglass.factory</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>fcn_decoder</span><span class='p'>,</span>
-    <span class='n'>fcn_encoder</span><span class='p'>,</span>
-<span class='p'>)</span>
-<span class='kn'>from</span> <span class='nn'>neodroidvision.multitask.fission.skip_hourglass.modes</span> <span class='kn'>import</span> <span class='n'>MergeMode</span><span class='p'>,</span> <span class='n'>UpscaleMode</span>
-
-<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;SkipHourglassFission&quot;</span><span class='p'>]</span>
+<span class="s2">           Created on 19-09-2021</span>
+<span class="s2">           &quot;&quot;&quot;</span>
 
 
-<div class='viewcode-block' id='SkipHourglassFission'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission'>[docs]</a><span class='k'>class</span> <span class='nc'>SkipHourglassFission</span><span class='p'>(</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Module</span><span class='p'>):</span>
-    <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>    Multi Headed Skip Fully Convolutional Network</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class='sd'>    Based on https://arxiv.org/abs/1505.04597</span>
-<span class='sd'>    Contextual spatial information (from the decoding, expansive pathway) about an input tensor is merged</span>
-<span class='sd'>    with information representing the localization of details (from the encoding, compressive pathway).</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="n">to_tensor</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.multitask.fission.skip_hourglass.factory</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">fcn_decoder</span><span class="p">,</span>
+    <span class="n">fcn_encoder</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.multitask.fission.skip_hourglass.modes</span> <span class="kn">import</span> <span class="n">MergeMode</span><span class="p">,</span> <span class="n">UpscaleMode</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">init</span>
 
-<span class='sd'>    Modifications to the original paper:</span>
-<span class='sd'>    (1) padding is used in 3x3 convolutions to prevent loss of border pixels</span>
-<span class='sd'>    (2) merging outputs does not require cropping due to (1)</span>
-<span class='sd'>    (3) residual connections can be used by specifying UNet(merge_mode=&#39;add&#39;)</span>
-<span class='sd'>    (4) if non-parametric upsampling is used in the decoder</span>
-<span class='sd'>    pathway (specified by upmode=&#39;upsample&#39;), then an</span>
-<span class='sd'>    additional 1x1 2d convolution occurs after upsampling</span>
-<span class='sd'>    to reduce channel dimensionality by a factor of 2.</span>
-<span class='sd'>    This channel halving happens with the convolution in</span>
-<span class='sd'>    the tranpose convolution (specified by upmode=&#39;fractional&#39;)&quot;&quot;&quot;</span>
-
-<div class='viewcode-block' id='SkipHourglassFission.parse_arguments'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.parse_arguments'>[docs]</a>    <span class='k'>def</span> <span class='nf'>parse_arguments</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>up_mode</span><span class='p'>:</span> <span class='n'>UpscaleMode</span><span class='p'>,</span> <span class='n'>merge_mode</span><span class='p'>:</span> <span class='n'>MergeMode</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        Args:</span>
-<span class='sd'>          up_mode:</span>
-<span class='sd'>          merge_mode:</span>
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='k'>if</span> <span class='n'>up_mode</span> <span class='ow'>in</span> <span class='n'>UpscaleMode</span><span class='p'>:</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>up_mode</span> <span class='o'>=</span> <span class='n'>up_mode</span>
-        <span class='k'>else</span><span class='p'>:</span>
-            <span class='k'>raise</span> <span class='ne'>ValueError</span><span class='p'>(</span>
-                <span class='sa'>f</span><span class='s1'>&#39;&quot;</span><span class='si'>{</span><span class='n'>up_mode</span><span class='si'>}</span><span class='s1'>&quot; is not a valid mode for upsampling.&#39;</span>
-                <span class='sa'>f</span><span class='s1'>&#39; Only &quot;fractional&quot; and &quot;upsample&quot; are allowed.&#39;</span>
-            <span class='p'>)</span>
-
-        <span class='k'>if</span> <span class='n'>merge_mode</span> <span class='ow'>in</span> <span class='n'>MergeMode</span><span class='p'>:</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>merge_mode</span> <span class='o'>=</span> <span class='n'>merge_mode</span>
-        <span class='k'>else</span><span class='p'>:</span>
-            <span class='k'>raise</span> <span class='ne'>ValueError</span><span class='p'>(</span>
-                <span class='sa'>f</span><span class='s1'>&#39;&quot;</span><span class='si'>{</span><span class='n'>up_mode</span><span class='si'>}</span><span class='s1'>&quot; is not a valid mode for merging up and down paths.&#39;</span>
-                <span class='sa'>f</span><span class='s1'>&#39; Only &quot;concat&quot; and &quot;add&quot; are allowed.&#39;</span>
-            <span class='p'>)</span>
-
-        <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>up_mode</span> <span class='o'>==</span> <span class='n'>UpscaleMode</span><span class='o'>.</span><span class='n'>Upsample</span> <span class='ow'>and</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>merge_mode</span> <span class='o'>==</span> <span class='n'>MergeMode</span><span class='o'>.</span><span class='n'>Add</span><span class='p'>:</span>
-            <span class='c1'># NOTE: up_mode &#39;upsample&#39; is incompatible with merge_mode &#39;add&#39;</span>
-            <span class='k'>raise</span> <span class='ne'>ValueError</span><span class='p'>(</span>
-                <span class='s1'>&#39;up_mode &quot;upsample&quot; is incompatible with merge_mode &quot;add&quot;&#39;</span>
-                <span class='s2'>&quot;can not use nearest neighbour to reduce depth channels (by half).&quot;</span>
-            <span class='p'>)</span></div>
-
-<div class='viewcode-block' id='SkipHourglassFission.__init__'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span>
-        <span class='bp'>self</span><span class='p'>,</span>
-        <span class='o'>*</span><span class='p'>,</span>
-        <span class='n'>input_channels</span><span class='p'>:</span> <span class='nb'>int</span><span class='p'>,</span>
-        <span class='n'>output_heads</span><span class='p'>:</span> <span class='n'>Union</span><span class='p'>[</span><span class='n'>Dict</span><span class='p'>,</span> <span class='n'>Iterable</span><span class='p'>],</span>
-        <span class='n'>encoding_depth</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>5</span><span class='p'>,</span>
-        <span class='n'>start_channels</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>32</span><span class='p'>,</span>
-        <span class='n'>up_mode</span><span class='p'>:</span> <span class='n'>UpscaleMode</span> <span class='o'>=</span> <span class='n'>UpscaleMode</span><span class='o'>.</span><span class='n'>FractionalTranspose</span><span class='p'>,</span>
-        <span class='n'>merge_mode</span><span class='p'>:</span> <span class='n'>MergeMode</span> <span class='o'>=</span> <span class='n'>MergeMode</span><span class='o'>.</span><span class='n'>Add</span><span class='p'>,</span>
-    <span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>        :type input_channels: int</span>
-<span class='sd'>        :type output_heads: Union[Dict, Iterable]</span>
-<span class='sd'>        :type encoding_depth: int</span>
-<span class='sd'>        :type start_channels: int</span>
-<span class='sd'>        :type up_mode: str</span>
-<span class='sd'>        :type merge_mode: str</span>
-
-<span class='sd'>        :param input_channels: number of channels in the input tensor. E.g. 3 for RGB images.</span>
-<span class='sd'>        :param output_heads:</span>
-<span class='sd'>        :param encoding_depth: number of MaxPools in the U-Net.</span>
-<span class='sd'>        :param start_channels: number of convolutional filters for the first convolution.</span>
-<span class='sd'>        :param up_mode: string, type of upconvolution. Choices: &#39;fractional&#39; for transpose convolution or</span>
-<span class='sd'>        &#39;upsample&#39; for nearest neighbour upsampling.</span>
-<span class='sd'>        :param merge_mode:&quot;&quot;&quot;</span>
-        <span class='nb'>super</span><span class='p'>()</span><span class='o'>.</span><span class='fm'>__init__</span><span class='p'>()</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>parse_arguments</span><span class='p'>(</span><span class='n'>up_mode</span><span class='p'>,</span> <span class='n'>merge_mode</span><span class='p'>)</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>start_channels</span> <span class='o'>=</span> <span class='n'>start_channels</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>network_depth</span> <span class='o'>=</span> <span class='n'>encoding_depth</span>
-
-        <span class='n'>down_convolutions</span><span class='p'>,</span> <span class='n'>encoding_channels</span> <span class='o'>=</span> <span class='n'>fcn_encoder</span><span class='p'>(</span>
-            <span class='n'>input_channels</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>network_depth</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>start_channels</span>
-        <span class='p'>)</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>down_convolutions</span> <span class='o'>=</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>ModuleList</span><span class='p'>(</span><span class='n'>down_convolutions</span><span class='p'>)</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>default_prefix</span> <span class='o'>=</span> <span class='s2'>&quot;fork&quot;</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dict_output</span> <span class='o'>=</span> <span class='kc'>False</span>
-        <span class='k'>if</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>output_heads</span><span class='p'>,</span> <span class='n'>Dict</span><span class='p'>):</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>forks</span> <span class='o'>=</span> <span class='n'>output_heads</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dict_output</span> <span class='o'>=</span> <span class='kc'>True</span>
-        <span class='k'>else</span><span class='p'>:</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>forks</span> <span class='o'>=</span> <span class='p'>{</span>
-                <span class='sa'>f</span><span class='s2'>&quot;</span><span class='si'>{</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>default_prefix</span><span class='si'>}{</span><span class='n'>i</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>:</span> <span class='n'>s</span> <span class='k'>for</span> <span class='n'>i</span><span class='p'>,</span> <span class='n'>s</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span><span class='n'>output_heads</span><span class='p'>)</span>
-            <span class='p'>}</span>
-
-        <span class='k'>for</span> <span class='n'>iden</span><span class='p'>,</span> <span class='n'>channel_size</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>forks</span><span class='o'>.</span><span class='n'>items</span><span class='p'>():</span>
-            <span class='n'>up_convolutions_ae</span><span class='p'>,</span> <span class='n'>ae_prev_layer_channels</span> <span class='o'>=</span> <span class='n'>fcn_decoder</span><span class='p'>(</span>
-                <span class='n'>encoding_channels</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>network_depth</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>up_mode</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>merge_mode</span>
-            <span class='p'>)</span>
-            <span class='n'>up_convolutions_ae</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
-                <span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span>
-                    <span class='n'>ae_prev_layer_channels</span><span class='p'>,</span>
-                    <span class='n'>channel_size</span><span class='p'>,</span>
-                    <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span>
-                    <span class='n'>groups</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span>
-                    <span class='n'>stride</span><span class='o'>=</span><span class='mi'>1</span><span class='p'>,</span>
-                <span class='p'>)</span>
-            <span class='p'>)</span>
-            <span class='nb'>setattr</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>iden</span><span class='p'>,</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>ModuleList</span><span class='p'>(</span><span class='n'>up_convolutions_ae</span><span class='p'>))</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>reset_params</span><span class='p'>()</span></div>
-
-<div class='viewcode-block' id='SkipHourglassFission.weight_init'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.weight_init'>[docs]</a>    <span class='nd'>@staticmethod</span>
-    <span class='k'>def</span> <span class='nf'>weight_init</span><span class='p'>(</span><span class='n'>m</span><span class='p'>:</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>Module</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='kc'>None</span><span class='p'>:</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        Args:</span>
-<span class='sd'>          m:</span>
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='k'>if</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>m</span><span class='p'>,</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>):</span>
-            <span class='n'>init</span><span class='o'>.</span><span class='n'>xavier_normal_</span><span class='p'>(</span><span class='n'>m</span><span class='o'>.</span><span class='n'>weight</span><span class='p'>)</span>
-            <span class='n'>init</span><span class='o'>.</span><span class='n'>constant_</span><span class='p'>(</span><span class='n'>m</span><span class='o'>.</span><span class='n'>bias</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>)</span></div>
-
-<div class='viewcode-block' id='SkipHourglassFission.reset_params'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.reset_params'>[docs]</a>    <span class='k'>def</span> <span class='nf'>reset_params</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='kc'>None</span><span class='p'>:</span>
-        <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
-        <span class='k'>for</span> <span class='n'>i</span><span class='p'>,</span> <span class='n'>m</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>modules</span><span class='p'>()):</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>weight_init</span><span class='p'>(</span><span class='n'>m</span><span class='p'>)</span></div>
-
-<div class='viewcode-block' id='SkipHourglassFission.forward'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.forward'>[docs]</a>    <span class='k'>def</span> <span class='nf'>forward</span><span class='p'>(</span>
-        <span class='bp'>self</span><span class='p'>,</span> <span class='n'>x_enc</span><span class='p'>:</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span>
-    <span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Union</span><span class='p'>[</span><span class='n'>Tuple</span><span class='p'>[</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>],</span> <span class='n'>Dict</span><span class='p'>[</span><span class='nb'>str</span><span class='p'>,</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>]]:</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        Args:</span>
-<span class='sd'>          x_enc:</span>
-
-<span class='sd'>        Returns:</span>
-
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='n'>encoder_skips</span> <span class='o'>=</span> <span class='p'>[]</span>
-
-        <span class='k'>for</span> <span class='n'>i</span><span class='p'>,</span> <span class='n'>module</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>down_convolutions</span>
-        <span class='p'>):</span>  <span class='c1'># encoder pathway, keep outputs for merging</span>
-            <span class='n'>x_enc</span><span class='p'>,</span> <span class='n'>before_pool</span> <span class='o'>=</span> <span class='n'>module</span><span class='p'>(</span><span class='n'>x_enc</span><span class='p'>)</span>
-            <span class='n'>encoder_skips</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>before_pool</span><span class='p'>)</span>
-
-        <span class='n'>out</span> <span class='o'>=</span> <span class='p'>{}</span>
-        <span class='k'>for</span> <span class='n'>key</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>forks</span><span class='o'>.</span><span class='n'>keys</span><span class='p'>():</span>
-            <span class='n'>x_prev</span> <span class='o'>=</span> <span class='n'>x_enc</span>
-            <span class='n'>fork_i</span> <span class='o'>=</span> <span class='nb'>getattr</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>key</span><span class='p'>)</span>
-            <span class='k'>for</span> <span class='n'>j</span><span class='p'>,</span> <span class='n'>module</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span><span class='n'>fork_i</span><span class='p'>[:</span><span class='o'>-</span><span class='mi'>1</span><span class='p'>]):</span>
-                <span class='n'>before_pool_skip</span> <span class='o'>=</span> <span class='n'>encoder_skips</span><span class='p'>[</span><span class='o'>-</span><span class='p'>(</span><span class='n'>j</span> <span class='o'>+</span> <span class='mi'>2</span><span class='p'>)]</span>
-                <span class='n'>x_prev</span> <span class='o'>=</span> <span class='n'>module</span><span class='p'>(</span><span class='n'>before_pool_skip</span><span class='p'>,</span> <span class='n'>x_prev</span><span class='p'>)</span>
-            <span class='n'>out</span><span class='p'>[</span><span class='n'>key</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>fork_i</span><span class='p'>[</span><span class='o'>-</span><span class='mi'>1</span><span class='p'>](</span><span class='n'>x_prev</span><span class='p'>)</span>
-
-        <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dict_output</span><span class='p'>:</span>
-            <span class='k'>return</span> <span class='n'>out</span>
-        <span class='k'>return</span> <span class='p'>(</span><span class='o'>*</span><span class='n'>out</span><span class='o'>.</span><span class='n'>values</span><span class='p'>(),)</span></div>
-
-<div class='viewcode-block' id='SkipHourglassFission.trim'><a class='viewcode-back' href='../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.trim'>[docs]</a>    <span class='k'>def</span> <span class='nf'>trim</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>idx</span><span class='p'>:</span> <span class='n'>Sequence</span><span class='p'>[</span><span class='n'>Union</span><span class='p'>[</span><span class='nb'>str</span><span class='p'>,</span> <span class='nb'>int</span><span class='p'>]])</span> <span class='o'>-&gt;</span> <span class='kc'>None</span><span class='p'>:</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        Args:</span>
-<span class='sd'>          idx:</span>
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='k'>if</span> <span class='ow'>not</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>idx</span><span class='p'>,</span> <span class='n'>Sequence</span><span class='p'>):</span>
-            <span class='n'>idx</span> <span class='o'>=</span> <span class='nb'>list</span><span class='p'>(</span><span class='n'>idx</span><span class='p'>)</span>
-        <span class='k'>for</span> <span class='n'>a</span> <span class='ow'>in</span> <span class='n'>idx</span><span class='p'>:</span>
-            <span class='k'>if</span> <span class='ow'>not</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>a</span><span class='p'>,</span> <span class='nb'>str</span><span class='p'>):</span>
-                <span class='n'>a</span> <span class='o'>=</span> <span class='sa'>f</span><span class='s2'>&quot;</span><span class='si'>{</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>default_prefix</span><span class='si'>}{</span><span class='n'>a</span><span class='si'>}</span><span class='s2'>&quot;</span>
-            <span class='nb'>delattr</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>a</span><span class='p'>)</span></div></div>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SkipHourglassFission&quot;</span><span class="p">]</span>
 
 
-<span class='k'>if</span> <span class='vm'>__name__</span> <span class='o'>==</span> <span class='s2'>&quot;__main__&quot;</span><span class='p'>:</span>
-    <span class='kn'>from</span> <span class='nn'>matplotlib</span> <span class='kn'>import</span> <span class='n'>pyplot</span>
+<div class="viewcode-block" id="SkipHourglassFission"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission">[docs]</a><span class="k">class</span> <span class="nc">SkipHourglassFission</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multi Headed Skip Fully Convolutional Network</span>
 
-    <span class='n'>channels</span> <span class='o'>=</span> <span class='mi'>3</span>
-    <span class='n'>model</span> <span class='o'>=</span> <span class='n'>SkipHourglassFission</span><span class='p'>(</span>
-        <span class='n'>input_channels</span><span class='o'>=</span><span class='n'>channels</span><span class='p'>,</span>
-        <span class='n'>output_heads</span><span class='o'>=</span><span class='p'>(</span><span class='n'>channels</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),</span>
-        <span class='n'>encoding_depth</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span>
-        <span class='n'>merge_mode</span><span class='o'>=</span><span class='n'>MergeMode</span><span class='o'>.</span><span class='n'>Concat</span><span class='p'>,</span>
-    <span class='p'>)</span>
-    <span class='n'>x</span> <span class='o'>=</span> <span class='n'>to_tensor</span><span class='p'>(</span><span class='n'>numpy</span><span class='o'>.</span><span class='n'>random</span><span class='o'>.</span><span class='n'>random</span><span class='p'>((</span><span class='mi'>1</span><span class='p'>,</span> <span class='n'>channels</span><span class='p'>,</span> <span class='mi'>320</span><span class='p'>,</span> <span class='mi'>320</span><span class='p'>)),</span> <span class='n'>device</span><span class='o'>=</span><span class='s2'>&quot;cpu&quot;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>float</span><span class='p'>()</span>
-    <span class='n'>out</span><span class='p'>,</span> <span class='n'>out2</span><span class='p'>,</span> <span class='o'>*</span><span class='n'>_</span> <span class='o'>=</span> <span class='n'>model</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
-    <span class='n'>loss</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>sum</span><span class='p'>(</span><span class='n'>out</span><span class='p'>)</span>
-    <span class='n'>loss</span><span class='o'>.</span><span class='n'>backward</span><span class='p'>()</span>
+<span class="sd">    Based on https://arxiv.org/abs/1505.04597</span>
+<span class="sd">    Contextual spatial information (from the decoding, expansive pathway) about an input tensor is merged</span>
+<span class="sd">    with information representing the localization of details (from the encoding, compressive pathway).</span>
 
-    <span class='n'>im</span> <span class='o'>=</span> <span class='n'>out</span><span class='o'>.</span><span class='n'>detach</span><span class='p'>()</span>
-    <span class='nb'>print</span><span class='p'>(</span><span class='n'>im</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>)</span>
-    <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>imshow</span><span class='p'>((</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>tanh</span><span class='p'>(</span><span class='n'>im</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span><span class='o'>.</span><span class='n'>transpose</span><span class='p'>(</span><span class='mi'>2</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>))</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>*</span> <span class='mf'>0.5</span><span class='p'>)</span>
-    <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>show</span><span class='p'>()</span>
+<span class="sd">    Modifications to the original paper:</span>
+<span class="sd">    (1) padding is used in 3x3 convolutions to prevent loss of border pixels</span>
+<span class="sd">    (2) merging outputs does not require cropping due to (1)</span>
+<span class="sd">    (3) residual connections can be used by specifying UNet(merge_mode=&#39;add&#39;)</span>
+<span class="sd">    (4) if non-parametric upsampling is used in the decoder</span>
+<span class="sd">    pathway (specified by upmode=&#39;upsample&#39;), then an</span>
+<span class="sd">    additional 1x1 2d convolution occurs after upsampling</span>
+<span class="sd">    to reduce channel dimensionality by a factor of 2.</span>
+<span class="sd">    This channel halving happens with the convolution in</span>
+<span class="sd">    the tranpose convolution (specified by upmode=&#39;fractional&#39;)&quot;&quot;&quot;</span>
 
-    <span class='n'>im2</span> <span class='o'>=</span> <span class='n'>out2</span><span class='o'>.</span><span class='n'>detach</span><span class='p'>()</span>
-    <span class='nb'>print</span><span class='p'>(</span><span class='n'>im2</span><span class='o'>.</span><span class='n'>shape</span><span class='p'>)</span>
-    <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>imshow</span><span class='p'>((</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>tanh</span><span class='p'>(</span><span class='n'>im2</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>,</span> <span class='p'>:,</span> <span class='p'>:])</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>)</span> <span class='o'>*</span> <span class='mf'>0.5</span><span class='p'>)</span>
-    <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>show</span><span class='p'>()</span>
-</pre>
-            </div>
+<div class="viewcode-block" id="SkipHourglassFission.parse_arguments"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.parse_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">parse_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">up_mode</span><span class="p">:</span> <span class="n">UpscaleMode</span><span class="p">,</span> <span class="n">merge_mode</span><span class="p">:</span> <span class="n">MergeMode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          up_mode:</span>
+<span class="sd">          merge_mode:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">up_mode</span> <span class="ow">in</span> <span class="n">UpscaleMode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">=</span> <span class="n">up_mode</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">up_mode</span><span class="si">}</span><span class="s1">&quot; is not a valid mode for upsampling.&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; Only &quot;fractional&quot; and &quot;upsample&quot; are allowed.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">merge_mode</span> <span class="ow">in</span> <span class="n">MergeMode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">=</span> <span class="n">merge_mode</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">up_mode</span><span class="si">}</span><span class="s1">&quot; is not a valid mode for merging up and down paths.&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; Only &quot;concat&quot; and &quot;add&quot; are allowed.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span> <span class="o">==</span> <span class="n">UpscaleMode</span><span class="o">.</span><span class="n">Upsample</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span> <span class="o">==</span> <span class="n">MergeMode</span><span class="o">.</span><span class="n">Add</span><span class="p">:</span>
+            <span class="c1"># NOTE: up_mode &#39;upsample&#39; is incompatible with merge_mode &#39;add&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;up_mode &quot;upsample&quot; is incompatible with merge_mode &quot;add&quot;&#39;</span>
+                <span class="s2">&quot;can not use nearest neighbour to reduce depth channels (by half).&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkipHourglassFission.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">input_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">output_heads</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
+        <span class="n">encoding_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">start_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="n">up_mode</span><span class="p">:</span> <span class="n">UpscaleMode</span> <span class="o">=</span> <span class="n">UpscaleMode</span><span class="o">.</span><span class="n">FractionalTranspose</span><span class="p">,</span>
+        <span class="n">merge_mode</span><span class="p">:</span> <span class="n">MergeMode</span> <span class="o">=</span> <span class="n">MergeMode</span><span class="o">.</span><span class="n">Add</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type input_channels: int</span>
+<span class="sd">        :type output_heads: Union[Dict, Iterable]</span>
+<span class="sd">        :type encoding_depth: int</span>
+<span class="sd">        :type start_channels: int</span>
+<span class="sd">        :type up_mode: str</span>
+<span class="sd">        :type merge_mode: str</span>
+
+<span class="sd">        :param input_channels: number of channels in the input tensor. E.g. 3 for RGB images.</span>
+<span class="sd">        :param output_heads:</span>
+<span class="sd">        :param encoding_depth: number of MaxPools in the U-Net.</span>
+<span class="sd">        :param start_channels: number of convolutional filters for the first convolution.</span>
+<span class="sd">        :param up_mode: string, type of upconvolution. Choices: &#39;fractional&#39; for transpose convolution or</span>
+<span class="sd">        &#39;upsample&#39; for nearest neighbour upsampling.</span>
+<span class="sd">        :param merge_mode:&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_arguments</span><span class="p">(</span><span class="n">up_mode</span><span class="p">,</span> <span class="n">merge_mode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_channels</span> <span class="o">=</span> <span class="n">start_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_depth</span> <span class="o">=</span> <span class="n">encoding_depth</span>
+
+        <span class="n">down_convolutions</span><span class="p">,</span> <span class="n">encoding_channels</span> <span class="o">=</span> <span class="n">fcn_encoder</span><span class="p">(</span>
+            <span class="n">input_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_channels</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">down_convolutions</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">down_convolutions</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_prefix</span> <span class="o">=</span> <span class="s2">&quot;fork&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_output</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_heads</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forks</span> <span class="o">=</span> <span class="n">output_heads</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_output</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forks</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_prefix</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">s</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">output_heads</span><span class="p">)</span>
+            <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">iden</span><span class="p">,</span> <span class="n">channel_size</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">forks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">up_convolutions_ae</span><span class="p">,</span> <span class="n">ae_prev_layer_channels</span> <span class="o">=</span> <span class="n">fcn_decoder</span><span class="p">(</span>
+                <span class="n">encoding_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_mode</span>
+            <span class="p">)</span>
+            <span class="n">up_convolutions_ae</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+                    <span class="n">ae_prev_layer_channels</span><span class="p">,</span>
+                    <span class="n">channel_size</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iden</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">up_convolutions_ae</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_params</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SkipHourglassFission.weight_init"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.weight_init">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">weight_init</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          m:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
+            <span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+            <span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkipHourglassFission.reset_params"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.reset_params">[docs]</a>    <span class="k">def</span> <span class="nf">reset_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weight_init</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SkipHourglassFission.forward"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x_enc</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          x_enc:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">encoder_skips</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">down_convolutions</span>
+        <span class="p">):</span>  <span class="c1"># encoder pathway, keep outputs for merging</span>
+            <span class="n">x_enc</span><span class="p">,</span> <span class="n">before_pool</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x_enc</span><span class="p">)</span>
+            <span class="n">encoder_skips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">before_pool</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">forks</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x_enc</span>
+            <span class="n">fork_i</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fork_i</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">before_pool_skip</span> <span class="o">=</span> <span class="n">encoder_skips</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]</span>
+                <span class="n">x_prev</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">before_pool_skip</span><span class="p">,</span> <span class="n">x_prev</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">fork_i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">x_prev</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_output</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">out</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">out</span><span class="o">.</span><span class="n">values</span><span class="p">(),)</span></div>
+
+<div class="viewcode-block" id="SkipHourglassFission.trim"><a class="viewcode-back" href="../../../../../generated/neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.html#neodroidvision.multitask.fission.skip_hourglass.skip_hourglass_fission.SkipHourglassFission.trim">[docs]</a>    <span class="k">def</span> <span class="nf">trim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          idx:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_prefix</span><span class="si">}{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+
+    <span class="n">channels</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">SkipHourglassFission</span><span class="p">(</span>
+        <span class="n">input_channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
+        <span class="n">output_heads</span><span class="o">=</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">encoding_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">merge_mode</span><span class="o">=</span><span class="n">MergeMode</span><span class="o">.</span><span class="n">Concat</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">)),</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="n">out</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="n">im2</span> <span class="o">=</span> <span class="n">out2</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">im2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">im2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../../../../../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../index.html">
+              <img class="logo" src="../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../../../../../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='../../../../index.html'>Module code</a>
-                    <ul>
-                      <li><a href='../../../../neodroidvision.html'>neodroidvision</a>
-                        <ul>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../../../../../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
 
+    
 
+    
   </body>
 </html>

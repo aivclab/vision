@@ -9,6 +9,9 @@ from torch import nn
 from torch.nn.utils import spectral_norm
 
 
+__all__ = ["spectral_norm_conv2d", "spectral_norm_linear", "spectral_norm_embedding"]
+
+
 def spectral_norm_conv2d(
     in_channels,
     out_channels,

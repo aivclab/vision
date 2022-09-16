@@ -34,6 +34,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.ssd\_backbone.
       ~SSDBackbone.get_parameter
       ~SSDBackbone.get_submodule
       ~SSDBackbone.half
+      ~SSDBackbone.ipu
       ~SSDBackbone.load_state_dict
       ~SSDBackbone.modules
       ~SSDBackbone.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.ssd\_backbone.
       ~SSDBackbone.register_forward_hook
       ~SSDBackbone.register_forward_pre_hook
       ~SSDBackbone.register_full_backward_hook
+      ~SSDBackbone.register_load_state_dict_post_hook
       ~SSDBackbone.register_module
       ~SSDBackbone.register_parameter
       ~SSDBackbone.requires_grad_

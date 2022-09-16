@@ -1,7 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 from pathlib import Path
 
 import cv2
 from draugr.opencv_utilities import add_trackbar, show_image
+
+__all__ = ["hough_circle_calibrator"]
 
 
 def hough_circle_calibrator(

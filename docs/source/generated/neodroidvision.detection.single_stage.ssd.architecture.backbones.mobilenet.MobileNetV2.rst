@@ -34,6 +34,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.mobilenet.Mobi
       ~MobileNetV2.get_parameter
       ~MobileNetV2.get_submodule
       ~MobileNetV2.half
+      ~MobileNetV2.ipu
       ~MobileNetV2.load_state_dict
       ~MobileNetV2.modules
       ~MobileNetV2.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.mobilenet.Mobi
       ~MobileNetV2.register_forward_hook
       ~MobileNetV2.register_forward_pre_hook
       ~MobileNetV2.register_full_backward_hook
+      ~MobileNetV2.register_load_state_dict_post_hook
       ~MobileNetV2.register_module
       ~MobileNetV2.register_parameter
       ~MobileNetV2.requires_grad_

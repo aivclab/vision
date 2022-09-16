@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.Black2RGB
       ~Black2RGB.get_parameter
       ~Black2RGB.get_submodule
       ~Black2RGB.half
+      ~Black2RGB.ipu
       ~Black2RGB.load_state_dict
       ~Black2RGB.modules
       ~Black2RGB.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.Black2RGB
       ~Black2RGB.register_forward_hook
       ~Black2RGB.register_forward_pre_hook
       ~Black2RGB.register_full_backward_hook
+      ~Black2RGB.register_load_state_dict_post_hook
       ~Black2RGB.register_module
       ~Black2RGB.register_parameter
       ~Black2RGB.requires_grad_

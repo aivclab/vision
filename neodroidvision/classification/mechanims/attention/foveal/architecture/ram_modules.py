@@ -13,6 +13,9 @@ from torch.distributions import Normal
 from torch.nn import functional
 
 
+__all__ = ["GlimpseSensor", "Actor", "SignalBaseline", "CoreRNN", "Locator"]
+
+
 class GlimpseSensor(nn.Module):
     """The glimpse network.
 

@@ -35,6 +35,7 @@ neodroidvision.multitask.fission.skip\_hourglass.decompress.Decompress
       ~Decompress.get_parameter
       ~Decompress.get_submodule
       ~Decompress.half
+      ~Decompress.ipu
       ~Decompress.load_state_dict
       ~Decompress.modules
       ~Decompress.named_buffers
@@ -47,6 +48,7 @@ neodroidvision.multitask.fission.skip\_hourglass.decompress.Decompress
       ~Decompress.register_forward_hook
       ~Decompress.register_forward_pre_hook
       ~Decompress.register_full_backward_hook
+      ~Decompress.register_load_state_dict_post_hook
       ~Decompress.register_module
       ~Decompress.register_parameter
       ~Decompress.requires_grad_

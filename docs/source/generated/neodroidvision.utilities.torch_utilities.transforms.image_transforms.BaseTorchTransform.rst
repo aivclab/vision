@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.BaseTorch
       ~BaseTorchTransform.get_parameter
       ~BaseTorchTransform.get_submodule
       ~BaseTorchTransform.half
+      ~BaseTorchTransform.ipu
       ~BaseTorchTransform.load_state_dict
       ~BaseTorchTransform.modules
       ~BaseTorchTransform.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.BaseTorch
       ~BaseTorchTransform.register_forward_hook
       ~BaseTorchTransform.register_forward_pre_hook
       ~BaseTorchTransform.register_full_backward_hook
+      ~BaseTorchTransform.register_load_state_dict_post_hook
       ~BaseTorchTransform.register_module
       ~BaseTorchTransform.register_parameter
       ~BaseTorchTransform.requires_grad_

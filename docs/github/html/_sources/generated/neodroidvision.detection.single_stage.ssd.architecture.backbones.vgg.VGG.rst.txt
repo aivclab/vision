@@ -37,6 +37,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.vgg.VGG
       ~VGG.get_submodule
       ~VGG.half
       ~VGG.init_from_pretrain
+      ~VGG.ipu
       ~VGG.load_state_dict
       ~VGG.modules
       ~VGG.named_buffers
@@ -49,6 +50,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.vgg.VGG
       ~VGG.register_forward_hook
       ~VGG.register_forward_pre_hook
       ~VGG.register_full_backward_hook
+      ~VGG.register_load_state_dict_post_hook
       ~VGG.register_module
       ~VGG.register_parameter
       ~VGG.requires_grad_

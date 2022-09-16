@@ -1,8 +1,20 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 import math
 from typing import List, Tuple
 
 import cv2
 import numpy
+
+
+__all__ = ["daugman"]
 
 
 def daugman(

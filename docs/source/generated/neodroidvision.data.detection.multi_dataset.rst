@@ -1,4 +1,4 @@
-﻿neodroidvision.data.detection.multi\_dataset
+neodroidvision.data.detection.multi\_dataset
 ============================================
 
 .. automodule:: neodroidvision.data.detection.multi_dataset

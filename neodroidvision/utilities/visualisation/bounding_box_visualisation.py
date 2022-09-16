@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
 from itertools import cycle
 from typing import Iterable, Optional, Sequence, Tuple, Union
 

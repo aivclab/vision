@@ -1,4 +1,4 @@
-﻿neodroidvision.utilities
+neodroidvision.utilities
 ========================
 
 .. automodule:: neodroidvision.utilities

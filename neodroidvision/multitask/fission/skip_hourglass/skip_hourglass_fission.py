@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 19-09-2021
+           """
+
+
 from typing import Dict, Iterable, Sequence, Tuple, Union
 
 import numpy
@@ -191,26 +201,32 @@ class SkipHourglassFission(nn.Module):
 
 
 if __name__ == "__main__":
-    from matplotlib import pyplot
 
-    channels = 3
-    model = SkipHourglassFission(
-        input_channels=channels,
-        output_heads=(channels, 1),
-        encoding_depth=2,
-        merge_mode=MergeMode.Concat,
-    )
-    x = to_tensor(numpy.random.random((1, channels, 320, 320)), device="cpu").float()
-    out, out2, *_ = model(x)
-    loss = torch.sum(out)
-    loss.backward()
+    def _main():
+        from matplotlib import pyplot
 
-    im = out.detach()
-    print(im.shape)
-    pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
-    pyplot.show()
+        channels = 3
+        model = SkipHourglassFission(
+            input_channels=channels,
+            output_heads=(channels, 1),
+            encoding_depth=2,
+            merge_mode=MergeMode.Concat,
+        )
+        x = to_tensor(
+            numpy.random.random((1, channels, 320, 320)), device="cpu"
+        ).float()
+        out, out2, *_ = model(x)
+        loss = torch.sum(out)
+        loss.backward()
 
-    im2 = out2.detach()
-    print(im2.shape)
-    pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
-    pyplot.show()
+        im = out.detach()
+        print(im.shape)
+        pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
+        pyplot.show()
+
+        im2 = out2.detach()
+        print(im2.shape)
+        pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
+        pyplot.show()
+
+    _main()

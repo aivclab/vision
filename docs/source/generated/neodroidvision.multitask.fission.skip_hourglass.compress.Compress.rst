@@ -34,6 +34,7 @@ neodroidvision.multitask.fission.skip\_hourglass.compress.Compress
       ~Compress.get_parameter
       ~Compress.get_submodule
       ~Compress.half
+      ~Compress.ipu
       ~Compress.load_state_dict
       ~Compress.modules
       ~Compress.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.multitask.fission.skip\_hourglass.compress.Compress
       ~Compress.register_forward_hook
       ~Compress.register_forward_pre_hook
       ~Compress.register_full_backward_hook
+      ~Compress.register_load_state_dict_post_hook
       ~Compress.register_module
       ~Compress.register_parameter
       ~Compress.requires_grad_

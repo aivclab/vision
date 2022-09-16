@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neodroidvision.utilities.tf_utilities.tf_bb &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/utilities/tf_utilities/tf_bb.html" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.utilities.tf_utilities.tf_bb</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">           &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span>
+<span class="kn">from</span> <span class="nn">PIL.Image</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">fromarray</span>
+
+<span class="kn">from</span> <span class="nn">neodroidvision.utilities.visualisation.bounding_box_visualisation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_visualize_boxes</span><span class="p">,</span>
+    <span class="n">_visualize_boxes_and_keypoints</span><span class="p">,</span>
+    <span class="n">_visualize_boxes_and_masks</span><span class="p">,</span>
+    <span class="n">_visualize_boxes_and_masks_and_keypoints</span><span class="p">,</span>
+    <span class="n">cdf_plot</span><span class="p">,</span>
+    <span class="n">hist_plot</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="save_image_array_as_png"><a class="viewcode-back" href="../../../../generated/neodroidvision.utilities.tf_utilities.tf_bb.save_image_array_as_png.html#neodroidvision.utilities.tf_utilities.tf_bb.save_image_array_as_png">[docs]</a><span class="k">def</span> <span class="nf">save_image_array_as_png</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">Image</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Saves an image (represented as a numpy array) to PNG.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    image: a numpy array with shape [height, width, 3].</span>
+<span class="sd">    output_path: path to which image should be written.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image_pil</span> <span class="o">=</span> <span class="n">fromarray</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">image</span><span class="p">))</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">gfile</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+        <span class="n">image_pil</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s2">&quot;PNG&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="draw_bounding_boxes_on_image_tensors"><a class="viewcode-back" href="../../../../generated/neodroidvision.utilities.tf_utilities.tf_bb.draw_bounding_boxes_on_image_tensors.html#neodroidvision.utilities.tf_utilities.tf_bb.draw_bounding_boxes_on_image_tensors">[docs]</a><span class="k">def</span> <span class="nf">draw_bounding_boxes_on_image_tensors</span><span class="p">(</span>
+    <span class="n">images</span><span class="p">,</span>
+    <span class="n">boxes</span><span class="p">,</span>
+    <span class="n">classes</span><span class="p">,</span>
+    <span class="n">scores</span><span class="p">,</span>
+    <span class="n">category_index</span><span class="p">,</span>
+    <span class="n">instance_masks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">keypoints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_boxes_to_draw</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">min_score_thresh</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">line_thickness</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draws bounding boxes, masks, and keypoints on batch of image tensors.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    :param images: A 4D uint8 image tensor of shape [N, H, W, C].</span>
+<span class="sd">    :param boxes: [N, max_detections, 4] float32 tensor of detection boxes.</span>
+<span class="sd">    :param classes: [N, max_detections] int tensor of detection classes. Note that</span>
+<span class="sd">    classes are 1-indexed.</span>
+<span class="sd">    :param scores: [N, max_detections] float32 tensor of detection scores.</span>
+<span class="sd">    :param category_index: a dict that maps integer ids to category dicts. e.g.</span>
+<span class="sd">    {1: {1: &#39;dog&#39;}, 2: {2: &#39;cat&#39;}, ...}</span>
+<span class="sd">    :param instance_masks: A 4D uint8 tensor of shape [N, max_detection, H, W] with</span>
+<span class="sd">    instance masks.</span>
+<span class="sd">    :param keypoints: A 4D float32 tensor of shape [N, max_detection, num_keypoints, 2]</span>
+<span class="sd">    with keypoints.</span>
+<span class="sd">    :param max_boxes_to_draw: Maximum number of boxes to draw on an image. Default 20.</span>
+<span class="sd">    :param min_score_thresh: Minimum score threshold for visualization. Default 0.2.</span>
+<span class="sd">    :param line_thickness:</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    4D image tensor of type uint8, with boxes drawn on top.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">visualization_keyword_args</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;use_normalized_coordinates&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;max_boxes_to_draw&quot;</span><span class="p">:</span> <span class="n">max_boxes_to_draw</span><span class="p">,</span>
+        <span class="s2">&quot;min_score_thresh&quot;</span><span class="p">:</span> <span class="n">min_score_thresh</span><span class="p">,</span>
+        <span class="s2">&quot;agnostic_mode&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;line_thickness&quot;</span><span class="p">:</span> <span class="n">line_thickness</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">instance_masks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">keypoints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">visualize_boxes_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+            <span class="n">_visualize_boxes_and_masks</span><span class="p">,</span>
+            <span class="n">category_index</span><span class="o">=</span><span class="n">category_index</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">visualization_keyword_args</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">elems</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">instance_masks</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">instance_masks</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">keypoints</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">visualize_boxes_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+            <span class="n">_visualize_boxes_and_keypoints</span><span class="p">,</span>
+            <span class="n">category_index</span><span class="o">=</span><span class="n">category_index</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">visualization_keyword_args</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">elems</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">keypoints</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">instance_masks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">keypoints</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">visualize_boxes_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+            <span class="n">_visualize_boxes_and_masks_and_keypoints</span><span class="p">,</span>
+            <span class="n">category_index</span><span class="o">=</span><span class="n">category_index</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">visualization_keyword_args</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">elems</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">instance_masks</span><span class="p">,</span> <span class="n">keypoints</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">visualize_boxes_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+            <span class="n">_visualize_boxes</span><span class="p">,</span>
+            <span class="n">category_index</span><span class="o">=</span><span class="n">category_index</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">visualization_keyword_args</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">elems</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">scores</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">draw_boxes</span><span class="p">(</span><span class="n">image_and_detections</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draws boxes on image.&quot;&quot;&quot;</span>
+        <span class="n">image_with_boxes</span> <span class="o">=</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">py_func</span><span class="p">(</span>
+            <span class="n">visualize_boxes_fn</span><span class="p">,</span> <span class="n">image_and_detections</span><span class="p">,</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">uint8</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_with_boxes</span>
+
+    <span class="n">images</span> <span class="o">=</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">map_fn</span><span class="p">(</span>
+        <span class="n">draw_boxes</span><span class="p">,</span> <span class="n">elems</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">back_prop</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="add_cdf_image_summary"><a class="viewcode-back" href="../../../../generated/neodroidvision.utilities.tf_utilities.tf_bb.add_cdf_image_summary.html#neodroidvision.utilities.tf_utilities.tf_bb.add_cdf_image_summary">[docs]</a><span class="k">def</span> <span class="nf">add_cdf_image_summary</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds a tf.summary.image for a CDF plot of the values.</span>
+
+<span class="sd">    Normalizes `values` such that they sum to 1, plots the cumulative distribution</span>
+<span class="sd">    function and creates a tf image summary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    values: a 1-D float32 tensor containing the values.</span>
+<span class="sd">    name: name for the image summary.&quot;&quot;&quot;</span>
+
+    <span class="n">tensorflow</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">image</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">py_func</span><span class="p">(</span><span class="n">cdf_plot</span><span class="p">,</span> <span class="p">[</span><span class="n">values</span><span class="p">],</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_hist_image_summary"><a class="viewcode-back" href="../../../../generated/neodroidvision.utilities.tf_utilities.tf_bb.add_hist_image_summary.html#neodroidvision.utilities.tf_utilities.tf_bb.add_hist_image_summary">[docs]</a><span class="k">def</span> <span class="nf">add_hist_image_summary</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds a tf.summary.image for a histogram plot of the values.</span>
+
+<span class="sd">    Plots the histogram of values and creates a tf image summary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    values: a 1-D float32 tensor containing the values.</span>
+<span class="sd">    bins: bin edges which will be directly passed to numpy.histogram.</span>
+<span class="sd">    name: name for the image summary.&quot;&quot;&quot;</span>
+
+    <span class="n">tensorflow</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">image</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">py_func</span><span class="p">(</span><span class="n">hist_plot</span><span class="p">,</span> <span class="p">[</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="p">],</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../index.html">neodroidvision</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -42,6 +42,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.efficient\_net
       ~EfficientNet.get_submodule
       ~EfficientNet.half
       ~EfficientNet.interpret
+      ~EfficientNet.ipu
       ~EfficientNet.load_state_dict
       ~EfficientNet.modules
       ~EfficientNet.named_buffers
@@ -54,6 +55,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.backbones.efficient\_net
       ~EfficientNet.register_forward_hook
       ~EfficientNet.register_forward_pre_hook
       ~EfficientNet.register_full_backward_hook
+      ~EfficientNet.register_load_state_dict_post_hook
       ~EfficientNet.register_module
       ~EfficientNet.register_parameter
       ~EfficientNet.requires_grad_

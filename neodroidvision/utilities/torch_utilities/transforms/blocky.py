@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 import glob
 import random
 from collections.abc import Sequence
@@ -8,7 +17,8 @@ from PIL import Image
 from torch import ceil
 from torch.nn.functional import interpolate
 from torchvision.transforms.functional import to_pil_image, to_tensor
-from utilities.torch_utilities.transforms.image_transforms import (
+
+from neodroidvision.utilities.torch_utilities.transforms.image_transforms import (
     BaseTorchTransform,
     tuplemulti,
 )

@@ -1,4 +1,4 @@
-﻿neodroidvision.detection
+neodroidvision.detection
 ========================
 
 .. automodule:: neodroidvision.detection

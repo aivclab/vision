@@ -1,4 +1,4 @@
-﻿neodroidvision.segmentation
+neodroidvision.segmentation
 ===========================
 
 .. automodule:: neodroidvision.segmentation

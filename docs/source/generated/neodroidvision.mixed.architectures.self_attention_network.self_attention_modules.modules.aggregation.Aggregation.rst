@@ -34,6 +34,7 @@ neodroidvision.mixed.architectures.self\_attention\_network.self\_attention\_mod
       ~Aggregation.get_parameter
       ~Aggregation.get_submodule
       ~Aggregation.half
+      ~Aggregation.ipu
       ~Aggregation.load_state_dict
       ~Aggregation.modules
       ~Aggregation.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.mixed.architectures.self\_attention\_network.self\_attention\_mod
       ~Aggregation.register_forward_hook
       ~Aggregation.register_forward_pre_hook
       ~Aggregation.register_full_backward_hook
+      ~Aggregation.register_load_state_dict_post_hook
       ~Aggregation.register_module
       ~Aggregation.register_parameter
       ~Aggregation.requires_grad_

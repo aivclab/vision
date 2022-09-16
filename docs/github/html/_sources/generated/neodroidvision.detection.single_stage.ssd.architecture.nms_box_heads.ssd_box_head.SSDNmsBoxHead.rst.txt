@@ -34,6 +34,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.nms\_box\_heads.ssd\_box
       ~SSDNmsBoxHead.get_parameter
       ~SSDNmsBoxHead.get_submodule
       ~SSDNmsBoxHead.half
+      ~SSDNmsBoxHead.ipu
       ~SSDNmsBoxHead.keep_above
       ~SSDNmsBoxHead.load_state_dict
       ~SSDNmsBoxHead.modules
@@ -48,6 +49,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.nms\_box\_heads.ssd\_box
       ~SSDNmsBoxHead.register_forward_hook
       ~SSDNmsBoxHead.register_forward_pre_hook
       ~SSDNmsBoxHead.register_full_backward_hook
+      ~SSDNmsBoxHead.register_load_state_dict_post_hook
       ~SSDNmsBoxHead.register_module
       ~SSDNmsBoxHead.register_parameter
       ~SSDNmsBoxHead.requires_grad_

@@ -34,6 +34,7 @@ neodroidvision.regression.metric.contrastive.nlet\_conv\_net.NLetConvNet
       ~NLetConvNet.get_parameter
       ~NLetConvNet.get_submodule
       ~NLetConvNet.half
+      ~NLetConvNet.ipu
       ~NLetConvNet.load_state_dict
       ~NLetConvNet.modules
       ~NLetConvNet.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.regression.metric.contrastive.nlet\_conv\_net.NLetConvNet
       ~NLetConvNet.register_forward_hook
       ~NLetConvNet.register_forward_pre_hook
       ~NLetConvNet.register_full_backward_hook
+      ~NLetConvNet.register_load_state_dict_post_hook
       ~NLetConvNet.register_module
       ~NLetConvNet.register_parameter
       ~NLetConvNet.requires_grad_

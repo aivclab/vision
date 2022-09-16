@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+__author__ = "Christian Heider Nielsen"
+__doc__ = r"""
+
+           Created on 19-09-2021
+           """
+
 import torch
-from classification.mechanims.attention import (
-    SelfAttentionModule,
+from torch import nn
+from torch.nn.functional import interpolate
+from torch.nn.init import xavier_uniform_
+
+from neodroidvision.classification.mechanims.attention.self.self_attention import (
     init_weights,
 )
-from classification.mechanims.attention.self.spectral_norm import (
+from neodroidvision.classification.mechanims.attention.self.spectral_norm import (
     spectral_norm_conv2d,
     spectral_norm_embedding,
     spectral_norm_linear,
 )
-from torch import nn
-from torch.nn import functional
-from torch.nn.init import xavier_uniform_
-
-__author__ = "Christian Heider Nielsen"
-__doc__ = r"""
-           """
+from neodroidvision.mixed.architectures.self_attention_network.self_attention_network import (
+    SelfAttentionModule,
+)
 
 
 class ConditionalBatchNorm2d(nn.Module):
@@ -92,13 +98,13 @@ class GenBlock(nn.Module):
 
         x = self.cond_bn1(x, labels)
         x = self.relu(x)
-        x = functional.interpolate(x, scale_factor=2, mode="nearest")  # upsample
+        x = interpolate(x, scale_factor=2, mode="nearest")  # upsample
         x = self.spectral_norm_conv2d1(x)
         x = self.cond_bn2(x, labels)
         x = self.relu(x)
         x = self.spectral_norm_conv2d2(x)
 
-        x0 = functional.interpolate(x0, scale_factor=2, mode="nearest")  # upsample
+        x0 = interpolate(x0, scale_factor=2, mode="nearest")  # upsample
         x0 = self.spectral_norm_conv2d0(x0)
 
         return x + x0

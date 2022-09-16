@@ -13,6 +13,8 @@ from neodroidvision.classification.mechanims.attention.self.spectral_norm import
     spectral_norm_conv2d,
 )
 
+__all__ = ["init_weights", "SelfAttentionModule"]
+
 
 def init_weights(m):
     """

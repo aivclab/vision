@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 """
 
 templ = cv.imread(fullfile(mexopencv.root(),'test','templ.png'), 'Flags',0);

@@ -35,6 +35,7 @@ neodroidvision.segmentation.fully\_convolutional.FCN
       ~FCN.get_parameter
       ~FCN.get_submodule
       ~FCN.half
+      ~FCN.ipu
       ~FCN.load_state_dict
       ~FCN.modules
       ~FCN.named_buffers
@@ -47,6 +48,7 @@ neodroidvision.segmentation.fully\_convolutional.FCN
       ~FCN.register_forward_hook
       ~FCN.register_forward_pre_hook
       ~FCN.register_full_backward_hook
+      ~FCN.register_load_state_dict_post_hook
       ~FCN.register_module
       ~FCN.register_parameter
       ~FCN.requires_grad_

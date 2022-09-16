@@ -15,9 +15,9 @@ neodroidvision.utilities.visualisation.encoder\_utilities
       :toctree:
    
       compile_encoding_image
+      sample_2d_latent_vectors
       plot_conditioned_manifold
       plot_manifold
-      sample_2d_latent_vectors
    
    
 

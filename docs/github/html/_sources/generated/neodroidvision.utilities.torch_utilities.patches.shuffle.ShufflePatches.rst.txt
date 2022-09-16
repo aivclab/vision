@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.patches.shuffle.ShufflePatches
       ~ShufflePatches.get_parameter
       ~ShufflePatches.get_submodule
       ~ShufflePatches.half
+      ~ShufflePatches.ipu
       ~ShufflePatches.load_state_dict
       ~ShufflePatches.modules
       ~ShufflePatches.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.patches.shuffle.ShufflePatches
       ~ShufflePatches.register_forward_hook
       ~ShufflePatches.register_forward_pre_hook
       ~ShufflePatches.register_full_backward_hook
+      ~ShufflePatches.register_load_state_dict_post_hook
       ~ShufflePatches.register_module
       ~ShufflePatches.register_parameter
       ~ShufflePatches.requires_grad_

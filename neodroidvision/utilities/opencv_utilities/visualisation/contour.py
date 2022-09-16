@@ -1,7 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 import cv2
 import numpy
 
 from neodroidvision.utilities.opencv_utilities.contour.analysis import convexity_defects
+
+
+__all__ = ["draw_convexity_defects"]
 
 
 def draw_convexity_defects(img: numpy.ndarray, cnt: numpy.ndarray) -> numpy.ndarray:

@@ -16,7 +16,7 @@ from statistics import mean
 import numpy
 import torch
 import torchvision.utils
-from draugr import IgnoreInterruptSignal
+from warg import IgnoreInterruptSignal
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     OverfitDetector,

@@ -14,7 +14,6 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms
    .. autosummary::
       :toctree:
    
-      roundtoint
       tuplemulti
    
    
@@ -28,9 +27,9 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms
       :template: custom_autosummary/class.rst
    
       BaseTorchTransform
-      Black2RGB
-      RandomFlipColor
       RandomRGBNoise
+      RandomFlipColor
+      Black2RGB
    
    
 

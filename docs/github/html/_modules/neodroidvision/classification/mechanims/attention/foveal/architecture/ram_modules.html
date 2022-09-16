@@ -1,0 +1,486 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules &#8212; neodroidvision 0.2.9 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../../../" id="documentation_options" src="../../../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../../../_static/jquery.js"></script>
+    <script src="../../../../../../../_static/underscore.js"></script>
+    <script src="../../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/classification/mechanims/attention/foveal/architecture/ram_modules.html" />
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">           &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Normal</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span>
+
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GlimpseSensor&#39;</span><span class="p">,</span><span class="s1">&#39;Actor&#39;</span><span class="p">,</span>
+<span class="s1">&#39;SignalBaseline&#39;</span><span class="p">,</span>
+<span class="s1">&#39;CoreRNN&#39;</span><span class="p">,</span>
+<span class="s1">&#39;Locator&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="GlimpseSensor"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor">[docs]</a><span class="k">class</span> <span class="nc">GlimpseSensor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The glimpse network.</span>
+
+<span class="sd">    Combines the &quot;what&quot; and the &quot;where&quot; into a glimpse</span>
+<span class="sd">    feature vector `g_t`.</span>
+
+<span class="sd">    - &quot;what&quot;: glimpse extracted from the retina.</span>
+<span class="sd">    - &quot;where&quot;: location tuple where glimpse was extracted.</span>
+
+<span class="sd">    Concretely, feeds the output of the retina `phi` to</span>
+<span class="sd">    a fc layer and the glimpse location vector `l_t_prev`</span>
+<span class="sd">    to a fc layer. Finally, these outputs are fed each</span>
+<span class="sd">    through a fc layer and their sum is rectified.</span>
+
+<span class="sd">    In other words:</span>
+
+<span class="sd">      `g_t = relu( fc( fc(l) ) + fc( fc(phi) ) )`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      h_g: hidden layer size of the fc layer for `phi`.</span>
+<span class="sd">      h_l: hidden layer size of the fc layer for `l`.</span>
+<span class="sd">      g: size of the square patches in the glimpses extracted</span>
+<span class="sd">      by the retina.</span>
+<span class="sd">      k: number of patches to extract per glimpse.</span>
+<span class="sd">      s: scaling factor that controls the size of successive patches.</span>
+<span class="sd">      c: number of channels in each image.</span>
+<span class="sd">      x: a 4D Tensor of shape (B, H, W, C). The minibatch</span>
+<span class="sd">          of images.</span>
+<span class="sd">      l_t_prev: a 2D tensor of shape (B, 2). Contains the glimpse</span>
+<span class="sd">          coordinates [x, y] for the previous timestep `t-1`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      g_t: a 2D tensor of shape (B, hidden_size).</span>
+<span class="sd">          The glimpse representation returned by</span>
+<span class="sd">          the glimpse network for the current</span>
+<span class="sd">          timestep `t`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GlimpseSensor.Retina"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.Retina">[docs]</a>    <span class="k">class</span> <span class="nc">Retina</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A visual retina.</span>
+
+<span class="sd">        Extracts a foveated glimpse `phi` around location `l`</span>
+<span class="sd">        from an image `x`.</span>
+
+<span class="sd">        Concretely, encodes the region around `l` at a</span>
+<span class="sd">        high-resolution but uses a progressively lower</span>
+<span class="sd">        resolution for pixels further from `l`, resulting</span>
+<span class="sd">        in a compressed representation of the original</span>
+<span class="sd">        image `x`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        x: a 4D Tensor of shape (B, H, W, C). The minibatch</span>
+<span class="sd">            of images.</span>
+<span class="sd">        l: a 2D Tensor of shape (B, 2). Contains normalized</span>
+<span class="sd">            coordinates in the range [-1, 1].</span>
+<span class="sd">        size_first_patch: size of the first square patch.</span>
+<span class="sd">        num_patches_per_glimpse: number of patches to extract in the glimpse.</span>
+<span class="sd">        scale_factor_suc: scaling factor that controls the size of</span>
+<span class="sd">            successive patches.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        phi: a 5D tensor of shape (B, k, g, g, C). The</span>
+<span class="sd">            foveated glimpse of the image.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size_first_patch</span><span class="p">,</span> <span class="n">num_patches_per_glimpse</span><span class="p">,</span> <span class="n">scale_factor_suc</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">size_first_patch</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">num_patches_per_glimpse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">scale_factor_suc</span>
+
+<div class="viewcode-block" id="GlimpseSensor.Retina.foveate"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.Retina.foveate">[docs]</a>        <span class="k">def</span> <span class="nf">foveate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Extract `k` square patches of size `g`, centered</span>
+<span class="sd">            at location `l`. The initial patch is a square of</span>
+<span class="sd">            size `g`, and each subsequent patch is a square</span>
+<span class="sd">            whose side is `s` times the size of the previous</span>
+<span class="sd">            patch.</span>
+
+<span class="sd">            The `k` patches are finally resized to (g, g) and</span>
+<span class="sd">            concatenated into a tensor of shape (B, k, g, g, C).&quot;&quot;&quot;</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+            <span class="c1"># extract k patches of increasing size</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">):</span>
+                <span class="n">phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_patch</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">*</span> <span class="n">size</span><span class="p">)</span>
+
+            <span class="c1"># resize the patches to squares of size g</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">phi</span><span class="p">)):</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+                <span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">functional</span><span class="o">.</span><span class="n">avg_pool2d</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+
+            <span class="c1"># concatenate into a single tensor and flatten</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">phi</span></div>
+
+<div class="viewcode-block" id="GlimpseSensor.Retina.extract_patch"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.Retina.extract_patch">[docs]</a>        <span class="k">def</span> <span class="nf">extract_patch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Extract a single patch for each image in `x`.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">            x: a 4D Tensor of shape (B, H, W, C). The minibatch</span>
+<span class="sd">            of images.</span>
+<span class="sd">            l: a 2D Tensor of shape (B, 2).</span>
+<span class="sd">            size: a scalar defining the size of the extracted patch.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">            patch: a 4D Tensor of shape (B, size, size, C)&quot;&quot;&quot;</span>
+            <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">denormalize</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">size</span>
+
+            <span class="c1"># pad with zeros</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">functional</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+
+            <span class="c1"># loop through mini-batch and extract patches</span>
+            <span class="n">patch</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
+                <span class="n">patch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">start</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="p">:</span> <span class="n">end</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">end</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GlimpseSensor.Retina.denormalize"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.Retina.denormalize">[docs]</a>        <span class="k">def</span> <span class="nf">denormalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Convert coordinates in the range [-1, 1] to</span>
+<span class="sd">            coordinates in the range [0, T] where `T` is</span>
+<span class="sd">            the size of the image.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">coords</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">long</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GlimpseSensor.Retina.exceeds"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.Retina.exceeds">[docs]</a>        <span class="k">def</span> <span class="nf">exceeds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_x</span><span class="p">,</span> <span class="n">to_x</span><span class="p">,</span> <span class="n">from_y</span><span class="p">,</span> <span class="n">to_y</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Check whether the extracted patch will exceed</span>
+<span class="sd">            the boundaries of the image of size `T`.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">from_x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">from_y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">to_x</span> <span class="o">&gt;</span> <span class="n">T</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">to_y</span> <span class="o">&gt;</span> <span class="n">T</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span></div></div>
+
+<div class="viewcode-block" id="GlimpseSensor.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h_g</span><span class="p">,</span> <span class="n">h_l</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">retina</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Retina</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+            <span class="n">k</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="n">h_g</span>
+        <span class="p">)</span>  <span class="c1"># glimpse layer TODO: RENAME TO WHAT IS IT!!</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">h_l</span><span class="p">)</span>  <span class="c1"># location layer</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_g</span><span class="p">,</span> <span class="n">h_g</span> <span class="o">+</span> <span class="n">h_l</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc4</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_l</span><span class="p">,</span> <span class="n">h_g</span> <span class="o">+</span> <span class="n">h_l</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GlimpseSensor.forward"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">l_t_prev</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x:</span>
+<span class="sd">        :type x:</span>
+<span class="sd">        :param l_t_prev:</span>
+<span class="sd">        :type l_t_prev:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span>
+                <span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retina</span><span class="o">.</span><span class="n">foveate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">l_t_prev</span><span class="p">)))</span>
+            <span class="p">)</span>  <span class="c1"># what # generate glimpse phi from image x</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc4</span><span class="p">(</span>
+                <span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">l_t_prev</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">l_t_prev</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="p">)</span>  <span class="c1"># where</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CoreRNN"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.CoreRNN.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.CoreRNN">[docs]</a><span class="k">class</span> <span class="nc">CoreRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The core network.</span>
+
+<span class="sd">    An RNN that maintains an internal state by integrating</span>
+<span class="sd">    information extracted from the history of past observations.</span>
+<span class="sd">    It encodes the agent&#39;s knowledge of the environment through</span>
+<span class="sd">    a state vector `h_t` that gets updated at every time step `t`.</span>
+
+<span class="sd">    Concretely, it takes the glimpse representation `g_t` as input,</span>
+<span class="sd">    and combines it with its internal state `h_t_prev` at the previous</span>
+<span class="sd">    time step, to produce the new internal state `h_t` at the current</span>
+<span class="sd">    time step.</span>
+
+<span class="sd">    In other words:</span>
+
+<span class="sd">      `h_t = relu( fc(h_t_prev) + fc(g_t) )`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      input_size: input size of the rnn.</span>
+<span class="sd">      hidden_size: hidden size of the rnn.</span>
+<span class="sd">      g_t: a 2D tensor of shape (B, hidden_size). The glimpse</span>
+<span class="sd">          representation returned by the glimpse network for the</span>
+<span class="sd">          current timestep `t`.</span>
+<span class="sd">      h_t_prev: a 2D tensor of shape (B, hidden_size). The</span>
+<span class="sd">          hidden state vector for the previous timestep `t-1`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      h_t: a 2D tensor of shape (B, hidden_size). The hidden</span>
+<span class="sd">          state vector for the current timestep `t`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CoreRNN.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.CoreRNN.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.CoreRNN.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_size</span> <span class="o">=</span> <span class="n">input_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">hidden_size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">i2h</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h2h</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CoreRNN.forward"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.CoreRNN.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.CoreRNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">h_t_prev</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        :param g_t:</span>
+<span class="sd">        :type g_t:</span>
+<span class="sd">        :param h_t_prev:</span>
+<span class="sd">        :type h_t_prev:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">i2h</span><span class="p">(</span><span class="n">g_t</span><span class="p">)</span>
+        <span class="n">h2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h2h</span><span class="p">(</span><span class="n">h_t_prev</span><span class="p">)</span>
+        <span class="n">h_t</span> <span class="o">=</span> <span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">h1</span> <span class="o">+</span> <span class="n">h2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">h_t</span></div></div>
+
+<div class="viewcode-block" id="Actor"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor">[docs]</a><span class="k">class</span> <span class="nc">Actor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The action network.</span>
+
+<span class="sd">    Uses the internal state `h_t` of the core network to</span>
+<span class="sd">    produce the final output classification.</span>
+
+<span class="sd">    Concretely, feeds the hidden state `h_t` through a fc</span>
+<span class="sd">    layer followed by a softmax to create a vector of</span>
+<span class="sd">    output probabilities over the possible classes.</span>
+
+<span class="sd">    Hence, the environment action `a_t` is drawn from a</span>
+<span class="sd">    distribution conditioned on an affine transformation</span>
+<span class="sd">    of the hidden state vector `h_t`, or in other words,</span>
+<span class="sd">    the action network is simply a linear softmax classifier.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      input_size: input size of the fc layer.</span>
+<span class="sd">      output_size: output size of the fc layer.</span>
+<span class="sd">      h_t: the hidden state vector of the core network</span>
+<span class="sd">          for the current time step `t`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      a_t: output probability vector over the classes.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Actor.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.forward"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        :param h_t:</span>
+<span class="sd">        :type h_t:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">functional</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">h_t</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Locator"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Locator.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Locator">[docs]</a><span class="k">class</span> <span class="nc">Locator</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The location network.</span>
+
+<span class="sd">    Uses the internal state `h_t` of the core network to</span>
+<span class="sd">    produce the location coordinates `l_t` for the next</span>
+<span class="sd">    time step.</span>
+
+<span class="sd">    Concretely, feeds the hidden state `h_t` through a fc</span>
+<span class="sd">    layer followed by a tanh to clamp the output between</span>
+<span class="sd">    [-1, 1]. This produces a 2D vector of means used to</span>
+<span class="sd">    parametrize a two-component Gaussian with a fixed</span>
+<span class="sd">    variance from which the location coordinates `l_t`</span>
+<span class="sd">    for the next time step are sampled.</span>
+
+<span class="sd">    Hence, the location `l_t` is chosen stochastically</span>
+<span class="sd">    from a distribution conditioned on an affine</span>
+<span class="sd">    transformation of the hidden state vector `h_t`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      input_size: input size of the fc layer.</span>
+<span class="sd">      output_size: output size of the fc layer.</span>
+<span class="sd">      std: standard deviation of the normal distribution.</span>
+<span class="sd">      h_t: the hidden state vector of the core network for</span>
+<span class="sd">          the current time step `t`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      mu: a 2D vector of shape (B, 2).</span>
+<span class="sd">      l_t: a 2D vector of shape (B, 2).&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Locator.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Locator.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Locator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">std</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">=</span> <span class="n">std</span>
+
+        <span class="n">hidden_size</span> <span class="o">=</span> <span class="n">input_size</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc_lt</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Locator.forward"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Locator.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Locator.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param h_t:</span>
+<span class="sd">        :type h_t:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc_lt</span><span class="p">(</span><span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">h_t</span><span class="o">.</span><span class="n">detach</span><span class="p">())))</span>
+        <span class="p">)</span>  <span class="c1"># compute mean</span>
+
+        <span class="n">l_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
+            <span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">rsample</span><span class="p">()</span>  <span class="c1"># reparametrisation trick</span>
+
+        <span class="c1"># we assume both dimensions are independent</span>
+        <span class="c1"># 1. pdf of the joint is the product of the pdfs</span>
+        <span class="c1"># 2. log of the product is the sum of the logs</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">l_t</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">l_t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># bound between [-1, 1]</span>
+        <span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="SignalBaseline"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline">[docs]</a><span class="k">class</span> <span class="nc">SignalBaseline</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The baseline network.</span>
+
+<span class="sd">    This network regresses the baseline in the</span>
+<span class="sd">    reward function to reduce the variance of</span>
+<span class="sd">    the gradient update.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      input_size: input size of the fc layer.</span>
+<span class="sd">      output_size: output size of the fc layer.</span>
+<span class="sd">      h_t: the hidden state vector of the core network</span>
+<span class="sd">          for the current time step `t`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      b_t: a 2D vector of shape (B, 1). The baseline</span>
+<span class="sd">          for the current time step `t`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SignalBaseline.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SignalBaseline.forward"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param h_t:</span>
+<span class="sd">        :type h_t:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">h_t</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../../../index.html">
+              <img class="logo" src="../../../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../../../index.html">neodroidvision</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

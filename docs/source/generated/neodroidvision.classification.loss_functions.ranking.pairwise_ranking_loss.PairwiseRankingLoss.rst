@@ -34,6 +34,7 @@ neodroidvision.classification.loss\_functions.ranking.pairwise\_ranking\_loss.Pa
       ~PairwiseRankingLoss.get_parameter
       ~PairwiseRankingLoss.get_submodule
       ~PairwiseRankingLoss.half
+      ~PairwiseRankingLoss.ipu
       ~PairwiseRankingLoss.load_state_dict
       ~PairwiseRankingLoss.modules
       ~PairwiseRankingLoss.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.classification.loss\_functions.ranking.pairwise\_ranking\_loss.Pa
       ~PairwiseRankingLoss.register_forward_hook
       ~PairwiseRankingLoss.register_forward_pre_hook
       ~PairwiseRankingLoss.register_full_backward_hook
+      ~PairwiseRankingLoss.register_load_state_dict_post_hook
       ~PairwiseRankingLoss.register_module
       ~PairwiseRankingLoss.register_parameter
       ~PairwiseRankingLoss.requires_grad_

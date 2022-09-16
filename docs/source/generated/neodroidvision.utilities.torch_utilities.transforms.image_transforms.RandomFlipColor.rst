@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.RandomFli
       ~RandomFlipColor.get_parameter
       ~RandomFlipColor.get_submodule
       ~RandomFlipColor.half
+      ~RandomFlipColor.ipu
       ~RandomFlipColor.load_state_dict
       ~RandomFlipColor.modules
       ~RandomFlipColor.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.RandomFli
       ~RandomFlipColor.register_forward_hook
       ~RandomFlipColor.register_forward_pre_hook
       ~RandomFlipColor.register_full_backward_hook
+      ~RandomFlipColor.register_load_state_dict_post_hook
       ~RandomFlipColor.register_module
       ~RandomFlipColor.register_parameter
       ~RandomFlipColor.requires_grad_

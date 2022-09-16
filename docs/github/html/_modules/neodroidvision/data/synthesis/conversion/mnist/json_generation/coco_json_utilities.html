@@ -1,467 +1,478 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/graphviz.css'/>
-    <script data-url_root='../../../../../../../' id='documentation_options' src='../../../../../../../_static/documentation_options.js'></script>
-    <script src='../../../../../../../_static/jquery.js'></script>
-    <script src='../../../../../../../_static/underscore.js'></script>
-    <script src='../../../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../../../../../../../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/data/synthesis/conversion/mnist/json_generation/coco_json_utilities.html'/>
-    <link rel='index' title='Index' href='../../../../../../../genindex.html'/>
-    <link rel='search' title='Search' href='../../../../../../../search.html'/>
-
-    <link rel='stylesheet' href='../../../../../../../_static/custom.css' type='text/css'/>
-
-
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
-
-  </head>
-  <body>
-
-
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
-
-
-          <div class='body' role='main'>
-
-            <h1>Source code for neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</h1>
-            <div class='highlight'><pre>
-<span></span><span class='ch'>#!/usr/bin/env python3</span>
-<span class='c1'># -*- coding: utf-8 -*-</span>
-
-<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;Christian&quot;</span>
-<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
-
-<span class='s2'>           Created on 29/03/2020</span>
-<span class='s2'>           &quot;&quot;&quot;</span>
-
-<span class='kn'>import</span> <span class='nn'>json</span>
-<span class='kn'>from</span> <span class='nn'>pathlib</span> <span class='kn'>import</span> <span class='n'>Path</span>
-
-<span class='kn'>import</span> <span class='nn'>numpy</span>
-<span class='kn'>from</span> <span class='nn'>PIL</span> <span class='kn'>import</span> <span class='n'>Image</span>
-<span class='kn'>from</span> <span class='nn'>skimage</span> <span class='kn'>import</span> <span class='n'>measure</span>
-<span class='kn'>from</span> <span class='nn'>tqdm</span> <span class='kn'>import</span> <span class='n'>tqdm</span>
-<span class='kn'>from</span> <span class='nn'>warg</span> <span class='kn'>import</span> <span class='n'>NOD</span>
-
-<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span>
-    <span class='s2'>&quot;create_coco_image&quot;</span><span class='p'>,</span>
-    <span class='s2'>&quot;AnnotationJsonUtils&quot;</span><span class='p'>,</span>
-    <span class='s2'>&quot;CocoJsonCreator&quot;</span><span class='p'>,</span>
-<span class='p'>]</span>
-
-
-<div class='viewcode-block' id='create_coco_image'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image'>[docs]</a><span class='k'>def</span> <span class='nf'>create_coco_image</span><span class='p'>(</span><span class='n'>image_path</span><span class='p'>,</span> <span class='n'>image_id</span><span class='p'>,</span> <span class='n'>image_license</span><span class='p'>):</span>
-    <span class='sd'>&quot;&quot;&quot;Creates the &quot;image&quot; portion of COCO json&quot;&quot;&quot;</span>
-    <span class='c1'># Open the image and get the size</span>
-    <span class='n'>image_file</span> <span class='o'>=</span> <span class='n'>Image</span><span class='o'>.</span><span class='n'>open</span><span class='p'>(</span><span class='n'>image_path</span><span class='p'>)</span>
-    <span class='n'>width</span><span class='p'>,</span> <span class='n'>height</span> <span class='o'>=</span> <span class='n'>image_file</span><span class='o'>.</span><span class='n'>size</span>
-
-    <span class='k'>return</span> <span class='n'>NOD</span><span class='p'>(</span>
-        <span class='n'>license</span><span class='o'>=</span><span class='n'>image_license</span><span class='p'>,</span>
-        <span class='n'>file_name</span><span class='o'>=</span><span class='n'>image_path</span><span class='o'>.</span><span class='n'>name</span><span class='p'>,</span>
-        <span class='n'>width</span><span class='o'>=</span><span class='n'>width</span><span class='p'>,</span>
-        <span class='n'>height</span><span class='o'>=</span><span class='n'>height</span><span class='p'>,</span>
-        <span class='nb'>id</span><span class='o'>=</span><span class='n'>image_id</span><span class='p'>,</span>
-    <span class='p'>)</span></div>
-
-
-<div class='viewcode-block' id='AnnotationJsonUtils'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils'>[docs]</a><span class='k'>class</span> <span class='nc'>AnnotationJsonUtils</span><span class='p'>:</span>
-    <span class='sd'>&quot;&quot;&quot;Creates an annotation object to describe a COCO dataset&quot;&quot;&quot;</span>
-
-<div class='viewcode-block' id='AnnotationJsonUtils.__init__'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>annotation_id_index</span> <span class='o'>=</span> <span class='mi'>0</span></div>
-
-<div class='viewcode-block' id='AnnotationJsonUtils.create_coco_annotations'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.create_coco_annotations'>[docs]</a>    <span class='k'>def</span> <span class='nf'>create_coco_annotations</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>image_mask_path</span><span class='p'>,</span> <span class='n'>image_id</span><span class='p'>,</span> <span class='n'>category_ids</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Takes a pixel-based RGB image mask and creates COCO annotations.</span>
-<span class='sd'>        Args:</span>
-<span class='sd'>        image_mask_path: a Path to the image mask</span>
-<span class='sd'>        image_id: the integer image id</span>
-<span class='sd'>        category_ids: a dictionary of integer category ids keyed by RGB color (a tuple converted to a string)</span>
-<span class='sd'>            e.g. {&#39;(255, 0, 0)&#39;: {&#39;category&#39;: &#39;owl&#39;, &#39;super_category&#39;: &#39;bird&#39;} }</span>
-<span class='sd'>        Returns:</span>
-<span class='sd'>        annotations: a list of COCO annotation dictionaries that can</span>
-<span class='sd'>        be converted to json. e.g.:</span>
-<span class='sd'>        {</span>
-<span class='sd'>            &quot;segmentation&quot;: [[101.79,307.32,69.75,281.11,...,100.05,309.66]],</span>
-<span class='sd'>            &quot;area&quot;: 51241.3617,</span>
-<span class='sd'>            &quot;iscrowd&quot;: 0,</span>
-<span class='sd'>            &quot;image_id&quot;: 284725,</span>
-<span class='sd'>            &quot;bbox&quot;: [68.01,134.89,433.41,174.77],</span>
-<span class='sd'>            &quot;category_id&quot;: 6,</span>
-<span class='sd'>            &quot;id&quot;: 165690</span>
-<span class='sd'>        }&quot;&quot;&quot;</span>
-        <span class='c1'># Set class variables</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_image_id</span> <span class='o'>=</span> <span class='n'>image_id</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_category_ids</span> <span class='o'>=</span> <span class='n'>category_ids</span>
-
-        <span class='c1'># Make sure keys in category_ids are strings</span>
-        <span class='k'>for</span> <span class='n'>key</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_category_ids</span><span class='o'>.</span><span class='n'>keys</span><span class='p'>():</span>
-            <span class='k'>if</span> <span class='nb'>type</span><span class='p'>(</span><span class='n'>key</span><span class='p'>)</span> <span class='ow'>is</span> <span class='ow'>not</span> <span class='nb'>str</span><span class='p'>:</span>
-                <span class='k'>raise</span> <span class='ne'>TypeError</span><span class='p'>(</span>
-                    <span class='s1'>&#39;category_ids keys must be strings (e.g. &quot;(0, 0, 255)&quot;)&#39;</span>
-                <span class='p'>)</span>
-            <span class='k'>break</span>
-
-        <span class='c1'># Open and process image</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_image</span> <span class='o'>=</span> <span class='n'>Image</span><span class='o'>.</span><span class='n'>open</span><span class='p'>(</span><span class='n'>image_mask_path</span><span class='p'>)</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_image</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_image</span><span class='o'>.</span><span class='n'>convert</span><span class='p'>(</span><span class='s2'>&quot;RGB&quot;</span><span class='p'>)</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_width</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_height</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_image</span><span class='o'>.</span><span class='n'>size</span>
-
-        <span class='c1'># SplitEnum up the multi-colored masks into multiple 0/1 bit masks</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_isolate_masks</span><span class='p'>()</span>
-
-        <span class='c1'># Create annotations from the masks</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_create_annotations</span><span class='p'>()</span>
-
-        <span class='k'>return</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>annotations</span></div>
-
-    <span class='k'>def</span> <span class='nf'>_isolate_masks</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='c1'># Breaks mask up into isolated masks based on color</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>isolated_masks</span> <span class='o'>=</span> <span class='nb'>dict</span><span class='p'>()</span>
-        <span class='k'>for</span> <span class='n'>x</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_width</span><span class='p'>):</span>
-            <span class='k'>for</span> <span class='n'>y</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_height</span><span class='p'>):</span>
-                <span class='n'>pixel_rgb</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_image</span><span class='o'>.</span><span class='n'>getpixel</span><span class='p'>((</span><span class='n'>x</span><span class='p'>,</span> <span class='n'>y</span><span class='p'>))</span>
-                <span class='n'>pixel_rgb_str</span> <span class='o'>=</span> <span class='nb'>str</span><span class='p'>(</span><span class='n'>pixel_rgb</span><span class='p'>)</span>
-
-                <span class='c1'># If the pixel is any color other than black, add it to a respective isolated image mask</span>
-                <span class='k'>if</span> <span class='ow'>not</span> <span class='n'>pixel_rgb</span> <span class='o'>==</span> <span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>):</span>
-                    <span class='k'>if</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>isolated_masks</span><span class='o'>.</span><span class='n'>get</span><span class='p'>(</span><span class='n'>pixel_rgb_str</span><span class='p'>)</span> <span class='ow'>is</span> <span class='kc'>None</span><span class='p'>:</span>
-                        <span class='c1'># Isolated mask doesn&#39;t have its own image yet, create one</span>
-                        <span class='c1'># with 1-bit pixels, default black. Make room for 1 pixel of</span>
-                        <span class='c1'># padding on each edge to allow the contours algorithm to work</span>
-                        <span class='c1'># when shapes bleed up to the edge</span>
-                        <span class='bp'>self</span><span class='o'>.</span><span class='n'>isolated_masks</span><span class='p'>[</span><span class='n'>pixel_rgb_str</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>Image</span><span class='o'>.</span><span class='n'>new</span><span class='p'>(</span>
-                            <span class='s2'>&quot;1&quot;</span><span class='p'>,</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_width</span> <span class='o'>+</span> <span class='mi'>2</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_height</span> <span class='o'>+</span> <span class='mi'>2</span><span class='p'>)</span>
-                        <span class='p'>)</span>
-
-                    <span class='c1'># Add the pixel to the mask image, shifting by 1 pixel to account for padding</span>
-                    <span class='bp'>self</span><span class='o'>.</span><span class='n'>isolated_masks</span><span class='p'>[</span><span class='n'>pixel_rgb_str</span><span class='p'>]</span><span class='o'>.</span><span class='n'>putpixel</span><span class='p'>((</span><span class='n'>x</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>,</span> <span class='n'>y</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>),</span> <span class='mi'>1</span><span class='p'>)</span>
-
-    <span class='k'>def</span> <span class='nf'>_create_annotations</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='kn'>from</span> <span class='nn'>shapely.geometry</span> <span class='kn'>import</span> <span class='n'>MultiPolygon</span><span class='p'>,</span> <span class='n'>Polygon</span>  <span class='c1'># pip install shapely</span>
-
-        <span class='c1'># Creates annotations for each isolated mask</span>
-
-        <span class='c1'># Each image may have multiple annotations, so create an array</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>annotations</span> <span class='o'>=</span> <span class='p'>[]</span>
-        <span class='k'>for</span> <span class='n'>key</span><span class='p'>,</span> <span class='n'>mask</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>isolated_masks</span><span class='o'>.</span><span class='n'>items</span><span class='p'>():</span>
-            <span class='n'>annotation</span> <span class='o'>=</span> <span class='nb'>dict</span><span class='p'>()</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;segmentation&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='p'>[]</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;iscrowd&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='mi'>0</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;image_id&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_image_id</span>
-            <span class='k'>if</span> <span class='ow'>not</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_category_ids</span><span class='o'>.</span><span class='n'>get</span><span class='p'>(</span><span class='n'>key</span><span class='p'>):</span>
-                <span class='nb'>print</span><span class='p'>(</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;category color not found: </span><span class='si'>{</span><span class='n'>key</span><span class='si'>}</span><span class='s2'>; check for missing category or antialiasing&quot;</span>
-                <span class='p'>)</span>
-                <span class='k'>continue</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;category_id&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_category_ids</span><span class='p'>[</span><span class='n'>key</span><span class='p'>]</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;id&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_next_annotation_id</span><span class='p'>()</span>
-
-            <span class='c1'># Find contours in the isolated mask</span>
-            <span class='n'>mask</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>asarray</span><span class='p'>(</span><span class='n'>mask</span><span class='p'>,</span> <span class='n'>dtype</span><span class='o'>=</span><span class='n'>numpy</span><span class='o'>.</span><span class='n'>float32</span><span class='p'>)</span>
-            <span class='n'>contours</span> <span class='o'>=</span> <span class='n'>measure</span><span class='o'>.</span><span class='n'>find_contours</span><span class='p'>(</span><span class='n'>mask</span><span class='p'>,</span> <span class='mf'>0.5</span><span class='p'>,</span> <span class='n'>positive_orientation</span><span class='o'>=</span><span class='s2'>&quot;low&quot;</span><span class='p'>)</span>
-
-            <span class='n'>polygons</span> <span class='o'>=</span> <span class='p'>[]</span>
-            <span class='k'>for</span> <span class='n'>contour</span> <span class='ow'>in</span> <span class='n'>contours</span><span class='p'>:</span>
-                <span class='c1'># Flip from (row, col) representation to (x, y)</span>
-                <span class='c1'># and subtract the padding pixel</span>
-                <span class='k'>for</span> <span class='n'>i</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='n'>contour</span><span class='p'>)):</span>
-                    <span class='n'>row</span><span class='p'>,</span> <span class='n'>col</span> <span class='o'>=</span> <span class='n'>contour</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]</span>
-                    <span class='n'>contour</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]</span> <span class='o'>=</span> <span class='p'>(</span><span class='n'>col</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>,</span> <span class='n'>row</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>)</span>
-
-                <span class='c1'># Make a polygon and simplify it</span>
-                <span class='n'>poly</span> <span class='o'>=</span> <span class='n'>Polygon</span><span class='p'>(</span><span class='n'>contour</span><span class='p'>)</span>
-                <span class='n'>poly</span> <span class='o'>=</span> <span class='n'>poly</span><span class='o'>.</span><span class='n'>simplify</span><span class='p'>(</span><span class='mf'>1.0</span><span class='p'>,</span> <span class='n'>preserve_topology</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>)</span>
-
-                <span class='k'>if</span> <span class='n'>poly</span><span class='o'>.</span><span class='n'>area</span> <span class='o'>&gt;</span> <span class='mi'>16</span><span class='p'>:</span>  <span class='c1'># Ignore tiny polygons</span>
-                    <span class='k'>if</span> <span class='n'>poly</span><span class='o'>.</span><span class='n'>geom_type</span> <span class='o'>==</span> <span class='s2'>&quot;MultiPolygon&quot;</span><span class='p'>:</span>
-                        <span class='c1'># if MultiPolygon, take the smallest convex Polygon containing all the points in the object</span>
-                        <span class='n'>poly</span> <span class='o'>=</span> <span class='n'>poly</span><span class='o'>.</span><span class='n'>convex_hull</span>
-
-                    <span class='k'>if</span> <span class='p'>(</span>
-                        <span class='n'>poly</span><span class='o'>.</span><span class='n'>geom_type</span> <span class='o'>==</span> <span class='s2'>&quot;Polygon&quot;</span>
-                    <span class='p'>):</span>  <span class='c1'># Ignore if still not a Polygon (could be a line or point)</span>
-                        <span class='n'>polygons</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>poly</span><span class='p'>)</span>
-                        <span class='n'>segmentation</span> <span class='o'>=</span> <span class='p'>(</span>
-                            <span class='n'>numpy</span><span class='o'>.</span><span class='n'>array</span><span class='p'>(</span><span class='n'>poly</span><span class='o'>.</span><span class='n'>exterior</span><span class='o'>.</span><span class='n'>coords</span><span class='p'>)</span><span class='o'>.</span><span class='n'>ravel</span><span class='p'>()</span><span class='o'>.</span><span class='n'>tolist</span><span class='p'>()</span>
-                        <span class='p'>)</span>
-                        <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;segmentation&quot;</span><span class='p'>]</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>segmentation</span><span class='p'>)</span>
-
-            <span class='k'>if</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>polygons</span><span class='p'>)</span> <span class='o'>==</span> <span class='mi'>0</span><span class='p'>:</span>
-                <span class='c1'># This item doesn&#39;t have any visible polygons, ignore it</span>
-                <span class='c1'># (This can happen if a randomly placed foreground is covered up</span>
-                <span class='c1'>#  by other foregrounds)</span>
-                <span class='k'>continue</span>
-
-            <span class='c1'># Combine the polygons to calculate the bounding box and area</span>
-            <span class='n'>multi_poly</span> <span class='o'>=</span> <span class='n'>MultiPolygon</span><span class='p'>(</span><span class='n'>polygons</span><span class='p'>)</span>
-            <span class='n'>x</span><span class='p'>,</span> <span class='n'>y</span><span class='p'>,</span> <span class='n'>max_x</span><span class='p'>,</span> <span class='n'>max_y</span> <span class='o'>=</span> <span class='n'>multi_poly</span><span class='o'>.</span><span class='n'>bounds</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>_width</span> <span class='o'>=</span> <span class='n'>max_x</span> <span class='o'>-</span> <span class='n'>x</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>_height</span> <span class='o'>=</span> <span class='n'>max_y</span> <span class='o'>-</span> <span class='n'>y</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;bbox&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='p'>(</span><span class='n'>x</span><span class='p'>,</span> <span class='n'>y</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_width</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_height</span><span class='p'>)</span>
-            <span class='n'>annotation</span><span class='p'>[</span><span class='s2'>&quot;area&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>multi_poly</span><span class='o'>.</span><span class='n'>area</span>
-
-            <span class='c1'># Finally, add this annotation to the list</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>annotations</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>annotation</span><span class='p'>)</span>
-
-    <span class='k'>def</span> <span class='nf'>_next_annotation_id</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='c1'># Gets the next annotation id</span>
-        <span class='c1'># Note: This is not a unique id. It simply starts at 0 and increments each time it is called</span>
-
-        <span class='n'>a_id</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>annotation_id_index</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>annotation_id_index</span> <span class='o'>+=</span> <span class='mi'>1</span>
-        <span class='k'>return</span> <span class='n'>a_id</span></div>
-
-
-<div class='viewcode-block' id='CocoJsonCreator'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator'>[docs]</a><span class='k'>class</span> <span class='nc'>CocoJsonCreator</span><span class='p'>:</span>
-<div class='viewcode-block' id='CocoJsonCreator.validate_and_process_args'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.validate_and_process_args'>[docs]</a>    <span class='k'>def</span> <span class='nf'>validate_and_process_args</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>args</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Validates the arguments coming in from the command line and performs</span>
-<span class='sd'>        initial processing</span>
-<span class='sd'>        Args:</span>
-<span class='sd'>        args: ArgumentParser arguments&quot;&quot;&quot;</span>
-        <span class='c1'># Validate the mask definition file exists</span>
-        <span class='n'>mask_definition_file</span> <span class='o'>=</span> <span class='n'>Path</span><span class='p'>(</span><span class='n'>args</span><span class='o'>.</span><span class='n'>mask_definition</span><span class='p'>)</span>
-        <span class='k'>if</span> <span class='ow'>not</span> <span class='p'>(</span><span class='n'>mask_definition_file</span><span class='o'>.</span><span class='n'>exists</span> <span class='ow'>and</span> <span class='n'>mask_definition_file</span><span class='o'>.</span><span class='n'>is_file</span><span class='p'>()):</span>
-            <span class='k'>raise</span> <span class='ne'>FileNotFoundError</span><span class='p'>(</span>
-                <span class='sa'>f</span><span class='s2'>&quot;mask definition file was not found: </span><span class='si'>{</span><span class='n'>mask_definition_file</span><span class='si'>}</span><span class='s2'>&quot;</span>
-            <span class='p'>)</span>
-
-        <span class='c1'># Load the mask definition json</span>
-        <span class='k'>with</span> <span class='nb'>open</span><span class='p'>(</span><span class='n'>mask_definition_file</span><span class='p'>)</span> <span class='k'>as</span> <span class='n'>json_file</span><span class='p'>:</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_definitions</span> <span class='o'>=</span> <span class='n'>json</span><span class='o'>.</span><span class='n'>load</span><span class='p'>(</span><span class='n'>json_file</span><span class='p'>)</span>
-
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_dir</span> <span class='o'>=</span> <span class='n'>mask_definition_file</span><span class='o'>.</span><span class='n'>parent</span>
-
-        <span class='c1'># Validate the dataset info file exists</span>
-        <span class='n'>dataset_info_file</span> <span class='o'>=</span> <span class='n'>Path</span><span class='p'>(</span><span class='n'>args</span><span class='o'>.</span><span class='n'>_dataset_info</span><span class='p'>)</span>
-        <span class='k'>if</span> <span class='ow'>not</span> <span class='p'>(</span><span class='n'>dataset_info_file</span><span class='o'>.</span><span class='n'>exists</span><span class='p'>()</span> <span class='ow'>and</span> <span class='n'>dataset_info_file</span><span class='o'>.</span><span class='n'>is_file</span><span class='p'>()):</span>
-            <span class='k'>raise</span> <span class='ne'>FileNotFoundError</span><span class='p'>(</span>
-                <span class='sa'>f</span><span class='s2'>&quot;dataset info file was not found: </span><span class='si'>{</span><span class='n'>dataset_info_file</span><span class='si'>}</span><span class='s2'>&quot;</span>
-            <span class='p'>)</span>
-
-        <span class='c1'># Load the dataset info json</span>
-        <span class='k'>with</span> <span class='nb'>open</span><span class='p'>(</span><span class='n'>dataset_info_file</span><span class='p'>)</span> <span class='k'>as</span> <span class='n'>json_file</span><span class='p'>:</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_info</span> <span class='o'>=</span> <span class='n'>json</span><span class='o'>.</span><span class='n'>load</span><span class='p'>(</span><span class='n'>json_file</span><span class='p'>)</span>
-
-        <span class='k'>assert</span> <span class='s2'>&quot;info&quot;</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_info</span><span class='p'>,</span> <span class='s1'>&#39;dataset_info JSON was missing &quot;info&quot;&#39;</span>
-        <span class='k'>assert</span> <span class='p'>(</span>
-            <span class='s2'>&quot;license&quot;</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_info</span>
-        <span class='p'>),</span> <span class='s1'>&#39;dataset_info JSON was missing &quot;license&quot;&#39;</span></div>
-
-<div class='viewcode-block' id='CocoJsonCreator.create_info'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_info'>[docs]</a>    <span class='k'>def</span> <span class='nf'>create_info</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Creates the &quot;info&quot; piece of the COCO json&quot;&quot;&quot;</span>
-        <span class='n'>info_json</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_info</span><span class='p'>[</span><span class='s2'>&quot;info&quot;</span><span class='p'>]</span>
-
-        <span class='k'>return</span> <span class='n'>NOD</span><span class='p'>(</span>
-            <span class='n'>description</span><span class='o'>=</span><span class='n'>info_json</span><span class='p'>[</span><span class='s2'>&quot;description&quot;</span><span class='p'>],</span>
-            <span class='n'>version</span><span class='o'>=</span><span class='n'>info_json</span><span class='p'>[</span><span class='s2'>&quot;version&quot;</span><span class='p'>],</span>
-            <span class='n'>url</span><span class='o'>=</span><span class='n'>info_json</span><span class='p'>[</span><span class='s2'>&quot;url&quot;</span><span class='p'>],</span>
-            <span class='n'>year</span><span class='o'>=</span><span class='n'>info_json</span><span class='p'>[</span><span class='s2'>&quot;year&quot;</span><span class='p'>],</span>
-            <span class='n'>contributor</span><span class='o'>=</span><span class='n'>info_json</span><span class='p'>[</span><span class='s2'>&quot;contributor&quot;</span><span class='p'>],</span>
-            <span class='n'>date_created</span><span class='o'>=</span><span class='n'>info_json</span><span class='p'>[</span><span class='s2'>&quot;date_created&quot;</span><span class='p'>],</span>
-        <span class='p'>)</span></div>
-
-<div class='viewcode-block' id='CocoJsonCreator.create_licenses'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_licenses'>[docs]</a>    <span class='k'>def</span> <span class='nf'>create_licenses</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Creates the &quot;license&quot; portion of the COCO json&quot;&quot;&quot;</span>
-        <span class='n'>license_json</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_info</span><span class='p'>[</span><span class='s2'>&quot;license&quot;</span><span class='p'>]</span>
-
-        <span class='k'>return</span> <span class='p'>[</span>
-            <span class='n'>NOD</span><span class='p'>(</span>
-                <span class='n'>url</span><span class='o'>=</span><span class='n'>license_json</span><span class='p'>[</span><span class='s2'>&quot;url&quot;</span><span class='p'>],</span>
-                <span class='nb'>id</span><span class='o'>=</span><span class='n'>license_json</span><span class='p'>[</span><span class='s2'>&quot;id&quot;</span><span class='p'>],</span>
-                <span class='n'>name</span><span class='o'>=</span><span class='n'>license_json</span><span class='p'>[</span><span class='s2'>&quot;name&quot;</span><span class='p'>],</span>
-            <span class='p'>)</span>
-        <span class='p'>]</span></div>
-
-<div class='viewcode-block' id='CocoJsonCreator.create_categories'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_categories'>[docs]</a>    <span class='k'>def</span> <span class='nf'>create_categories</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Creates the &quot;categories&quot; portion of the COCO json</span>
-<span class='sd'>        Returns:</span>
-<span class='sd'>        categories: category objects that become part of the final json</span>
-<span class='sd'>        category_ids_by_name: a lookup dictionary for category ids based</span>
-<span class='sd'>            on the name of the category&quot;&quot;&quot;</span>
-
-        <span class='n'>categories</span> <span class='o'>=</span> <span class='p'>[]</span>
-        <span class='n'>category_ids_by_name</span> <span class='o'>=</span> <span class='nb'>dict</span><span class='p'>()</span>
-        <span class='n'>category_id</span> <span class='o'>=</span> <span class='mi'>1</span>  <span class='c1'># 0 is reserved for the background</span>
-
-        <span class='n'>super_categories</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_definitions</span><span class='p'>[</span><span class='s2'>&quot;super_categories&quot;</span><span class='p'>]</span>
-        <span class='k'>for</span> <span class='n'>super_category</span><span class='p'>,</span> <span class='n'>_categories</span> <span class='ow'>in</span> <span class='n'>super_categories</span><span class='o'>.</span><span class='n'>items</span><span class='p'>():</span>
-            <span class='k'>for</span> <span class='n'>category_name</span> <span class='ow'>in</span> <span class='n'>_categories</span><span class='p'>:</span>
-                <span class='n'>categories</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
-                    <span class='n'>NOD</span><span class='p'>(</span>
-                        <span class='n'>supercategory</span><span class='o'>=</span><span class='n'>super_category</span><span class='p'>,</span> <span class='nb'>id</span><span class='o'>=</span><span class='n'>category_id</span><span class='p'>,</span> <span class='n'>name</span><span class='o'>=</span><span class='n'>category_name</span>
-                    <span class='p'>)</span>
-                <span class='p'>)</span>
-                <span class='n'>category_ids_by_name</span><span class='p'>[</span><span class='n'>category_name</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>category_id</span>
-                <span class='n'>category_id</span> <span class='o'>+=</span> <span class='mi'>1</span>
-
-        <span class='k'>return</span> <span class='n'>categories</span><span class='p'>,</span> <span class='n'>category_ids_by_name</span></div>
-
-<div class='viewcode-block' id='CocoJsonCreator.create_images_and_annotations'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_images_and_annotations'>[docs]</a>    <span class='k'>def</span> <span class='nf'>create_images_and_annotations</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>category_ids_by_name</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Creates the list of images (in json) and the annotations for each</span>
-<span class='sd'>        image for the &quot;image&quot; and &quot;annotations&quot; portions of the COCO json&quot;&quot;&quot;</span>
-
-        <span class='n'>aji</span> <span class='o'>=</span> <span class='n'>AnnotationJsonUtils</span><span class='p'>()</span>
-
-        <span class='n'>image_objs</span> <span class='o'>=</span> <span class='p'>[]</span>
-        <span class='n'>annotation_objs</span> <span class='o'>=</span> <span class='p'>[]</span>
-        <span class='n'>image_license</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_info</span><span class='p'>[</span><span class='s2'>&quot;license&quot;</span><span class='p'>][</span><span class='s2'>&quot;id&quot;</span><span class='p'>]</span>
-        <span class='n'>image_id</span> <span class='o'>=</span> <span class='mi'>0</span>
-
-        <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s1'>&#39;Processing </span><span class='si'>{</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_definitions</span><span class='p'>[</span><span class='s2'>&quot;masks&quot;</span><span class='p'>])</span><span class='si'>}</span><span class='s1'> mask definitions...&#39;</span><span class='p'>)</span>
-
-        <span class='c1'># For each mask definition, create image and annotations</span>
-        <span class='k'>for</span> <span class='n'>file_name</span><span class='p'>,</span> <span class='n'>mask_def</span> <span class='ow'>in</span> <span class='n'>tqdm</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_mask_definitions</span><span class='p'>[</span><span class='s2'>&quot;masks&quot;</span><span class='p'>]</span><span class='o'>.</span><span class='n'>items</span><span class='p'>()):</span>
-            <span class='c1'># Create a coco image json item</span>
-            <span class='n'>image_objs</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
-                <span class='n'>create_coco_image</span><span class='p'>(</span>
-                    <span class='n'>Path</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_dir</span><span class='p'>)</span> <span class='o'>/</span> <span class='n'>file_name</span><span class='p'>,</span> <span class='n'>image_id</span><span class='p'>,</span> <span class='n'>image_license</span>
-                <span class='p'>)</span>
-            <span class='p'>)</span>
-
-            <span class='c1'># Create a dict of category ids keyed by rgb_color</span>
-            <span class='n'>category_ids_by_rgb</span> <span class='o'>=</span> <span class='nb'>dict</span><span class='p'>()</span>
-            <span class='k'>for</span> <span class='n'>rgb_color</span><span class='p'>,</span> <span class='n'>category</span> <span class='ow'>in</span> <span class='n'>mask_def</span><span class='p'>[</span><span class='s2'>&quot;color_categories&quot;</span><span class='p'>]</span><span class='o'>.</span><span class='n'>items</span><span class='p'>():</span>
-                <span class='n'>category_ids_by_rgb</span><span class='p'>[</span><span class='n'>rgb_color</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>category_ids_by_name</span><span class='p'>[</span>
-                    <span class='n'>category</span><span class='p'>[</span><span class='s2'>&quot;category&quot;</span><span class='p'>]</span>
-                <span class='p'>]</span>
-
-            <span class='n'>annotation_obj</span> <span class='o'>=</span> <span class='n'>aji</span><span class='o'>.</span><span class='n'>create_coco_annotations</span><span class='p'>(</span>
-                <span class='n'>Path</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_dir</span><span class='p'>)</span> <span class='o'>/</span> <span class='n'>mask_def</span><span class='p'>[</span><span class='s2'>&quot;mask&quot;</span><span class='p'>],</span>
-                <span class='n'>image_id</span><span class='p'>,</span>
-                <span class='n'>category_ids_by_rgb</span><span class='p'>,</span>
-            <span class='p'>)</span>
-            <span class='n'>annotation_objs</span> <span class='o'>+=</span> <span class='p'>(</span>
-                <span class='n'>annotation_obj</span>  <span class='c1'># Add the new annotations to the existing list</span>
-            <span class='p'>)</span>
-            <span class='n'>image_id</span> <span class='o'>+=</span> <span class='mi'>1</span>
-
-        <span class='k'>return</span> <span class='n'>image_objs</span><span class='p'>,</span> <span class='n'>annotation_objs</span></div>
-
-    <span class='k'>def</span> <span class='fm'>__call__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>args</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        :param args:</span>
-<span class='sd'>        :type args:&quot;&quot;&quot;</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>validate_and_process_args</span><span class='p'>(</span><span class='n'>args</span><span class='p'>)</span>
-
-        <span class='n'>info</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>create_info</span><span class='p'>()</span>
-        <span class='n'>licenses</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>create_licenses</span><span class='p'>()</span>
-        <span class='n'>categories</span><span class='p'>,</span> <span class='n'>category_ids_by_name</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>create_categories</span><span class='p'>()</span>
-        <span class='n'>images</span><span class='p'>,</span> <span class='n'>annotations</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>create_images_and_annotations</span><span class='p'>(</span><span class='n'>category_ids_by_name</span><span class='p'>)</span>
-
-        <span class='n'>master_obj</span> <span class='o'>=</span> <span class='p'>{</span>
-            <span class='s2'>&quot;info&quot;</span><span class='p'>:</span> <span class='n'>info</span><span class='p'>,</span>
-            <span class='s2'>&quot;licenses&quot;</span><span class='p'>:</span> <span class='n'>licenses</span><span class='p'>,</span>
-            <span class='s2'>&quot;images&quot;</span><span class='p'>:</span> <span class='n'>images</span><span class='p'>,</span>
-            <span class='s2'>&quot;annotations&quot;</span><span class='p'>:</span> <span class='n'>annotations</span><span class='p'>,</span>
-            <span class='s2'>&quot;categories&quot;</span><span class='p'>:</span> <span class='n'>categories</span><span class='p'>,</span>
-        <span class='p'>}</span>
-
-        <span class='c1'># Write the json to a file</span>
-        <span class='n'>output_path</span> <span class='o'>=</span> <span class='n'>Path</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_dataset_dir</span><span class='p'>)</span> <span class='o'>/</span> <span class='s2'>&quot;coco_instances.json&quot;</span>
-        <span class='k'>with</span> <span class='nb'>open</span><span class='p'>(</span><span class='n'>output_path</span><span class='p'>,</span> <span class='s2'>&quot;w+&quot;</span><span class='p'>)</span> <span class='k'>as</span> <span class='n'>output_file</span><span class='p'>:</span>
-            <span class='n'>json</span><span class='o'>.</span><span class='n'>dump</span><span class='p'>(</span><span class='n'>master_obj</span><span class='p'>,</span> <span class='n'>output_file</span><span class='p'>)</span>
-
-        <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;Annotations successfully written to file:</span><span class='se'>\n</span><span class='si'>{</span><span class='n'>output_path</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span></div>
-
-
-<span class='k'>if</span> <span class='vm'>__name__</span> <span class='o'>==</span> <span class='s2'>&quot;__main__&quot;</span><span class='p'>:</span>
-    <span class='kn'>import</span> <span class='nn'>argparse</span>
-
-    <span class='n'>parser</span> <span class='o'>=</span> <span class='n'>argparse</span><span class='o'>.</span><span class='n'>ArgumentParser</span><span class='p'>(</span><span class='n'>description</span><span class='o'>=</span><span class='s2'>&quot;Generate COCO JSON&quot;</span><span class='p'>)</span>
-
-    <span class='n'>parser</span><span class='o'>.</span><span class='n'>add_argument</span><span class='p'>(</span>
-        <span class='s2'>&quot;-md&quot;</span><span class='p'>,</span>
-        <span class='s2'>&quot;--mask_definition&quot;</span><span class='p'>,</span>
-        <span class='n'>dest</span><span class='o'>=</span><span class='s2'>&quot;mask_definition&quot;</span><span class='p'>,</span>
-        <span class='n'>help</span><span class='o'>=</span><span class='s2'>&quot;path to a mask definition JSON file, generated by MaskJsonUtils module&quot;</span><span class='p'>,</span>
-    <span class='p'>)</span>
-    <span class='n'>parser</span><span class='o'>.</span><span class='n'>add_argument</span><span class='p'>(</span>
-        <span class='s2'>&quot;-di&quot;</span><span class='p'>,</span>
-        <span class='s2'>&quot;--dataset_info&quot;</span><span class='p'>,</span>
-        <span class='n'>dest</span><span class='o'>=</span><span class='s2'>&quot;dataset_info&quot;</span><span class='p'>,</span>
-        <span class='n'>help</span><span class='o'>=</span><span class='s2'>&quot;path to a dataset info JSON file&quot;</span><span class='p'>,</span>
-    <span class='p'>)</span>
-
-    <span class='n'>config</span> <span class='o'>=</span> <span class='n'>parser</span><span class='o'>.</span><span class='n'>parse_args</span><span class='p'>()</span>
-
-    <span class='n'>cjc</span> <span class='o'>=</span> <span class='n'>CocoJsonCreator</span><span class='p'>()</span>
-    <span class='n'>cjc</span><span class='p'>(</span><span class='n'>config</span><span class='p'>)</span>
-</pre>
-            </div>
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../../../" id="documentation_options" src="../../../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../../../_static/jquery.js"></script>
+    <script src="../../../../../../../_static/underscore.js"></script>
+    <script src="../../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/synthesis/conversion/mnist/json_generation/coco_json_utilities.html" />
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">           Created on 29/03/2020</span>
+<span class="s2">           &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+<span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">measure</span>
+<span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">NOD</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;create_coco_image&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AnnotationJsonUtils&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CocoJsonCreator&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="create_coco_image"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image">[docs]</a><span class="k">def</span> <span class="nf">create_coco_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">image_license</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates the &quot;image&quot; portion of COCO json&quot;&quot;&quot;</span>
+    <span class="c1"># Open the image and get the size</span>
+    <span class="n">image_file</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">image_file</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="k">return</span> <span class="n">NOD</span><span class="p">(</span>
+        <span class="n">license</span><span class="o">=</span><span class="n">image_license</span><span class="p">,</span>
+        <span class="n">file_name</span><span class="o">=</span><span class="n">image_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">image_id</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnotationJsonUtils"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils">[docs]</a><span class="k">class</span> <span class="nc">AnnotationJsonUtils</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Creates an annotation object to describe a COCO dataset&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AnnotationJsonUtils.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotation_id_index</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="AnnotationJsonUtils.create_coco_annotations"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.create_coco_annotations">[docs]</a>    <span class="k">def</span> <span class="nf">create_coco_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_mask_path</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">category_ids</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Takes a pixel-based RGB image mask and creates COCO annotations.</span>
+<span class="sd">        Args:</span>
+<span class="sd">        image_mask_path: a Path to the image mask</span>
+<span class="sd">        image_id: the integer image id</span>
+<span class="sd">        category_ids: a dictionary of integer category ids keyed by RGB color (a tuple converted to a string)</span>
+<span class="sd">            e.g. {&#39;(255, 0, 0)&#39;: {&#39;category&#39;: &#39;owl&#39;, &#39;super_category&#39;: &#39;bird&#39;} }</span>
+<span class="sd">        Returns:</span>
+<span class="sd">        annotations: a list of COCO annotation dictionaries that can</span>
+<span class="sd">        be converted to json. e.g.:</span>
+<span class="sd">        {</span>
+<span class="sd">            &quot;segmentation&quot;: [[101.79,307.32,69.75,281.11,...,100.05,309.66]],</span>
+<span class="sd">            &quot;area&quot;: 51241.3617,</span>
+<span class="sd">            &quot;iscrowd&quot;: 0,</span>
+<span class="sd">            &quot;image_id&quot;: 284725,</span>
+<span class="sd">            &quot;bbox&quot;: [68.01,134.89,433.41,174.77],</span>
+<span class="sd">            &quot;category_id&quot;: 6,</span>
+<span class="sd">            &quot;id&quot;: 165690</span>
+<span class="sd">        }&quot;&quot;&quot;</span>
+        <span class="c1"># Set class variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_category_ids</span> <span class="o">=</span> <span class="n">category_ids</span>
+
+        <span class="c1"># Make sure keys in category_ids are strings</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_category_ids</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s1">&#39;category_ids keys must be strings (e.g. &quot;(0, 0, 255)&quot;)&#39;</span>
+                <span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Open and process image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_mask_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_image</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="c1"># SplitEnum up the multi-colored masks into multiple 0/1 bit masks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isolate_masks</span><span class="p">()</span>
+
+        <span class="c1"># Create annotations from the masks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_annotations</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span></div>
+
+    <span class="k">def</span> <span class="nf">_isolate_masks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Breaks mask up into isolated masks based on color</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isolated_masks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">):</span>
+                <span class="n">pixel_rgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_image</span><span class="o">.</span><span class="n">getpixel</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+                <span class="n">pixel_rgb_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pixel_rgb</span><span class="p">)</span>
+
+                <span class="c1"># If the pixel is any color other than black, add it to a respective isolated image mask</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">pixel_rgb</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isolated_masks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pixel_rgb_str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># Isolated mask doesn&#39;t have its own image yet, create one</span>
+                        <span class="c1"># with 1-bit pixels, default black. Make room for 1 pixel of</span>
+                        <span class="c1"># padding on each edge to allow the contours algorithm to work</span>
+                        <span class="c1"># when shapes bleed up to the edge</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">isolated_masks</span><span class="p">[</span><span class="n">pixel_rgb_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+                            <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># Add the pixel to the mask image, shifting by 1 pixel to account for padding</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">isolated_masks</span><span class="p">[</span><span class="n">pixel_rgb_str</span><span class="p">]</span><span class="o">.</span><span class="n">putpixel</span><span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">MultiPolygon</span><span class="p">,</span> <span class="n">Polygon</span>  <span class="c1"># pip install shapely</span>
+
+        <span class="c1"># Creates annotations for each isolated mask</span>
+
+        <span class="c1"># Each image may have multiple annotations, so create an array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isolated_masks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">annotation</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;segmentation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;iscrowd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;image_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_id</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_category_ids</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;category color not found: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">; check for missing category or antialiasing&quot;</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;category_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_category_ids</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_annotation_id</span><span class="p">()</span>
+
+            <span class="c1"># Find contours in the isolated mask</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">contours</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">find_contours</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">positive_orientation</span><span class="o">=</span><span class="s2">&quot;low&quot;</span><span class="p">)</span>
+
+            <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">contour</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">:</span>
+                <span class="c1"># Flip from (row, col) representation to (x, y)</span>
+                <span class="c1"># and subtract the padding pixel</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">contour</span><span class="p">)):</span>
+                    <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">contour</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">contour</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">col</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># Make a polygon and simplify it</span>
+                <span class="n">poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+                <span class="n">poly</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">preserve_topology</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">area</span> <span class="o">&gt;</span> <span class="mi">16</span><span class="p">:</span>  <span class="c1"># Ignore tiny polygons</span>
+                    <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;MultiPolygon&quot;</span><span class="p">:</span>
+                        <span class="c1"># if MultiPolygon, take the smallest convex Polygon containing all the points in the object</span>
+                        <span class="n">poly</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">convex_hull</span>
+
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">poly</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Polygon&quot;</span>
+                    <span class="p">):</span>  <span class="c1"># Ignore if still not a Polygon (could be a line or point)</span>
+                        <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+                        <span class="n">segmentation</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">exterior</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                        <span class="p">)</span>
+                        <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;segmentation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segmentation</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># This item doesn&#39;t have any visible polygons, ignore it</span>
+                <span class="c1"># (This can happen if a randomly placed foreground is covered up</span>
+                <span class="c1">#  by other foregrounds)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Combine the polygons to calculate the bounding box and area</span>
+            <span class="n">multi_poly</span> <span class="o">=</span> <span class="n">MultiPolygon</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">multi_poly</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">max_x</span> <span class="o">-</span> <span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">max_y</span> <span class="o">-</span> <span class="n">y</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">multi_poly</span><span class="o">.</span><span class="n">area</span>
+
+            <span class="c1"># Finally, add this annotation to the list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_next_annotation_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Gets the next annotation id</span>
+        <span class="c1"># Note: This is not a unique id. It simply starts at 0 and increments each time it is called</span>
+
+        <span class="n">a_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotation_id_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotation_id_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">a_id</span></div>
+
+
+<div class="viewcode-block" id="CocoJsonCreator"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator">[docs]</a><span class="k">class</span> <span class="nc">CocoJsonCreator</span><span class="p">:</span>
+<div class="viewcode-block" id="CocoJsonCreator.validate_and_process_args"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.validate_and_process_args">[docs]</a>    <span class="k">def</span> <span class="nf">validate_and_process_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates the arguments coming in from the command line and performs</span>
+<span class="sd">        initial processing</span>
+<span class="sd">        Args:</span>
+<span class="sd">        args: ArgumentParser arguments&quot;&quot;&quot;</span>
+        <span class="c1"># Validate the mask definition file exists</span>
+        <span class="n">mask_definition_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">mask_definition</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">mask_definition_file</span><span class="o">.</span><span class="n">exists</span> <span class="ow">and</span> <span class="n">mask_definition_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;mask definition file was not found: </span><span class="si">{</span><span class="n">mask_definition_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Load the mask definition json</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mask_definition_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_definitions</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_dir</span> <span class="o">=</span> <span class="n">mask_definition_file</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="c1"># Validate the dataset info file exists</span>
+        <span class="n">dataset_info_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">_dataset_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">dataset_info_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dataset_info_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;dataset info file was not found: </span><span class="si">{</span><span class="n">dataset_info_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Load the dataset info json</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dataset_info_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="s2">&quot;info&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_info</span><span class="p">,</span> <span class="s1">&#39;dataset_info JSON was missing &quot;info&quot;&#39;</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="s2">&quot;license&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_info</span>
+        <span class="p">),</span> <span class="s1">&#39;dataset_info JSON was missing &quot;license&quot;&#39;</span></div>
+
+<div class="viewcode-block" id="CocoJsonCreator.create_info"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_info">[docs]</a>    <span class="k">def</span> <span class="nf">create_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the &quot;info&quot; piece of the COCO json&quot;&quot;&quot;</span>
+        <span class="n">info_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_info</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">NOD</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">info_json</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">info_json</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">],</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">info_json</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">info_json</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">],</span>
+            <span class="n">contributor</span><span class="o">=</span><span class="n">info_json</span><span class="p">[</span><span class="s2">&quot;contributor&quot;</span><span class="p">],</span>
+            <span class="n">date_created</span><span class="o">=</span><span class="n">info_json</span><span class="p">[</span><span class="s2">&quot;date_created&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CocoJsonCreator.create_licenses"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_licenses">[docs]</a>    <span class="k">def</span> <span class="nf">create_licenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the &quot;license&quot; portion of the COCO json&quot;&quot;&quot;</span>
+        <span class="n">license_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_info</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">NOD</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">license_json</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">license_json</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">license_json</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="CocoJsonCreator.create_categories"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_categories">[docs]</a>    <span class="k">def</span> <span class="nf">create_categories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the &quot;categories&quot; portion of the COCO json</span>
+<span class="sd">        Returns:</span>
+<span class="sd">        categories: category objects that become part of the final json</span>
+<span class="sd">        category_ids_by_name: a lookup dictionary for category ids based</span>
+<span class="sd">            on the name of the category&quot;&quot;&quot;</span>
+
+        <span class="n">categories</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">category_ids_by_name</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">category_id</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 0 is reserved for the background</span>
+
+        <span class="n">super_categories</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_definitions</span><span class="p">[</span><span class="s2">&quot;super_categories&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">super_category</span><span class="p">,</span> <span class="n">_categories</span> <span class="ow">in</span> <span class="n">super_categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">category_name</span> <span class="ow">in</span> <span class="n">_categories</span><span class="p">:</span>
+                <span class="n">categories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">NOD</span><span class="p">(</span>
+                        <span class="n">supercategory</span><span class="o">=</span><span class="n">super_category</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">category_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">category_name</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">category_ids_by_name</span><span class="p">[</span><span class="n">category_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">category_id</span>
+                <span class="n">category_id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">categories</span><span class="p">,</span> <span class="n">category_ids_by_name</span></div>
+
+<div class="viewcode-block" id="CocoJsonCreator.create_images_and_annotations"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.create_images_and_annotations">[docs]</a>    <span class="k">def</span> <span class="nf">create_images_and_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category_ids_by_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the list of images (in json) and the annotations for each</span>
+<span class="sd">        image for the &quot;image&quot; and &quot;annotations&quot; portions of the COCO json&quot;&quot;&quot;</span>
+
+        <span class="n">aji</span> <span class="o">=</span> <span class="n">AnnotationJsonUtils</span><span class="p">()</span>
+
+        <span class="n">image_objs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">annotation_objs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">image_license</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_info</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mask_definitions</span><span class="p">[</span><span class="s2">&quot;masks&quot;</span><span class="p">])</span><span class="si">}</span><span class="s1"> mask definitions...&#39;</span><span class="p">)</span>
+
+        <span class="c1"># For each mask definition, create image and annotations</span>
+        <span class="k">for</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">mask_def</span> <span class="ow">in</span> <span class="n">progress_bar</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_definitions</span><span class="p">[</span><span class="s2">&quot;masks&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="c1"># Create a coco image json item</span>
+            <span class="n">image_objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">create_coco_image</span><span class="p">(</span>
+                    <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">image_license</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Create a dict of category ids keyed by rgb_color</span>
+            <span class="n">category_ids_by_rgb</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">rgb_color</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">mask_def</span><span class="p">[</span><span class="s2">&quot;color_categories&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">category_ids_by_rgb</span><span class="p">[</span><span class="n">rgb_color</span><span class="p">]</span> <span class="o">=</span> <span class="n">category_ids_by_name</span><span class="p">[</span>
+                    <span class="n">category</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span>
+                <span class="p">]</span>
+
+            <span class="n">annotation_obj</span> <span class="o">=</span> <span class="n">aji</span><span class="o">.</span><span class="n">create_coco_annotations</span><span class="p">(</span>
+                <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">mask_def</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">],</span>
+                <span class="n">image_id</span><span class="p">,</span>
+                <span class="n">category_ids_by_rgb</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">annotation_objs</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="n">annotation_obj</span>  <span class="c1"># Add the new annotations to the existing list</span>
+            <span class="p">)</span>
+            <span class="n">image_id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">image_objs</span><span class="p">,</span> <span class="n">annotation_objs</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param args:</span>
+<span class="sd">        :type args:&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_and_process_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_info</span><span class="p">()</span>
+        <span class="n">licenses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_licenses</span><span class="p">()</span>
+        <span class="n">categories</span><span class="p">,</span> <span class="n">category_ids_by_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_categories</span><span class="p">()</span>
+        <span class="n">images</span><span class="p">,</span> <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_images_and_annotations</span><span class="p">(</span><span class="n">category_ids_by_name</span><span class="p">)</span>
+
+        <span class="n">master_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="n">info</span><span class="p">,</span>
+            <span class="s2">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">licenses</span><span class="p">,</span>
+            <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">images</span><span class="p">,</span>
+            <span class="s2">&quot;annotations&quot;</span><span class="p">:</span> <span class="n">annotations</span><span class="p">,</span>
+            <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="n">categories</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Write the json to a file</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;coco_instances.json&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">master_obj</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Annotations successfully written to file:</span><span class="se">\n</span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">argparse</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate COCO JSON&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-md&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--mask_definition&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;mask_definition&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;path to a mask definition JSON file, generated by MaskJsonUtils module&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-di&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--dataset_info&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;dataset_info&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;path to a dataset info JSON file&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">cjc</span> <span class="o">=</span> <span class="n">CocoJsonCreator</span><span class="p">()</span>
+    <span class="n">cjc</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../../../../../../../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../../../index.html">
+              <img class="logo" src="../../../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../../../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../../../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../../../../../../../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='../../../../../../index.html'>Module code</a>
-                    <ul>
-                      <li><a href='../../../../../../neodroidvision.html'>neodroidvision</a>
-                        <ul>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../../../../../../../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
 
+    
 
+    
   </body>
 </html>

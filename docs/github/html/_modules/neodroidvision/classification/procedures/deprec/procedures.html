@@ -1,365 +1,384 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>neodroidvision.classification.procedures.deprec.procedures &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../_static/graphviz.css'/>
-    <script data-url_root='../../../../../' id='documentation_options' src='../../../../../_static/documentation_options.js'></script>
-    <script src='../../../../../_static/jquery.js'></script>
-    <script src='../../../../../_static/underscore.js'></script>
-    <script src='../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../../../../../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/classification/procedures/deprec/procedures.html'/>
-    <link rel='index' title='Index' href='../../../../../genindex.html'/>
-    <link rel='search' title='Search' href='../../../../../search.html'/>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/classification/procedures/deprec/procedures.html" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel='stylesheet' href='../../../../../_static/custom.css' type='text/css'/>
+  </head><body>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.classification.procedures.deprec.procedures</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
 
-  </head>
-  <body>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 
+<span class="s2">           Created on 25/03/2020</span>
+<span class="s2">           &quot;&quot;&quot;</span>
 
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">draugr</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">rgb_drop_alpha_batch_nhwc</span><span class="p">,</span>
+    <span class="n">torch_vision_normalize_batch_nchw</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">draugr.numpy_utilities</span> <span class="kn">import</span> <span class="n">SplitEnum</span>
+<span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TorchEvalSession</span><span class="p">,</span>
+    <span class="n">TorchTrainSession</span><span class="p">,</span>
+    <span class="n">global_torch_device</span><span class="p">,</span>
+    <span class="n">to_tensor</span><span class="p">,</span>
+    <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+<span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span class="n">confusion_matrix_plot</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+<span class="kn">from</span> <span class="nn">munin.generate_report</span> <span class="kn">import</span> <span class="n">ReportEntry</span><span class="p">,</span> <span class="n">generate_html</span><span class="p">,</span> <span class="n">generate_pdf</span>
+<span class="kn">from</span> <span class="nn">munin.html_embeddings</span> <span class="kn">import</span> <span class="n">ReportFormatEnum</span><span class="p">,</span> <span class="n">generate_math_html</span><span class="p">,</span> <span class="n">plt_html</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.data.neodroid_environments.classification.data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">default_torch_retransform</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_recall_fscore_support</span>
+<span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">NOD</span>
 
-          <div class='body' role='main'>
-
-            <h1>Source code for neodroidvision.classification.procedures.deprec.procedures</h1>
-            <div class='highlight'><pre>
-<span></span><span class='kn'>import</span> <span class='nn'>copy</span>
-<span class='kn'>import</span> <span class='nn'>string</span>
-<span class='kn'>import</span> <span class='nn'>time</span>
-<span class='kn'>from</span> <span class='nn'>pathlib</span> <span class='kn'>import</span> <span class='n'>Path</span>
-
-<span class='kn'>import</span> <span class='nn'>numpy</span>
-<span class='kn'>import</span> <span class='nn'>torch</span>
-<span class='kn'>import</span> <span class='nn'>tqdm</span>
-<span class='kn'>from</span> <span class='nn'>draugr</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>rgb_drop_alpha_batch_nhwc</span><span class='p'>,</span>
-    <span class='n'>torch_vision_normalize_batch_nchw</span><span class='p'>,</span>
-<span class='p'>)</span>
-<span class='kn'>from</span> <span class='nn'>draugr.numpy_utilities</span> <span class='kn'>import</span> <span class='n'>SplitEnum</span>
-<span class='kn'>from</span> <span class='nn'>draugr.torch_utilities</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>TorchEvalSession</span><span class='p'>,</span>
-    <span class='n'>TorchTrainSession</span><span class='p'>,</span>
-    <span class='n'>global_torch_device</span><span class='p'>,</span>
-    <span class='n'>to_tensor</span><span class='p'>,</span>
-    <span class='n'>uint_hwc_to_chw_float_tensor</span><span class='p'>,</span>
-<span class='p'>)</span>
-<span class='kn'>from</span> <span class='nn'>draugr.visualisation</span> <span class='kn'>import</span> <span class='n'>confusion_matrix_plot</span>
-<span class='kn'>from</span> <span class='nn'>matplotlib</span> <span class='kn'>import</span> <span class='n'>pyplot</span>
-<span class='kn'>from</span> <span class='nn'>munin.generate_report</span> <span class='kn'>import</span> <span class='n'>ReportEntry</span><span class='p'>,</span> <span class='n'>generate_html</span><span class='p'>,</span> <span class='n'>generate_pdf</span>
-<span class='kn'>from</span> <span class='nn'>munin.utilities.html_embeddings</span> <span class='kn'>import</span> <span class='n'>plt_html</span><span class='p'>,</span> <span class='n'>generate_math_html</span>
-<span class='kn'>from</span> <span class='nn'>sklearn.metrics</span> <span class='kn'>import</span> <span class='n'>accuracy_score</span><span class='p'>,</span> <span class='n'>precision_recall_fscore_support</span>
-<span class='kn'>from</span> <span class='nn'>warg</span> <span class='kn'>import</span> <span class='n'>NOD</span>
-
-<span class='kn'>from</span> <span class='nn'>neodroidvision.data.neodroid_environments.classification.data</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>default_torch_retransform</span><span class='p'>,</span>
-<span class='p'>)</span>
-
-<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;test_model&quot;</span><span class='p'>,</span> <span class='s2'>&quot;predictor_response_train_model_neodroid_observations&quot;</span><span class='p'>]</span>
-
-
-<div class='viewcode-block' id='test_model'><a class='viewcode-back' href='../../../../../generated/neodroidvision.classification.procedures.deprec.procedures.test_model.html#neodroidvision.classification.procedures.deprec.procedures.test_model'>[docs]</a><span class='k'>def</span> <span class='nf'>test_model</span><span class='p'>(</span><span class='n'>model</span><span class='p'>,</span> <span class='n'>data_iterator</span><span class='p'>,</span> <span class='n'>latest_model_path</span><span class='p'>,</span> <span class='n'>num_columns</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>2</span><span class='p'>):</span>
-    <span class='n'>model</span> <span class='o'>=</span> <span class='n'>model</span><span class='o'>.</span><span class='n'>eval</span><span class='p'>()</span><span class='o'>.</span><span class='n'>to</span><span class='p'>(</span><span class='n'>global_torch_device</span><span class='p'>())</span>
-
-    <span class='n'>inputs</span><span class='p'>,</span> <span class='n'>labels</span> <span class='o'>=</span> <span class='nb'>next</span><span class='p'>(</span><span class='n'>data_iterator</span><span class='p'>)</span>
-
-    <span class='n'>inputs</span> <span class='o'>=</span> <span class='n'>inputs</span><span class='o'>.</span><span class='n'>to</span><span class='p'>(</span><span class='n'>global_torch_device</span><span class='p'>())</span>
-    <span class='n'>labels</span> <span class='o'>=</span> <span class='n'>labels</span><span class='o'>.</span><span class='n'>to</span><span class='p'>(</span><span class='n'>global_torch_device</span><span class='p'>())</span>
-    <span class='k'>with</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>no_grad</span><span class='p'>():</span>
-        <span class='n'>pred</span> <span class='o'>=</span> <span class='n'>model</span><span class='p'>(</span><span class='n'>inputs</span><span class='p'>)</span>
-
-    <span class='n'>y_pred</span> <span class='o'>=</span> <span class='n'>pred</span><span class='o'>.</span><span class='n'>data</span><span class='o'>.</span><span class='n'>to</span><span class='p'>(</span><span class='s2'>&quot;cpu&quot;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>numpy</span><span class='p'>()</span>
-    <span class='n'>y_pred_max</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>argmax</span><span class='p'>(</span><span class='n'>y_pred</span><span class='p'>,</span> <span class='n'>axis</span><span class='o'>=-</span><span class='mi'>1</span><span class='p'>)</span>
-    <span class='n'>accuracy_w</span> <span class='o'>=</span> <span class='n'>accuracy_score</span><span class='p'>(</span><span class='n'>labels</span><span class='p'>,</span> <span class='n'>y_pred_max</span><span class='p'>)</span>
-    <span class='n'>precision_a</span><span class='p'>,</span> <span class='n'>recall_a</span><span class='p'>,</span> <span class='n'>fscore_a</span><span class='p'>,</span> <span class='n'>support_a</span> <span class='o'>=</span> <span class='n'>precision_recall_fscore_support</span><span class='p'>(</span>
-        <span class='n'>labels</span><span class='p'>,</span> <span class='n'>y_pred_max</span>
-    <span class='p'>)</span>
-    <span class='n'>precision_w</span><span class='p'>,</span> <span class='n'>recall_w</span><span class='p'>,</span> <span class='n'>fscore_w</span><span class='p'>,</span> <span class='n'>support_w</span> <span class='o'>=</span> <span class='n'>precision_recall_fscore_support</span><span class='p'>(</span>
-        <span class='n'>labels</span><span class='p'>,</span> <span class='n'>y_pred_max</span><span class='p'>,</span> <span class='n'>average</span><span class='o'>=</span><span class='s2'>&quot;weighted&quot;</span>
-    <span class='p'>)</span>
-
-    <span class='n'>_</span><span class='p'>,</span> <span class='n'>predicted</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>max</span><span class='p'>(</span><span class='n'>pred</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>)</span>
-
-    <span class='n'>truth_labels</span> <span class='o'>=</span> <span class='n'>labels</span><span class='o'>.</span><span class='n'>data</span><span class='o'>.</span><span class='n'>to</span><span class='p'>(</span><span class='s2'>&quot;cpu&quot;</span><span class='p'>)</span><span class='o'>.</span><span class='n'>numpy</span><span class='p'>()</span>
-
-    <span class='n'>input_images_rgb</span> <span class='o'>=</span> <span class='p'>[</span>
-        <span class='n'>default_torch_retransform</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span> <span class='k'>for</span> <span class='n'>x</span> <span class='ow'>in</span> <span class='n'>inputs</span><span class='o'>.</span><span class='n'>to</span><span class='p'>(</span><span class='n'>global_torch_device</span><span class='p'>())</span>
-    <span class='p'>]</span>
-
-    <span class='n'>cell_width</span> <span class='o'>=</span> <span class='p'>(</span><span class='mi'>800</span> <span class='o'>/</span> <span class='n'>num_columns</span><span class='p'>)</span> <span class='o'>-</span> <span class='mi'>6</span> <span class='o'>-</span> <span class='mi'>6</span> <span class='o'>*</span> <span class='mi'>2</span>
-
-    <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>plot</span><span class='p'>(</span><span class='n'>numpy</span><span class='o'>.</span><span class='n'>random</span><span class='o'>.</span><span class='n'>random</span><span class='p'>((</span><span class='mi'>3</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>)))</span>
-
-    <span class='n'>alphabet</span> <span class='o'>=</span> <span class='n'>string</span><span class='o'>.</span><span class='n'>ascii_lowercase</span>
-    <span class='n'>class_names</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>array</span><span class='p'>([</span><span class='o'>*</span><span class='n'>alphabet</span><span class='p'>])</span>
-
-    <span class='n'>samples</span> <span class='o'>=</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>y_pred</span><span class='p'>)</span>
-    <span class='n'>predictions</span> <span class='o'>=</span> <span class='p'>[</span>
-        <span class='p'>[</span><span class='kc'>None</span> <span class='k'>for</span> <span class='n'>_</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='n'>num_columns</span><span class='p'>)]</span> <span class='k'>for</span> <span class='n'>_</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='n'>samples</span> <span class='o'>//</span> <span class='n'>num_columns</span><span class='p'>)</span>
-    <span class='p'>]</span>
-    <span class='k'>for</span> <span class='n'>i</span><span class='p'>,</span> <span class='n'>a</span><span class='p'>,</span> <span class='n'>b</span><span class='p'>,</span> <span class='n'>c</span> <span class='ow'>in</span> <span class='nb'>zip</span><span class='p'>(</span><span class='nb'>range</span><span class='p'>(</span><span class='n'>samples</span><span class='p'>),</span> <span class='n'>input_images_rgb</span><span class='p'>,</span> <span class='n'>y_pred_max</span><span class='p'>,</span> <span class='n'>truth_labels</span><span class='p'>):</span>
-        <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>imshow</span><span class='p'>(</span><span class='n'>a</span><span class='p'>)</span>
-        <span class='k'>if</span> <span class='n'>b</span> <span class='o'>==</span> <span class='n'>c</span><span class='p'>:</span>
-            <span class='n'>outcome</span> <span class='o'>=</span> <span class='s2'>&quot;tp&quot;</span>
-        <span class='k'>else</span><span class='p'>:</span>
-            <span class='n'>outcome</span> <span class='o'>=</span> <span class='s2'>&quot;fn&quot;</span>
-
-        <span class='n'>gd</span> <span class='o'>=</span> <span class='n'>ReportEntry</span><span class='p'>(</span>
-            <span class='n'>name</span><span class='o'>=</span><span class='n'>i</span><span class='p'>,</span>
-            <span class='n'>figure</span><span class='o'>=</span><span class='n'>plt_html</span><span class='p'>(</span><span class='nb'>format</span><span class='o'>=</span><span class='s2'>&quot;jpg&quot;</span><span class='p'>,</span> <span class='n'>size</span><span class='o'>=</span><span class='p'>[</span><span class='n'>cell_width</span><span class='p'>,</span> <span class='n'>cell_width</span><span class='p'>]),</span>
-            <span class='n'>prediction</span><span class='o'>=</span><span class='n'>class_names</span><span class='p'>[</span><span class='n'>b</span><span class='p'>],</span>
-            <span class='n'>truth</span><span class='o'>=</span><span class='n'>class_names</span><span class='p'>[</span><span class='n'>c</span><span class='p'>],</span>
-            <span class='n'>outcome</span><span class='o'>=</span><span class='n'>outcome</span><span class='p'>,</span>
-            <span class='n'>explanation</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span>
-        <span class='p'>)</span>
-
-        <span class='n'>predictions</span><span class='p'>[</span><span class='n'>i</span> <span class='o'>//</span> <span class='n'>num_columns</span><span class='p'>][</span><span class='n'>i</span> <span class='o'>%</span> <span class='n'>num_columns</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>gd</span>
-
-    <span class='n'>confusion_matrix_plot</span><span class='p'>(</span><span class='n'>y_pred_max</span><span class='p'>,</span> <span class='n'>truth_labels</span><span class='p'>,</span> <span class='n'>class_names</span><span class='p'>)</span>
-
-    <span class='n'>title</span> <span class='o'>=</span> <span class='s2'>&quot;Classification Report&quot;</span>
-    <span class='n'>model_name</span> <span class='o'>=</span> <span class='n'>latest_model_path</span>
-    <span class='n'>confusion_matrix</span> <span class='o'>=</span> <span class='n'>plt_html</span><span class='p'>(</span><span class='nb'>format</span><span class='o'>=</span><span class='s2'>&quot;png&quot;</span><span class='p'>,</span> <span class='n'>size</span><span class='o'>=</span><span class='p'>[</span><span class='mi'>800</span><span class='p'>,</span> <span class='mi'>800</span><span class='p'>])</span>
-
-    <span class='n'>accuracy</span> <span class='o'>=</span> <span class='n'>generate_math_html</span><span class='p'>(</span><span class='s2'>&quot;\dfrac{tp+tn}</span><span class='si'>{N}</span><span class='s2'>&quot;</span><span class='p'>),</span> <span class='kc'>None</span><span class='p'>,</span> <span class='n'>accuracy_w</span>
-    <span class='n'>precision</span> <span class='o'>=</span> <span class='n'>generate_math_html</span><span class='p'>(</span><span class='s2'>&quot;\dfrac</span><span class='si'>{tp}</span><span class='s2'>{tp+fp}&quot;</span><span class='p'>),</span> <span class='n'>precision_a</span><span class='p'>,</span> <span class='n'>precision_w</span>
-    <span class='n'>recall</span> <span class='o'>=</span> <span class='n'>generate_math_html</span><span class='p'>(</span><span class='s2'>&quot;\dfrac</span><span class='si'>{tp}</span><span class='s2'>{tp+fn}&quot;</span><span class='p'>),</span> <span class='n'>recall_a</span><span class='p'>,</span> <span class='n'>recall_w</span>
-    <span class='n'>f1_score</span> <span class='o'>=</span> <span class='p'>(</span>
-        <span class='n'>generate_math_html</span><span class='p'>(</span><span class='s2'>&quot;2*\dfrac{precision*recall}{precision+recall}&quot;</span><span class='p'>),</span>
-        <span class='n'>fscore_a</span><span class='p'>,</span>
-        <span class='n'>fscore_w</span><span class='p'>,</span>
-    <span class='p'>)</span>
-    <span class='n'>support</span> <span class='o'>=</span> <span class='n'>generate_math_html</span><span class='p'>(</span><span class='s2'>&quot;N_</span><span class='si'>{class_truth}</span><span class='s2'>&quot;</span><span class='p'>),</span> <span class='n'>support_a</span><span class='p'>,</span> <span class='n'>support_w</span>
-    <span class='n'>metrics</span> <span class='o'>=</span> <span class='n'>NOD</span><span class='o'>.</span><span class='n'>nod_of</span><span class='p'>(</span>
-        <span class='n'>accuracy</span><span class='p'>,</span> <span class='n'>precision</span><span class='p'>,</span> <span class='n'>f1_score</span><span class='p'>,</span> <span class='n'>recall</span><span class='p'>,</span> <span class='n'>support</span>
-    <span class='p'>)</span><span class='o'>.</span><span class='n'>as_flat_tuples</span><span class='p'>()</span>
-
-    <span class='n'>bundle</span> <span class='o'>=</span> <span class='n'>NOD</span><span class='o'>.</span><span class='n'>nod_of</span><span class='p'>(</span><span class='n'>title</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>,</span> <span class='n'>confusion_matrix</span><span class='p'>,</span> <span class='n'>metrics</span><span class='p'>,</span> <span class='n'>predictions</span><span class='p'>)</span>
-
-    <span class='n'>file_name</span> <span class='o'>=</span> <span class='n'>Path</span><span class='p'>(</span><span class='n'>title</span><span class='o'>.</span><span class='n'>lower</span><span class='p'>()</span><span class='o'>.</span><span class='n'>replace</span><span class='p'>(</span><span class='s2'>&quot; &quot;</span><span class='p'>,</span> <span class='s2'>&quot;_&quot;</span><span class='p'>))</span>
-
-    <span class='n'>generate_html</span><span class='p'>(</span><span class='n'>file_name</span><span class='o'>.</span><span class='n'>with_suffix</span><span class='p'>(</span><span class='s2'>&quot;.html&quot;</span><span class='p'>),</span> <span class='o'>**</span><span class='n'>bundle</span><span class='p'>)</span>
-    <span class='n'>generate_pdf</span><span class='p'>(</span><span class='n'>file_name</span><span class='o'>.</span><span class='n'>with_suffix</span><span class='p'>(</span><span class='s2'>&quot;.html&quot;</span><span class='p'>),</span> <span class='n'>file_name</span><span class='o'>.</span><span class='n'>with_suffix</span><span class='p'>(</span><span class='s2'>&quot;.pdf&quot;</span><span class='p'>))</span></div>
-
-    <span class='c1'># plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, prediction)</span>
-    <span class='c1'># pyplot.show()</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;test_model&quot;</span><span class="p">,</span> <span class="s2">&quot;predictor_response_train_model_neodroid_observations&quot;</span><span class="p">]</span>
 
 
-<div class='viewcode-block' id='predictor_response_train_model_neodroid_observations'><a class='viewcode-back' href='../../../../../generated/neodroidvision.classification.procedures.deprec.procedures.predictor_response_train_model_neodroid_observations.html#neodroidvision.classification.procedures.deprec.procedures.predictor_response_train_model_neodroid_observations'>[docs]</a><span class='k'>def</span> <span class='nf'>predictor_response_train_model_neodroid_observations</span><span class='p'>(</span>
-    <span class='n'>model</span><span class='p'>,</span>
-    <span class='o'>*</span><span class='p'>,</span>
-    <span class='n'>train_iterator</span><span class='p'>,</span>
-    <span class='n'>criterion</span><span class='p'>,</span>
-    <span class='n'>optimiser</span><span class='p'>,</span>
-    <span class='n'>scheduler</span><span class='p'>,</span>
-    <span class='n'>writer</span><span class='p'>,</span>
-    <span class='n'>interrupted_path</span><span class='p'>,</span>
-    <span class='n'>val_data_iterator</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span>
-    <span class='n'>num_updates</span><span class='p'>:</span> <span class='nb'>int</span> <span class='o'>=</span> <span class='mi'>250000</span><span class='p'>,</span>
-    <span class='n'>device</span><span class='o'>=</span><span class='n'>global_torch_device</span><span class='p'>(),</span>
-    <span class='n'>early_stop</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span>
-<span class='p'>):</span>
-    <span class='sd'>&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="test_model"><a class="viewcode-back" href="../../../../../generated/neodroidvision.classification.procedures.deprec.procedures.test_model.html#neodroidvision.classification.procedures.deprec.procedures.test_model">[docs]</a><span class="k">def</span> <span class="nf">test_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_iterator</span><span class="p">,</span> <span class="n">latest_model_path</span><span class="p">,</span> <span class="n">num_columns</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">global_torch_device</span><span class="p">())</span>
 
-<span class='sd'>    Args:</span>
-<span class='sd'>      model:</span>
-<span class='sd'>      train_iterator:</span>
-<span class='sd'>      criterion:</span>
-<span class='sd'>      optimiser:</span>
-<span class='sd'>      scheduler:</span>
-<span class='sd'>      writer:</span>
-<span class='sd'>      interrupted_path:</span>
-<span class='sd'>      val_data_iterator:</span>
-<span class='sd'>      num_updates:</span>
-<span class='sd'>      device:</span>
-<span class='sd'>      early_stop:</span>
+    <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">data_iterator</span><span class="p">)</span>
 
-<span class='sd'>    Returns:</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">global_torch_device</span><span class="p">())</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">global_torch_device</span><span class="p">())</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
-<span class='sd'>    &quot;&quot;&quot;</span>
-    <span class='n'>best_model_wts</span> <span class='o'>=</span> <span class='n'>copy</span><span class='o'>.</span><span class='n'>deepcopy</span><span class='p'>(</span><span class='n'>model</span><span class='o'>.</span><span class='n'>state_dict</span><span class='p'>())</span>
-    <span class='n'>best_val_loss</span> <span class='o'>=</span> <span class='mf'>1e10</span>
-    <span class='n'>since</span> <span class='o'>=</span> <span class='n'>time</span><span class='o'>.</span><span class='n'>time</span><span class='p'>()</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">y_pred_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">accuracy_w</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">y_pred_max</span><span class="p">)</span>
+    <span class="n">precision_a</span><span class="p">,</span> <span class="n">recall_a</span><span class="p">,</span> <span class="n">fscore_a</span><span class="p">,</span> <span class="n">support_a</span> <span class="o">=</span> <span class="n">precision_recall_fscore_support</span><span class="p">(</span>
+        <span class="n">labels</span><span class="p">,</span> <span class="n">y_pred_max</span>
+    <span class="p">)</span>
+    <span class="n">precision_w</span><span class="p">,</span> <span class="n">recall_w</span><span class="p">,</span> <span class="n">fscore_w</span><span class="p">,</span> <span class="n">support_w</span> <span class="o">=</span> <span class="n">precision_recall_fscore_support</span><span class="p">(</span>
+        <span class="n">labels</span><span class="p">,</span> <span class="n">y_pred_max</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;weighted&quot;</span>
+    <span class="p">)</span>
 
-    <span class='k'>try</span><span class='p'>:</span>
-        <span class='n'>sess</span> <span class='o'>=</span> <span class='n'>tqdm</span><span class='o'>.</span><span class='n'>tqdm</span><span class='p'>(</span><span class='nb'>range</span><span class='p'>(</span><span class='n'>num_updates</span><span class='p'>),</span> <span class='n'>leave</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>,</span> <span class='n'>disable</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>)</span>
-        <span class='n'>val_loss</span> <span class='o'>=</span> <span class='mi'>0</span>
-        <span class='n'>update_loss</span> <span class='o'>=</span> <span class='mi'>0</span>
-        <span class='n'>val_acc</span> <span class='o'>=</span> <span class='mi'>0</span>
-        <span class='n'>last_val</span> <span class='o'>=</span> <span class='kc'>None</span>
-        <span class='n'>last_out</span> <span class='o'>=</span> <span class='kc'>None</span>
-        <span class='k'>with</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>autograd</span><span class='o'>.</span><span class='n'>detect_anomaly</span><span class='p'>():</span>
-            <span class='k'>for</span> <span class='n'>update_i</span> <span class='ow'>in</span> <span class='n'>sess</span><span class='p'>:</span>
-                <span class='k'>for</span> <span class='n'>phase</span> <span class='ow'>in</span> <span class='p'>[</span><span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>training</span><span class='p'>,</span> <span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>validation</span><span class='p'>]:</span>
-                    <span class='k'>if</span> <span class='n'>phase</span> <span class='o'>==</span> <span class='n'>SplitEnum</span><span class='o'>.</span><span class='n'>training</span><span class='p'>:</span>
-                        <span class='k'>with</span> <span class='n'>TorchTrainSession</span><span class='p'>(</span><span class='n'>model</span><span class='p'>):</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">predicted</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-                            <span class='nb'>input</span><span class='p'>,</span> <span class='n'>true_label</span> <span class='o'>=</span> <span class='nb'>zip</span><span class='p'>(</span><span class='o'>*</span><span class='nb'>next</span><span class='p'>(</span><span class='n'>train_iterator</span><span class='p'>))</span>
+    <span class="n">truth_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
-                            <span class='n'>rgb_imgs</span> <span class='o'>=</span> <span class='n'>torch_vision_normalize_batch_nchw</span><span class='p'>(</span>
-                                <span class='n'>uint_hwc_to_chw_float_tensor</span><span class='p'>(</span>
-                                    <span class='n'>rgb_drop_alpha_batch_nhwc</span><span class='p'>(</span><span class='n'>to_tensor</span><span class='p'>(</span><span class='nb'>input</span><span class='p'>))</span>
-                                <span class='p'>)</span>
-                            <span class='p'>)</span>
-                            <span class='n'>true_label</span> <span class='o'>=</span> <span class='n'>to_tensor</span><span class='p'>(</span>
-                                <span class='n'>true_label</span><span class='p'>,</span> <span class='n'>dtype</span><span class='o'>=</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>long</span><span class='p'>,</span> <span class='n'>device</span><span class='o'>=</span><span class='n'>device</span>
-                            <span class='p'>)</span>
-                            <span class='n'>optimiser</span><span class='o'>.</span><span class='n'>zero_grad</span><span class='p'>()</span>
+    <span class="n">input_images_rgb</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">default_torch_retransform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">global_torch_device</span><span class="p">())</span>
+    <span class="p">]</span>
 
-                            <span class='n'>pred</span> <span class='o'>=</span> <span class='n'>model</span><span class='p'>(</span><span class='n'>rgb_imgs</span><span class='p'>)</span>
-                            <span class='n'>loss</span> <span class='o'>=</span> <span class='n'>criterion</span><span class='p'>(</span><span class='n'>pred</span><span class='p'>,</span> <span class='n'>true_label</span><span class='p'>)</span>
-                            <span class='n'>loss</span><span class='o'>.</span><span class='n'>backward</span><span class='p'>()</span>
-                            <span class='n'>optimiser</span><span class='o'>.</span><span class='n'>step</span><span class='p'>()</span>
+    <span class="n">cell_width</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span> <span class="o">/</span> <span class="n">num_columns</span><span class="p">)</span> <span class="o">-</span> <span class="mi">6</span> <span class="o">-</span> <span class="mi">6</span> <span class="o">*</span> <span class="mi">2</span>
 
-                            <span class='k'>if</span> <span class='n'>last_out</span> <span class='ow'>is</span> <span class='kc'>None</span><span class='p'>:</span>
-                                <span class='n'>last_out</span> <span class='o'>=</span> <span class='n'>pred</span>
-                            <span class='k'>else</span><span class='p'>:</span>
-                                <span class='k'>if</span> <span class='ow'>not</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>dist</span><span class='p'>(</span><span class='n'>last_out</span><span class='p'>,</span> <span class='n'>pred</span><span class='p'>)</span> <span class='o'>&gt;</span> <span class='mi'>0</span><span class='p'>:</span>
-                                    <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;Same output</span><span class='si'>{</span><span class='n'>last_out</span><span class='si'>}</span><span class='s2'>,</span><span class='si'>{</span><span class='n'>pred</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span>
-                                <span class='n'>last_out</span> <span class='o'>=</span> <span class='n'>pred</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
 
-                            <span class='n'>update_loss</span> <span class='o'>=</span> <span class='n'>loss</span><span class='o'>.</span><span class='n'>data</span><span class='o'>.</span><span class='n'>cpu</span><span class='p'>()</span><span class='o'>.</span><span class='n'>numpy</span><span class='p'>()</span>
-                            <span class='n'>writer</span><span class='o'>.</span><span class='n'>scalar</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;loss/train&quot;</span><span class='p'>,</span> <span class='n'>update_loss</span><span class='p'>,</span> <span class='n'>update_i</span><span class='p'>)</span>
+    <span class="n">alphabet</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span>
+    <span class="n">class_names</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="n">alphabet</span><span class="p">])</span>
 
-                            <span class='k'>if</span> <span class='n'>scheduler</span><span class='p'>:</span>
-                                <span class='n'>scheduler</span><span class='o'>.</span><span class='n'>step</span><span class='p'>()</span>
-                    <span class='k'>elif</span> <span class='n'>val_data_iterator</span><span class='p'>:</span>
-                        <span class='k'>with</span> <span class='n'>TorchEvalSession</span><span class='p'>(</span><span class='n'>model</span><span class='p'>):</span>
-                            <span class='n'>test_rgb_imgs</span><span class='p'>,</span> <span class='n'>test_true_label</span> <span class='o'>=</span> <span class='nb'>zip</span><span class='p'>(</span>
-                                <span class='o'>*</span><span class='nb'>next</span><span class='p'>(</span><span class='n'>val_data_iterator</span><span class='p'>)</span>
-                            <span class='p'>)</span>
-                            <span class='n'>test_rgb_imgs</span> <span class='o'>=</span> <span class='n'>torch_vision_normalize_batch_nchw</span><span class='p'>(</span>
-                                <span class='n'>uint_hwc_to_chw_float_tensor</span><span class='p'>(</span>
-                                    <span class='n'>rgb_drop_alpha_batch_nhwc</span><span class='p'>(</span><span class='n'>to_tensor</span><span class='p'>(</span><span class='n'>test_rgb_imgs</span><span class='p'>))</span>
-                                <span class='p'>)</span>
-                            <span class='p'>)</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_columns</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">samples</span> <span class="o">//</span> <span class="n">num_columns</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="n">input_images_rgb</span><span class="p">,</span> <span class="n">y_pred_max</span><span class="p">,</span> <span class="n">truth_labels</span><span class="p">):</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="s2">&quot;tp&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="s2">&quot;fn&quot;</span>
 
-                            <span class='n'>test_true_label</span> <span class='o'>=</span> <span class='n'>to_tensor</span><span class='p'>(</span>
-                                <span class='n'>test_true_label</span><span class='p'>,</span> <span class='n'>dtype</span><span class='o'>=</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>long</span><span class='p'>,</span> <span class='n'>device</span><span class='o'>=</span><span class='n'>device</span>
-                            <span class='p'>)</span>
+        <span class="n">gd</span> <span class="o">=</span> <span class="n">ReportEntry</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+            <span class="n">figure</span><span class="o">=</span><span class="n">plt_html</span><span class="p">(</span>
+                <span class="n">report_format</span><span class="o">=</span><span class="n">ReportFormatEnum</span><span class="o">.</span><span class="n">jpg</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="n">cell_width</span><span class="p">,</span> <span class="n">cell_width</span><span class="p">]</span>
+            <span class="p">),</span>
+            <span class="n">prediction</span><span class="o">=</span><span class="n">class_names</span><span class="p">[</span><span class="n">b</span><span class="p">],</span>
+            <span class="n">truth</span><span class="o">=</span><span class="n">class_names</span><span class="p">[</span><span class="n">c</span><span class="p">],</span>
+            <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">,</span>
+            <span class="n">explanation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
 
-                            <span class='k'>with</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>no_grad</span><span class='p'>():</span>
-                                <span class='n'>val_pred</span> <span class='o'>=</span> <span class='n'>model</span><span class='p'>(</span><span class='n'>test_rgb_imgs</span><span class='p'>)</span>
-                                <span class='n'>val_loss</span> <span class='o'>=</span> <span class='n'>criterion</span><span class='p'>(</span><span class='n'>val_pred</span><span class='p'>,</span> <span class='n'>test_true_label</span><span class='p'>)</span>
+        <span class="n">predictions</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="n">num_columns</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="n">num_columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">gd</span>
 
-                            <span class='n'>_</span><span class='p'>,</span> <span class='n'>cat</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>max</span><span class='p'>(</span><span class='n'>val_pred</span><span class='p'>,</span> <span class='o'>-</span><span class='mi'>1</span><span class='p'>)</span>
-                            <span class='n'>val_acc</span> <span class='o'>=</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>sum</span><span class='p'>(</span><span class='n'>cat</span> <span class='o'>==</span> <span class='n'>test_true_label</span><span class='p'>)</span> <span class='o'>/</span> <span class='nb'>float</span><span class='p'>(</span>
-                                <span class='n'>cat</span><span class='o'>.</span><span class='n'>size</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>)</span>
-                            <span class='p'>)</span>
-                            <span class='n'>writer</span><span class='o'>.</span><span class='n'>scalar</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;loss/acc&quot;</span><span class='p'>,</span> <span class='n'>val_acc</span><span class='p'>,</span> <span class='n'>update_i</span><span class='p'>)</span>
-                            <span class='n'>writer</span><span class='o'>.</span><span class='n'>scalar</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;loss/val&quot;</span><span class='p'>,</span> <span class='n'>val_loss</span><span class='p'>,</span> <span class='n'>update_i</span><span class='p'>)</span>
+    <span class="n">confusion_matrix_plot</span><span class="p">(</span><span class="n">y_pred_max</span><span class="p">,</span> <span class="n">truth_labels</span><span class="p">,</span> <span class="n">class_names</span><span class="p">)</span>
 
-                            <span class='k'>if</span> <span class='n'>last_val</span> <span class='ow'>is</span> <span class='kc'>None</span><span class='p'>:</span>
-                                <span class='n'>last_val</span> <span class='o'>=</span> <span class='n'>cat</span>
-                            <span class='k'>else</span><span class='p'>:</span>
-                                <span class='k'>if</span> <span class='nb'>all</span><span class='p'>(</span><span class='n'>last_val</span> <span class='o'>==</span> <span class='n'>cat</span><span class='p'>):</span>
-                                    <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;Same val</span><span class='si'>{</span><span class='n'>last_val</span><span class='si'>}</span><span class='s2'>,</span><span class='si'>{</span><span class='n'>cat</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span>
-                                <span class='n'>last_val</span> <span class='o'>=</span> <span class='n'>cat</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Classification Report&quot;</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="n">latest_model_path</span>
+    <span class="n">confusion_matrix</span> <span class="o">=</span> <span class="n">plt_html</span><span class="p">(</span><span class="n">report_format</span><span class="o">=</span><span class="n">ReportFormatEnum</span><span class="o">.</span><span class="n">png</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">])</span>
 
-                            <span class='k'>if</span> <span class='n'>val_loss</span> <span class='o'>&lt;</span> <span class='n'>best_val_loss</span><span class='p'>:</span>
-                                <span class='n'>best_val_loss</span> <span class='o'>=</span> <span class='n'>val_loss</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="n">generate_math_html</span><span class="p">(</span><span class="s2">&quot;\dfrac{tp+tn}</span><span class="si">{N}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">accuracy_w</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">generate_math_html</span><span class="p">(</span><span class="s2">&quot;\dfrac</span><span class="si">{tp}</span><span class="s2">{tp+fp}&quot;</span><span class="p">),</span> <span class="n">precision_a</span><span class="p">,</span> <span class="n">precision_w</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">generate_math_html</span><span class="p">(</span><span class="s2">&quot;\dfrac</span><span class="si">{tp}</span><span class="s2">{tp+fn}&quot;</span><span class="p">),</span> <span class="n">recall_a</span><span class="p">,</span> <span class="n">recall_w</span>
+    <span class="n">f1_score</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">generate_math_html</span><span class="p">(</span><span class="s2">&quot;2*\dfrac{precision*recall}{precision+recall}&quot;</span><span class="p">),</span>
+        <span class="n">fscore_a</span><span class="p">,</span>
+        <span class="n">fscore_w</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">support</span> <span class="o">=</span> <span class="n">generate_math_html</span><span class="p">(</span><span class="s2">&quot;N_</span><span class="si">{class_truth}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">support_a</span><span class="p">,</span> <span class="n">support_w</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">NOD</span><span class="o">.</span><span class="n">nod_of</span><span class="p">(</span>
+        <span class="n">accuracy</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">support</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">as_flat_tuples</span><span class="p">()</span>
 
-                                <span class='n'>best_model_wts</span> <span class='o'>=</span> <span class='n'>copy</span><span class='o'>.</span><span class='n'>deepcopy</span><span class='p'>(</span><span class='n'>model</span><span class='o'>.</span><span class='n'>state_dict</span><span class='p'>())</span>
-                                <span class='n'>sess</span><span class='o'>.</span><span class='n'>write</span><span class='p'>(</span>
-                                    <span class='sa'>f</span><span class='s2'>&quot;New best validation model at update </span><span class='si'>{</span><span class='n'>update_i</span><span class='si'>}</span><span class='s2'> with test_loss </span><span class='si'>{</span><span class='n'>best_val_loss</span><span class='si'>}</span><span class='s2'>&quot;</span>
-                                <span class='p'>)</span>
-                                <span class='n'>torch</span><span class='o'>.</span><span class='n'>save</span><span class='p'>(</span><span class='n'>model</span><span class='o'>.</span><span class='n'>state_dict</span><span class='p'>(),</span> <span class='n'>interrupted_path</span><span class='p'>)</span>
+    <span class="n">bundle</span> <span class="o">=</span> <span class="n">NOD</span><span class="o">.</span><span class="n">nod_of</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
 
-                        <span class='k'>if</span> <span class='n'>early_stop</span> <span class='ow'>is</span> <span class='ow'>not</span> <span class='kc'>None</span> <span class='ow'>and</span> <span class='n'>val_pred</span> <span class='o'>&lt;</span> <span class='n'>early_stop</span><span class='p'>:</span>
-                            <span class='k'>break</span>
-                <span class='n'>sess</span><span class='o'>.</span><span class='n'>set_description_str</span><span class='p'>(</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;Update </span><span class='si'>{</span><span class='n'>update_i</span><span class='si'>}</span><span class='s2'> - </span><span class='si'>{</span><span class='n'>phase</span><span class='si'>}</span><span class='s2'> &quot;</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;update_loss:</span><span class='si'>{</span><span class='n'>update_loss</span><span class='si'>:</span><span class='s2'>2f</span><span class='si'>}</span><span class='s2'> &quot;</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;val_loss:</span><span class='si'>{</span><span class='n'>val_loss</span><span class='si'>}</span><span class='s2'>&quot;</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;val_acc:</span><span class='si'>{</span><span class='n'>val_acc</span><span class='si'>}</span><span class='s2'>&quot;</span>
-                <span class='p'>)</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">))</span>
 
-    <span class='k'>except</span> <span class='ne'>KeyboardInterrupt</span><span class='p'>:</span>
-        <span class='nb'>print</span><span class='p'>(</span><span class='s2'>&quot;Interrupt&quot;</span><span class='p'>)</span>
-    <span class='k'>finally</span><span class='p'>:</span>
-        <span class='k'>pass</span>
+    <span class="n">generate_html</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.html&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">bundle</span><span class="p">)</span>
+    <span class="n">generate_pdf</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.html&quot;</span><span class="p">))</span></div>
 
-    <span class='n'>model</span><span class='o'>.</span><span class='n'>load_state_dict</span><span class='p'>(</span><span class='n'>best_model_wts</span><span class='p'>)</span>  <span class='c1'># load best model weights</span>
+    <span class="c1"># plot_utilities.plot_prediction(input_images_rgb, truth_labels, predicted, prediction)</span>
+    <span class="c1"># pyplot.show()</span>
 
-    <span class='n'>time_elapsed</span> <span class='o'>=</span> <span class='n'>time</span><span class='o'>.</span><span class='n'>time</span><span class='p'>()</span> <span class='o'>-</span> <span class='n'>since</span>
-    <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;</span><span class='si'>{</span><span class='n'>time_elapsed</span> <span class='o'>//</span> <span class='mi'>60</span><span class='si'>:</span><span class='s2'>.0f</span><span class='si'>}</span><span class='s2'>m </span><span class='si'>{</span><span class='n'>time_elapsed</span> <span class='o'>%</span> <span class='mi'>60</span><span class='si'>:</span><span class='s2'>.0f</span><span class='si'>}</span><span class='s2'>s&quot;</span><span class='p'>)</span>
-    <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;Best val loss: </span><span class='si'>{</span><span class='n'>best_val_loss</span><span class='si'>:</span><span class='s2'>3f</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span>
 
-    <span class='k'>return</span> <span class='n'>model</span></div>
-</pre>
-            </div>
+<div class="viewcode-block" id="predictor_response_train_model_neodroid_observations"><a class="viewcode-back" href="../../../../../generated/neodroidvision.classification.procedures.deprec.procedures.predictor_response_train_model_neodroid_observations.html#neodroidvision.classification.procedures.deprec.procedures.predictor_response_train_model_neodroid_observations">[docs]</a><span class="k">def</span> <span class="nf">predictor_response_train_model_neodroid_observations</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">train_iterator</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="p">,</span>
+    <span class="n">optimiser</span><span class="p">,</span>
+    <span class="n">scheduler</span><span class="p">,</span>
+    <span class="n">writer</span><span class="p">,</span>
+    <span class="n">interrupted_path</span><span class="p">,</span>
+    <span class="n">val_data_iterator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_updates</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250000</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">global_torch_device</span><span class="p">(),</span>
+    <span class="n">early_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      model:</span>
+<span class="sd">      train_iterator:</span>
+<span class="sd">      criterion:</span>
+<span class="sd">      optimiser:</span>
+<span class="sd">      scheduler:</span>
+<span class="sd">      writer:</span>
+<span class="sd">      interrupted_path:</span>
+<span class="sd">      val_data_iterator:</span>
+<span class="sd">      num_updates:</span>
+<span class="sd">      device:</span>
+<span class="sd">      early_stop:</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">best_model_wts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+    <span class="n">best_val_loss</span> <span class="o">=</span> <span class="mf">1e10</span>
+    <span class="n">since</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sess</span> <span class="o">=</span> <span class="n">progress_bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_updates</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">val_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">update_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">val_acc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last_val</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">last_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">detect_anomaly</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">update_i</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">phase</span> <span class="ow">in</span> <span class="p">[</span><span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">,</span> <span class="n">SplitEnum</span><span class="o">.</span><span class="n">validation</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="n">TorchTrainSession</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+
+                            <span class="nb">input</span><span class="p">,</span> <span class="n">true_label</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">next</span><span class="p">(</span><span class="n">train_iterator</span><span class="p">))</span>
+
+                            <span class="n">rgb_imgs</span> <span class="o">=</span> <span class="n">torch_vision_normalize_batch_nchw</span><span class="p">(</span>
+                                <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">(</span>
+                                    <span class="n">rgb_drop_alpha_batch_nhwc</span><span class="p">(</span><span class="n">to_tensor</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">true_label</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span>
+                                <span class="n">true_label</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+                            <span class="p">)</span>
+                            <span class="n">optimiser</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+                            <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">rgb_imgs</span><span class="p">)</span>
+                            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">true_label</span><span class="p">)</span>
+                            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                            <span class="n">optimiser</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="n">last_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">last_out</span> <span class="o">=</span> <span class="n">pred</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">last_out</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Same output</span><span class="si">{</span><span class="n">last_out</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">pred</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="n">last_out</span> <span class="o">=</span> <span class="n">pred</span>
+
+                            <span class="n">update_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                            <span class="n">writer</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loss/train&quot;</span><span class="p">,</span> <span class="n">update_loss</span><span class="p">,</span> <span class="n">update_i</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="n">scheduler</span><span class="p">:</span>
+                                <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">val_data_iterator</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="n">TorchEvalSession</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+                            <span class="n">test_rgb_imgs</span><span class="p">,</span> <span class="n">test_true_label</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
+                                <span class="o">*</span><span class="nb">next</span><span class="p">(</span><span class="n">val_data_iterator</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">test_rgb_imgs</span> <span class="o">=</span> <span class="n">torch_vision_normalize_batch_nchw</span><span class="p">(</span>
+                                <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">(</span>
+                                    <span class="n">rgb_drop_alpha_batch_nhwc</span><span class="p">(</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">test_rgb_imgs</span><span class="p">))</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+
+                            <span class="n">test_true_label</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span>
+                                <span class="n">test_true_label</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+                            <span class="p">)</span>
+
+                            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                                <span class="n">val_pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">test_rgb_imgs</span><span class="p">)</span>
+                                <span class="n">val_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">val_pred</span><span class="p">,</span> <span class="n">test_true_label</span><span class="p">)</span>
+
+                            <span class="n">_</span><span class="p">,</span> <span class="n">cat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">val_pred</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                            <span class="n">val_acc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cat</span> <span class="o">==</span> <span class="n">test_true_label</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span>
+                                <span class="n">cat</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">writer</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loss/acc&quot;</span><span class="p">,</span> <span class="n">val_acc</span><span class="p">,</span> <span class="n">update_i</span><span class="p">)</span>
+                            <span class="n">writer</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loss/val&quot;</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">update_i</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="n">last_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">last_val</span> <span class="o">=</span> <span class="n">cat</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">last_val</span> <span class="o">==</span> <span class="n">cat</span><span class="p">):</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Same val</span><span class="si">{</span><span class="n">last_val</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">cat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="n">last_val</span> <span class="o">=</span> <span class="n">cat</span>
+
+                            <span class="k">if</span> <span class="n">val_loss</span> <span class="o">&lt;</span> <span class="n">best_val_loss</span><span class="p">:</span>
+                                <span class="n">best_val_loss</span> <span class="o">=</span> <span class="n">val_loss</span>
+
+                                <span class="n">best_model_wts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+                                <span class="n">sess</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;New best validation model at update </span><span class="si">{</span><span class="n">update_i</span><span class="si">}</span><span class="s2"> with test_loss </span><span class="si">{</span><span class="n">best_val_loss</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="p">)</span>
+                                <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">interrupted_path</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">early_stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val_pred</span> <span class="o">&lt;</span> <span class="n">early_stop</span><span class="p">:</span>
+                            <span class="k">break</span>
+                <span class="n">sess</span><span class="o">.</span><span class="n">set_description_str</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Update </span><span class="si">{</span><span class="n">update_i</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">phase</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;update_loss:</span><span class="si">{</span><span class="n">update_loss</span><span class="si">:</span><span class="s2">2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;val_loss:</span><span class="si">{</span><span class="n">val_loss</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;val_acc:</span><span class="si">{</span><span class="n">val_acc</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interrupt&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">best_model_wts</span><span class="p">)</span>  <span class="c1"># load best model weights</span>
+
+    <span class="n">time_elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">since</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">time_elapsed</span> <span class="o">//</span> <span class="mi">60</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">m </span><span class="si">{</span><span class="n">time_elapsed</span> <span class="o">%</span> <span class="mi">60</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best val loss: </span><span class="si">{</span><span class="n">best_val_loss</span><span class="si">:</span><span class="s2">3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+</pre></div>
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../../../../../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../index.html">
+              <img class="logo" src="../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../../../../../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='../../../../index.html'>Module code</a>
-                    <ul>
-                      <li><a href='../../../../neodroidvision.html'>neodroidvision</a>
-                        <ul>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../../../../../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
 
+    
 
+    
   </body>
 </html>

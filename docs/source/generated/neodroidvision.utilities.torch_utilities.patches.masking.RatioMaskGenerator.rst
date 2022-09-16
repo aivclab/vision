@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.patches.masking.RatioMaskGenerator
       ~RatioMaskGenerator.get_parameter
       ~RatioMaskGenerator.get_submodule
       ~RatioMaskGenerator.half
+      ~RatioMaskGenerator.ipu
       ~RatioMaskGenerator.load_state_dict
       ~RatioMaskGenerator.modules
       ~RatioMaskGenerator.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.patches.masking.RatioMaskGenerator
       ~RatioMaskGenerator.register_forward_hook
       ~RatioMaskGenerator.register_forward_pre_hook
       ~RatioMaskGenerator.register_full_backward_hook
+      ~RatioMaskGenerator.register_load_state_dict_post_hook
       ~RatioMaskGenerator.register_module
       ~RatioMaskGenerator.register_parameter
       ~RatioMaskGenerator.requires_grad_

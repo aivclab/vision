@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.layers.torch\_layers.Reshape
       ~Reshape.get_parameter
       ~Reshape.get_submodule
       ~Reshape.half
+      ~Reshape.ipu
       ~Reshape.load_state_dict
       ~Reshape.modules
       ~Reshape.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.layers.torch\_layers.Reshape
       ~Reshape.register_forward_hook
       ~Reshape.register_forward_pre_hook
       ~Reshape.register_full_backward_hook
+      ~Reshape.register_load_state_dict_post_hook
       ~Reshape.register_module
       ~Reshape.register_parameter
       ~Reshape.requires_grad_

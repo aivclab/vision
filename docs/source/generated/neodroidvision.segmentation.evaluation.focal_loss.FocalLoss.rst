@@ -34,6 +34,7 @@ neodroidvision.segmentation.evaluation.focal\_loss.FocalLoss
       ~FocalLoss.get_parameter
       ~FocalLoss.get_submodule
       ~FocalLoss.half
+      ~FocalLoss.ipu
       ~FocalLoss.load_state_dict
       ~FocalLoss.modules
       ~FocalLoss.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.segmentation.evaluation.focal\_loss.FocalLoss
       ~FocalLoss.register_forward_hook
       ~FocalLoss.register_forward_pre_hook
       ~FocalLoss.register_full_backward_hook
+      ~FocalLoss.register_load_state_dict_post_hook
       ~FocalLoss.register_module
       ~FocalLoss.register_parameter
       ~FocalLoss.requires_grad_

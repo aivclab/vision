@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.efficient\_net\_utilities.tf\_like\_mo
       ~Conv2dSamePadding.get_parameter
       ~Conv2dSamePadding.get_submodule
       ~Conv2dSamePadding.half
+      ~Conv2dSamePadding.ipu
       ~Conv2dSamePadding.load_state_dict
       ~Conv2dSamePadding.modules
       ~Conv2dSamePadding.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.efficient\_net\_utilities.tf\_like\_mo
       ~Conv2dSamePadding.register_forward_hook
       ~Conv2dSamePadding.register_forward_pre_hook
       ~Conv2dSamePadding.register_full_backward_hook
+      ~Conv2dSamePadding.register_load_state_dict_post_hook
       ~Conv2dSamePadding.register_module
       ~Conv2dSamePadding.register_parameter
       ~Conv2dSamePadding.requires_grad_
