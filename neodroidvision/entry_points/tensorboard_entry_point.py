@@ -7,7 +7,7 @@ __doc__ = """ description """
 
 from shutil import rmtree
 
-from draugr import IgnoreInterruptSignal
+from warg import IgnoreInterruptSignal
 
 
 def main(keep_alive: bool = True) -> str:

@@ -13,6 +13,8 @@ from matplotlib.colors import Colormap, LinearSegmentedColormap
 from numpy import ndarray
 from warg import Number
 
+__all__ = ["discrete_cmap", "scatter_plot_encoding_space"]
+
 
 def discrete_cmap(
     N: int, base_cmap: Union[Colormap, str, None] = None

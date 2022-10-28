@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from PIL import Image
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from neodroid.environments.droid_environment import connect_dict
 from torch.utils.data import Dataset
 from torchvision.transforms import transforms

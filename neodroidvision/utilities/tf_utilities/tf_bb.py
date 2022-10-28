@@ -11,7 +11,8 @@ from pathlib import Path
 import numpy
 import tensorflow
 from PIL.Image import Image, fromarray
-from utilities.visualisation.bounding_box_visualisation import (
+
+from neodroidvision.utilities.visualisation.bounding_box_visualisation import (
     _visualize_boxes,
     _visualize_boxes_and_keypoints,
     _visualize_boxes_and_masks,

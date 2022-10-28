@@ -1,4 +1,4 @@
-﻿neodroidvision.regression
+neodroidvision.regression
 =========================
 
 .. automodule:: neodroidvision.regression
@@ -28,8 +28,10 @@
    :template: custom_autosummary/module.rst
    :recursive:
 
+   neodroidvision.regression.diffusion
    neodroidvision.regression.flow
    neodroidvision.regression.generative
+   neodroidvision.regression.magnification
    neodroidvision.regression.metric
    neodroidvision.regression.patching
    neodroidvision.regression.vae

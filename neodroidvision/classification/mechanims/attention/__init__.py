@@ -5,4 +5,5 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from classification.mechanims.attention.self.self_attention import *
+from .foveal import *
+from .self import *

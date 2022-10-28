@@ -10,11 +10,10 @@ from pathlib import Path
 from typing import Iterable, Sequence, Tuple, Union
 
 import cv2
-from apppath import ensure_existence
 from draugr.opencv_utilities import InterpolationEnum, cv2_resize
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from sorcery import assigned_names
-from warg import Number
+from warg import Number, ensure_existence
 
 __all__ = ["ResizeMethodEnum", "resize", "resize_children"]
 

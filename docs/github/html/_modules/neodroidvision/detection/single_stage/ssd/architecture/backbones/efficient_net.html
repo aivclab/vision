@@ -1,512 +1,519 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/graphviz.css'/>
-    <script data-url_root='../../../../../../../' id='documentation_options' src='../../../../../../../_static/documentation_options.js'></script>
-    <script src='../../../../../../../_static/jquery.js'></script>
-    <script src='../../../../../../../_static/underscore.js'></script>
-    <script src='../../../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../../../../../../../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/detection/single_stage/ssd/architecture/backbones/efficient_net.html'/>
-    <link rel='index' title='Index' href='../../../../../../../genindex.html'/>
-    <link rel='search' title='Search' href='../../../../../../../search.html'/>
-
-    <link rel='stylesheet' href='../../../../../../../_static/custom.css' type='text/css'/>
-
-
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
-
-  </head>
-  <body>
-
-
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
-
-
-          <div class='body' role='main'>
-
-            <h1>Source code for neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net</h1>
-            <div class='highlight'><pre>
-<span></span><span class='ch'>#!/usr/bin/env python3</span>
-<span class='c1'># -*- coding: utf-8 -*-</span>
-
-<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;Christian Heider Nielsen&quot;</span>
-<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
-
-<span class='s2'>           Created on 22/03/2020</span>
-<span class='s2'>           &quot;&quot;&quot;</span>
-
-<span class='kn'>import</span> <span class='nn'>collections</span>
-<span class='kn'>import</span> <span class='nn'>re</span>
-<span class='kn'>from</span> <span class='nn'>typing</span> <span class='kn'>import</span> <span class='n'>List</span><span class='p'>,</span> <span class='n'>Tuple</span>
-
-<span class='kn'>import</span> <span class='nn'>torch</span>
-<span class='kn'>from</span> <span class='nn'>torch</span> <span class='kn'>import</span> <span class='n'>nn</span>
-
-<span class='kn'>from</span> <span class='nn'>neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>SSDBackbone</span><span class='p'>,</span>
-<span class='p'>)</span>
-<span class='kn'>from</span> <span class='nn'>neodroidvision.utilities.torch_utilities.efficient_net_utilities</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>Conv2dSamePadding</span><span class='p'>,</span>
-    <span class='n'>MobileInvertedResidualBottleneckConvBlock</span><span class='p'>,</span>
-    <span class='n'>round_filters</span><span class='p'>,</span>
-    <span class='n'>round_repeats</span><span class='p'>,</span>
-<span class='p'>)</span>
-<span class='kn'>from</span> <span class='nn'>neodroidvision.utilities.torch_utilities.output_activation.custom_activations</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>swish</span><span class='p'>,</span>
-<span class='p'>)</span>
-<span class='kn'>from</span> <span class='nn'>neodroidvision.utilities.torch_utilities.persistence.custom_model_caching</span> <span class='kn'>import</span> <span class='p'>(</span>
-    <span class='n'>load_state_dict_from_url</span><span class='p'>,</span>
-<span class='p'>)</span>
-
-<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;EfficientNet&quot;</span><span class='p'>]</span>
-
-
-<div class='viewcode-block' id='EfficientNet'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet'>[docs]</a><span class='k'>class</span> <span class='nc'>EfficientNet</span><span class='p'>(</span><span class='n'>SSDBackbone</span><span class='p'>):</span>
-    <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>    An EfficientNet model. Most easily loaded with the .from_name or .from_pretrained methods</span>
-
-<span class='sd'>    Args:</span>
-<span class='sd'>    blocks_args (list): A list of BlockArgs to construct blocks</span>
-<span class='sd'>    global_params (namedtuple): A set of GlobalParams shared between blocks</span>
-
-<span class='sd'>    Example:</span>
-<span class='sd'>    model = EfficientNet.from_pretrained(&#39;efficientnet-b0&#39;)</span>
-<span class='sd'>    &quot;&quot;&quot;</span>
-
-<div class='viewcode-block' id='EfficientNet.add_extras'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.add_extras'>[docs]</a>    <span class='nd'>@staticmethod</span>
-    <span class='k'>def</span> <span class='nf'>add_extras</span><span class='p'>(</span><span class='n'>cfgs</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        :param cfgs:</span>
-<span class='sd'>        :type cfgs:</span>
-<span class='sd'>        :return:</span>
-<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
-        <span class='n'>extras</span> <span class='o'>=</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>ModuleList</span><span class='p'>()</span>
-        <span class='k'>for</span> <span class='n'>cfg</span> <span class='ow'>in</span> <span class='n'>cfgs</span><span class='p'>:</span>
-            <span class='n'>extra</span> <span class='o'>=</span> <span class='p'>[]</span>
-            <span class='k'>for</span> <span class='n'>params</span> <span class='ow'>in</span> <span class='n'>cfg</span><span class='p'>:</span>
-                <span class='n'>in_channels</span><span class='p'>,</span> <span class='n'>out_channels</span><span class='p'>,</span> <span class='n'>kernel_size</span><span class='p'>,</span> <span class='n'>stride</span><span class='p'>,</span> <span class='n'>padding</span> <span class='o'>=</span> <span class='n'>params</span>
-                <span class='n'>extra</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
-                    <span class='n'>nn</span><span class='o'>.</span><span class='n'>Conv2d</span><span class='p'>(</span><span class='n'>in_channels</span><span class='p'>,</span> <span class='n'>out_channels</span><span class='p'>,</span> <span class='n'>kernel_size</span><span class='p'>,</span> <span class='n'>stride</span><span class='p'>,</span> <span class='n'>padding</span><span class='p'>)</span>
-                <span class='p'>)</span>
-                <span class='n'>extra</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>ReLU</span><span class='p'>())</span>
-            <span class='n'>extras</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>nn</span><span class='o'>.</span><span class='n'>Sequential</span><span class='p'>(</span><span class='o'>*</span><span class='n'>extra</span><span class='p'>))</span>
-        <span class='k'>return</span> <span class='n'>extras</span></div>
-
-    <span class='n'>INDICES</span> <span class='o'>=</span> <span class='p'>{</span><span class='s2'>&quot;efficientnet-b3&quot;</span><span class='p'>:</span> <span class='p'>[</span><span class='mi'>7</span><span class='p'>,</span> <span class='mi'>17</span><span class='p'>,</span> <span class='mi'>25</span><span class='p'>]}</span>
-
-    <span class='n'>EXTRAS</span> <span class='o'>=</span> <span class='p'>{</span>
-        <span class='s2'>&quot;efficientnet-b3&quot;</span><span class='p'>:</span> <span class='p'>[</span>
-            <span class='c1'># in,  out, k, s, p</span>
-            <span class='p'>[(</span><span class='mi'>384</span><span class='p'>,</span> <span class='mi'>128</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>),</span> <span class='p'>(</span><span class='mi'>128</span><span class='p'>,</span> <span class='mi'>256</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>,</span> <span class='mi'>2</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>)],</span>  <span class='c1'># 5 x 5</span>
-            <span class='p'>[(</span><span class='mi'>256</span><span class='p'>,</span> <span class='mi'>128</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>),</span> <span class='p'>(</span><span class='mi'>128</span><span class='p'>,</span> <span class='mi'>256</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>)],</span>  <span class='c1'># 3 x 3</span>
-            <span class='p'>[(</span><span class='mi'>256</span><span class='p'>,</span> <span class='mi'>128</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>),</span> <span class='p'>(</span><span class='mi'>128</span><span class='p'>,</span> <span class='mi'>256</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>0</span><span class='p'>)],</span>  <span class='c1'># 1 x 1</span>
-        <span class='p'>]</span>
-    <span class='p'>}</span>
-
-<div class='viewcode-block' id='EfficientNet.__init__'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>size</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>,</span> <span class='n'>blocks_args</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span> <span class='n'>global_params</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>):</span>
-        <span class='nb'>super</span><span class='p'>()</span><span class='o'>.</span><span class='fm'>__init__</span><span class='p'>(</span><span class='n'>size</span><span class='p'>)</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>indices</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>INDICES</span><span class='p'>[</span><span class='n'>model_name</span><span class='p'>]</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>extras</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>add_extras</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>EXTRAS</span><span class='p'>[</span><span class='n'>model_name</span><span class='p'>])</span>
-        <span class='k'>assert</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>blocks_args</span><span class='p'>,</span> <span class='nb'>list</span><span class='p'>),</span> <span class='s2'>&quot;blocks_args should be a list&quot;</span>
-        <span class='k'>assert</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>blocks_args</span><span class='p'>)</span> <span class='o'>&gt;</span> <span class='mi'>0</span><span class='p'>,</span> <span class='s2'>&quot;block args must be greater than 0&quot;</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span> <span class='o'>=</span> <span class='n'>global_params</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks_args</span> <span class='o'>=</span> <span class='n'>blocks_args</span>
-
-        <span class='c1'># Batch norm parameters</span>
-        <span class='n'>bn_mom</span> <span class='o'>=</span> <span class='mi'>1</span> <span class='o'>-</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span><span class='o'>.</span><span class='n'>batch_norm_momentum</span>
-        <span class='n'>bn_eps</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span><span class='o'>.</span><span class='n'>batch_norm_epsilon</span>
-
-        <span class='c1'># Stem</span>
-        <span class='n'>in_channels</span> <span class='o'>=</span> <span class='mi'>3</span>  <span class='c1'># rgb</span>
-        <span class='n'>out_channels</span> <span class='o'>=</span> <span class='n'>round_filters</span><span class='p'>(</span>
-            <span class='mi'>32</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span>
-        <span class='p'>)</span>  <span class='c1'># number of output channels</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_conv_stem</span> <span class='o'>=</span> <span class='n'>Conv2dSamePadding</span><span class='p'>(</span>
-            <span class='n'>in_channels</span><span class='p'>,</span> <span class='n'>out_channels</span><span class='p'>,</span> <span class='n'>kernel_size</span><span class='o'>=</span><span class='mi'>3</span><span class='p'>,</span> <span class='n'>stride</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span> <span class='n'>bias</span><span class='o'>=</span><span class='kc'>False</span>
-        <span class='p'>)</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_bn0</span> <span class='o'>=</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>BatchNorm2d</span><span class='p'>(</span>
-            <span class='n'>num_features</span><span class='o'>=</span><span class='n'>out_channels</span><span class='p'>,</span> <span class='n'>momentum</span><span class='o'>=</span><span class='n'>bn_mom</span><span class='p'>,</span> <span class='n'>eps</span><span class='o'>=</span><span class='n'>bn_eps</span>
-        <span class='p'>)</span>
-
-        <span class='c1'># Build blocks</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks</span> <span class='o'>=</span> <span class='n'>nn</span><span class='o'>.</span><span class='n'>ModuleList</span><span class='p'>([])</span>
-        <span class='k'>for</span> <span class='n'>block_args</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks_args</span><span class='p'>:</span>
-
-            <span class='c1'># Update block input and output filters based on depth multiplier.</span>
-            <span class='n'>block_args</span> <span class='o'>=</span> <span class='n'>block_args</span><span class='o'>.</span><span class='n'>_replace</span><span class='p'>(</span>
-                <span class='n'>input_filters</span><span class='o'>=</span><span class='n'>round_filters</span><span class='p'>(</span>
-                    <span class='n'>block_args</span><span class='o'>.</span><span class='n'>input_filters</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span>
-                <span class='p'>),</span>
-                <span class='n'>output_filters</span><span class='o'>=</span><span class='n'>round_filters</span><span class='p'>(</span>
-                    <span class='n'>block_args</span><span class='o'>.</span><span class='n'>output_filters</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span>
-                <span class='p'>),</span>
-                <span class='n'>num_repeat</span><span class='o'>=</span><span class='n'>round_repeats</span><span class='p'>(</span><span class='n'>block_args</span><span class='o'>.</span><span class='n'>num_repeat</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span><span class='p'>),</span>
-            <span class='p'>)</span>
-
-            <span class='c1'># The first block needs to take care of stride and filter size increase.</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
-                <span class='n'>MobileInvertedResidualBottleneckConvBlock</span><span class='p'>(</span>
-                    <span class='n'>block_args</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span>
-                <span class='p'>)</span>
-            <span class='p'>)</span>
-            <span class='k'>if</span> <span class='n'>block_args</span><span class='o'>.</span><span class='n'>num_repeat</span> <span class='o'>&gt;</span> <span class='mi'>1</span><span class='p'>:</span>
-                <span class='n'>block_args</span> <span class='o'>=</span> <span class='n'>block_args</span><span class='o'>.</span><span class='n'>_replace</span><span class='p'>(</span>
-                    <span class='n'>input_filters</span><span class='o'>=</span><span class='n'>block_args</span><span class='o'>.</span><span class='n'>output_filters</span><span class='p'>,</span> <span class='n'>stride</span><span class='o'>=</span><span class='mi'>1</span>
-                <span class='p'>)</span>
-            <span class='k'>for</span> <span class='n'>_</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='n'>block_args</span><span class='o'>.</span><span class='n'>num_repeat</span> <span class='o'>-</span> <span class='mi'>1</span><span class='p'>):</span>
-                <span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span>
-                    <span class='n'>MobileInvertedResidualBottleneckConvBlock</span><span class='p'>(</span>
-                        <span class='n'>block_args</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span>
-                    <span class='p'>)</span>
-                <span class='p'>)</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>reset_parameters</span><span class='p'>()</span></div>
-
-<div class='viewcode-block' id='EfficientNet.extract_features'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.extract_features'>[docs]</a>    <span class='k'>def</span> <span class='nf'>extract_features</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>inputs</span><span class='p'>:</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Tuple</span><span class='p'>:</span>
-        <span class='sd'>&quot;&quot;&quot;Returns output of the final convolution layer&quot;&quot;&quot;</span>
-
-        <span class='c1'># Stem</span>
-        <span class='n'>x</span> <span class='o'>=</span> <span class='n'>swish</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_bn0</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_conv_stem</span><span class='p'>(</span><span class='n'>inputs</span><span class='p'>)))</span>
-
-        <span class='n'>features</span> <span class='o'>=</span> <span class='p'>[]</span>
-
-        <span class='c1'># Blocks</span>
-        <span class='k'>for</span> <span class='n'>idx</span><span class='p'>,</span> <span class='n'>block</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks</span><span class='p'>):</span>
-            <span class='n'>drop_connect_rate</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>_global_params</span><span class='o'>.</span><span class='n'>drop_connect_rate</span>
-            <span class='k'>if</span> <span class='n'>drop_connect_rate</span><span class='p'>:</span>
-                <span class='n'>drop_connect_rate</span> <span class='o'>*=</span> <span class='nb'>float</span><span class='p'>(</span><span class='n'>idx</span><span class='p'>)</span> <span class='o'>/</span> <span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>_blocks</span><span class='p'>)</span>
-            <span class='n'>x</span> <span class='o'>=</span> <span class='n'>block</span><span class='p'>(</span><span class='n'>x</span><span class='p'>,</span> <span class='n'>drop_connect_rate</span><span class='p'>)</span>
-            <span class='k'>if</span> <span class='n'>idx</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>indices</span><span class='p'>:</span>
-                <span class='n'>features</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
-
-        <span class='k'>return</span> <span class='n'>x</span><span class='p'>,</span> <span class='n'>features</span></div>
-
-<div class='viewcode-block' id='EfficientNet.forward'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.forward'>[docs]</a>    <span class='k'>def</span> <span class='nf'>forward</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>inputs</span><span class='p'>:</span> <span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>List</span><span class='p'>[</span><span class='n'>torch</span><span class='o'>.</span><span class='n'>Tensor</span><span class='p'>]:</span>
-        <span class='sd'>&quot;&quot;&quot;Calls extract_features to extract features, applies final linear layer, and returns logits.&quot;&quot;&quot;</span>
-
-        <span class='c1'># Convolution layers</span>
-        <span class='n'>x</span><span class='p'>,</span> <span class='n'>features</span> <span class='o'>=</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>extract_features</span><span class='p'>(</span><span class='n'>inputs</span><span class='p'>)</span>
-
-        <span class='k'>for</span> <span class='n'>layer</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>extras</span><span class='p'>:</span>
-            <span class='n'>x</span> <span class='o'>=</span> <span class='n'>layer</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
-            <span class='n'>features</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>x</span><span class='p'>)</span>
-
-        <span class='k'>return</span> <span class='n'>features</span></div>
-
-<div class='viewcode-block' id='EfficientNet.efficientnet_params'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.efficientnet_params'>[docs]</a>    <span class='nd'>@staticmethod</span>
-    <span class='k'>def</span> <span class='nf'>efficientnet_params</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>:</span> <span class='nb'>str</span><span class='p'>)</span> <span class='o'>-&gt;</span> <span class='n'>Tuple</span><span class='p'>[</span><span class='nb'>float</span><span class='p'>,</span> <span class='nb'>float</span><span class='p'>,</span> <span class='nb'>int</span><span class='p'>,</span> <span class='nb'>float</span><span class='p'>]:</span>
-        <span class='sd'>&quot;&quot;&quot;Map EfficientNet model name to parameter coefficients.&quot;&quot;&quot;</span>
-        <span class='n'>params_dict</span> <span class='o'>=</span> <span class='p'>{</span>
-            <span class='c1'># Coefficients:   width,depth,res,dropout</span>
-            <span class='s2'>&quot;efficientnet-b0&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.0</span><span class='p'>,</span> <span class='mf'>1.0</span><span class='p'>,</span> <span class='mi'>224</span><span class='p'>,</span> <span class='mf'>0.2</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b1&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.0</span><span class='p'>,</span> <span class='mf'>1.1</span><span class='p'>,</span> <span class='mi'>240</span><span class='p'>,</span> <span class='mf'>0.2</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b2&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.1</span><span class='p'>,</span> <span class='mf'>1.2</span><span class='p'>,</span> <span class='mi'>260</span><span class='p'>,</span> <span class='mf'>0.3</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b3&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.2</span><span class='p'>,</span> <span class='mf'>1.4</span><span class='p'>,</span> <span class='mi'>300</span><span class='p'>,</span> <span class='mf'>0.3</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b4&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.4</span><span class='p'>,</span> <span class='mf'>1.8</span><span class='p'>,</span> <span class='mi'>380</span><span class='p'>,</span> <span class='mf'>0.4</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b5&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.6</span><span class='p'>,</span> <span class='mf'>2.2</span><span class='p'>,</span> <span class='mi'>456</span><span class='p'>,</span> <span class='mf'>0.4</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b6&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>1.8</span><span class='p'>,</span> <span class='mf'>2.6</span><span class='p'>,</span> <span class='mi'>528</span><span class='p'>,</span> <span class='mf'>0.5</span><span class='p'>),</span>
-            <span class='s2'>&quot;efficientnet-b7&quot;</span><span class='p'>:</span> <span class='p'>(</span><span class='mf'>2.0</span><span class='p'>,</span> <span class='mf'>3.1</span><span class='p'>,</span> <span class='mi'>600</span><span class='p'>,</span> <span class='mf'>0.5</span><span class='p'>),</span>
-        <span class='p'>}</span>
-        <span class='k'>return</span> <span class='n'>params_dict</span><span class='p'>[</span><span class='n'>model_name</span><span class='p'>]</span></div>
-
-<div class='viewcode-block' id='EfficientNet.interpret'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.interpret'>[docs]</a>    <span class='nd'>@staticmethod</span>
-    <span class='k'>def</span> <span class='nf'>interpret</span><span class='p'>(</span>
-        <span class='n'>width_coefficient</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span>
-        <span class='n'>depth_coefficient</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span>
-        <span class='n'>dropout_rate</span><span class='o'>=</span><span class='mf'>0.2</span><span class='p'>,</span>
-        <span class='n'>drop_connect_rate</span><span class='o'>=</span><span class='mf'>0.2</span><span class='p'>,</span>
-    <span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Creates a efficient net model.&quot;&quot;&quot;</span>
-
-        <span class='n'>GlobalParams</span> <span class='o'>=</span> <span class='n'>collections</span><span class='o'>.</span><span class='n'>namedtuple</span><span class='p'>(</span>
-            <span class='s2'>&quot;GlobalParams&quot;</span><span class='p'>,</span>
-            <span class='p'>[</span>
-                <span class='s2'>&quot;batch_norm_momentum&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;batch_norm_epsilon&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;dropout_rate&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;num_categories&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;width_coefficient&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;depth_coefficient&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;depth_divisor&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;min_depth&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;drop_connect_rate&quot;</span><span class='p'>,</span>
-            <span class='p'>],</span>
-        <span class='p'>)</span>
-
-        <span class='c1'># Parameters for an individual model block</span>
-        <span class='n'>BlockArgs</span> <span class='o'>=</span> <span class='n'>collections</span><span class='o'>.</span><span class='n'>namedtuple</span><span class='p'>(</span>
-            <span class='s2'>&quot;BlockArgs&quot;</span><span class='p'>,</span>
-            <span class='p'>[</span>
-                <span class='s2'>&quot;kernel_size&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;num_repeat&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;input_filters&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;output_filters&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;expand_ratio&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;id_skip&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;stride&quot;</span><span class='p'>,</span>
-                <span class='s2'>&quot;se_ratio&quot;</span><span class='p'>,</span>
-            <span class='p'>],</span>
-        <span class='p'>)</span>
-
-        <span class='c1'># Change namedtuple defaults</span>
-        <span class='n'>GlobalParams</span><span class='o'>.</span><span class='fm'>__new__</span><span class='o'>.</span><span class='vm'>__defaults__</span> <span class='o'>=</span> <span class='p'>(</span><span class='kc'>None</span><span class='p'>,)</span> <span class='o'>*</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>GlobalParams</span><span class='o'>.</span><span class='n'>_fields</span><span class='p'>)</span>
-        <span class='n'>BlockArgs</span><span class='o'>.</span><span class='fm'>__new__</span><span class='o'>.</span><span class='vm'>__defaults__</span> <span class='o'>=</span> <span class='p'>(</span><span class='kc'>None</span><span class='p'>,)</span> <span class='o'>*</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>BlockArgs</span><span class='o'>.</span><span class='n'>_fields</span><span class='p'>)</span>
-
-        <span class='k'>class</span> <span class='nc'>BlockDecoder</span><span class='p'>(</span><span class='nb'>object</span><span class='p'>):</span>
-            <span class='sd'>&quot;&quot;&quot;Block Decoder for readability, straight from the official TensorFlow repository&quot;&quot;&quot;</span>
-
-            <span class='nd'>@staticmethod</span>
-            <span class='k'>def</span> <span class='nf'>_decode_block_string</span><span class='p'>(</span><span class='n'>block_string</span><span class='p'>):</span>
-                <span class='sd'>&quot;&quot;&quot;Gets a block through a string notation of arguments.&quot;&quot;&quot;</span>
-                <span class='k'>assert</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>block_string</span><span class='p'>,</span> <span class='nb'>str</span><span class='p'>)</span>
-
-                <span class='n'>ops</span> <span class='o'>=</span> <span class='n'>block_string</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='s2'>&quot;_&quot;</span><span class='p'>)</span>
-                <span class='n'>options</span> <span class='o'>=</span> <span class='p'>{}</span>
-                <span class='k'>for</span> <span class='n'>op</span> <span class='ow'>in</span> <span class='n'>ops</span><span class='p'>:</span>
-                    <span class='n'>splits</span> <span class='o'>=</span> <span class='n'>re</span><span class='o'>.</span><span class='n'>split</span><span class='p'>(</span><span class='sa'>r</span><span class='s2'>&quot;(\d.*)&quot;</span><span class='p'>,</span> <span class='n'>op</span><span class='p'>)</span>
-                    <span class='k'>if</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>splits</span><span class='p'>)</span> <span class='o'>&gt;=</span> <span class='mi'>2</span><span class='p'>:</span>
-                        <span class='n'>key</span><span class='p'>,</span> <span class='n'>value</span> <span class='o'>=</span> <span class='n'>splits</span><span class='p'>[:</span><span class='mi'>2</span><span class='p'>]</span>
-                        <span class='n'>options</span><span class='p'>[</span><span class='n'>key</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>value</span>
-
-                <span class='c1'># Check stride</span>
-                <span class='k'>assert</span> <span class='p'>(</span><span class='s2'>&quot;s&quot;</span> <span class='ow'>in</span> <span class='n'>options</span> <span class='ow'>and</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;s&quot;</span><span class='p'>])</span> <span class='o'>==</span> <span class='mi'>1</span><span class='p'>)</span> <span class='ow'>or</span> <span class='p'>(</span>
-                    <span class='nb'>len</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;s&quot;</span><span class='p'>])</span> <span class='o'>==</span> <span class='mi'>2</span> <span class='ow'>and</span> <span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;s&quot;</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>]</span> <span class='o'>==</span> <span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;s&quot;</span><span class='p'>][</span><span class='mi'>1</span><span class='p'>]</span>
-                <span class='p'>)</span>
-
-                <span class='k'>return</span> <span class='n'>BlockArgs</span><span class='p'>(</span>
-                    <span class='n'>kernel_size</span><span class='o'>=</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;k&quot;</span><span class='p'>]),</span>
-                    <span class='n'>num_repeat</span><span class='o'>=</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;r&quot;</span><span class='p'>]),</span>
-                    <span class='n'>input_filters</span><span class='o'>=</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;i&quot;</span><span class='p'>]),</span>
-                    <span class='n'>output_filters</span><span class='o'>=</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;o&quot;</span><span class='p'>]),</span>
-                    <span class='n'>expand_ratio</span><span class='o'>=</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;e&quot;</span><span class='p'>]),</span>
-                    <span class='n'>id_skip</span><span class='o'>=</span><span class='p'>(</span><span class='s2'>&quot;noskip&quot;</span> <span class='ow'>not</span> <span class='ow'>in</span> <span class='n'>block_string</span><span class='p'>),</span>
-                    <span class='n'>se_ratio</span><span class='o'>=</span><span class='nb'>float</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;se&quot;</span><span class='p'>])</span> <span class='k'>if</span> <span class='s2'>&quot;se&quot;</span> <span class='ow'>in</span> <span class='n'>options</span> <span class='k'>else</span> <span class='kc'>None</span><span class='p'>,</span>
-                    <span class='n'>stride</span><span class='o'>=</span><span class='p'>[</span><span class='nb'>int</span><span class='p'>(</span><span class='n'>options</span><span class='p'>[</span><span class='s2'>&quot;s&quot;</span><span class='p'>][</span><span class='mi'>0</span><span class='p'>])],</span>
-                <span class='p'>)</span>
-
-            <span class='nd'>@staticmethod</span>
-            <span class='k'>def</span> <span class='nf'>_encode_block_string</span><span class='p'>(</span><span class='n'>block</span><span class='p'>):</span>
-                <span class='sd'>&quot;&quot;&quot;Encodes a block to a string.&quot;&quot;&quot;</span>
-                <span class='n'>args</span> <span class='o'>=</span> <span class='p'>[</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;r</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>num_repeat</span><span class='si'>:</span><span class='s2'>d</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;k</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>kernel_size</span><span class='si'>:</span><span class='s2'>d</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;s</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>strides</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span><span class='si'>:</span><span class='s2'>d</span><span class='si'>}{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>strides</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>]</span><span class='si'>:</span><span class='s2'>d</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;e</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>expand_ratio</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;i</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>input_filters</span><span class='si'>:</span><span class='s2'>d</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
-                    <span class='sa'>f</span><span class='s2'>&quot;o</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>output_filters</span><span class='si'>:</span><span class='s2'>d</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>,</span>
-                <span class='p'>]</span>
-                <span class='k'>if</span> <span class='mi'>0</span> <span class='o'>&lt;</span> <span class='n'>block</span><span class='o'>.</span><span class='n'>se_ratio</span> <span class='o'>&lt;=</span> <span class='mi'>1</span><span class='p'>:</span>
-                    <span class='n'>args</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;se</span><span class='si'>{</span><span class='n'>block</span><span class='o'>.</span><span class='n'>se_ratio</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span>
-                <span class='k'>if</span> <span class='n'>block</span><span class='o'>.</span><span class='n'>id_skip</span> <span class='ow'>is</span> <span class='kc'>False</span><span class='p'>:</span>
-                    <span class='n'>args</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='s2'>&quot;noskip&quot;</span><span class='p'>)</span>
-                <span class='k'>return</span> <span class='s2'>&quot;_&quot;</span><span class='o'>.</span><span class='n'>join</span><span class='p'>(</span><span class='n'>args</span><span class='p'>)</span>
-
-            <span class='nd'>@staticmethod</span>
-            <span class='k'>def</span> <span class='nf'>decode</span><span class='p'>(</span><span class='n'>string_list</span><span class='p'>):</span>
-                <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>                Decodes a list of string notations to specify blocks inside the network.</span>
-
-<span class='sd'>                :param string_list: a list of strings, each string is a notation of block</span>
-<span class='sd'>                :return: a list of BlockArgs namedtuples of block args&quot;&quot;&quot;</span>
-                <span class='k'>assert</span> <span class='nb'>isinstance</span><span class='p'>(</span><span class='n'>string_list</span><span class='p'>,</span> <span class='nb'>list</span><span class='p'>)</span>
-                <span class='n'>blocks_args</span> <span class='o'>=</span> <span class='p'>[]</span>
-                <span class='k'>for</span> <span class='n'>block_string</span> <span class='ow'>in</span> <span class='n'>string_list</span><span class='p'>:</span>
-                    <span class='n'>blocks_args</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>BlockDecoder</span><span class='o'>.</span><span class='n'>_decode_block_string</span><span class='p'>(</span><span class='n'>block_string</span><span class='p'>))</span>
-                <span class='k'>return</span> <span class='n'>blocks_args</span>
-
-            <span class='nd'>@staticmethod</span>
-            <span class='k'>def</span> <span class='nf'>encode</span><span class='p'>(</span><span class='n'>blocks_args</span><span class='p'>):</span>
-                <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>                Encodes a list of BlockArgs to a list of strings.</span>
-
-<span class='sd'>                :param blocks_args: a list of BlockArgs namedtuples of block args</span>
-<span class='sd'>                :return: a list of strings, each string is a notation of block&quot;&quot;&quot;</span>
-                <span class='n'>block_strings</span> <span class='o'>=</span> <span class='p'>[]</span>
-                <span class='k'>for</span> <span class='n'>block</span> <span class='ow'>in</span> <span class='n'>blocks_args</span><span class='p'>:</span>
-                    <span class='n'>block_strings</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>BlockDecoder</span><span class='o'>.</span><span class='n'>_encode_block_string</span><span class='p'>(</span><span class='n'>block</span><span class='p'>))</span>
-                <span class='k'>return</span> <span class='n'>block_strings</span>
-
-        <span class='n'>blocks_args</span> <span class='o'>=</span> <span class='p'>[</span>
-            <span class='s2'>&quot;r1_k3_s11_e1_i32_o16_se0.25&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;r2_k3_s22_e6_i16_o24_se0.25&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;r2_k5_s22_e6_i24_o40_se0.25&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;r3_k3_s22_e6_i40_o80_se0.25&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;r3_k5_s11_e6_i80_o112_se0.25&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;r4_k5_s22_e6_i112_o192_se0.25&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;r1_k3_s11_e6_i192_o320_se0.25&quot;</span><span class='p'>,</span>
-        <span class='p'>]</span>
-        <span class='n'>blocks_args</span> <span class='o'>=</span> <span class='n'>BlockDecoder</span><span class='o'>.</span><span class='n'>decode</span><span class='p'>(</span><span class='n'>blocks_args</span><span class='p'>)</span>
-
-        <span class='n'>global_params</span> <span class='o'>=</span> <span class='n'>GlobalParams</span><span class='p'>(</span>
-            <span class='n'>batch_norm_momentum</span><span class='o'>=</span><span class='mf'>0.99</span><span class='p'>,</span>
-            <span class='n'>batch_norm_epsilon</span><span class='o'>=</span><span class='mf'>1e-3</span><span class='p'>,</span>
-            <span class='n'>dropout_rate</span><span class='o'>=</span><span class='n'>dropout_rate</span><span class='p'>,</span>
-            <span class='n'>drop_connect_rate</span><span class='o'>=</span><span class='n'>drop_connect_rate</span><span class='p'>,</span>
-            <span class='c1'># data_format=&#39;channels_last&#39;,  # removed, this is always true in PyTorch</span>
-            <span class='n'>num_categories</span><span class='o'>=</span><span class='mi'>1000</span><span class='p'>,</span>
-            <span class='n'>width_coefficient</span><span class='o'>=</span><span class='n'>width_coefficient</span><span class='p'>,</span>
-            <span class='n'>depth_coefficient</span><span class='o'>=</span><span class='n'>depth_coefficient</span><span class='p'>,</span>
-            <span class='n'>depth_divisor</span><span class='o'>=</span><span class='mi'>8</span><span class='p'>,</span>
-            <span class='n'>min_depth</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>,</span>
-        <span class='p'>)</span>
-
-        <span class='k'>return</span> <span class='n'>blocks_args</span><span class='p'>,</span> <span class='n'>global_params</span></div>
-
-<div class='viewcode-block' id='EfficientNet.get_model_params'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.get_model_params'>[docs]</a>    <span class='nd'>@staticmethod</span>
-    <span class='k'>def</span> <span class='nf'>get_model_params</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>,</span> <span class='n'>override_params</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Get the block args and global params for a given model&quot;&quot;&quot;</span>
-        <span class='k'>if</span> <span class='n'>model_name</span><span class='o'>.</span><span class='n'>startswith</span><span class='p'>(</span><span class='s2'>&quot;efficientnet&quot;</span><span class='p'>):</span>
-            <span class='n'>w</span><span class='p'>,</span> <span class='n'>d</span><span class='p'>,</span> <span class='n'>_</span><span class='p'>,</span> <span class='n'>p</span> <span class='o'>=</span> <span class='n'>EfficientNet</span><span class='o'>.</span><span class='n'>efficientnet_params</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>)</span>
-            <span class='c1'># note: all models have drop connect rate = 0.2</span>
-            <span class='n'>blocks_args</span><span class='p'>,</span> <span class='n'>global_params</span> <span class='o'>=</span> <span class='n'>EfficientNet</span><span class='o'>.</span><span class='n'>interpret</span><span class='p'>(</span>
-                <span class='n'>width_coefficient</span><span class='o'>=</span><span class='n'>w</span><span class='p'>,</span> <span class='n'>depth_coefficient</span><span class='o'>=</span><span class='n'>d</span><span class='p'>,</span> <span class='n'>dropout_rate</span><span class='o'>=</span><span class='n'>p</span>
-            <span class='p'>)</span>
-        <span class='k'>else</span><span class='p'>:</span>
-            <span class='k'>raise</span> <span class='ne'>NotImplementedError</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;model name is not pre-defined: </span><span class='si'>{</span><span class='n'>model_name</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span>
-        <span class='k'>if</span> <span class='n'>override_params</span><span class='p'>:</span>
-            <span class='c1'># ValueError will be raised here if override_params has fields not included in global_params.</span>
-            <span class='n'>global_params</span> <span class='o'>=</span> <span class='n'>global_params</span><span class='o'>.</span><span class='n'>_replace</span><span class='p'>(</span><span class='o'>**</span><span class='n'>override_params</span><span class='p'>)</span>
-        <span class='k'>return</span> <span class='n'>blocks_args</span><span class='p'>,</span> <span class='n'>global_params</span></div>
-
-<div class='viewcode-block' id='EfficientNet.from_name'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.from_name'>[docs]</a>    <span class='nd'>@classmethod</span>
-    <span class='k'>def</span> <span class='nf'>from_name</span><span class='p'>(</span><span class='bp'>cls</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>,</span> <span class='n'>override_params</span><span class='o'>=</span><span class='kc'>None</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        :param model_name:</span>
-<span class='sd'>        :type model_name:</span>
-<span class='sd'>        :param override_params:</span>
-<span class='sd'>        :type override_params:</span>
-<span class='sd'>        :return:</span>
-<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
-        <span class='bp'>cls</span><span class='o'>.</span><span class='n'>_check_model_name_is_valid</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>)</span>
-        <span class='n'>blocks_args</span><span class='p'>,</span> <span class='n'>global_params</span> <span class='o'>=</span> <span class='n'>EfficientNet</span><span class='o'>.</span><span class='n'>get_model_params</span><span class='p'>(</span>
-            <span class='n'>model_name</span><span class='p'>,</span> <span class='n'>override_params</span>
-        <span class='p'>)</span>
-        <span class='k'>return</span> <span class='n'>EfficientNet</span><span class='p'>(</span><span class='mi'>0</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>,</span> <span class='n'>blocks_args</span><span class='p'>,</span> <span class='n'>global_params</span><span class='p'>)</span></div>
-
-<div class='viewcode-block' id='EfficientNet.from_pretrained'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.from_pretrained'>[docs]</a>    <span class='nd'>@classmethod</span>
-    <span class='k'>def</span> <span class='nf'>from_pretrained</span><span class='p'>(</span><span class='bp'>cls</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>        Loads pretrained weights, and downloads if loading for the first time.</span>
-
-<span class='sd'>        :param model_name:</span>
-<span class='sd'>        :type model_name:</span>
-<span class='sd'>        :return:</span>
-<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
-
-        <span class='n'>model</span> <span class='o'>=</span> <span class='n'>EfficientNet</span><span class='o'>.</span><span class='n'>from_name</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>)</span>
-
-        <span class='n'>url_map</span> <span class='o'>=</span> <span class='p'>{</span>
-            <span class='s2'>&quot;efficientnet-b0&quot;</span><span class='p'>:</span> <span class='s2'>&quot;http://storage.googleapis.com/public-models/efficientnet-b0-08094119.pth&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;efficientnet-b1&quot;</span><span class='p'>:</span> <span class='s2'>&quot;http://storage.googleapis.com/public-models/efficientnet-b1-dbc7070a.pth&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;efficientnet-b2&quot;</span><span class='p'>:</span> <span class='s2'>&quot;http://storage.googleapis.com/public-models/efficientnet-b2-27687264.pth&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;efficientnet-b3&quot;</span><span class='p'>:</span> <span class='s2'>&quot;http://storage.googleapis.com/public-models/efficientnet-b3-c8376fa2.pth&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;efficientnet-b4&quot;</span><span class='p'>:</span> <span class='s2'>&quot;http://storage.googleapis.com/public-models/efficientnet-b4-e116e8b3.pth&quot;</span><span class='p'>,</span>
-            <span class='s2'>&quot;efficientnet-b5&quot;</span><span class='p'>:</span> <span class='s2'>&quot;http://storage.googleapis.com/public-models/efficientnet-b5-586e6cc6.pth&quot;</span><span class='p'>,</span>
-        <span class='p'>}</span>
-
-        <span class='n'>state_dict</span> <span class='o'>=</span> <span class='n'>load_state_dict_from_url</span><span class='p'>(</span><span class='n'>url_map</span><span class='p'>[</span><span class='n'>model_name</span><span class='p'>])</span>
-        <span class='n'>model</span><span class='o'>.</span><span class='n'>load_state_dict</span><span class='p'>(</span><span class='n'>state_dict</span><span class='p'>,</span> <span class='n'>strict</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>)</span>
-        <span class='nb'>print</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;Loaded pretrained weights for </span><span class='si'>{</span><span class='n'>model_name</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span>
-
-        <span class='k'>return</span> <span class='n'>model</span></div>
-
-<div class='viewcode-block' id='EfficientNet.get_image_size'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.get_image_size'>[docs]</a>    <span class='nd'>@classmethod</span>
-    <span class='k'>def</span> <span class='nf'>get_image_size</span><span class='p'>(</span><span class='bp'>cls</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-
-<span class='sd'>        :param model_name:</span>
-<span class='sd'>        :type model_name:</span>
-<span class='sd'>        :return:</span>
-<span class='sd'>        :rtype:&quot;&quot;&quot;</span>
-        <span class='bp'>cls</span><span class='o'>.</span><span class='n'>_check_model_name_is_valid</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>)</span>
-        <span class='o'>*</span><span class='n'>_</span><span class='p'>,</span> <span class='n'>res</span><span class='p'>,</span> <span class='n'>_</span> <span class='o'>=</span> <span class='n'>EfficientNet</span><span class='o'>.</span><span class='n'>efficientnet_params</span><span class='p'>(</span><span class='n'>model_name</span><span class='p'>)</span>
-        <span class='k'>return</span> <span class='n'>res</span></div>
-
-    <span class='nd'>@classmethod</span>
-    <span class='k'>def</span> <span class='nf'>_check_model_name_is_valid</span><span class='p'>(</span><span class='bp'>cls</span><span class='p'>,</span> <span class='n'>model_name</span><span class='p'>,</span> <span class='n'>also_need_pretrained_weights</span><span class='o'>=</span><span class='kc'>False</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;Validates model name. None that pretrained weights are only available for</span>
-<span class='sd'>        the first four models (efficientnet-b{i} for i in 0,1,2,3) at the moment.&quot;&quot;&quot;</span>
-        <span class='n'>num_models</span> <span class='o'>=</span> <span class='mi'>4</span> <span class='k'>if</span> <span class='n'>also_need_pretrained_weights</span> <span class='k'>else</span> <span class='mi'>8</span>
-        <span class='n'>valid_models</span> <span class='o'>=</span> <span class='p'>[</span><span class='sa'>f</span><span class='s2'>&quot;efficientnet_b</span><span class='si'>{</span><span class='nb'>str</span><span class='p'>(</span><span class='n'>i</span><span class='p'>)</span><span class='si'>}</span><span class='s2'>&quot;</span> <span class='k'>for</span> <span class='n'>i</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='n'>num_models</span><span class='p'>)]</span>
-        <span class='k'>if</span> <span class='n'>model_name</span><span class='o'>.</span><span class='n'>replace</span><span class='p'>(</span><span class='s2'>&quot;-&quot;</span><span class='p'>,</span> <span class='s2'>&quot;_&quot;</span><span class='p'>)</span> <span class='ow'>not</span> <span class='ow'>in</span> <span class='n'>valid_models</span><span class='p'>:</span>
-            <span class='k'>raise</span> <span class='ne'>ValueError</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;model_name should be one of: </span><span class='si'>{</span><span class='s1'>&#39;, &#39;</span><span class='o'>.</span><span class='n'>join</span><span class='p'>(</span><span class='n'>valid_models</span><span class='p'>)</span><span class='si'>}</span><span class='s2'>&quot;</span><span class='p'>)</span></div>
-</pre>
-            </div>
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../../../" id="documentation_options" src="../../../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../../../_static/jquery.js"></script>
+    <script src="../../../../../../../_static/underscore.js"></script>
+    <script src="../../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/detection/single_stage/ssd/architecture/backbones/efficient_net.html" />
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">           Created on 22/03/2020</span>
+<span class="s2">           &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="kn">from</span> <span class="nn">neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SSDBackbone</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.utilities.torch_utilities.efficient_net_utilities</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Conv2dSamePadding</span><span class="p">,</span>
+    <span class="n">MobileInvertedResidualBottleneckConvBlock</span><span class="p">,</span>
+    <span class="n">round_filters</span><span class="p">,</span>
+    <span class="n">round_repeats</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.utilities.torch_utilities.output_activation.custom_activations</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">swish</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.utilities.torch_utilities.persistence.custom_model_caching</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">load_state_dict_from_url</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;EfficientNet&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="EfficientNet"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet">[docs]</a><span class="k">class</span> <span class="nc">EfficientNet</span><span class="p">(</span><span class="n">SSDBackbone</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An EfficientNet model. Most easily loaded with the .from_name or .from_pretrained methods</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    blocks_args (list): A list of BlockArgs to construct blocks</span>
+<span class="sd">    global_params (namedtuple): A set of GlobalParams shared between blocks</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    model = EfficientNet.from_pretrained(&#39;efficientnet-b0&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EfficientNet.add_extras"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.add_extras">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">add_extras</span><span class="p">(</span><span class="n">cfgs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param cfgs:</span>
+<span class="sd">        :type cfgs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+        <span class="n">extras</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">cfgs</span><span class="p">:</span>
+            <span class="n">extra</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">:</span>
+                <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">padding</span> <span class="o">=</span> <span class="n">params</span>
+                <span class="n">extra</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">padding</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">extra</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+            <span class="n">extras</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">extra</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">extras</span></div>
+
+    <span class="n">INDICES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;efficientnet-b3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">25</span><span class="p">]}</span>
+
+    <span class="n">EXTRAS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;efficientnet-b3&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="c1"># in,  out, k, s, p</span>
+            <span class="p">[(</span><span class="mi">384</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>  <span class="c1"># 5 x 5</span>
+            <span class="p">[(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>  <span class="c1"># 3 x 3</span>
+            <span class="p">[(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>  <span class="c1"># 1 x 1</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="EfficientNet.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">blocks_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">global_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">INDICES</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_extras</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EXTRAS</span><span class="p">[</span><span class="n">model_name</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">blocks_args</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="s2">&quot;blocks_args should be a list&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">blocks_args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;block args must be greater than 0&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span> <span class="o">=</span> <span class="n">global_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks_args</span> <span class="o">=</span> <span class="n">blocks_args</span>
+
+        <span class="c1"># Batch norm parameters</span>
+        <span class="n">bn_mom</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span><span class="o">.</span><span class="n">batch_norm_momentum</span>
+        <span class="n">bn_eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span><span class="o">.</span><span class="n">batch_norm_epsilon</span>
+
+        <span class="c1"># Stem</span>
+        <span class="n">in_channels</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># rgb</span>
+        <span class="n">out_channels</span> <span class="o">=</span> <span class="n">round_filters</span><span class="p">(</span>
+            <span class="mi">32</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span>
+        <span class="p">)</span>  <span class="c1"># number of output channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conv_stem</span> <span class="o">=</span> <span class="n">Conv2dSamePadding</span><span class="p">(</span>
+            <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bn0</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span>
+            <span class="n">num_features</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="n">bn_mom</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">bn_eps</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Build blocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">block_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks_args</span><span class="p">:</span>
+
+            <span class="c1"># Update block input and output filters based on depth multiplier.</span>
+            <span class="n">block_args</span> <span class="o">=</span> <span class="n">block_args</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span>
+                <span class="n">input_filters</span><span class="o">=</span><span class="n">round_filters</span><span class="p">(</span>
+                    <span class="n">block_args</span><span class="o">.</span><span class="n">input_filters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span>
+                <span class="p">),</span>
+                <span class="n">output_filters</span><span class="o">=</span><span class="n">round_filters</span><span class="p">(</span>
+                    <span class="n">block_args</span><span class="o">.</span><span class="n">output_filters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span>
+                <span class="p">),</span>
+                <span class="n">num_repeat</span><span class="o">=</span><span class="n">round_repeats</span><span class="p">(</span><span class="n">block_args</span><span class="o">.</span><span class="n">num_repeat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="c1"># The first block needs to take care of stride and filter size increase.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">MobileInvertedResidualBottleneckConvBlock</span><span class="p">(</span>
+                    <span class="n">block_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">block_args</span><span class="o">.</span><span class="n">num_repeat</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">block_args</span> <span class="o">=</span> <span class="n">block_args</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span>
+                    <span class="n">input_filters</span><span class="o">=</span><span class="n">block_args</span><span class="o">.</span><span class="n">output_filters</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">block_args</span><span class="o">.</span><span class="n">num_repeat</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">MobileInvertedResidualBottleneckConvBlock</span><span class="p">(</span>
+                        <span class="n">block_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="EfficientNet.extract_features"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.extract_features">[docs]</a>    <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns output of the final convolution layer&quot;&quot;&quot;</span>
+
+        <span class="c1"># Stem</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">swish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bn0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conv_stem</span><span class="p">(</span><span class="n">inputs</span><span class="p">)))</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Blocks</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">block</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">):</span>
+            <span class="n">drop_connect_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_params</span><span class="o">.</span><span class="n">drop_connect_rate</span>
+            <span class="k">if</span> <span class="n">drop_connect_rate</span><span class="p">:</span>
+                <span class="n">drop_connect_rate</span> <span class="o">*=</span> <span class="nb">float</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">block</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">drop_connect_rate</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">:</span>
+                <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">features</span></div>
+
+<div class="viewcode-block" id="EfficientNet.forward"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Calls extract_features to extract features, applies final linear layer, and returns logits.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Convolution layers</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extras</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">features</span></div>
+
+<div class="viewcode-block" id="EfficientNet.efficientnet_params"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.efficientnet_params">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">efficientnet_params</span><span class="p">(</span><span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Map EfficientNet model name to parameter coefficients.&quot;&quot;&quot;</span>
+        <span class="n">params_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c1"># Coefficients:   width,depth,res,dropout</span>
+            <span class="s2">&quot;efficientnet-b0&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">260</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b4&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.4</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mi">380</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b5&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.6</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mi">456</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b6&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.8</span><span class="p">,</span> <span class="mf">2.6</span><span class="p">,</span> <span class="mi">528</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+            <span class="s2">&quot;efficientnet-b7&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">params_dict</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="EfficientNet.interpret"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.interpret">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">interpret</span><span class="p">(</span>
+        <span class="n">width_coefficient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">depth_coefficient</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dropout_rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">drop_connect_rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a efficient net model.&quot;&quot;&quot;</span>
+
+        <span class="n">GlobalParams</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+            <span class="s2">&quot;GlobalParams&quot;</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;batch_norm_momentum&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;batch_norm_epsilon&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;dropout_rate&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_categories&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;width_coefficient&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;depth_coefficient&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;depth_divisor&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;min_depth&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;drop_connect_rate&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Parameters for an individual model block</span>
+        <span class="n">BlockArgs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+            <span class="s2">&quot;BlockArgs&quot;</span><span class="p">,</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;kernel_size&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;num_repeat&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;input_filters&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;output_filters&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;expand_ratio&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;id_skip&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;stride&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;se_ratio&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Change namedtuple defaults</span>
+        <span class="n">GlobalParams</span><span class="o">.</span><span class="fm">__new__</span><span class="o">.</span><span class="vm">__defaults__</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">GlobalParams</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+        <span class="n">BlockArgs</span><span class="o">.</span><span class="fm">__new__</span><span class="o">.</span><span class="vm">__defaults__</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">BlockArgs</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+
+        <span class="k">class</span> <span class="nc">BlockDecoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Block Decoder for readability, straight from the official TensorFlow repository&quot;&quot;&quot;</span>
+
+            <span class="nd">@staticmethod</span>
+            <span class="k">def</span> <span class="nf">_decode_block_string</span><span class="p">(</span><span class="n">block_string</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;Gets a block through a string notation of arguments.&quot;&quot;&quot;</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block_string</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+                <span class="n">ops</span> <span class="o">=</span> <span class="n">block_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+                    <span class="n">splits</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d.*)&quot;</span><span class="p">,</span> <span class="n">op</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">splits</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="n">options</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+                <span class="c1"># Check stride</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="s2">&quot;s&quot;</span> <span class="ow">in</span> <span class="n">options</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">options</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">BlockArgs</span><span class="p">(</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">]),</span>
+                    <span class="n">num_repeat</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">]),</span>
+                    <span class="n">input_filters</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">]),</span>
+                    <span class="n">output_filters</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;o&quot;</span><span class="p">]),</span>
+                    <span class="n">expand_ratio</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">]),</span>
+                    <span class="n">id_skip</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;noskip&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">block_string</span><span class="p">),</span>
+                    <span class="n">se_ratio</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;se&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;se&quot;</span> <span class="ow">in</span> <span class="n">options</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])],</span>
+                <span class="p">)</span>
+
+            <span class="nd">@staticmethod</span>
+            <span class="k">def</span> <span class="nf">_encode_block_string</span><span class="p">(</span><span class="n">block</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;Encodes a block to a string.&quot;&quot;&quot;</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;r</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">num_repeat</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;k</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">kernel_size</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;s</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">d</span><span class="si">}{</span><span class="n">block</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;e</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">expand_ratio</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;i</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">input_filters</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;o</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">output_filters</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">block</span><span class="o">.</span><span class="n">se_ratio</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;se</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">se_ratio</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">id_skip</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;noskip&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+            <span class="nd">@staticmethod</span>
+            <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">string_list</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Decodes a list of string notations to specify blocks inside the network.</span>
+
+<span class="sd">                :param string_list: a list of strings, each string is a notation of block</span>
+<span class="sd">                :return: a list of BlockArgs namedtuples of block args&quot;&quot;&quot;</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+                <span class="n">blocks_args</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">block_string</span> <span class="ow">in</span> <span class="n">string_list</span><span class="p">:</span>
+                    <span class="n">blocks_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BlockDecoder</span><span class="o">.</span><span class="n">_decode_block_string</span><span class="p">(</span><span class="n">block_string</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">blocks_args</span>
+
+            <span class="nd">@staticmethod</span>
+            <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="n">blocks_args</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Encodes a list of BlockArgs to a list of strings.</span>
+
+<span class="sd">                :param blocks_args: a list of BlockArgs namedtuples of block args</span>
+<span class="sd">                :return: a list of strings, each string is a notation of block&quot;&quot;&quot;</span>
+                <span class="n">block_strings</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks_args</span><span class="p">:</span>
+                    <span class="n">block_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BlockDecoder</span><span class="o">.</span><span class="n">_encode_block_string</span><span class="p">(</span><span class="n">block</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">block_strings</span>
+
+        <span class="n">blocks_args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;r1_k3_s11_e1_i32_o16_se0.25&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r2_k3_s22_e6_i16_o24_se0.25&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r2_k5_s22_e6_i24_o40_se0.25&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r3_k3_s22_e6_i40_o80_se0.25&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r3_k5_s11_e6_i80_o112_se0.25&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r4_k5_s22_e6_i112_o192_se0.25&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r1_k3_s11_e6_i192_o320_se0.25&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">blocks_args</span> <span class="o">=</span> <span class="n">BlockDecoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">blocks_args</span><span class="p">)</span>
+
+        <span class="n">global_params</span> <span class="o">=</span> <span class="n">GlobalParams</span><span class="p">(</span>
+            <span class="n">batch_norm_momentum</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
+            <span class="n">batch_norm_epsilon</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+            <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+            <span class="n">drop_connect_rate</span><span class="o">=</span><span class="n">drop_connect_rate</span><span class="p">,</span>
+            <span class="c1"># data_format=&#39;channels_last&#39;,  # removed, this is always true in PyTorch</span>
+            <span class="n">num_categories</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+            <span class="n">width_coefficient</span><span class="o">=</span><span class="n">width_coefficient</span><span class="p">,</span>
+            <span class="n">depth_coefficient</span><span class="o">=</span><span class="n">depth_coefficient</span><span class="p">,</span>
+            <span class="n">depth_divisor</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+            <span class="n">min_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">blocks_args</span><span class="p">,</span> <span class="n">global_params</span></div>
+
+<div class="viewcode-block" id="EfficientNet.get_model_params"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.get_model_params">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_model_params</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">override_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block args and global params for a given model&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">model_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;efficientnet&quot;</span><span class="p">):</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">EfficientNet</span><span class="o">.</span><span class="n">efficientnet_params</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="c1"># note: all models have drop connect rate = 0.2</span>
+            <span class="n">blocks_args</span><span class="p">,</span> <span class="n">global_params</span> <span class="o">=</span> <span class="n">EfficientNet</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span>
+                <span class="n">width_coefficient</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">depth_coefficient</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">dropout_rate</span><span class="o">=</span><span class="n">p</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model name is not pre-defined: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">override_params</span><span class="p">:</span>
+            <span class="c1"># ValueError will be raised here if override_params has fields not included in global_params.</span>
+            <span class="n">global_params</span> <span class="o">=</span> <span class="n">global_params</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span><span class="o">**</span><span class="n">override_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">blocks_args</span><span class="p">,</span> <span class="n">global_params</span></div>
+
+<div class="viewcode-block" id="EfficientNet.from_name"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.from_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">override_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param model_name:</span>
+<span class="sd">        :type model_name:</span>
+<span class="sd">        :param override_params:</span>
+<span class="sd">        :type override_params:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_check_model_name_is_valid</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="n">blocks_args</span><span class="p">,</span> <span class="n">global_params</span> <span class="o">=</span> <span class="n">EfficientNet</span><span class="o">.</span><span class="n">get_model_params</span><span class="p">(</span>
+            <span class="n">model_name</span><span class="p">,</span> <span class="n">override_params</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">EfficientNet</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">blocks_args</span><span class="p">,</span> <span class="n">global_params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EfficientNet.from_pretrained"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.from_pretrained">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_pretrained</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads pretrained weights, and downloads if loading for the first time.</span>
+
+<span class="sd">        :param model_name:</span>
+<span class="sd">        :type model_name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">EfficientNet</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+
+        <span class="n">url_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;efficientnet-b0&quot;</span><span class="p">:</span> <span class="s2">&quot;http://storage.googleapis.com/public-models/efficientnet-b0-08094119.pth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;efficientnet-b1&quot;</span><span class="p">:</span> <span class="s2">&quot;http://storage.googleapis.com/public-models/efficientnet-b1-dbc7070a.pth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;efficientnet-b2&quot;</span><span class="p">:</span> <span class="s2">&quot;http://storage.googleapis.com/public-models/efficientnet-b2-27687264.pth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;efficientnet-b3&quot;</span><span class="p">:</span> <span class="s2">&quot;http://storage.googleapis.com/public-models/efficientnet-b3-c8376fa2.pth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;efficientnet-b4&quot;</span><span class="p">:</span> <span class="s2">&quot;http://storage.googleapis.com/public-models/efficientnet-b4-e116e8b3.pth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;efficientnet-b5&quot;</span><span class="p">:</span> <span class="s2">&quot;http://storage.googleapis.com/public-models/efficientnet-b5-586e6cc6.pth&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="n">load_state_dict_from_url</span><span class="p">(</span><span class="n">url_map</span><span class="p">[</span><span class="n">model_name</span><span class="p">])</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded pretrained weights for </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">model</span></div>
+
+<div class="viewcode-block" id="EfficientNet.get_image_size"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.html#neodroidvision.detection.single_stage.ssd.architecture.backbones.efficient_net.EfficientNet.get_image_size">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_image_size</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param model_name:</span>
+<span class="sd">        :type model_name:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        :rtype:&quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_check_model_name_is_valid</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">EfficientNet</span><span class="o">.</span><span class="n">efficientnet_params</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_check_model_name_is_valid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">also_need_pretrained_weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates model name. None that pretrained weights are only available for</span>
+<span class="sd">        the first four models (efficientnet-b{i} for i in 0,1,2,3) at the moment.&quot;&quot;&quot;</span>
+        <span class="n">num_models</span> <span class="o">=</span> <span class="mi">4</span> <span class="k">if</span> <span class="n">also_need_pretrained_weights</span> <span class="k">else</span> <span class="mi">8</span>
+        <span class="n">valid_models</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;efficientnet_b</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_models</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">model_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_models</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model_name should be one of: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">valid_models</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</pre></div>
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../../../../../../../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../../../index.html">
+              <img class="logo" src="../../../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../../../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../../../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../../../../../../../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='../../../../../../index.html'>Module code</a>
-                    <ul>
-                      <li><a href='../../../../../../neodroidvision.html'>neodroidvision</a>
-                        <ul>
-                          <li><a href='../backbones.html'>neodroidvision.detection.single_stage.ssd.architecture.backbones</a>
-                            <ul>
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../../../../../../../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../../../neodroidvision.html">neodroidvision</a><ul>
+  <li><a href="../backbones.html">neodroidvision.detection.single_stage.ssd.architecture.backbones</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
 
+    
 
+    
   </body>
 </html>

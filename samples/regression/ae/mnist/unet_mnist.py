@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Iterator
 
 import torch
-from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     ImprovementDetector,
@@ -19,18 +18,19 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_device_iterator,
 )
-from draugr.tqdm_utilities import progress_bar
-from draugr.visualisation import plot_side_by_side
+from draugr.visualisation import plot_side_by_side, progress_bar
 from draugr.writers import Writer
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 from torch import optim
 from torch.nn.modules.module import Module
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
+from warg import ensure_existence
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
 __author__ = "Christian Heider Nielsen"
 

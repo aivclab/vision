@@ -8,3 +8,4 @@ __doc__ = r"""
            """
 
 from .fission import *
+from .multi_task_learning_scheduler import *

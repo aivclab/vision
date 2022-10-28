@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 # Code is copy-pasted exactly as in torch.utils.data.distributed.
 # FIXME remove this once c10d fixes the bug it has

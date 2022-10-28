@@ -35,6 +35,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.nms\_box\_heads.ssd\_lit
       ~SSDLiteBoxPredictor.get_parameter
       ~SSDLiteBoxPredictor.get_submodule
       ~SSDLiteBoxPredictor.half
+      ~SSDLiteBoxPredictor.ipu
       ~SSDLiteBoxPredictor.load_state_dict
       ~SSDLiteBoxPredictor.location_block
       ~SSDLiteBoxPredictor.modules
@@ -48,6 +49,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.nms\_box\_heads.ssd\_lit
       ~SSDLiteBoxPredictor.register_forward_hook
       ~SSDLiteBoxPredictor.register_forward_pre_hook
       ~SSDLiteBoxPredictor.register_full_backward_hook
+      ~SSDLiteBoxPredictor.register_load_state_dict_post_hook
       ~SSDLiteBoxPredictor.register_module
       ~SSDLiteBoxPredictor.register_parameter
       ~SSDLiteBoxPredictor.requires_grad_

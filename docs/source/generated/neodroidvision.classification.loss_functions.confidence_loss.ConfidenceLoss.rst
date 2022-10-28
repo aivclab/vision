@@ -34,6 +34,7 @@ neodroidvision.classification.loss\_functions.confidence\_loss.ConfidenceLoss
       ~ConfidenceLoss.get_parameter
       ~ConfidenceLoss.get_submodule
       ~ConfidenceLoss.half
+      ~ConfidenceLoss.ipu
       ~ConfidenceLoss.load_state_dict
       ~ConfidenceLoss.modules
       ~ConfidenceLoss.named_buffers
@@ -47,6 +48,7 @@ neodroidvision.classification.loss\_functions.confidence\_loss.ConfidenceLoss
       ~ConfidenceLoss.register_forward_hook
       ~ConfidenceLoss.register_forward_pre_hook
       ~ConfidenceLoss.register_full_backward_hook
+      ~ConfidenceLoss.register_load_state_dict_post_hook
       ~ConfidenceLoss.register_module
       ~ConfidenceLoss.register_parameter
       ~ConfidenceLoss.requires_grad_

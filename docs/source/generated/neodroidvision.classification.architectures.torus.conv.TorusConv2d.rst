@@ -34,6 +34,7 @@ neodroidvision.classification.architectures.torus.conv.TorusConv2d
       ~TorusConv2d.get_parameter
       ~TorusConv2d.get_submodule
       ~TorusConv2d.half
+      ~TorusConv2d.ipu
       ~TorusConv2d.load_state_dict
       ~TorusConv2d.modules
       ~TorusConv2d.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.classification.architectures.torus.conv.TorusConv2d
       ~TorusConv2d.register_forward_hook
       ~TorusConv2d.register_forward_pre_hook
       ~TorusConv2d.register_full_backward_hook
+      ~TorusConv2d.register_load_state_dict_post_hook
       ~TorusConv2d.register_module
       ~TorusConv2d.register_parameter
       ~TorusConv2d.requires_grad_

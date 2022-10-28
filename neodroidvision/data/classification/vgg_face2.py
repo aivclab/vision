@@ -202,7 +202,7 @@ if __name__ == "__main__":
             dt, batch_size=batch_size, shuffle=False
         )
 
-        from draugr.tqdm_utilities import progress_bar
+        from draugr.visualisation import progress_bar
 
         # test_loader = dt
 

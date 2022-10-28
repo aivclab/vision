@@ -6,7 +6,6 @@ import time
 from pathlib import Path
 
 import torch
-from apppath import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     TorchCacheSession,
@@ -14,6 +13,11 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     WarmupMultiStepLR,
 )
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from warg import NOD, ensure_existence
+from warg.arguments import str2bool
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
@@ -30,10 +34,6 @@ from neodroidvision.utilities import (
     setup_distributed_logger,
     write_metrics_recursive,
 )
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from warg import NOD
-from warg.arguments import str2bool
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = """ description """

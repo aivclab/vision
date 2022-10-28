@@ -34,6 +34,7 @@ neodroidvision.detection.single\_stage.ssd.multi\_box\_loss.MultiBoxLoss
       ~MultiBoxLoss.get_parameter
       ~MultiBoxLoss.get_submodule
       ~MultiBoxLoss.half
+      ~MultiBoxLoss.ipu
       ~MultiBoxLoss.load_state_dict
       ~MultiBoxLoss.modules
       ~MultiBoxLoss.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.detection.single\_stage.ssd.multi\_box\_loss.MultiBoxLoss
       ~MultiBoxLoss.register_forward_hook
       ~MultiBoxLoss.register_forward_pre_hook
       ~MultiBoxLoss.register_full_backward_hook
+      ~MultiBoxLoss.register_load_state_dict_post_hook
       ~MultiBoxLoss.register_module
       ~MultiBoxLoss.register_parameter
       ~MultiBoxLoss.requires_grad_

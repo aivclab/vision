@@ -34,6 +34,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.single\_shot\_dectection
       ~SingleShotDetection.get_parameter
       ~SingleShotDetection.get_submodule
       ~SingleShotDetection.half
+      ~SingleShotDetection.ipu
       ~SingleShotDetection.load_state_dict
       ~SingleShotDetection.modules
       ~SingleShotDetection.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.detection.single\_stage.ssd.architecture.single\_shot\_dectection
       ~SingleShotDetection.register_forward_hook
       ~SingleShotDetection.register_forward_pre_hook
       ~SingleShotDetection.register_full_backward_hook
+      ~SingleShotDetection.register_load_state_dict_post_hook
       ~SingleShotDetection.register_module
       ~SingleShotDetection.register_parameter
       ~SingleShotDetection.requires_grad_

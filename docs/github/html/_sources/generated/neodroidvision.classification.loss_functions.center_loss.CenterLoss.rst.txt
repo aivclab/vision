@@ -34,6 +34,7 @@ neodroidvision.classification.loss\_functions.center\_loss.CenterLoss
       ~CenterLoss.get_parameter
       ~CenterLoss.get_submodule
       ~CenterLoss.half
+      ~CenterLoss.ipu
       ~CenterLoss.load_state_dict
       ~CenterLoss.modules
       ~CenterLoss.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.classification.loss\_functions.center\_loss.CenterLoss
       ~CenterLoss.register_forward_hook
       ~CenterLoss.register_forward_pre_hook
       ~CenterLoss.register_full_backward_hook
+      ~CenterLoss.register_load_state_dict_post_hook
       ~CenterLoss.register_module
       ~CenterLoss.register_parameter
       ~CenterLoss.requires_grad_

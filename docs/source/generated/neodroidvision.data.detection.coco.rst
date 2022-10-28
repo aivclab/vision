@@ -1,4 +1,4 @@
-﻿neodroidvision.data.detection.coco
+neodroidvision.data.detection.coco
 ==================================
 
 .. automodule:: neodroidvision.data.detection.coco

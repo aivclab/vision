@@ -34,6 +34,7 @@ neodroidvision.regression.metric.contrastive.pair\_ranking.PairRankingSiamese
       ~PairRankingSiamese.get_parameter
       ~PairRankingSiamese.get_submodule
       ~PairRankingSiamese.half
+      ~PairRankingSiamese.ipu
       ~PairRankingSiamese.load_state_dict
       ~PairRankingSiamese.modules
       ~PairRankingSiamese.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.regression.metric.contrastive.pair\_ranking.PairRankingSiamese
       ~PairRankingSiamese.register_forward_hook
       ~PairRankingSiamese.register_forward_pre_hook
       ~PairRankingSiamese.register_full_backward_hook
+      ~PairRankingSiamese.register_load_state_dict_post_hook
       ~PairRankingSiamese.register_module
       ~PairRankingSiamese.register_parameter
       ~PairRankingSiamese.requires_grad_

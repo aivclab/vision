@@ -16,6 +16,13 @@ from numpy import ndarray
 
 from warg import Number
 
+__all__ = [
+    "compile_encoding_image",
+    "sample_2d_latent_vectors",
+    "plot_conditioned_manifold",
+    "plot_manifold",
+]
+
 
 def compile_encoding_image(
     images: ndarray, size: Tuple, resize_factor: Number = 1.0

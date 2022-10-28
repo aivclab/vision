@@ -31,7 +31,7 @@ except:
     # raise ModuleNotFoundError("Try: pip install opencv-python opencv-contrib-python -U")
 
 
-def surface_to_numpy(surface):
+def surface_to_numpy(surface) -> numpy.ndarray:
     """Convert a pygame surface into string"""
     return pygame.surfarray.pixels3d(surface)
 

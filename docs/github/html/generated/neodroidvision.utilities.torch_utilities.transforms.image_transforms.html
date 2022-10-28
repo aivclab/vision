@@ -1,221 +1,185 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-    <meta name='generator' content='Docutils 0.17.1: http://docutils.sourceforge.net/'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>neodroidvision.utilities.torch_utilities.transforms.image_transforms &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../_static/graphviz.css'/>
-    <script data-url_root='../' id='documentation_options' src='../_static/documentation_options.js'></script>
-    <script src='../_static/jquery.js'></script>
-    <script src='../_static/underscore.js'></script>
-    <script src='../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.html'/>
-    <link rel='index' title='Index' href='../genindex.html'/>
-    <link rel='search' title='Search' href='../search.html'/>
-    <link rel='next' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint.html'/>
-    <link rel='prev' title='neodroidvision.utilities.torch_utilities.transforms.channels.Replicate' href='neodroidvision.utilities.torch_utilities.transforms.channels.Replicate.html'/>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="neodroidvision.utilities.torch_utilities.transforms.interpolate" href="neodroidvision.utilities.torch_utilities.transforms.interpolate.html" />
+    <link rel="prev" title="neodroidvision.utilities.torch_utilities.transforms.channels.Replicate" href="neodroidvision.utilities.torch_utilities.transforms.channels.Replicate.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel='stylesheet' href='../_static/custom.css' type='text/css'/>
+  </head><body>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
-
-  </head>
-  <body>
-
-
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
-
-
-          <div class='body' role='main'>
-
-            <section id='module-neodroidvision.utilities.torch_utilities.transforms.image_transforms'>
-              <span id='neodroidvision-utilities-torch-utilities-transforms-image-transforms'></span>
-              <h1>neodroidvision.utilities.torch_utilities.transforms.image_transforms<a class='headerlink' href='#module-neodroidvision.utilities.torch_utilities.transforms.image_transforms' title='Permalink to this heading'>¶</a></h1>
-              <p>A package of torchvision transforms
-                 Add examples to the __main__ routine as necessary for visualization</p>
-              <p class='rubric'>Functions</p>
-              <table class='autosummary longtable docutils align-default'>
-                <colgroup>
-                  <col style='width: 10%'/>
-                  <col style='width: 90%'/>
-                </colgroup>
-                <tbody>
-                  <tr class='row-odd'>
-                    <td><p><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint'><code class='xref py py-obj docutils literal notranslate'><span class='pre'>roundtoint</span></code></a>(x)</p></td>
-                    <td><p>
-                      <dl class='field-list simple'>
-                        <dt class='field-odd'>param x</dt>
-                        <dd class='field-odd'><p></p></dd>
-                      </dl>
-                      </p></td>
-                  </tr>
-                  <tr class='row-even'>
-                    <td><p><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti'><code class='xref py py-obj docutils literal notranslate'><span class='pre'>tuplemulti</span></code></a>(a, b[, op])</p></td>
-                    <td><p>elementwise multiplication of two sequences a and b are two equally long sequences op is a post-multi operation, default None</p></td>
-                  </tr>
-                </tbody>
-              </table>
-              <p class='rubric'>Classes</p>
-              <table class='autosummary longtable docutils align-default'>
-                <colgroup>
-                  <col style='width: 10%'/>
-                  <col style='width: 90%'/>
-                </colgroup>
-                <tbody>
-                  <tr class='row-odd'>
-                    <td><p><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform'><code class='xref py py-obj docutils literal notranslate'><span class='pre'>BaseTorchTransform</span></code></a>()</p></td>
-                    <td><p></p></td>
-                  </tr>
-                  <tr class='row-even'>
-                    <td><p><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB'><code class='xref py py-obj docutils literal notranslate'><span class='pre'>Black2RGB</span></code></a>([threshold, vals, constant])</p></td>
-                    <td><p>Inserts random RGB values in an image at specific dark colours Used to, for example, convert black writing to colored text</p></td>
-                  </tr>
-                  <tr class='row-odd'>
-                    <td><p><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor'><code class='xref py py-obj docutils literal notranslate'><span class='pre'>RandomFlipColor</span></code></a>([ratio])</p></td>
-                    <td><p>Randomly flips a colour channel in an image Each channel is individually evaluated against ratio (R) Hence, the chance of each channel (C) being affected is R^C and the chance of no channels being affected (N) is (1-R)^C and the chance of any channel(s) being affected is thus 1-N If you wish to calculate the R required for total risk T of any one or more channels being affected in a single forward, use this formula: R = 1 - (1 - T)^(1/C) For example, if your target T is 0.8 and there are 3 channels in an image, R = 1 - (1 - 0.8)^(1/3) = 0.415</p></td>
-                  </tr>
-                  <tr class='row-even'>
-                    <td><p><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise' title='neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise'><code class='xref py py-obj docutils literal notranslate'><span class='pre'>RandomRGBNoise</span></code></a>([ratio, val])</p></td>
-                    <td><p>Inserts random R, G, and/or B values in an image Ratio affects the total amount of RGB values affected, not the amount of pixels.</p></td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
+          <div class="body" role="main">
+            
+  <section id="neodroidvision-utilities-torch-utilities-transforms-image-transforms">
+<h1>neodroidvision.utilities.torch_utilities.transforms.image_transforms<a class="headerlink" href="#neodroidvision-utilities-torch-utilities-transforms-image-transforms" title="Permalink to this heading">¶</a></h1>
+<p>A package of torchvision transforms
+Add examples to the __main__ routine as necessary for visualization</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
 
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul class='current'>
-            <li class='toctree-l1 current'><a class='reference internal' href='neodroidvision.html'>neodroidvision</a>
-              <ul class='current'>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.dist_is_editable.html'>neodroidvision.dist_is_editable</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.get_version.html'>neodroidvision.get_version</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.classification.html'>neodroidvision.classification</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.data.html'>neodroidvision.data</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.detection.html'>neodroidvision.detection</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.entry_points.html'>neodroidvision.entry_points</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.mixed.html'>neodroidvision.mixed</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.multitask.html'>neodroidvision.multitask</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.regression.html'>neodroidvision.regression</a></li>
-                <li class='toctree-l2'><a class='reference internal' href='neodroidvision.segmentation.html'>neodroidvision.segmentation</a></li>
-                <li class='toctree-l2 current'><a class='reference internal' href='neodroidvision.utilities.html'>neodroidvision.utilities</a>
-                  <ul class='current'>
-                    <li class='toctree-l3'><a class='reference internal' href='neodroidvision.utilities.deep_augmentation.html'>neodroidvision.utilities.deep_augmentation</a></li>
-                    <li class='toctree-l3'><a class='reference internal' href='neodroidvision.utilities.misc.html'>neodroidvision.utilities.misc</a></li>
-                    <li class='toctree-l3'><a class='reference internal' href='neodroidvision.utilities.opencv_utilities.html'>neodroidvision.utilities.opencv_utilities</a></li>
-                    <li class='toctree-l3'><a class='reference internal' href='neodroidvision.utilities.skimage_utilities.html'>neodroidvision.utilities.skimage_utilities</a></li>
-                    <li class='toctree-l3'><a class='reference internal' href='neodroidvision.utilities.tf_utilities.html'>neodroidvision.utilities.tf_utilities</a></li>
-                    <li class='toctree-l3 current'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.html'>neodroidvision.utilities.torch_utilities</a>
-                      <ul class='current'>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.batching.html'>neodroidvision.utilities.torch_utilities.batching</a></li>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.distributing.html'>neodroidvision.utilities.torch_utilities.distributing</a></li>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.efficient_net_utilities.html'>neodroidvision.utilities.torch_utilities.efficient_net_utilities</a></li>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.layers.html'>neodroidvision.utilities.torch_utilities.layers</a></li>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.output_activation.html'>neodroidvision.utilities.torch_utilities.output_activation</a></li>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.patches.html'>neodroidvision.utilities.torch_utilities.patches</a></li>
-                        <li class='toctree-l4'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.persistence.html'>neodroidvision.utilities.torch_utilities.persistence</a></li>
-                        <li class='toctree-l4 current'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.html'>neodroidvision.utilities.torch_utilities.transforms</a>
-                          <ul class='current'>
-                            <li class='toctree-l5'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.channels.html'>neodroidvision.utilities.torch_utilities.transforms.channels</a></li>
-                            <li class='toctree-l5 current'><a class='current reference internal' href='#'>neodroidvision.utilities.torch_utilities.transforms.image_transforms</a>
-                              <ul>
-                                <li class='toctree-l6'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint.html'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint</a></li>
-                                <li class='toctree-l6'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti.html'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti</a></li>
-                                <li class='toctree-l6'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform</a></li>
-                                <li class='toctree-l6'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB</a></li>
-                                <li class='toctree-l6'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor</a></li>
-                                <li class='toctree-l6'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise</a></li>
-                              </ul>
-                            </li>
-                            <li class='toctree-l5'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.interpolate.html'>neodroidvision.utilities.torch_utilities.transforms.interpolate</a></li>
-                            <li class='toctree-l5'><a class='reference internal' href='neodroidvision.utilities.torch_utilities.transforms.tuple_transforms.html'>neodroidvision.utilities.torch_utilities.transforms.tuple_transforms</a></li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class='toctree-l3'><a class='reference internal' href='neodroidvision.utilities.visualisation.html'>neodroidvision.utilities.visualisation</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='neodroidvision.html'>neodroidvision</a>
-                    <ul>
-                      <li><a href='neodroidvision.utilities.html'>neodroidvision.utilities</a>
-                        <ul>
-                          <li><a href='neodroidvision.utilities.torch_utilities.html'>neodroidvision.utilities.torch_utilities</a>
-                            <ul>
-                              <li><a href='neodroidvision.utilities.torch_utilities.transforms.html'>neodroidvision.utilities.torch_utilities.transforms</a>
-                                <ul>
-                                  <li>Previous: <a href='neodroidvision.utilities.torch_utilities.transforms.channels.Replicate.html' title='previous chapter'>neodroidvision.utilities.torch_utilities.transforms.channels.Replicate</a></li>
-                                  <li>Next: <a href='neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint.html' title='next chapter'>neodroidvision.utilities.torch_utilities.transforms.image_transforms.roundtoint</a></li>
-                                </ul>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="neodroidvision.html">neodroidvision</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.dist_is_editable.html">neodroidvision.dist_is_editable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.get_version.html">neodroidvision.get_version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.classification.html">neodroidvision.classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.data.html">neodroidvision.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.detection.html">neodroidvision.detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.entry_points.html">neodroidvision.entry_points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.mixed.html">neodroidvision.mixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.multitask.html">neodroidvision.multitask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.regression.html">neodroidvision.regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neodroidvision.segmentation.html">neodroidvision.segmentation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="neodroidvision.utilities.html">neodroidvision.utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="neodroidvision.utilities.deep_augmentation.html">neodroidvision.utilities.deep_augmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neodroidvision.utilities.misc.html">neodroidvision.utilities.misc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neodroidvision.utilities.opencv_utilities.html">neodroidvision.utilities.opencv_utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neodroidvision.utilities.skimage_utilities.html">neodroidvision.utilities.skimage_utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neodroidvision.utilities.tf_utilities.html">neodroidvision.utilities.tf_utilities</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.html">neodroidvision.utilities.torch_utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.batching.html">neodroidvision.utilities.torch_utilities.batching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.distributing.html">neodroidvision.utilities.torch_utilities.distributing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.efficient_net_utilities.html">neodroidvision.utilities.torch_utilities.efficient_net_utilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.layers.html">neodroidvision.utilities.torch_utilities.layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.output_activation.html">neodroidvision.utilities.torch_utilities.output_activation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.patches.html">neodroidvision.utilities.torch_utilities.patches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.persistence.html">neodroidvision.utilities.torch_utilities.persistence</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.transforms.html">neodroidvision.utilities.torch_utilities.transforms</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.transforms.blocky.html">neodroidvision.utilities.torch_utilities.transforms.blocky</a></li>
+<li class="toctree-l5"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.transforms.channels.html">neodroidvision.utilities.torch_utilities.transforms.channels</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">neodroidvision.utilities.torch_utilities.transforms.image_transforms</a></li>
+<li class="toctree-l5"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.transforms.interpolate.html">neodroidvision.utilities.torch_utilities.transforms.interpolate</a></li>
+<li class="toctree-l5"><a class="reference internal" href="neodroidvision.utilities.torch_utilities.transforms.tuple_transforms.html">neodroidvision.utilities.torch_utilities.transforms.tuple_transforms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="neodroidvision.utilities.visualisation.html">neodroidvision.utilities.visualisation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="neodroidvision.html">neodroidvision</a><ul>
+  <li><a href="neodroidvision.utilities.html">neodroidvision.utilities</a><ul>
+  <li><a href="neodroidvision.utilities.torch_utilities.html">neodroidvision.utilities.torch_utilities</a><ul>
+  <li><a href="neodroidvision.utilities.torch_utilities.transforms.html">neodroidvision.utilities.torch_utilities.transforms</a><ul>
+      <li>Previous: <a href="neodroidvision.utilities.torch_utilities.transforms.channels.Replicate.html" title="previous chapter">neodroidvision.utilities.torch_utilities.transforms.channels.Replicate</a></li>
+      <li>Next: <a href="neodroidvision.utilities.torch_utilities.transforms.interpolate.html" title="next chapter">neodroidvision.utilities.torch_utilities.transforms.interpolate</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
       |
-      <a href='../_sources/generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.rst.txt'
-         rel='nofollow'>Page source</a>
+      <a href="../_sources/generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
+    
 
+    
   </body>
 </html>

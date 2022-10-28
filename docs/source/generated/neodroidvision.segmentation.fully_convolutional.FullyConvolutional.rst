@@ -35,6 +35,7 @@ neodroidvision.segmentation.fully\_convolutional.FullyConvolutional
       ~FullyConvolutional.get_parameter
       ~FullyConvolutional.get_submodule
       ~FullyConvolutional.half
+      ~FullyConvolutional.ipu
       ~FullyConvolutional.load_state_dict
       ~FullyConvolutional.modules
       ~FullyConvolutional.named_buffers
@@ -47,6 +48,7 @@ neodroidvision.segmentation.fully\_convolutional.FullyConvolutional
       ~FullyConvolutional.register_forward_hook
       ~FullyConvolutional.register_forward_pre_hook
       ~FullyConvolutional.register_full_backward_hook
+      ~FullyConvolutional.register_load_state_dict_post_hook
       ~FullyConvolutional.register_module
       ~FullyConvolutional.register_parameter
       ~FullyConvolutional.requires_grad_

@@ -17,16 +17,17 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     global_torch_device,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.writers import Writer
+from torch.nn import Module
+from torch.utils.data import DataLoader
+
 from neodroidvision.data.detection.coco import (
     CocoEvaluator,
     get_coco_api_from_dataset,
     get_iou_types,
 )
 from neodroidvision.utilities import reduce_dict
-from torch.nn import Module
-from torch.utils.data import DataLoader
 
 __all__ = ["maskrcnn_train_single_epoch", "maskrcnn_evaluate"]
 

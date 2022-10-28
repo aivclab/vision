@@ -34,6 +34,7 @@ neodroidvision.multitask.fission.skip\_hourglass.skip\_hourglass\_fission.SkipHo
       ~SkipHourglassFission.get_parameter
       ~SkipHourglassFission.get_submodule
       ~SkipHourglassFission.half
+      ~SkipHourglassFission.ipu
       ~SkipHourglassFission.load_state_dict
       ~SkipHourglassFission.modules
       ~SkipHourglassFission.named_buffers
@@ -47,6 +48,7 @@ neodroidvision.multitask.fission.skip\_hourglass.skip\_hourglass\_fission.SkipHo
       ~SkipHourglassFission.register_forward_hook
       ~SkipHourglassFission.register_forward_pre_hook
       ~SkipHourglassFission.register_full_backward_hook
+      ~SkipHourglassFission.register_load_state_dict_post_hook
       ~SkipHourglassFission.register_module
       ~SkipHourglassFission.register_parameter
       ~SkipHourglassFission.requires_grad_

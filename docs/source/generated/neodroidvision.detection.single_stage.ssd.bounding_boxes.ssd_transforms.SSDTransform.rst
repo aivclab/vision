@@ -34,6 +34,7 @@ neodroidvision.detection.single\_stage.ssd.bounding\_boxes.ssd\_transforms.SSDTr
       ~SSDTransform.get_parameter
       ~SSDTransform.get_submodule
       ~SSDTransform.half
+      ~SSDTransform.ipu
       ~SSDTransform.load_state_dict
       ~SSDTransform.modules
       ~SSDTransform.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.detection.single\_stage.ssd.bounding\_boxes.ssd\_transforms.SSDTr
       ~SSDTransform.register_forward_hook
       ~SSDTransform.register_forward_pre_hook
       ~SSDTransform.register_full_backward_hook
+      ~SSDTransform.register_load_state_dict_post_hook
       ~SSDTransform.register_module
       ~SSDTransform.register_parameter
       ~SSDTransform.requires_grad_

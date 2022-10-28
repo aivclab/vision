@@ -1,243 +1,252 @@
+
 <!DOCTYPE html>
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/pygments.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/alabaster.css'/>
-    <link rel='stylesheet' type='text/css' href='../../../../../../../_static/graphviz.css'/>
-    <script data-url_root='../../../../../../../' id='documentation_options' src='../../../../../../../_static/documentation_options.js'></script>
-    <script src='../../../../../../../_static/jquery.js'></script>
-    <script src='../../../../../../../_static/underscore.js'></script>
-    <script src='../../../../../../../_static/_sphinx_javascript_frameworks_compat.js'></script>
-    <script src='../../../../../../../_static/doctools.js'></script>
-    <link rel='canonical' href='aivclab.github.io/neodroidvision/_modules/neodroidvision/data/synthesis/conversion/mnist/threed/voxel_grid.html'/>
-    <link rel='index' title='Index' href='../../../../../../../genindex.html'/>
-    <link rel='search' title='Search' href='../../../../../../../search.html'/>
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../../_static/graphviz.css" />
+    <script data-url_root="../../../../../../../" id="documentation_options" src="../../../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../../../_static/jquery.js"></script>
+    <script src="../../../../../../../_static/underscore.js"></script>
+    <script src="../../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../../../_static/doctools.js"></script>
+    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/synthesis/conversion/mnist/threed/voxel_grid.html" />
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel='stylesheet' href='../../../../../../../_static/custom.css' type='text/css'/>
+  </head><body>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <meta name='viewport' content='width=device-width, initial-scale=0.9, maximum-scale=0.9'/>
+          <div class="body" role="main">
+            
+  <h1>Source code for neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
 
-  </head>
-  <body>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 
+<span class="s2">           Created on 29/03/2020</span>
+<span class="s2">           &quot;&quot;&quot;</span>
 
-    <div class='document'>
-      <div class='documentwrapper'>
-        <div class='bodywrapper'>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
 
+<span class="kn">from</span> <span class="nn">.plot3d</span> <span class="kn">import</span> <span class="n">plot_voxelgrid</span>
 
-          <div class='body' role='main'>
-
-            <h1>Source code for neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid</h1>
-            <div class='highlight'><pre>
-<span></span><span class='ch'>#!/usr/bin/env python3</span>
-<span class='c1'># -*- coding: utf-8 -*-</span>
-
-<span class='n'>__author__</span> <span class='o'>=</span> <span class='s2'>&quot;Christian&quot;</span>
-<span class='vm'>__doc__</span> <span class='o'>=</span> <span class='sa'>r</span><span class='s2'>&quot;&quot;&quot;</span>
-
-<span class='s2'>           Created on 29/03/2020</span>
-<span class='s2'>           &quot;&quot;&quot;</span>
-
-<span class='kn'>import</span> <span class='nn'>numpy</span>
-<span class='kn'>from</span> <span class='nn'>matplotlib</span> <span class='kn'>import</span> <span class='n'>pyplot</span>
-
-<span class='kn'>from</span> <span class='nn'>.plot3d</span> <span class='kn'>import</span> <span class='n'>plot_voxelgrid</span>
-
-<span class='n'>__all__</span> <span class='o'>=</span> <span class='p'>[</span><span class='s2'>&quot;VoxelGrid&quot;</span><span class='p'>]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;VoxelGrid&quot;</span><span class="p">]</span>
 
 
-<div class='viewcode-block' id='VoxelGrid'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid'>[docs]</a><span class='k'>class</span> <span class='nc'>VoxelGrid</span><span class='p'>(</span><span class='nb'>object</span><span class='p'>):</span>
-    <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="VoxelGrid"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid">[docs]</a><span class="k">class</span> <span class="nc">VoxelGrid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
 
-<div class='viewcode-block' id='VoxelGrid.__init__'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.__init__'>[docs]</a>    <span class='k'>def</span> <span class='fm'>__init__</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>points</span><span class='p'>,</span> <span class='n'>x_y_z</span><span class='o'>=</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>,</span> <span class='mi'>1</span><span class='p'>),</span> <span class='n'>bb_cuboid</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>,</span> <span class='n'>build</span><span class='o'>=</span><span class='kc'>True</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
-<span class='sd'>        Parameters</span>
-<span class='sd'>        ----------</span>
-<span class='sd'>        points: (N,3) ndarray</span>
-<span class='sd'>                The point cloud from wich we want to construct the VoxelGrid.</span>
-<span class='sd'>                Where N is the number of points in the point cloud and the second</span>
-<span class='sd'>                dimension represents the x, y and z coordinates of each point.</span>
+<div class="viewcode-block" id="VoxelGrid.__init__"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">x_y_z</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">bb_cuboid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">build</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        points: (N,3) ndarray</span>
+<span class="sd">                The point cloud from wich we want to construct the VoxelGrid.</span>
+<span class="sd">                Where N is the number of points in the point cloud and the second</span>
+<span class="sd">                dimension represents the x, y and z coordinates of each point.</span>
 
-<span class='sd'>        x_y_z:  list</span>
-<span class='sd'>                The segments in wich each axis will be divided.</span>
-<span class='sd'>                x_y_z[0]: x axis</span>
-<span class='sd'>                x_y_z[1]: y axis</span>
-<span class='sd'>                x_y_z[2]: z axis</span>
+<span class="sd">        x_y_z:  list</span>
+<span class="sd">                The segments in wich each axis will be divided.</span>
+<span class="sd">                x_y_z[0]: x axis</span>
+<span class="sd">                x_y_z[1]: y axis</span>
+<span class="sd">                x_y_z[2]: z axis</span>
 
-<span class='sd'>        bb_cuboid(Optional): bool</span>
-<span class='sd'>                If True(Default):</span>
-<span class='sd'>                    The bounding box of the point cloud will be adjusted</span>
-<span class='sd'>                    in order to have all the dimensions of equal lenght.</span>
-<span class='sd'>                If False:</span>
-<span class='sd'>                    The bounding box is allowed to have dimensions of different sizes.</span>
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>points</span> <span class='o'>=</span> <span class='n'>points</span>
+<span class="sd">        bb_cuboid(Optional): bool</span>
+<span class="sd">                If True(Default):</span>
+<span class="sd">                    The bounding box of the point cloud will be adjusted</span>
+<span class="sd">                    in order to have all the dimensions of equal lenght.</span>
+<span class="sd">                If False:</span>
+<span class="sd">                    The bounding box is allowed to have dimensions of different sizes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
 
-        <span class='n'>xyz_min</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>min</span><span class='p'>(</span><span class='n'>points</span><span class='p'>,</span> <span class='n'>axis</span><span class='o'>=</span><span class='mi'>0</span><span class='p'>)</span> <span class='o'>-</span> <span class='mf'>0.001</span>
-        <span class='n'>xyz_max</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>max</span><span class='p'>(</span><span class='n'>points</span><span class='p'>,</span> <span class='n'>axis</span><span class='o'>=</span><span class='mi'>0</span><span class='p'>)</span> <span class='o'>+</span> <span class='mf'>0.001</span>
+        <span class="n">xyz_min</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.001</span>
+        <span class="n">xyz_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.001</span>
 
-        <span class='k'>if</span> <span class='n'>bb_cuboid</span><span class='p'>:</span>
-            <span class='c1'>#: adjust to obtain a  minimum bounding box with all sides of equal lenght</span>
-            <span class='n'>diff</span> <span class='o'>=</span> <span class='nb'>max</span><span class='p'>(</span><span class='n'>xyz_max</span> <span class='o'>-</span> <span class='n'>xyz_min</span><span class='p'>)</span> <span class='o'>-</span> <span class='p'>(</span><span class='n'>xyz_max</span> <span class='o'>-</span> <span class='n'>xyz_min</span><span class='p'>)</span>
-            <span class='n'>xyz_min</span> <span class='o'>=</span> <span class='n'>xyz_min</span> <span class='o'>-</span> <span class='n'>diff</span> <span class='o'>/</span> <span class='mi'>2</span>
-            <span class='n'>xyz_max</span> <span class='o'>=</span> <span class='n'>xyz_max</span> <span class='o'>+</span> <span class='n'>diff</span> <span class='o'>/</span> <span class='mi'>2</span>
+        <span class="k">if</span> <span class="n">bb_cuboid</span><span class="p">:</span>
+            <span class="c1">#: adjust to obtain a  minimum bounding box with all sides of equal lenght</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xyz_max</span> <span class="o">-</span> <span class="n">xyz_min</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">xyz_max</span> <span class="o">-</span> <span class="n">xyz_min</span><span class="p">)</span>
+            <span class="n">xyz_min</span> <span class="o">=</span> <span class="n">xyz_min</span> <span class="o">-</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">xyz_max</span> <span class="o">=</span> <span class="n">xyz_max</span> <span class="o">+</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>xyz_min</span> <span class='o'>=</span> <span class='n'>xyz_min</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>xyz_max</span> <span class='o'>=</span> <span class='n'>xyz_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyz_min</span> <span class="o">=</span> <span class="n">xyz_min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyz_max</span> <span class="o">=</span> <span class="n">xyz_max</span>
 
-        <span class='n'>segments</span> <span class='o'>=</span> <span class='p'>[]</span>
-        <span class='n'>shape</span> <span class='o'>=</span> <span class='p'>[]</span>
+        <span class="n">segments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class='k'>for</span> <span class='n'>i</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span><span class='mi'>3</span><span class='p'>):</span>
-            <span class='c1'># note the +1 in num</span>
-            <span class='k'>if</span> <span class='nb'>type</span><span class='p'>(</span><span class='n'>x_y_z</span><span class='p'>[</span><span class='n'>i</span><span class='p'>])</span> <span class='ow'>is</span> <span class='ow'>not</span> <span class='nb'>int</span><span class='p'>:</span>
-                <span class='k'>raise</span> <span class='ne'>TypeError</span><span class='p'>(</span><span class='sa'>f</span><span class='s2'>&quot;x_y_z[</span><span class='si'>{</span><span class='n'>i</span><span class='si'>}</span><span class='s2'>] must be int&quot;</span><span class='p'>)</span>
-            <span class='n'>s</span><span class='p'>,</span> <span class='n'>step</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>linspace</span><span class='p'>(</span>
-                <span class='n'>xyz_min</span><span class='p'>[</span><span class='n'>i</span><span class='p'>],</span> <span class='n'>xyz_max</span><span class='p'>[</span><span class='n'>i</span><span class='p'>],</span> <span class='n'>num</span><span class='o'>=</span><span class='p'>(</span><span class='n'>x_y_z</span><span class='p'>[</span><span class='n'>i</span><span class='p'>]</span> <span class='o'>+</span> <span class='mi'>1</span><span class='p'>),</span> <span class='n'>retstep</span><span class='o'>=</span><span class='kc'>True</span>
-            <span class='p'>)</span>
-            <span class='n'>segments</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>s</span><span class='p'>)</span>
-            <span class='n'>shape</span><span class='o'>.</span><span class='n'>append</span><span class='p'>(</span><span class='n'>step</span><span class='p'>)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="c1"># note the +1 in num</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x_y_z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x_y_z[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] must be int&quot;</span><span class="p">)</span>
+            <span class="n">s</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                <span class="n">xyz_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">xyz_max</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">num</span><span class="o">=</span><span class="p">(</span><span class="n">x_y_z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">retstep</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>segments</span> <span class='o'>=</span> <span class='n'>segments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">segments</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>shape</span> <span class='o'>=</span> <span class='n'>shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_voxels</span> <span class='o'>=</span> <span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span> <span class='o'>*</span> <span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>]</span> <span class='o'>*</span> <span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>2</span><span class='p'>]</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_x</span> <span class='o'>=</span> <span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_y</span> <span class='o'>=</span> <span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>]</span>
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_z</span> <span class='o'>=</span> <span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>2</span><span class='p'>]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_voxels</span> <span class="o">=</span> <span class="n">x_y_z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_y_z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_y_z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_x</span> <span class="o">=</span> <span class="n">x_y_z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_y</span> <span class="o">=</span> <span class="n">x_y_z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_z</span> <span class="o">=</span> <span class="n">x_y_z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>id</span> <span class='o'>=</span> <span class='sa'>f</span><span class='s2'>&quot;</span><span class='si'>{</span><span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span><span class='si'>}</span><span class='s2'>,</span><span class='si'>{</span><span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>]</span><span class='si'>}</span><span class='s2'>,</span><span class='si'>{</span><span class='n'>x_y_z</span><span class='p'>[</span><span class='mi'>2</span><span class='p'>]</span><span class='si'>}</span><span class='s2'>-</span><span class='si'>{</span><span class='n'>bb_cuboid</span><span class='si'>}</span><span class='s2'>&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x_y_z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">x_y_z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">x_y_z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">bb_cuboid</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class='k'>if</span> <span class='n'>build</span><span class='p'>:</span>
-            <span class='bp'>self</span><span class='o'>.</span><span class='n'>build</span><span class='p'>()</span></div>
+        <span class="k">if</span> <span class="n">build</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
 
-<div class='viewcode-block' id='VoxelGrid.build'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.build'>[docs]</a>    <span class='k'>def</span> <span class='nf'>build</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;description&quot;&quot;&quot;</span>
-        <span class='n'>structure</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>zeros</span><span class='p'>((</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>points</span><span class='p'>),</span> <span class='mi'>4</span><span class='p'>),</span> <span class='n'>dtype</span><span class='o'>=</span><span class='nb'>int</span><span class='p'>)</span>
+<div class="viewcode-block" id="VoxelGrid.build"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-        <span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>0</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>searchsorted</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>segments</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>],</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>points</span><span class='p'>[:,</span> <span class='mi'>0</span><span class='p'>])</span> <span class='o'>-</span> <span class='mi'>1</span>
+        <span class="n">structure</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
-        <span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>1</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>searchsorted</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>segments</span><span class='p'>[</span><span class='mi'>1</span><span class='p'>],</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>points</span><span class='p'>[:,</span> <span class='mi'>1</span><span class='p'>])</span> <span class='o'>-</span> <span class='mi'>1</span>
+        <span class="n">structure</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
-        <span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>2</span><span class='p'>]</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>searchsorted</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>segments</span><span class='p'>[</span><span class='mi'>2</span><span class='p'>],</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>points</span><span class='p'>[:,</span> <span class='mi'>2</span><span class='p'>])</span> <span class='o'>-</span> <span class='mi'>1</span>
+        <span class="n">structure</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
-        <span class='c1'># i = ((y * n_x) + x) + (z * (n_x * n_y))</span>
-        <span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>3</span><span class='p'>]</span> <span class='o'>=</span> <span class='p'>((</span><span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>1</span><span class='p'>]</span> <span class='o'>*</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_x</span><span class='p'>)</span> <span class='o'>+</span> <span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>0</span><span class='p'>])</span> <span class='o'>+</span> <span class='p'>(</span>
-            <span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>2</span><span class='p'>]</span> <span class='o'>*</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>n_x</span> <span class='o'>*</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_y</span><span class='p'>)</span>
-        <span class='p'>)</span>
+        <span class="c1"># i = ((y * n_x) + x) + (z * (n_x * n_y))</span>
+        <span class="n">structure</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">structure</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_x</span><span class="p">)</span> <span class="o">+</span> <span class="n">structure</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="n">structure</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_y</span><span class="p">)</span>
+        <span class="p">)</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>structure</span> <span class='o'>=</span> <span class='n'>structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure</span>
 
-        <span class='n'>vector</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>zeros</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>n_voxels</span><span class='p'>)</span>
-        <span class='n'>count</span> <span class='o'>=</span> <span class='n'>numpy</span><span class='o'>.</span><span class='n'>bincount</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>structure</span><span class='p'>[:,</span> <span class='mi'>3</span><span class='p'>])</span>
-        <span class='n'>vector</span><span class='p'>[:</span> <span class='nb'>len</span><span class='p'>(</span><span class='n'>count</span><span class='p'>)]</span> <span class='o'>=</span> <span class='n'>count</span>
+        <span class="n">vector</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_voxels</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">vector</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span> <span class="o">=</span> <span class="n">count</span>
 
-        <span class='bp'>self</span><span class='o'>.</span><span class='n'>vector</span> <span class='o'>=</span> <span class='n'>vector</span><span class='o'>.</span><span class='n'>reshape</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>n_z</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_y</span><span class='p'>,</span> <span class='bp'>self</span><span class='o'>.</span><span class='n'>n_x</span><span class='p'>)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_x</span><span class="p">)</span></div>
 
-<div class='viewcode-block' id='VoxelGrid.plot'><a class='viewcode-back' href='../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.plot'>[docs]</a>    <span class='k'>def</span> <span class='nf'>plot</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>d</span><span class='o'>=</span><span class='mi'>2</span><span class='p'>,</span> <span class='n'>cmap</span><span class='o'>=</span><span class='s2'>&quot;Oranges&quot;</span><span class='p'>,</span> <span class='n'>show_axis</span><span class='p'>:</span> <span class='nb'>bool</span> <span class='o'>=</span> <span class='kc'>False</span><span class='p'>):</span>
-        <span class='sd'>&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="VoxelGrid.plot"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.html#neodroidvision.data.synthesis.conversion.mnist.threed.voxel_grid.VoxelGrid.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Oranges&quot;</span><span class="p">,</span> <span class="n">show_axis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 
-<span class='sd'>        Args:</span>
-<span class='sd'>          d:</span>
-<span class='sd'>          cmap:</span>
-<span class='sd'>          axis:</span>
+<span class="sd">        Args:</span>
+<span class="sd">          d:</span>
+<span class="sd">          cmap:</span>
+<span class="sd">          axis:</span>
 
-<span class='sd'>        Returns:</span>
-<span class='sd'>        :param show_axis:</span>
-<span class='sd'>        :type show_axis:</span>
+<span class="sd">        Returns:</span>
+<span class="sd">        :param show_axis:</span>
+<span class="sd">        :type show_axis:</span>
 
-<span class='sd'>        &quot;&quot;&quot;</span>
-        <span class='k'>if</span> <span class='n'>d</span> <span class='o'>==</span> <span class='mi'>2</span><span class='p'>:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 
-            <span class='n'>fig</span><span class='p'>,</span> <span class='n'>axes</span> <span class='o'>=</span> <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>subplots</span><span class='p'>(</span>
-                <span class='nb'>int</span><span class='p'>(</span><span class='n'>numpy</span><span class='o'>.</span><span class='n'>ceil</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>n_z</span> <span class='o'>/</span> <span class='mi'>4</span><span class='p'>)),</span> <span class='mi'>4</span><span class='p'>,</span> <span class='n'>figsize</span><span class='o'>=</span><span class='p'>(</span><span class='mi'>8</span><span class='p'>,</span> <span class='mi'>8</span><span class='p'>)</span>
-            <span class='p'>)</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_z</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)),</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="p">)</span>
 
-            <span class='n'>pyplot</span><span class='o'>.</span><span class='n'>tight_layout</span><span class='p'>()</span>
+            <span class="n">pyplot</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
-            <span class='k'>for</span> <span class='n'>i</span><span class='p'>,</span> <span class='n'>ax</span> <span class='ow'>in</span> <span class='nb'>enumerate</span><span class='p'>(</span><span class='n'>axes</span><span class='o'>.</span><span class='n'>flat</span><span class='p'>):</span>
-                <span class='k'>if</span> <span class='n'>i</span> <span class='o'>&gt;=</span> <span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>vector</span><span class='p'>):</span>
-                    <span class='k'>break</span>
-                <span class='n'>im</span> <span class='o'>=</span> <span class='n'>ax</span><span class='o'>.</span><span class='n'>imshow</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><span class='n'>vector</span><span class='p'>[</span><span class='n'>i</span><span class='p'>],</span> <span class='n'>cmap</span><span class='o'>=</span><span class='n'>cmap</span><span class='p'>,</span> <span class='n'>interpolation</span><span class='o'>=</span><span class='s2'>&quot;none&quot;</span><span class='p'>)</span>
-                <span class='n'>ax</span><span class='o'>.</span><span class='n'>set_title</span><span class='p'>(</span><span class='s2'>&quot;Level &quot;</span> <span class='o'>+</span> <span class='nb'>str</span><span class='p'>(</span><span class='n'>i</span><span class='p'>))</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Level &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
 
-            <span class='n'>fig</span><span class='o'>.</span><span class='n'>subplots_adjust</span><span class='p'>(</span><span class='n'>right</span><span class='o'>=</span><span class='mf'>0.8</span><span class='p'>)</span>
-            <span class='n'>cbar_ax</span> <span class='o'>=</span> <span class='n'>fig</span><span class='o'>.</span><span class='n'>add_axes</span><span class='p'>([</span><span class='mf'>0.85</span><span class='p'>,</span> <span class='mf'>0.15</span><span class='p'>,</span> <span class='mf'>0.05</span><span class='p'>,</span> <span class='mf'>0.7</span><span class='p'>])</span>
-            <span class='n'>cbar</span> <span class='o'>=</span> <span class='n'>fig</span><span class='o'>.</span><span class='n'>colorbar</span><span class='p'>(</span><span class='n'>im</span><span class='p'>,</span> <span class='n'>cax</span><span class='o'>=</span><span class='n'>cbar_ax</span><span class='p'>)</span>
-            <span class='n'>cbar</span><span class='o'>.</span><span class='n'>set_label</span><span class='p'>(</span><span class='s2'>&quot;NUMBER OF POINTS IN VOXEL&quot;</span><span class='p'>)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+            <span class="n">cbar_ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+            <span class="n">cbar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cbar_ax</span><span class="p">)</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;NUMBER OF POINTS IN VOXEL&quot;</span><span class="p">)</span>
 
-        <span class='k'>elif</span> <span class='n'>d</span> <span class='o'>==</span> <span class='mi'>3</span><span class='p'>:</span>
-            <span class='k'>return</span> <span class='n'>plot_voxelgrid</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>,</span> <span class='n'>cmap</span><span class='o'>=</span><span class='n'>cmap</span><span class='p'>,</span> <span class='n'>show_axis</span><span class='o'>=</span><span class='n'>show_axis</span><span class='p'>)</span></div></div>
-</pre>
-            </div>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plot_voxelgrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">show_axis</span><span class="o">=</span><span class="n">show_axis</span><span class="p">)</span></div></div>
+</pre></div>
 
           </div>
-
+          
         </div>
       </div>
-      <div class='sphinxsidebar' role='navigation' aria-label='main navigation'>
-        <div class='sphinxsidebarwrapper'>
-          <h1 class='logo'><a href='../../../../../../../index.html'>neodroidvision</a></h1>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../../../index.html">
+              <img class="logo" src="../../../../../../../_static/header.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../../../../../../index.html">neodroidvision</a></h1>
 
 
-          <h3>Navigation</h3>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../../../generated/neodroidvision.html'>neodroidvision</a></li>
-          </ul>
-          <p class='caption' role='heading'><span class='caption-text'>Notes</span></p>
-          <ul>
-            <li class='toctree-l1'><a class='reference internal' href='../../../../../../../getting_started.html'>Getting Started</a></li>
-          </ul>
-
-          <div class='relations'>
-            <h3>Related Topics</h3>
-            <ul>
-              <li><a href='../../../../../../../index.html'>Documentation overview</a>
-                <ul>
-                  <li><a href='../../../../../../index.html'>Module code</a>
-                    <ul>
-                      <li><a href='../../../../../../neodroidvision.html'>neodroidvision</a>
-                        <ul>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <div id='searchbox' style='display: none' role='search'>
-            <h3 id='searchlabel'>Quick search</h3>
-            <div class='searchformwrapper'>
-              <form class='search' action='../../../../../../../search.html' method='get'>
-                <input type='text' name='q' aria-labelledby='searchlabel' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'/>
-                <input type='submit' value='Go'/>
-              </form>
-            </div>
-          </div>
-          <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
-        </div>
-      </div>
-      <div class='clearer'></div>
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../getting_started.html">Getting Started</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../../index.html">Module code</a><ul>
+  <li><a href="../../../../../../neodroidvision.html">neodroidvision</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
     </div>
-    <div class='footer'>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
       &copy;.
-
+      
       |
-      Powered by <a href='http://sphinx-doc.org/'>Sphinx 5.0.2</a>
-      &amp; <a href='https://github.com/bitprophet/alabaster'>Alabaster 0.7.12</a>
-
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
     </div>
 
+    
 
+    
   </body>
 </html>

@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.patches.masking.StochasticMaskGenerato
       ~StochasticMaskGenerator.get_parameter
       ~StochasticMaskGenerator.get_submodule
       ~StochasticMaskGenerator.half
+      ~StochasticMaskGenerator.ipu
       ~StochasticMaskGenerator.load_state_dict
       ~StochasticMaskGenerator.modules
       ~StochasticMaskGenerator.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.patches.masking.StochasticMaskGenerato
       ~StochasticMaskGenerator.register_forward_hook
       ~StochasticMaskGenerator.register_forward_pre_hook
       ~StochasticMaskGenerator.register_full_backward_hook
+      ~StochasticMaskGenerator.register_load_state_dict_post_hook
       ~StochasticMaskGenerator.register_module
       ~StochasticMaskGenerator.register_parameter
       ~StochasticMaskGenerator.requires_grad_

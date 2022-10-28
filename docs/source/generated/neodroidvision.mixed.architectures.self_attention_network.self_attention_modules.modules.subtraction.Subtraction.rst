@@ -34,6 +34,7 @@ neodroidvision.mixed.architectures.self\_attention\_network.self\_attention\_mod
       ~Subtraction.get_parameter
       ~Subtraction.get_submodule
       ~Subtraction.half
+      ~Subtraction.ipu
       ~Subtraction.load_state_dict
       ~Subtraction.modules
       ~Subtraction.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.mixed.architectures.self\_attention\_network.self\_attention\_mod
       ~Subtraction.register_forward_hook
       ~Subtraction.register_forward_pre_hook
       ~Subtraction.register_full_backward_hook
+      ~Subtraction.register_load_state_dict_post_hook
       ~Subtraction.register_module
       ~Subtraction.register_parameter
       ~Subtraction.requires_grad_

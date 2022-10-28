@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.layers.l2\_norm.L2Norm
       ~L2Norm.get_parameter
       ~L2Norm.get_submodule
       ~L2Norm.half
+      ~L2Norm.ipu
       ~L2Norm.load_state_dict
       ~L2Norm.modules
       ~L2Norm.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.layers.l2\_norm.L2Norm
       ~L2Norm.register_forward_hook
       ~L2Norm.register_forward_pre_hook
       ~L2Norm.register_full_backward_hook
+      ~L2Norm.register_load_state_dict_post_hook
       ~L2Norm.register_module
       ~L2Norm.register_parameter
       ~L2Norm.requires_grad_

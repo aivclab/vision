@@ -1,18 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+__author__ = "heider"
+__doc__ = r"""
+
+           Created on 5/5/22
+           """
+
 import math
 import random
 from itertools import product
 
 import numpy
+from warg import Number
+
+__all__ = ["PerlinNoiseGenerator"]
 
 
-def smoothstep(t):
+def smoothstep(t: Number) -> Number:
     """Smooth curve with a zero derivative at 0 and 1, making it useful for
     interpolating.
     """
     return t * t * (3.0 - 2.0 * t)
 
 
-def lerp(t, a, b):
+def lerp(t: Number, a: Number, b: Number) -> Number:
     """Linear interpolation between a and b, given a fraction t."""
     return a + t * (b - a)
 

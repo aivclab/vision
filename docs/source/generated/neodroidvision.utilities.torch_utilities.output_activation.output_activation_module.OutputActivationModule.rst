@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.output\_activation.output\_activation\
       ~OutputActivationModule.get_parameter
       ~OutputActivationModule.get_submodule
       ~OutputActivationModule.half
+      ~OutputActivationModule.ipu
       ~OutputActivationModule.load_state_dict
       ~OutputActivationModule.modules
       ~OutputActivationModule.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.output\_activation.output\_activation\
       ~OutputActivationModule.register_forward_hook
       ~OutputActivationModule.register_forward_pre_hook
       ~OutputActivationModule.register_full_backward_hook
+      ~OutputActivationModule.register_load_state_dict_post_hook
       ~OutputActivationModule.register_module
       ~OutputActivationModule.register_parameter
       ~OutputActivationModule.requires_grad_

@@ -3,6 +3,7 @@
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
+Foveal attention, moves around gaze and yields glimpses
            """
 
 from typing import Tuple
@@ -12,8 +13,7 @@ from torch import nn
 
 from . import ram_modules
 
-__author__ = "Christian"
-__doc__ = "Foveal attention, moves around gaze and yields glimpses"
+__all__ = ["RecurrentAttention"]
 
 
 class RecurrentAttention(nn.Module):

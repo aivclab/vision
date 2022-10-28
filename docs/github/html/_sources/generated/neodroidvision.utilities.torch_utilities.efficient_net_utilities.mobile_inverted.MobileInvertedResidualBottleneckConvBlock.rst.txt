@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.efficient\_net\_utilities.mobile\_inve
       ~MobileInvertedResidualBottleneckConvBlock.get_parameter
       ~MobileInvertedResidualBottleneckConvBlock.get_submodule
       ~MobileInvertedResidualBottleneckConvBlock.half
+      ~MobileInvertedResidualBottleneckConvBlock.ipu
       ~MobileInvertedResidualBottleneckConvBlock.load_state_dict
       ~MobileInvertedResidualBottleneckConvBlock.modules
       ~MobileInvertedResidualBottleneckConvBlock.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.efficient\_net\_utilities.mobile\_inve
       ~MobileInvertedResidualBottleneckConvBlock.register_forward_hook
       ~MobileInvertedResidualBottleneckConvBlock.register_forward_pre_hook
       ~MobileInvertedResidualBottleneckConvBlock.register_full_backward_hook
+      ~MobileInvertedResidualBottleneckConvBlock.register_load_state_dict_post_hook
       ~MobileInvertedResidualBottleneckConvBlock.register_module
       ~MobileInvertedResidualBottleneckConvBlock.register_parameter
       ~MobileInvertedResidualBottleneckConvBlock.requires_grad_

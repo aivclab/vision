@@ -1,4 +1,4 @@
-﻿neodroidvision.mixed.architectures.self\_attention\_network
+neodroidvision.mixed.architectures.self\_attention\_network
 ===========================================================
 
 .. automodule:: neodroidvision.mixed.architectures.self_attention_network

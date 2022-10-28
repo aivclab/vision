@@ -9,7 +9,7 @@ __doc__ = r"""
 
 from pathlib import Path
 
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from warg import Triple
 
 """Get the binarized MNIST dataset and convert to hdf5.

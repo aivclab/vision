@@ -13,6 +13,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
 from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (

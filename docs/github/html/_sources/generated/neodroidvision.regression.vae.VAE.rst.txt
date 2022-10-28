@@ -36,6 +36,7 @@ neodroidvision.regression.vae.VAE
       ~VAE.get_parameter
       ~VAE.get_submodule
       ~VAE.half
+      ~VAE.ipu
       ~VAE.kaiming_init
       ~VAE.load_state_dict
       ~VAE.modules
@@ -50,6 +51,7 @@ neodroidvision.regression.vae.VAE
       ~VAE.register_forward_hook
       ~VAE.register_forward_pre_hook
       ~VAE.register_full_backward_hook
+      ~VAE.register_load_state_dict_post_hook
       ~VAE.register_module
       ~VAE.register_parameter
       ~VAE.reparameterise

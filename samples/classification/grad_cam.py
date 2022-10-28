@@ -14,13 +14,14 @@ from pathlib import Path
 import cv2
 import numpy
 from draugr.torch_utilities import GuidedBackPropReLUModel
+from torchvision import models
+
 from neodroidvision.utilities import (
     GradientClassActivationMapping,
     overlay_cam_on_image,
     preprocess_image,
     unstandardise_image,
 )
-from torchvision import models
 
 if __name__ == "__main__":
 
@@ -29,7 +30,7 @@ if __name__ == "__main__":
         and computes intermediate activations.
         """
 
-        from apppath import ensure_existence
+        from warg import ensure_existence
 
         use_cuda = True
         image_path = str(Path.home() / "Data" / "ok.png")

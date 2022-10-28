@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.RandomRGB
       ~RandomRGBNoise.get_parameter
       ~RandomRGBNoise.get_submodule
       ~RandomRGBNoise.half
+      ~RandomRGBNoise.ipu
       ~RandomRGBNoise.load_state_dict
       ~RandomRGBNoise.modules
       ~RandomRGBNoise.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.transforms.image\_transforms.RandomRGB
       ~RandomRGBNoise.register_forward_hook
       ~RandomRGBNoise.register_forward_pre_hook
       ~RandomRGBNoise.register_full_backward_hook
+      ~RandomRGBNoise.register_load_state_dict_post_hook
       ~RandomRGBNoise.register_module
       ~RandomRGBNoise.register_parameter
       ~RandomRGBNoise.requires_grad_

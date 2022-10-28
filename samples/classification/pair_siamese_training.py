@@ -14,7 +14,6 @@ from typing import Tuple
 
 import torch
 import torchvision
-from draugr import IgnoreInterruptSignal
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     OverfitDetector,
@@ -26,8 +25,13 @@ from draugr.torch_utilities import (
     save_model_parameters,
     to_tensor,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
+from torch import nn, optim
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from warg import IgnoreInterruptSignal
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset
 from neodroidvision.data.synthesis.conversion.mnist.convert_mnist_to_png import (
@@ -37,9 +41,6 @@ from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankin
 from neodroidvision.utilities.visualisation.similarity_utilities import (
     boxed_text_overlay_plot,
 )
-from torch import nn, optim
-from torch.utils.data import DataLoader
-from torchvision import transforms
 
 
 def accuracy(

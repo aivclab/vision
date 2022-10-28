@@ -8,8 +8,9 @@ __doc__ = r"""
            """
 
 import numpy
-from neodroidvision.segmentation.gmm import visualise_2D_gmm, visualise_3d_gmm
 from sklearn.mixture import GaussianMixture
+
+from neodroidvision.segmentation.gmm import visualise_2D_gmm, visualise_3d_gmm
 
 if __name__ == "__main__":
 

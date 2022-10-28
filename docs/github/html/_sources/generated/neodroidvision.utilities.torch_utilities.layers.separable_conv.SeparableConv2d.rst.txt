@@ -34,6 +34,7 @@ neodroidvision.utilities.torch\_utilities.layers.separable\_conv.SeparableConv2d
       ~SeparableConv2d.get_parameter
       ~SeparableConv2d.get_submodule
       ~SeparableConv2d.half
+      ~SeparableConv2d.ipu
       ~SeparableConv2d.load_state_dict
       ~SeparableConv2d.modules
       ~SeparableConv2d.named_buffers
@@ -46,6 +47,7 @@ neodroidvision.utilities.torch\_utilities.layers.separable\_conv.SeparableConv2d
       ~SeparableConv2d.register_forward_hook
       ~SeparableConv2d.register_forward_pre_hook
       ~SeparableConv2d.register_full_backward_hook
+      ~SeparableConv2d.register_load_state_dict_post_hook
       ~SeparableConv2d.register_module
       ~SeparableConv2d.register_parameter
       ~SeparableConv2d.requires_grad_

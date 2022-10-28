@@ -19,8 +19,10 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     global_torch_device,
 )
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib import pyplot
+from torch.utils.data import DataLoader
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import CloudSegmentationDataset
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
@@ -30,7 +32,6 @@ from neodroidvision.segmentation import (
     mask_to_run_length,
 )
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
-from torch.utils.data import DataLoader
 
 
 def post_process_minsize(mask, min_size):

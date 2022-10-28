@@ -13,7 +13,7 @@ from typing import Any, Tuple
 import torch
 from draugr.numpy_utilities import SplitEnum, SplitIndexer
 from draugr.torch_utilities import SupervisedDataset
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from torch.utils.data import Subset
 from torchvision import transforms
 from torchvision.datasets import MNIST

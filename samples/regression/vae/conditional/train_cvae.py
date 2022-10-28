@@ -15,20 +15,20 @@ from math import inf
 import pandas
 import seaborn
 import torch
-from apppath import ensure_existence
 from draugr.torch_utilities import ImprovementDetector, global_torch_device
-from draugr.tqdm_utilities import progress_bar
+from draugr.visualisation import progress_bar
 from matplotlib import pyplot
+from torch.nn.functional import one_hot
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torchvision.datasets import MNIST
+from warg import NOD, ensure_existence
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.disentangled.conditional_vae import (
     ConditionalVAE,
 )
 from objectives import loss_fn
-from torch.nn.functional import one_hot
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision.datasets import MNIST
-from warg import NOD
 
 
 def main(config, model, tmsp_path, patience=100):
