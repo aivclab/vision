@@ -10,23 +10,23 @@ import time
 from pathlib import Path
 
 import torch
-from warg import ensure_existence
 from draugr import AverageMeter
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
+
+# from tensorboard_logger import configure, log_value
+from torch.nn import functional as F
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from warg import NOD, ensure_existence
+
 from neodroidvision.classification.mechanims.attention.foveal.architecture.ram import (
     RecurrentAttention,
 )
 from neodroidvision.data.classification import MNISTDataset
 from ram_params import get_ram_config
-
-# from tensorboard_logger import configure, log_value
-from torch.nn import functional as F
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-from warg import NOD
 
 model_file_ending = ".model.tar"
 

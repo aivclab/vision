@@ -8,7 +8,6 @@ __doc__ = r"""
 from torch import nn
 from torch.nn.utils import spectral_norm
 
-
 __all__ = ["spectral_norm_conv2d", "spectral_norm_linear", "spectral_norm_embedding"]
 
 

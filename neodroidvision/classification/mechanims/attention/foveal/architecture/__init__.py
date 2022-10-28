@@ -7,6 +7,5 @@ __doc__ = r"""
            Created on 15/07/2020
            """
 
-
 from .ram import *
 from .ram_modules import *

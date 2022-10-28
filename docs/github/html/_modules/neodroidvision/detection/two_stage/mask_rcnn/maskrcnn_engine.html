@@ -55,14 +55,15 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span class="n">progress_bar</span>
 <span class="kn">from</span> <span class="nn">draugr.writers</span> <span class="kn">import</span> <span class="n">Writer</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Module</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision.data.detection.coco</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CocoEvaluator</span><span class="p">,</span>
     <span class="n">get_coco_api_from_dataset</span><span class="p">,</span>
     <span class="n">get_iou_types</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.utilities</span> <span class="kn">import</span> <span class="n">reduce_dict</span>
-<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Module</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;maskrcnn_train_single_epoch&quot;</span><span class="p">,</span> <span class="s2">&quot;maskrcnn_evaluate&quot;</span><span class="p">]</span>
 

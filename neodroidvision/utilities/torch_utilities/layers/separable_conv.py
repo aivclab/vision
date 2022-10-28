@@ -7,7 +7,6 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
-
 from torch import nn
 
 __all__ = ["SeparableConv2d"]

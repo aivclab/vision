@@ -7,10 +7,10 @@ __doc__ = r"""
            Created on 19-09-2021
            """
 
-
 import torch
-from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 from torch import nn
+
+from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 
 __all__ = ["Decompress"]
 

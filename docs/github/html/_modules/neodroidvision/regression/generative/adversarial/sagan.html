@@ -48,12 +48,17 @@
 <span class="kn">from</span> <span class="nn">torch.nn.functional</span> <span class="kn">import</span> <span class="n">interpolate</span>
 <span class="kn">from</span> <span class="nn">torch.nn.init</span> <span class="kn">import</span> <span class="n">xavier_uniform_</span>
 
-<span class="kn">from</span> <span class="nn">neodroidvision.classification.mechanims.attention.self.self_attention</span> <span class="kn">import</span> <span class="n">init_weights</span>
-<span class="kn">from</span> <span class="nn">neodroidvision.classification.mechanims.attention.self.spectral_norm</span> <span class="kn">import</span> <span class="p">(</span><span class="n">spectral_norm_conv2d</span><span class="p">,</span>
-                                                                                  <span class="n">spectral_norm_embedding</span><span class="p">,</span>
-                                                                                  <span class="n">spectral_norm_linear</span><span class="p">,</span>
-                                                                                  <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">neodroidvision.mixed.architectures.self_attention_network.self_attention_network</span> <span class="kn">import</span> <span class="n">SelfAttentionModule</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.classification.mechanims.attention.self.self_attention</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">init_weights</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.classification.mechanims.attention.self.spectral_norm</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">spectral_norm_conv2d</span><span class="p">,</span>
+    <span class="n">spectral_norm_embedding</span><span class="p">,</span>
+    <span class="n">spectral_norm_linear</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.mixed.architectures.self_attention_network.self_attention_network</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SelfAttentionModule</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="ConditionalBatchNorm2d"><a class="viewcode-back" href="../../../../../generated/neodroidvision.regression.generative.adversarial.sagan.ConditionalBatchNorm2d.html#neodroidvision.regression.generative.adversarial.sagan.ConditionalBatchNorm2d">[docs]</a><span class="k">class</span> <span class="nc">ConditionalBatchNorm2d</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>

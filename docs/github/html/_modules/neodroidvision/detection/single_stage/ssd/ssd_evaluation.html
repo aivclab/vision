@@ -50,6 +50,10 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.utils.data</span>
 <span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Module</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">NOD</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision</span> <span class="kn">import</span> <span class="n">PROJECT_APP_PATH</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.data.detection.coco</span> <span class="kn">import</span> <span class="n">COCODataset</span><span class="p">,</span> <span class="n">coco_evaluation</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.data.detection.voc</span> <span class="kn">import</span> <span class="n">VOCDataset</span><span class="p">,</span> <span class="n">voc_evaluation</span>
@@ -61,9 +65,6 @@
     <span class="n">is_main_process</span><span class="p">,</span>
     <span class="n">synchronise_torch_barrier</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Module</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
-<span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">NOD</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;do_ssd_evaluation&quot;</span><span class="p">]</span>
 

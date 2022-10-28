@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import Iterator
 
 import torch
-from warg import ensure_existence
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     OverfitDetector,
@@ -23,22 +22,22 @@ from draugr.torch_utilities import (
     global_torch_device,
     to_device_iterator,
 )
-from draugr.visualisation import progress_bar
-from draugr.visualisation import plot_side_by_side
+from draugr.visualisation import plot_side_by_side, progress_bar
 from draugr.writers.mixins.image_writer_mixin import ImageWriterMixin
 from matplotlib import pyplot
+from torch import optim
+from torch.nn.modules.module import Module
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torchvision.datasets import MNIST
+from warg import Number, ensure_existence
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 from neodroidvision.utilities.torch_utilities.patches.masking import (
     StochasticMaskGenerator,
 )
-from torch import optim
-from torch.nn.modules.module import Module
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision.datasets import MNIST
-from warg import Number
 
 criterion = torch.nn.MSELoss()
 

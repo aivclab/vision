@@ -11,8 +11,9 @@ from typing import Tuple
 import numpy
 from PIL import Image
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
 from numpy import ndarray
+
+from neodroidvision import PROJECT_APP_PATH
 
 
 def read_labels(label_path: pathlib.Path) -> Tuple[ndarray, ndarray]:

@@ -20,6 +20,10 @@ from mixed.architectures.self_attention_network import (
     make_san,
 )
 from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
+from torch import distributed, multiprocessing, nn
+from torch.backends import cudnn
+from torch.optim import lr_scheduler
+
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,
@@ -27,9 +31,6 @@ from san_utilities import (
     mixup_loss,
     smooth_loss,
 )
-from torch import distributed, multiprocessing, nn
-from torch.backends import cudnn
-from torch.optim import lr_scheduler
 
 
 def get_logger():

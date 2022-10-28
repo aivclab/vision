@@ -43,11 +43,12 @@
 <span class="s2">           Created on 11/05/2020</span>
 <span class="s2">           &quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BoxPredictor</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.utilities</span> <span class="kn">import</span> <span class="n">SeparableConv2d</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SSDLiteBoxPredictor&quot;</span><span class="p">]</span>
 

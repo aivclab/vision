@@ -22,13 +22,14 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from matplotlib import pyplot
+from torch.utils.data import DataLoader
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import CloudSegmentationDataset
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 from neodroidvision.segmentation.masks import mask_to_run_length
-from torch.utils.data import DataLoader
 
 
 def reschedule(model, epoch, scheduler):

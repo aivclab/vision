@@ -48,11 +48,8 @@
 <span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Normal</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GlimpseSensor&quot;</span><span class="p">,</span> <span class="s2">&quot;Actor&quot;</span><span class="p">,</span> <span class="s2">&quot;SignalBaseline&quot;</span><span class="p">,</span> <span class="s2">&quot;CoreRNN&quot;</span><span class="p">,</span> <span class="s2">&quot;Locator&quot;</span><span class="p">]</span>
 
-<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GlimpseSensor&#39;</span><span class="p">,</span><span class="s1">&#39;Actor&#39;</span><span class="p">,</span>
-<span class="s1">&#39;SignalBaseline&#39;</span><span class="p">,</span>
-<span class="s1">&#39;CoreRNN&#39;</span><span class="p">,</span>
-<span class="s1">&#39;Locator&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="GlimpseSensor"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.GlimpseSensor">[docs]</a><span class="k">class</span> <span class="nc">GlimpseSensor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The glimpse network.</span>
@@ -276,6 +273,7 @@
         <span class="n">h_t</span> <span class="o">=</span> <span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">h1</span> <span class="o">+</span> <span class="n">h2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">h_t</span></div></div>
 
+
 <div class="viewcode-block" id="Actor"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.Actor">[docs]</a><span class="k">class</span> <span class="nc">Actor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The action network.</span>
 
@@ -377,6 +375,7 @@
             <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">l_t</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">l_t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># bound between [-1, 1]</span>
         <span class="p">)</span></div></div>
+
 
 <div class="viewcode-block" id="SignalBaseline"><a class="viewcode-back" href="../../../../../../../generated/neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline.html#neodroidvision.classification.mechanims.attention.foveal.architecture.ram_modules.SignalBaseline">[docs]</a><span class="k">class</span> <span class="nc">SignalBaseline</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The baseline network.</span>

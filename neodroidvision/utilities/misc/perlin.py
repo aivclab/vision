@@ -6,6 +6,7 @@ __doc__ = r"""
 
            Created on 5/5/22
            """
+
 import math
 import random
 from itertools import product

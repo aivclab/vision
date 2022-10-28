@@ -5,5 +5,5 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from .self import *
 from .foveal import *
+from .self import *

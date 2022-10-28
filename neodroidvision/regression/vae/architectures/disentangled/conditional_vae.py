@@ -1,8 +1,9 @@
 from typing import Sequence, Tuple
 
 import torch
-from neodroidvision.regression.vae.architectures.vae import VAE
 from torch import nn
+
+from neodroidvision.regression.vae.architectures.vae import VAE
 
 __all__ = ["ConditionalVAE"]
 

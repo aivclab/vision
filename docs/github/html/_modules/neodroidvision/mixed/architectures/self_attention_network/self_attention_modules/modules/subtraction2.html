@@ -44,12 +44,13 @@
 <span class="s2">           &quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn.modules.utils</span> <span class="kn">import</span> <span class="n">_pair</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision.mixed.architectures.self_attention_network.enums</span> <span class="kn">import</span> <span class="n">PadModeEnum</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.mixed.architectures.self_attention_network.self_attention_modules.functional</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">subtraction2</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">from</span> <span class="nn">torch.nn.modules.utils</span> <span class="kn">import</span> <span class="n">_pair</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Subtraction2&quot;</span><span class="p">]</span>
 

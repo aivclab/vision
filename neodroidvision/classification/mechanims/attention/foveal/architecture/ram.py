@@ -13,7 +13,6 @@ from torch import nn
 
 from . import ram_modules
 
-
 __all__ = ["RecurrentAttention"]
 
 

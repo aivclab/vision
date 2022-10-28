@@ -7,7 +7,6 @@ __doc__ = r"""
            Created on 19-09-2021
            """
 
-
 from typing import Tuple
 
 import torch

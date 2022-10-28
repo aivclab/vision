@@ -26,8 +26,7 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_nhwc_to_nchw_float_batch,
 )
-from draugr.visualisation import progress_bar
-from draugr.visualisation import confusion_matrix_plot
+from draugr.visualisation import confusion_matrix_plot, progress_bar
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.html_embeddings import (

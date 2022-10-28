@@ -6,7 +6,8 @@ __doc__ = r"""
 
            Created on 5/5/22
            """
-from .ndim import *
-from .shuffle import *
+
 from .masking import *
 from .multiply import *
+from .ndim import *
+from .shuffle import *

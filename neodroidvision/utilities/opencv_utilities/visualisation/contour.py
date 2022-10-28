@@ -12,7 +12,6 @@ import numpy
 
 from neodroidvision.utilities.opencv_utilities.contour.analysis import convexity_defects
 
-
 __all__ = ["draw_convexity_defects"]
 
 

@@ -10,8 +10,8 @@ import time
 
 import torch
 import torchvision
-from draugr import recycle
 from draugr.numpy_utilities import SplitEnum
+from draugr.python_utilities import recycle
 from draugr.torch_utilities import (
     OverfitDetector,
     TensorBoardPytorchWriter,
@@ -23,16 +23,16 @@ from draugr.torch_utilities import (
     to_tensor,
     torch_clean_up,
 )
-from draugr.visualisation import progress_bar
-from draugr.visualisation import horizontal_imshow
+from draugr.visualisation import horizontal_imshow, progress_bar
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import squeezenet_retrain
-from neodroidvision.data.classification.deprec.s_mnist import MNISTDataset2
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.transforms.functional import to_pil_image
 from warg import ContextWrapper
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import squeezenet_retrain
+from neodroidvision.data.classification.deprec.s_mnist import MNISTDataset2
 
 seed = 34874312
 batch_size = 64
@@ -149,7 +149,8 @@ def predictor_response_train_model(
 
                                     best_model_wts = copy.deepcopy(model.state_dict())
                                     sess.write(
-                                        f"New best validation model at update {update_i} with best_val_loss {best_val_loss}"
+                                        f"New best validation model at update {update_i} "
+                                        f"with best_val_loss {best_val_loss}"
                                     )
                                     torch.save(model.state_dict(), interrupted_path)
 

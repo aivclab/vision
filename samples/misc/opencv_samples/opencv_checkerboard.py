@@ -7,8 +7,9 @@ import cv2
 import numpy
 from draugr.opencv_utilities import draw_cube
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
 from pynput import keyboard
+
+from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

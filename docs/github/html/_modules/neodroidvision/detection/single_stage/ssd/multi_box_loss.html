@@ -47,12 +47,13 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="n">ReductionMethodEnum</span>
-<span class="kn">from</span> <span class="nn">neodroidvision.detection.single_stage.ssd.bounding_boxes</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">hard_negative_mining</span><span class="p">,</span>
-<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span>
 <span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="kn">from</span> <span class="nn">neodroidvision.detection.single_stage.ssd.bounding_boxes</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">hard_negative_mining</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MultiBoxLoss&quot;</span><span class="p">]</span>
 

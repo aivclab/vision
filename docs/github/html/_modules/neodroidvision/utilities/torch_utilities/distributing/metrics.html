@@ -47,10 +47,11 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">draugr.writers</span> <span class="kn">import</span> <span class="n">Writer</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributed</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision.utilities.torch_utilities.distributing.distributing_utilities</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">global_world_size</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributed</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;write_metrics_recursive&quot;</span><span class="p">,</span> <span class="s2">&quot;reduce_loss_dict&quot;</span><span class="p">]</span>
 

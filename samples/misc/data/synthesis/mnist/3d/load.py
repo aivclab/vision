@@ -7,9 +7,10 @@ __doc__ = r"""
 
 import h5py
 import plotly.offline
-from warg import ensure_existence
-from neodroidvision import PROJECT_APP_PATH
 from plotly.graph_objs import Figure, Layout, Scatter3d
+from warg import ensure_existence
+
+from neodroidvision import PROJECT_APP_PATH
 
 with h5py.File(
     PROJECT_APP_PATH.user_data / "mnist3d" / "testing.h5", "r"

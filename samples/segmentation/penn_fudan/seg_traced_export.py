@@ -2,7 +2,6 @@ from pathlib import Path
 
 import cv2
 import torch
-from warg import ensure_existence
 from draugr.opencv_utilities import frame_generator
 from draugr.random_utilities import seed_stack
 from draugr.torch_utilities import (
@@ -11,11 +10,12 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from draugr.visualisation import progress_bar
+from torchvision import transforms
+from warg import ensure_existence, sprint
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities import OutputActivationModule
-from torchvision import transforms
-from warg import sprint
 
 
 @torch.no_grad()

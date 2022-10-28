@@ -49,13 +49,14 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">draugr.numpy_utilities</span> <span class="kn">import</span> <span class="n">SplitEnum</span>
 <span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="n">LimitedBatchResampler</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">ConcatDataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">NOD</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision.data.detection.multi_dataset</span> <span class="kn">import</span> <span class="n">MultiDataset</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.utilities</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BatchCollator</span><span class="p">,</span>
     <span class="n">DistributedSampler</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">ConcatDataset</span><span class="p">,</span> <span class="n">DataLoader</span>
-<span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">NOD</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;object_detection_data_loaders&quot;</span><span class="p">]</span>
 

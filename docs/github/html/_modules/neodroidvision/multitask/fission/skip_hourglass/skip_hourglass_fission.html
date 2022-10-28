@@ -43,19 +43,19 @@
 <span class="s2">           Created on 19-09-2021</span>
 <span class="s2">           &quot;&quot;&quot;</span>
 
-
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="n">to_tensor</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">init</span>
+
 <span class="kn">from</span> <span class="nn">neodroidvision.multitask.fission.skip_hourglass.factory</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">fcn_decoder</span><span class="p">,</span>
     <span class="n">fcn_encoder</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">neodroidvision.multitask.fission.skip_hourglass.modes</span> <span class="kn">import</span> <span class="n">MergeMode</span><span class="p">,</span> <span class="n">UpscaleMode</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">init</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SkipHourglassFission&quot;</span><span class="p">]</span>
 
@@ -237,29 +237,35 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
 
-    <span class="n">channels</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">SkipHourglassFission</span><span class="p">(</span>
-        <span class="n">input_channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
-        <span class="n">output_heads</span><span class="o">=</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-        <span class="n">encoding_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">merge_mode</span><span class="o">=</span><span class="n">MergeMode</span><span class="o">.</span><span class="n">Concat</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">)),</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-    <span class="n">out</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_main</span><span class="p">():</span>
+        <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
 
-    <span class="n">im</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">SkipHourglassFission</span><span class="p">(</span>
+            <span class="n">input_channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
+            <span class="n">output_heads</span><span class="o">=</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">encoding_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">merge_mode</span><span class="o">=</span><span class="n">MergeMode</span><span class="o">.</span><span class="n">Concat</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">)),</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">out</span><span class="p">,</span> <span class="n">out2</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
-    <span class="n">im2</span> <span class="o">=</span> <span class="n">out2</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">im2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">im2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">im</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="n">im2</span> <span class="o">=</span> <span class="n">out2</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">im2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">im2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="n">_main</span><span class="p">()</span>
 </pre></div>
 
           </div>
