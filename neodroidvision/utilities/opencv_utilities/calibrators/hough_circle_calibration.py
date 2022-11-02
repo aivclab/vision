@@ -10,13 +10,14 @@ __doc__ = r"""
 from pathlib import Path
 
 import cv2
-from draugr.opencv_utilities import add_trackbar, show_image
+import numpy
+from draugr.opencv_utilities import add_trackbar, match_return_code, show_image
 
 __all__ = ["hough_circle_calibrator"]
 
 
 def hough_circle_calibrator(
-    frame,
+    frame: numpy.ndarray,
 ) -> None:  # TODO: GENERALISE INTERACTIVE CALIBRATOR TO MANY MORE OPENCV FUNCTIONS
     """description"""
     a_key_pressed = None  # .init
@@ -94,11 +95,9 @@ def hough_circle_calibrator(
         canny_hough_circle_window_label, max_radius_label, default=max_radius, min_val=1
     )
 
-    print(
-        " --------------------------------------------------------------------------- press [ESC] to exit "
-    )
+    print(f"{'press n for next image, press [ESC] or q to exit ':-^60}")
     while True:
-        if a_key_pressed == 27:
+        if match_return_code(a_key_pressed):
             break
 
         lo = cv2.getTrackbarPos(lo_label, canny_frame_window_label)
@@ -200,9 +199,15 @@ if __name__ == "__main__":
         from draugr.opencv_utilities import clean_up
 
         orig = cv2.imread(
-            str(Path(r"C:\Users\Christian\OneDrive\Billeder\buh\7BIsT.png"))
+            str(
+                Path.home()
+                / "Downloads"
+                / "Vejbaner"
+                / "Screenshot_2022-11-01_11-05-36.png"
+                # Path(r"C:\Users\Christian\OneDrive\Billeder\buh\7BIsT.png")
+            )
         )[:800, :800, :]
         cleaned = clean_up(orig)
         hough_circle_calibrator(cleaned)
 
-        ijasd()
+    ijasd()

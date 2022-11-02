@@ -14,24 +14,24 @@ from warg import Number
 __all__ = ["dot_points", "is_quadrilateral"]
 
 
-def dot_points(a, b, c):
+def dot_points(a: numpy.ndarray, b: numpy.ndarray, c: numpy.ndarray) -> numpy.ndarray:
     """
 
     :param a:
-    :type a:
+    :type a: numpy.ndarray
     :param b:
-    :type b:
+    :type b: numpy.ndarray
     :param c:
-    :type c:
+    :type c: numpy.ndarray
     :return:
-    :rtype:
+    :rtype: numpy.ndarray
     """
     ab = a - b
     cb = c - b
     return ab / numpy.linalg.norm(ab) @ cb / numpy.linalg.norm(cb)
 
 
-def is_quadrilateral(contour, threshold: Number = 0.2) -> bool:
+def is_quadrilateral(contour: numpy.ndarray, threshold: Number = 0.2) -> bool:
     """
 
     :param contour:
