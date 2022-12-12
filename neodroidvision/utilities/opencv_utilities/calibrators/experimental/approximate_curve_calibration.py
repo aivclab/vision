@@ -13,12 +13,12 @@ import cv2
 import numpy
 from draugr.opencv_utilities import add_trackbar, match_return_code, show_image
 
-__all__ = ["hough_circle_calibrator"]
+__all__ = ["approximate_curve_calibrator"]
 
 
-def hough_circle_calibrator(
+def approximate_curve_calibrator(
     frame: numpy.ndarray,
-) -> None:  # TODO: GENERALISE INTERACTIVE CALIBRATOR TO MANY MORE OPENCV FUNCTIONS
+) -> None:
     """
 
     :param frame:
@@ -214,6 +214,6 @@ if __name__ == "__main__":
             )
         )[:800, :800, :]
         cleaned = clean_up(orig)
-        hough_circle_calibrator(cleaned)
+        approximate_curve_calibrator(cleaned)
 
     ijasd()

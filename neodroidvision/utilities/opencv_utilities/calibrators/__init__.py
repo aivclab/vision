@@ -9,3 +9,4 @@ __doc__ = r"""
 
 from .hough_circle_calibration import *
 from .hough_line_calibration import *
+from .stereo import *

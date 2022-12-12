@@ -211,6 +211,7 @@ class NeodroidVisionPackage:
                 # "name_of_executable = module.with:function_to_execute"
                 "neodroid-vision = neodroidvision.entry_points.cli:main",
                 "neodroid-vision-tb = neodroidvision.entry_points.tensorboard_entry_point:main",
+                "neodroid-resize = neodroidvision.entry_points.resize_cli:main",
             ]
         }
 

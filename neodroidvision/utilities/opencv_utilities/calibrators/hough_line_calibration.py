@@ -7,30 +7,97 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
+import pickle
 from math import pi
 from pathlib import Path
+from typing import Iterator
 
 import cv2
 import numpy
-from draugr.opencv_utilities import add_trackbar, match_return_code, show_image
+from draugr.opencv_utilities import (
+    ButtonTypeEnum,
+    add_button,
+    add_trackbar,
+    match_return_code,
+    show_image,
+)
 
 __all__ = ["hough_line_calibrator"]
 
+from draugr.opencv_utilities.windows.elements.checkbox import add_checkbox
+
+from warg import NOD, loop, sink
+
+PROB = False
+O = False
+SAVE = False
+
+
+def prob_check_box_handler(checked, *args):
+    """
+
+    :param checked:
+    :type checked:
+    :param args:
+    :type args:
+    """
+    global PROB, O
+    if checked:
+        PROB = True
+    else:
+        PROB = False
+    O = True
+
+
+def save_button_handler(checked, *args):
+    """
+
+    :param checked:
+    :type checked:
+    :param args:
+    :type args:
+    """
+    global SAVE
+    SAVE = True
+
+
+def show_button_bar(param):
+    """
+
+    :param param:
+    :type param:
+    """
+    cv2.createButton(
+        param,
+        # window_name,
+        sink,
+        None,
+        ButtonTypeEnum.button_bar.value,
+        0,
+    )
+
 
 def hough_line_calibrator(
-    frames: numpy.ndarray,
-    float_multiplier=1000,
-) -> None:  # TODO: GENERALISE INTERACTIVE CALIBRATOR TO MANY MORE OPENCV FUNCTIONS
-    """description"""
+    frame_generator: Iterator, float_multiplier: int = 1000, save_path=None
+) -> None:
+    """
+    :param frame_generator:
+    :type frame_generator:
+    :param float_multiplier:
+    :type float_multiplier:
+    :return:
+    :rtype:
+    """
+    global PROB, O, SAVE
     a_key_pressed = None  # .init
     edges = None
 
     lo_label = "Lo_Threshold"
-    lo = 60
+    lo = 120
     lo_prev = -1
 
     hi_label = "Hi_Threshold"
-    hi = 80
+    hi = 200
     hi_prev = -1
 
     rho_label = f"Rho_*{float_multiplier}"
@@ -45,11 +112,11 @@ def hough_line_calibrator(
     threshold = 100
     threshold_prev = -1
 
-    srn_label = "srn"
+    srn_label = "srn / min_line_length"
     srn = 50
     srn_prev = -1
 
-    stn_label = "stn"
+    stn_label = "stn / max_line_gap"
     stn = 10
     stn_prev = -1
 
@@ -65,7 +132,6 @@ def hough_line_calibrator(
     canny_frame_window_label = f"{frame_window_label}.Canny"
     canny_hough_lines_window_label = f"{canny_frame_window_label}.Lines"
 
-    frame_generator = iter(frames)
     frame = next(frame_generator)
     show_image(frame, frame_window_label)
 
@@ -75,6 +141,13 @@ def hough_line_calibrator(
     add_trackbar(canny_frame_window_label, hi_label, default=hi, max_val=1000)
 
     show_image(frame, canny_hough_lines_window_label)
+
+    # show_button_bar('name')
+
+    add_checkbox(
+        "probabilistic", initial_button_state=PROB, callback=prob_check_box_handler
+    )
+    add_button("save", callback=save_button_handler)
 
     add_trackbar(
         canny_hough_lines_window_label,
@@ -93,16 +166,8 @@ def hough_line_calibrator(
     add_trackbar(
         canny_hough_lines_window_label, threshold_label, default=threshold, max_val=1000
     )
-    add_trackbar(
-        canny_hough_lines_window_label,
-        srn_label,
-        default=srn,
-    )
-    add_trackbar(
-        canny_hough_lines_window_label,
-        stn_label,
-        default=stn,
-    )
+    add_trackbar(canny_hough_lines_window_label, srn_label, default=srn, max_val=1000)
+    add_trackbar(canny_hough_lines_window_label, stn_label, default=stn, max_val=1000)
     add_trackbar(
         canny_hough_lines_window_label,
         min_theta_label,
@@ -162,6 +227,28 @@ def hough_line_calibrator(
             / float_multiplier
         )
 
+        if SAVE:
+            SAVE = False
+            if not save_path:
+                save_path = Path.cwd() / "calib.out"
+
+            calib = NOD(
+                canny=NOD(lo=lo, hi=hi),
+                line=NOD(
+                    threshold=threshold,
+                    srn=srn,
+                    stn=stn,
+                    min_theta=min_theta,
+                    max_theta=max_theta,
+                    rho=rho,
+                    theta=theta,
+                ),
+            )
+
+            with open(save_path, "wb") as f:
+                pickle.dump(calib, f)
+            print(f"Saved {save_path}: {calib}")
+
         if (
             rho != rho_prev
             or theta != theta_prev
@@ -170,9 +257,11 @@ def hough_line_calibrator(
             or stn != stn_prev
             or min_theta != min_theta_prev
             or max_theta != max_theta_prev
+            or O
         ):  # ----------------------------------------------= RE-SYNC
 
             a_hough_refresh_flag = True  # --------------------------= FLAG
+            O = False
 
             rho_prev = rho
             theta_prev = theta
@@ -193,21 +282,37 @@ def hough_line_calibrator(
             cv2.imshow(canny_frame_window_label, edges)
 
         if a_canny_refresh_flag or a_hough_refresh_flag:
-            lines = cv2.HoughLines(
-                edges,
-                rho=rho,
-                theta=theta,
-                threshold=threshold,
-                srn=srn,
-                stn=stn,
-                min_theta=min_theta,
-                max_theta=max_theta,
-            )
-
             demo_with_lines = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # .re-init <<< src
             demo_with_lines = cv2.cvtColor(demo_with_lines, cv2.COLOR_RGB2BGR)
-            if lines is not None:
-                draw_lines(demo_with_lines, lines)
+            if PROB:
+                lines = cv2.HoughLinesP(
+                    edges,
+                    rho=rho,
+                    theta=theta,
+                    threshold=threshold,
+                    minLineLength=srn,
+                    maxLineGap=stn,
+                )
+
+                if lines is not None:
+                    for line in lines:  # Draw lines on the image
+                        x1, y1, x2, y2 = line[0]
+                        cv2.line(demo_with_lines, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+            else:
+                lines = cv2.HoughLines(
+                    edges,
+                    rho=rho,
+                    theta=theta,
+                    threshold=threshold,
+                    srn=srn,
+                    stn=stn,
+                    min_theta=min_theta,
+                    max_theta=max_theta,
+                )
+
+                if lines is not None:
+                    draw_lines(demo_with_lines, lines)
 
             cv2.imshow(canny_hough_lines_window_label, demo_with_lines)
 
@@ -269,6 +374,11 @@ if __name__ == "__main__":
         for a in (Path.home() / "Downloads" / "Vejbaner").iterdir():
             orig = cv2.imread(str(a))[:800, :800, :]
             cleaned_images.append(clean_up(orig))
-        hough_line_calibrator(cleaned_images)
+        frame_generator = iter(loop(cleaned_images))
+        from warg import ensure_existence
+
+        hough_line_calibrator(
+            frame_generator, save_path=ensure_existence("exclude") / "calib.out"
+        )
 
     ijasd()

@@ -19,6 +19,8 @@ __all__ = ["ResizeMethodEnum", "resize", "resize_children"]
 
 
 class ResizeMethodEnum(Enum):
+    """ """
+
     crop, scale, scale_crop = assigned_names()
 
 
