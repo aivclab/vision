@@ -9,6 +9,7 @@ __doc__ = r"""
 
 import numpy
 import torch
+from draugr.torch_utilities import to_tensor
 
 from neodroidvision.multitask.fission.skip_hourglass import (
     MergeMode,
@@ -24,21 +25,22 @@ def test_skip_fission_multi_dict():
         encoding_depth=2,
         merge_mode=MergeMode.Concat,
     )
-    x = torch.FloatTensor(numpy.random.random((1, channels, 320, 320)))
+    x = to_tensor(numpy.random.random((1, channels, 320, 320)), dtype=torch.float)
     out = model(x)
     loss = torch.sum(out["RGB"])
     loss.backward()
-    from matplotlib import pyplot
+    if False:
+        from matplotlib import pyplot
 
-    im = out["RGB"].detach()
-    print(im.shape)
-    pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
-    # pyplot.show()
+        im = out["RGB"].detach()
+        print(im.shape)
+        pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
+        # pyplot.show()
 
-    im2 = out["Depth"].detach()
-    print(im2.shape)
-    pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
-    # pyplot.show()
+        im2 = out["Depth"].detach()
+        print(im2.shape)
+        pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
+        # pyplot.show()
 
 
 def test_skip_fission_multi_int():
@@ -49,21 +51,22 @@ def test_skip_fission_multi_int():
         encoding_depth=2,
         merge_mode=MergeMode.Concat,
     )
-    x = torch.FloatTensor(numpy.random.random((1, channels, 320, 320)))
+    x = to_tensor(numpy.random.random((1, channels, 320, 320)), dtype=torch.float)
     out, out2, *_ = model(x)
     loss = torch.sum(out)
     loss.backward()
-    from matplotlib import pyplot
+    if False:
+        from matplotlib import pyplot
 
-    im = out.detach()
-    print(im.shape)
-    pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
-    # pyplot.show()
+        im = out.detach()
+        print(im.shape)
+        pyplot.imshow((torch.tanh(im[0].transpose(2, 0)) + 1) * 0.5)
+        # pyplot.show()
 
-    im2 = out2.detach()
-    print(im2.shape)
-    pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
-    # pyplot.show()
+        im2 = out2.detach()
+        print(im2.shape)
+        pyplot.imshow((torch.tanh(im2[0][0, :, :]) + 1) * 0.5)
+        # pyplot.show()
 
 
 if __name__ == "__main__":
