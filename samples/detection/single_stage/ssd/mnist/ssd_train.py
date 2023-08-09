@@ -13,11 +13,6 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     WarmupMultiStepLR,
 )
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from warg import NOD, ensure_existence
-from warg.arguments import str2bool
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
@@ -34,6 +29,10 @@ from neodroidvision.utilities import (
     setup_distributed_logger,
     write_metrics_recursive,
 )
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from warg import NOD, ensure_existence
+from warg.arguments import str2bool
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = """ description """
@@ -184,7 +183,7 @@ def inner_train_ssd(
             time.time() - start_training_time
         )  # compute training time
         logger.info(
-            f"Total training time: {datetime.timedelta(seconds = total_training_time)} ("
+            f"Total training time: {datetime.timedelta(seconds=total_training_time)} ("
             f"{total_training_time / max_iter:.4f} s / it)"
         )
         return model

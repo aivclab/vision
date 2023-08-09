@@ -22,18 +22,25 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from matplotlib import pyplot
-from torch.utils.data import DataLoader
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.segmentation import CloudSegmentationDataset
 from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 from neodroidvision.segmentation.masks import mask_to_run_length
+from torch.utils.data import DataLoader
 
 
 def reschedule(model, epoch, scheduler):
-    """This can be improved its just a hacky way to write SGDWR"""
+    """
+
+    This can be improved its just a hacky way to write SGDWR
+
+    :param model:
+    :param epoch:
+    :param scheduler:
+    :return:
+    """
     if epoch == 7:
         optimiser = torch.optim.SGD(model.parameters(), lr=0.005)
         current_lr = next(iter(optimiser.param_groups))["lr"]
@@ -74,18 +81,15 @@ def train_d(
 ):
     """
 
-    Args:
-      model:
-      train_loader:
-      valid_loader:
-      criterion:
-      optimiser:
-      scheduler:
-      save_model_path:
-      n_epochs:
-
-    Returns:
-
+    :param model:
+    :param train_loader:
+    :param valid_loader:
+    :param criterion:
+    :param optimiser:
+    :param scheduler:
+    :param save_model_path:
+    :param n_epochs:
+    :return:
     """
     valid_loss_min = numpy.Inf  # track change in validation loss
     E = progress_bar(range(1, n_epochs + 1))
@@ -136,9 +140,9 @@ def train_d(
                     )
 
         # calculate average losses
-        train_loss = train_loss / len(train_loader.dataset)
-        valid_loss = valid_loss / len(valid_loader.dataset)
-        dice_score = dice_score / len(valid_loader.dataset)
+        train_loss /= len(train_loader.dataset)
+        valid_loss /= len(valid_loader.dataset)
+        dice_score /= len(valid_loader.dataset)
 
         # print training/validation statistics
         E.set_description(
@@ -165,14 +169,11 @@ def train_d(
 def grid_search(model, probabilities, valid_masks, valid_loader):
     """
 
-    Args:
-      model:
-      probabilities:
-      valid_masks:
-      valid_loader:
-
-    Returns:
-
+    :param model:
+    :param probabilities:
+    :param valid_masks:
+    :param valid_loader:
+    :return:
     """
     ## Grid Search for best Threshold
     class_params = {}
@@ -246,15 +247,12 @@ def grid_search(model, probabilities, valid_masks, valid_loader):
 def submission(model, class_params, base_path, batch_size, resized_loc):
     """
 
-    Args:
-      model:
-      class_params:
-      base_path:
-      batch_size:
-      resized_loc:
-
-    Returns:
-
+    :param model:
+    :param class_params:
+    :param base_path:
+    :param batch_size:
+    :param resized_loc:
+    :return:
     """
     test_loader = DataLoader(
         CloudSegmentationDataset(

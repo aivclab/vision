@@ -1,9 +1,8 @@
 from typing import Sequence, Tuple
 
 import torch
-from torch import nn
-
 from neodroidvision.regression.vae.architectures.vae import VAE
+from torch import nn
 
 __all__ = ["ConditionalVAE"]
 
@@ -57,7 +56,6 @@ class Decoder(nn.Module):
     def __init__(
         self, layer_sizes: Sequence[int], latent_size: int, num_conditions: int
     ):
-
         super().__init__()
 
         self.MLP = nn.Sequential()

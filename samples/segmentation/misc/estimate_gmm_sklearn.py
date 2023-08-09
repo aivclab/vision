@@ -8,16 +8,13 @@ __doc__ = r"""
            """
 
 import numpy
+from neodroidvision.segmentation.gmm import visualise_2D_gmm, visualise_3d_gmm
 from sklearn.mixture import GaussianMixture
 
-from neodroidvision.segmentation.gmm import visualise_2D_gmm, visualise_3d_gmm
-
 if __name__ == "__main__":
-
     N, D = 1000, 3
 
     if D == 2:
-
         means = numpy.array([[0.5, 0.0], [0, 0], [-0.5, -0.5], [-0.8, 0.3]])
         covs = numpy.array(
             [
@@ -28,7 +25,6 @@ if __name__ == "__main__":
             ]
         )
     elif D == 3:
-
         means = numpy.array(
             [[0.5, 0.0, 0.0], [0.0, 0.0, 0.0], [-0.5, -0.5, -0.5], [-0.8, 0.3, 0.4]]
         )

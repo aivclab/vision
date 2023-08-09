@@ -61,7 +61,6 @@ cv2.createTrackbar("minDisparity", "disp", 5, 25, sink)
 stereo = cv2.StereoBM_create()  # Creating an object of StereoBM algorithm
 
 while True:
-
     # Capturing and storing left and right camera images
     retL, imgL = cam_left.read()
     retR, imgR = can_right.read()

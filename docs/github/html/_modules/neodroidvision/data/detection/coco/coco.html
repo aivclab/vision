@@ -1,44 +1,48 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>neodroidvision.data.detection.coco.coco &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
-    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <link href="../../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../_static/alabaster.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+    <script data-url_root="../../../../../" id="documentation_options"
+            src="../../../../../_static/documentation_options.js"></script>
     <script src="../../../../../_static/jquery.js"></script>
     <script src="../../../../../_static/underscore.js"></script>
     <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../../_static/doctools.js"></script>
-    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/detection/coco/coco.html" />
-    <link rel="index" title="Index" href="../../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/detection/coco/coco.html"
+          rel="canonical"/>
+    <link href="../../../../../genindex.html" rel="index" title="Index"/>
+    <link href="../../../../../search.html" rel="search" title="Search"/>
 
-  </head><body>
-  
+    <link href="../../../../../_static/custom.css" rel="stylesheet" type="text/css"/>
 
-    <div class="document">
-      <div class="documentwrapper">
+
+    <meta content="width=device-width, initial-scale=0.9, maximum-scale=0.9" name="viewport"/>
+
+</head>
+<body>
+
+
+<div class="document">
+    <div class="documentwrapper">
         <div class="bodywrapper">
-          
 
-          <div class="body" role="main">
-            
-  <h1>Source code for neodroidvision.data.detection.coco.coco</h1><div class="highlight"><pre>
+
+            <div class="body" role="main">
+
+                <h1>Source code for neodroidvision.data.detection.coco.coco</h1>
+                <div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
-<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span
+                        class="s2">&quot;&quot;&quot;</span>
 
 <span class="s2">           Created on 22/03/2020</span>
 <span class="s2">           &quot;&quot;&quot;</span>
@@ -48,25 +52,36 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">draugr.numpy_utilities</span> <span class="kn">import</span> <span class="n">SplitEnum</span>
-<span class="kn">from</span> <span class="nn">draugr.opencv_utilities</span> <span class="kn">import</span> <span class="n">xywh_to_minmax</span>
+<span class="kn">from</span> <span class="nn">draugr.numpy_utilities</span> <span class="kn">import</span> <span
+                        class="n">SplitEnum</span>
+<span class="kn">from</span> <span class="nn">draugr.opencv_utilities</span> <span class="kn">import</span> <span
+                        class="n">xywh_to_minmax</span>
 
-<span class="kn">from</span> <span class="nn">neodroidvision.data.detection.object_detection_dataset</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.data.detection.object_detection_dataset</span> <span
+                        class="kn">import</span> <span class="p">(</span>
     <span class="n">ObjectDetectionDataset</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;COCODataset&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span
+                        class="s2">&quot;COCODataset&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="n">NamedTensorTuple</span>
+<span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span
+                        class="n">NamedTensorTuple</span>
 
 
-<div class="viewcode-block" id="COCODataset"><a class="viewcode-back" href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset">[docs]</a><span class="k">class</span> <span class="nc">COCODataset</span><span class="p">(</span><span class="n">ObjectDetectionDataset</span><span class="p">):</span>
+<div class="viewcode-block" id="COCODataset"><a class="viewcode-back"
+                                                href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset">[docs]</a><span
+        class="k">class</span> <span class="nc">COCODataset</span><span class="p">(</span><span class="n">ObjectDetectionDataset</span><span
+        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    COCO 2014</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">response_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">response_shape</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+            class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span
+            class="o">...</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Args:</span>
@@ -75,7 +90,9 @@
 <span class="sd">        Returns:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">COCODataset</span><span class="o">.</span><span class="n">categories</span><span class="p">),)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span
+            class="n">COCODataset</span><span class="o">.</span><span class="n">categories</span><span
+            class="p">),)</span>
 
     <span class="n">categories</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s2">&quot;__background__&quot;</span><span class="p">,</span>
@@ -162,31 +179,47 @@
     <span class="p">)</span>
 
     <span class="n">image_dirs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;coco_2014_valminusminival&quot;</span><span class="p">:</span> <span class="s2">&quot;images/val2014&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coco_2014_minival&quot;</span><span class="p">:</span> <span class="s2">&quot;images/val2014&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coco_2014_train&quot;</span><span class="p">:</span> <span class="s2">&quot;images/train2014&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coco_2014_val&quot;</span><span class="p">:</span> <span class="s2">&quot;images/val2014&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;coco_2014_valminusminival&quot;</span><span class="p">:</span> <span class="s2">&quot;images/val2014&quot;</span><span
+            class="p">,</span>
+        <span class="s2">&quot;coco_2014_minival&quot;</span><span class="p">:</span> <span class="s2">&quot;images/val2014&quot;</span><span
+            class="p">,</span>
+        <span class="s2">&quot;coco_2014_train&quot;</span><span class="p">:</span> <span class="s2">&quot;images/train2014&quot;</span><span
+            class="p">,</span>
+        <span class="s2">&quot;coco_2014_val&quot;</span><span class="p">:</span> <span class="s2">&quot;images/val2014&quot;</span><span
+            class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">splits</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;coco_2014_valminusminival&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_valminusminival2014.json&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coco_2014_minival&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_minival2014.json&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coco_2014_train&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_train2014.json&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coco_2014_val&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_val2014.json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;coco_2014_valminusminival&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_valminusminival2014.json&quot;</span><span
+            class="p">,</span>
+        <span class="s2">&quot;coco_2014_minival&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_minival2014.json&quot;</span><span
+            class="p">,</span>
+        <span class="s2">&quot;coco_2014_train&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_train2014.json&quot;</span><span
+            class="p">,</span>
+        <span class="s2">&quot;coco_2014_val&quot;</span><span class="p">:</span> <span class="s2">&quot;annotations/instances_val2014.json&quot;</span><span
+            class="p">,</span>
     <span class="p">}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">predictor_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">predictor_shape</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+            class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span
+            class="o">...</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span
+            class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
 
-<div class="viewcode-block" id="COCODataset.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="COCODataset.__init__"><a class="viewcode-back"
+                                                         href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span><span class="p">,</span>
-        <span class="n">img_transform</span><span class="p">:</span> <span class="n">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">annotation_transform</span><span class="p">:</span> <span class="n">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">img_transform</span><span class="p">:</span> <span class="n">callable</span> <span
+            class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">annotation_transform</span><span class="p">:</span> <span class="n">callable</span> <span
+            class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -202,164 +235,258 @@
 <span class="sd">        :type annotation_transform:</span>
 <span class="sd">        :param remove_empty:</span>
 <span class="sd">        :type remove_empty:&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">data_root</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">img_transform</span><span class="p">,</span> <span class="n">annotation_transform</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+            class="fm">__init__</span><span class="p">(</span>
+            <span class="n">data_root</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span
+            class="n">split</span><span class="p">,</span> <span class="n">img_transform</span><span class="p">,</span> <span
+            class="n">annotation_transform</span>
         <span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">pycocotools.coco</span> <span class="kn">import</span> <span class="n">COCO</span>
+        <span class="kn">from</span> <span class="nn">pycocotools.coco</span> <span class="kn">import</span> <span
+            class="n">COCO</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span> <span class="o">=</span> <span class="n">COCO</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data_root</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">splits</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_dir</span> <span class="o">=</span> <span class="n">data_root</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dirs</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_img_transforms</span> <span class="o">=</span> <span class="n">img_transform</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_annotation_transforms</span> <span class="o">=</span> <span class="n">annotation_transform</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_empty</span> <span class="o">=</span> <span class="n">split</span> <span class="o">==</span> <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_empty</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">imgToAnns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span> <span class="o">=</span> <span
+            class="n">COCO</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span
+            class="n">data_root</span> <span class="o">/</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">splits</span><span class="p">[</span><span
+            class="n">dataset_name</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_dir</span> <span
+            class="o">=</span> <span class="n">data_root</span> <span class="o">/</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">image_dirs</span><span class="p">[</span><span
+            class="n">dataset_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_transforms</span> <span
+            class="o">=</span> <span class="n">img_transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_annotation_transforms</span> <span
+            class="o">=</span> <span class="n">annotation_transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_empty</span> <span
+            class="o">=</span> <span class="n">split</span> <span class="o">==</span> <span
+            class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_remove_empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span
+            class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span
+            class="o">.</span><span class="n">imgToAnns</span><span class="o">.</span><span class="n">keys</span><span
+            class="p">()</span>
             <span class="p">)</span>  <span class="c1"># when training, images without annotations are removed.</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span
+            class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span
+            class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">keys</span><span
+            class="p">()</span>
             <span class="p">)</span>  <span class="c1"># when testing, all images used.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_coco_id_to_contiguous_id</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">coco_id</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coco_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">getCatIds</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coco_id_to_contiguous_id</span> <span
+            class="o">=</span> <span class="p">{</span>
+            <span class="n">coco_id</span><span class="p">:</span> <span class="n">i</span> <span
+            class="o">+</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span
+            class="n">coco_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span
+            class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span
+            class="n">getCatIds</span><span class="p">()))</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_contiguous_id_to_coco_id</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coco_id_to_contiguous_id</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_contiguous_id_to_coco_id</span> <span
+            class="o">=</span> <span class="p">{</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span
+            class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">_coco_id_to_contiguous_id</span><span
+            class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span></div>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="n">image_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_annotation</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_image</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_img_transforms</span><span class="p">:</span>
-            <span class="n">image</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_img_transforms</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotation_transforms</span><span class="p">:</span>
-            <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotation_transforms</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">NamedTensorTuple</span><span class="p">(</span><span class="n">boxes</span><span class="o">=</span><span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">),</span> <span class="n">index</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">index</span><span
+            class="p">]</span>
+        <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_get_annotation</span><span class="p">(</span><span class="n">image_id</span><span
+            class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_read_image</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_img_transforms</span><span class="p">:</span>
+            <span class="n">image</span><span class="p">,</span> <span class="n">boxes</span><span
+            class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">_img_transforms</span><span class="p">(</span><span class="n">image</span><span
+            class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span><span
+            class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotation_transforms</span><span
+            class="p">:</span>
+            <span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">_annotation_transforms</span><span
+            class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">labels</span><span
+            class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">NamedTensorTuple</span><span
+            class="p">(</span><span class="n">boxes</span><span class="o">=</span><span class="n">boxes</span><span
+            class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span
+            class="p">),</span> <span class="n">index</span>
 
-<div class="viewcode-block" id="COCODataset.get_annotation"><a class="viewcode-back" href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset.get_annotation">[docs]</a>    <span class="k">def</span> <span class="nf">get_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="COCODataset.get_annotation"><a class="viewcode-back"
+                                                               href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset.get_annotation">[docs]</a>    <span
+        class="k">def</span> <span class="nf">get_annotation</span><span class="p">(</span><span
+        class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param index:</span>
 <span class="sd">        :type index:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="n">image_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">image_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_annotation</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span></div>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">index</span><span
+            class="p">]</span>
+        <span class="k">return</span> <span class="n">image_id</span><span class="p">,</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">_get_annotation</span><span class="p">(</span><span
+            class="n">image_id</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span
+            class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_annotation</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
         <span class="n">ann</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">obj</span>
-            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">loadAnns</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">getAnnIds</span><span class="p">(</span><span class="n">imgIds</span><span class="o">=</span><span class="n">image_id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span
+            class="o">.</span><span class="n">loadAnns</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span
+            class="o">.</span><span class="n">getAnnIds</span><span class="p">(</span><span class="n">imgIds</span><span
+            class="o">=</span><span class="n">image_id</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;iscrowd&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;iscrowd&quot;</span><span
+            class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="p">]</span>  <span class="c1"># filter crowd annotations</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">xywh_to_minmax</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">ann</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_coco_id_to_contiguous_id</span><span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;category_id&quot;</span><span class="p">]]</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">ann</span><span class="p">],</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">xywh_to_minmax</span><span class="p">(</span><span
+            class="n">obj</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span
+            class="p">])</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span
+            class="n">ann</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">float32</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span
+            class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span
+            class="p">))</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_coco_id_to_contiguous_id</span><span
+            class="p">[</span><span class="n">obj</span><span class="p">[</span><span
+            class="s2">&quot;category_id&quot;</span><span class="p">]]</span> <span class="k">for</span> <span
+            class="n">obj</span> <span class="ow">in</span> <span class="n">ann</span><span class="p">],</span>
             <span class="n">numpy</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span
+            class="o">-</span><span class="mi">1</span><span class="p">,))</span>
 
-        <span class="n">keep</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span>
-            <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxes</span><span
+            class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span
+            class="n">boxes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span
+            class="o">&amp;</span> <span class="p">(</span>
+            <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span
+            class="p">]</span> <span class="o">&gt;</span> <span class="n">boxes</span><span class="p">[:,</span> <span
+            class="mi">0</span><span class="p">]</span>
         <span class="p">)</span>  <span class="c1"># remove invalid boxes</span>
-        <span class="k">return</span> <span class="n">boxes</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">labels</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">boxes</span><span class="p">[</span><span
+            class="n">keep</span><span class="p">],</span> <span class="n">labels</span><span class="p">[</span><span
+            class="n">keep</span><span class="p">]</span>
 
-<div class="viewcode-block" id="COCODataset.get_img_info"><a class="viewcode-back" href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset.get_img_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_img_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="COCODataset.get_img_info"><a class="viewcode-back"
+                                                             href="../../../../../generated/neodroidvision.data.detection.coco.coco.COCODataset.html#neodroidvision.data.detection.coco.coco.COCODataset.get_img_info">[docs]</a>    <span
+        class="k">def</span> <span class="nf">get_img_info</span><span class="p">(</span><span
+        class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param index:</span>
 <span class="sd">        :type index:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_coco_source</span><span class="o">.</span><span class="n">imgs</span><span
+            class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span
+            class="p">[</span><span class="n">index</span><span class="p">]]</span></div>
 
-    <span class="k">def</span> <span class="nf">_read_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_read_image</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span>
             <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_image_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coco_source</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">(</span><span class="n">image_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;file_name&quot;</span><span class="p">]</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_image_dir</span> <span
+            class="o">/</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_coco_source</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">(</span><span
+            class="n">image_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span
+            class="s2">&quot;file_name&quot;</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span
+            class="s2">&quot;RGB&quot;</span><span class="p">)</span>
         <span class="p">)</span></div>
-</pre></div>
+</pre>
+                </div>
 
-          </div>
-          
+            </div>
+
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    </div>
+    <div aria-label="main navigation" class="sphinxsidebar" role="navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../../index.html">
-              <img class="logo" src="../../../../../_static/header.png" alt="Logo"/>
+                <img alt="Logo" class="logo" src="../../../../../_static/header.png"/>
             </a></p>
-<h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
+            <h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
 
 
+            <h3>Navigation</h3>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal"
+                                          href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+            </ul>
+            <p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting
+                    Started</a></li>
+            </ul>
 
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../../index.html">Module code</a><ul>
-  <li><a href="../../../../neodroidvision.html">neodroidvision</a><ul>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
+            <div class="relations">
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="../../../../../index.html">Documentation overview</a>
+                        <ul>
+                            <li><a href="../../../../index.html">Module code</a>
+                                <ul>
+                                    <li><a href="../../../../neodroidvision.html">neodroidvision</a>
+                                        <ul>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="searchbox" role="search" style="display: none">
+                <h3 id="searchlabel">Quick search</h3>
+                <div class="searchformwrapper">
+                    <form action="../../../../../search.html" class="search" method="get">
+                        <input aria-labelledby="searchlabel" autocapitalize="off" autocomplete="off" autocorrect="off" name="q"
+                               spellcheck="false" type="text"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
         </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
+    <div class="clearer"></div>
+</div>
+<div class="footer">
+    &copy;.
 
-    
+    |
+    Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+    &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
 
-    
-  </body>
+</div>
+
+
+</body>
 </html>

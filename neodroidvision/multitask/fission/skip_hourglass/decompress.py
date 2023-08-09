@@ -8,9 +8,8 @@ __doc__ = r"""
            """
 
 import torch
-from torch import nn
-
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
+from torch import nn
 
 __all__ = ["Decompress"]
 

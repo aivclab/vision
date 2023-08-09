@@ -21,16 +21,15 @@ from draugr.torch_utilities import (
 from draugr.visualisation import plot_side_by_side, progress_bar
 from draugr.writers import Writer
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 from torch import optim
 from torch.nn.modules.module import Module
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import ensure_existence
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 
 __author__ = "Christian Heider Nielsen"
 
@@ -88,7 +87,6 @@ def training(
             for update_i in sess:
                 for phase in [SplitEnum.training, SplitEnum.validation]:
                     if phase == SplitEnum.training:
-
                         for param_group in optimiser.param_groups:
                             writer.scalar("lr", param_group["lr"], update_i)
 

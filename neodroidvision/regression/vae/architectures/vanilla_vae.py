@@ -7,11 +7,10 @@ __doc__ = """ description """
 import torch
 import torch.utils.data
 from draugr.torch_utilities import ReductionMethodEnum
+from neodroidvision.regression.vae.architectures.vae import VAE
 from torch import nn
 from torch.nn.functional import binary_cross_entropy
 from warg import Number
-
-from neodroidvision.regression.vae.architectures.vae import VAE
 
 __all__ = ["VanillaVAE"]
 

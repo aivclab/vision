@@ -44,7 +44,7 @@ class InverseAutoregressiveFlow(nn.Module):
 
         """
         m, s = torch.chunk(self.made(input, context), chunks=2, dim=-1)
-        s = s + self.sigmoid_arg_bias
+        s += self.sigmoid_arg_bias
         sigmoid = self.sigmoid(s)
         z = sigmoid * input + (1 - sigmoid) * m
         return z, -self.log_sigmoid(s)
@@ -106,7 +106,8 @@ class MADE(nn.Module):
 
     Follows https://arxiv.org/abs/1502.03509
 
-    This is used to build MAF: Masked Autoregressive Flow (https://arxiv.org/abs/1705.07057)."""
+    This is used to build MAF: Masked Autoregressive Flow (https://arxiv.org/abs/1705.07057).
+    """
 
     def __init__(self, num_input, num_output, num_hidden, num_context):
         super().__init__()

@@ -10,12 +10,11 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from draugr.visualisation import progress_bar
-from torchvision import transforms
-from warg import ensure_existence, sprint
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities import OutputActivationModule
+from torchvision import transforms
+from warg import ensure_existence, sprint
 
 
 @torch.no_grad()
@@ -41,7 +40,6 @@ def export_detection_model(
 
     with TorchDeviceSession(device=global_torch_device("cpu"), model=model):
         with TorchEvalSession(model):
-
             seed_stack(SEED)
 
             # standard PyTorch mean-std input image normalization

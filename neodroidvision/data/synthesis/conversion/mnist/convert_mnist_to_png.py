@@ -18,7 +18,6 @@ from typing import Tuple
 
 import torchvision.datasets
 from draugr.numpy_utilities import SplitEnum
-
 from neodroidvision import PROJECT_APP_PATH
 
 
@@ -75,7 +74,7 @@ def write_dataset(labels, data, size, rows, cols, output_dir) -> None:
             os.makedirs(dir)
     import png  # pip install pypng
 
-    for (i, label) in enumerate(labels):
+    for i, label in enumerate(labels):
         output_filename = output_dirs[label] / f"{str(i)}.png"
         print(f"writing {output_filename}")
         with open(output_filename, "wb") as h:

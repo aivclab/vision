@@ -7,10 +7,9 @@ __doc__ = r""" description """
 import argparse
 from pathlib import Path
 
+from neodroidvision import PROJECT_APP_PATH
 from warg import NOD
 from warg.arguments import str2bool
-
-from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r""" description """

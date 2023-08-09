@@ -11,13 +11,12 @@ from typing import Tuple
 
 import torch
 from draugr.torch_utilities import ReductionMethodEnum
-from torch import nn
-from torch.nn import functional
-from warg import Number
-
 from neodroidvision.detection.single_stage.ssd.bounding_boxes import (
     hard_negative_mining,
 )
+from torch import nn
+from torch.nn import functional
+from warg import Number
 
 __all__ = ["MultiBoxLoss"]
 
@@ -46,7 +45,8 @@ class MultiBoxLoss(nn.Module):
         confidence (batch_size, num_priors, num_categories): class predictions.
         predicted_locations (batch_size, num_priors, 4): predicted locations.
         labels (batch_size, num_priors): real labels of all the priors.
-        gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors."""
+        gt_locations (batch_size, num_priors, 4): real boxes corresponding all the priors.
+        """
 
         with torch.no_grad():
             # derived from cross_entropy=sum(log(p))

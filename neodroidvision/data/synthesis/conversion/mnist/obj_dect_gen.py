@@ -15,7 +15,6 @@ from urllib import request
 import cv2
 import numpy
 import tqdm
-
 from neodroidvision import PROJECT_APP_PATH
 
 filename = [

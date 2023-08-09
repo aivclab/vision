@@ -9,7 +9,7 @@ __doc__ = r"""
 
 from collections import defaultdict
 from pathlib import Path
-
+from typing import Tuple
 import cv2
 import numpy
 from draugr.opencv_utilities import (
@@ -136,7 +136,7 @@ def segment_by_angle_kmeans(lines, k=2, **kwargs):
     return segmented
 
 
-def intersection(line1, line2):
+def intersection(line1, line2) -> Tuple[Tuple[int, int]]:
     """
     Find the intersection of two lines
     specified in Hesse normal form.
@@ -158,7 +158,7 @@ def intersection(line1, line2):
     b = numpy.array([[rho1], [rho2]])
     x0, y0 = numpy.linalg.solve(A, b)
 
-    return [[int(numpy.round(x0)), int(numpy.round(y0))]]
+    return (int(numpy.round(x0)), int(numpy.round(y0)))
 
 
 def segmented_intersections(lines):

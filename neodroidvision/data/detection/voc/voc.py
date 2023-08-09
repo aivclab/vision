@@ -29,14 +29,7 @@ class VOCDataset(ObjectDetectionDataset):
 
     @property
     def response_shape(self) -> Tuple[int, ...]:
-        """
-
-        Args:
-          self:
-
-        Returns:
-
-        """
+        """ """
         return (len(VOCDataset.categories),)
 
     categories = (

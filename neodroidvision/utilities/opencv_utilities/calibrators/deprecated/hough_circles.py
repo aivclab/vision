@@ -3,7 +3,6 @@ from typing import Iterable
 
 import cv2
 import numpy
-
 from draugr.opencv_utilities.color_space import to_gray
 from draugr.opencv_utilities.windows.elements import add_trackbar
 from draugr.opencv_utilities.windows.image import show_image

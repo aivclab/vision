@@ -83,7 +83,6 @@ return (img * self.std + self.mean).astype(numpy.uint8)
         N_FOLDS=10,
         SEED=246232,
     ):
-
         self.transp = transp
 
         if subset != subset.testing:

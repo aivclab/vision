@@ -12,9 +12,6 @@ from typing import Any, Tuple
 
 import torch
 from draugr.torch_utilities import to_tensor
-from torch import nn
-from torch.nn import Parameter, functional
-
 from neodroidvision.detection.single_stage.ssd.architecture.nms_box_heads.box_predictor import (
     BoxPredictor,
 )
@@ -22,6 +19,8 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes import conversion
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
 )
+from torch import nn
+from torch.nn import Parameter, functional
 
 __all__ = ["SSDNmsBoxHead", "SSDOut"]
 
@@ -118,7 +117,7 @@ class SSDNmsBoxHead(nn.Module):
         categori_logits, bbox_pred = self.predictor(features)
 
         results = []
-        for (scores, boxes) in zip(
+        for scores, boxes in zip(
             functional.log_softmax(
                 categori_logits, dim=-1
             ),  # TODO:Check dim maybe it should be 1

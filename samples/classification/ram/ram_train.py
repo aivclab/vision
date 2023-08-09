@@ -16,16 +16,16 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
+from neodroidvision.classification.mechanims.attention.foveal.architecture.ram import (
+    RecurrentAttention,
+)
+from neodroidvision.data.classification import MNISTDataset
 
 # from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from warg import NOD, ensure_existence
 
-from neodroidvision.classification.mechanims.attention.foveal.architecture.ram import (
-    RecurrentAttention,
-)
-from neodroidvision.data.classification import MNISTDataset
 from ram_params import get_ram_config
 
 model_file_ending = ".model.tar"
@@ -175,7 +175,6 @@ configure(tensorboard_dir)
         )
 
         for epoch in range(self.start_epoch, self.epochs):
-
             print(
                 f"\nEpoch: {epoch + 1}/{self.epochs} - LR: {self.optimiser.param_groups[0]['lr']:.6f}"
             )

@@ -9,11 +9,10 @@ __doc__ = r"""
 
 from typing import List
 
-from torch import Tensor, nn
-
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
+from torch import Tensor, nn
 
 __all__ = ["MobileNetV2"]
 

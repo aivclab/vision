@@ -7,9 +7,8 @@ import cv2
 import numpy
 from draugr.opencv_utilities import draw_cube
 from matplotlib import pyplot
-from pynput import keyboard
-
 from neodroidvision import PROJECT_APP_PATH
+from pynput import keyboard
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
@@ -200,7 +199,6 @@ print(f"total error:{tot_error / len(object_points)}")
             camera_mtx, dist_coef, _, _ = [X[i] for i in save_keys]
 
         for img in images:
-
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             intrsc_found, intersections = cv2.findChessboardCorners(
                 gray_img, intersections_shape, None

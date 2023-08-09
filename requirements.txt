@@ -10,7 +10,7 @@ pip
 h5py
 torch>=1.11.0
 torchvision
-pycocotools>=2.0.2
+#pycocotools>=2.0.2
 albumentations>=0.5.2
 opencv-python>=4.5.1.48
 seaborn

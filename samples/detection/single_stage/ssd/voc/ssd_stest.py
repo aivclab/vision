@@ -12,7 +12,6 @@ import os
 import torch
 import torch.utils.data
 from draugr.torch_utilities import TorchCacheSession, global_torch_device
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.ssd_evaluation import do_ssd_evaluation

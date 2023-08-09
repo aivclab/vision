@@ -22,13 +22,12 @@ from draugr.torch_utilities import (
     global_torch_device,
 )
 from draugr.visualisation import progress_bar
-from warg import NOD
-
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SSDOut
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
+from warg import NOD
 
 
 @torch.no_grad()

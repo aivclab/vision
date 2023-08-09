@@ -25,14 +25,13 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import horizontal_imshow, progress_bar
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.classification import squeezenet_retrain
+from neodroidvision.data.classification.deprec.s_mnist import MNISTDataset2
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision.transforms.functional import to_pil_image
 from warg import ContextWrapper
-
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.classification import squeezenet_retrain
-from neodroidvision.data.classification.deprec.s_mnist import MNISTDataset2
 
 seed = 34874312
 batch_size = 64
@@ -101,7 +100,6 @@ def predictor_response_train_model(
                     for phase in [SplitEnum.training, SplitEnum.validation]:
                         if phase == SplitEnum.training:
                             with TorchTrainSession(model):
-
                                 img, true_label = next(train_iterator)
 
                                 rgb_imgs = to_tensor(

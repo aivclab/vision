@@ -118,7 +118,6 @@ class VoxelGrid(object):
 
         """
         if d == 2:
-
             fig, axes = pyplot.subplots(
                 int(numpy.ceil(self.n_z / 4)), 4, figsize=(8, 8)
             )

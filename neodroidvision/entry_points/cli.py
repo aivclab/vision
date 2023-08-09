@@ -9,9 +9,8 @@ __doc__ = r"""
 
 import fire
 import warg
-from pyfiglet import Figlet
-
 from neodroidvision import get_version
+from pyfiglet import Figlet
 
 sponsors = "Alexandra Institute"
 margin_percentage = 0 / 6

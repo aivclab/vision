@@ -1,44 +1,49 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neodroidvision.utilities.torch_utilities.transforms.image_transforms &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
-    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>neodroidvision.utilities.torch_utilities.transforms.image_transforms &#8212; neodroidvision 0.2.9
+        documentation</title>
+    <link href="../../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../_static/alabaster.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+    <script data-url_root="../../../../../" id="documentation_options"
+            src="../../../../../_static/documentation_options.js"></script>
     <script src="../../../../../_static/jquery.js"></script>
     <script src="../../../../../_static/underscore.js"></script>
     <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../../_static/doctools.js"></script>
-    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/utilities/torch_utilities/transforms/image_transforms.html" />
-    <link rel="index" title="Index" href="../../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/utilities/torch_utilities/transforms/image_transforms.html"
+          rel="canonical"/>
+    <link href="../../../../../genindex.html" rel="index" title="Index"/>
+    <link href="../../../../../search.html" rel="search" title="Search"/>
 
-  </head><body>
-  
+    <link href="../../../../../_static/custom.css" rel="stylesheet" type="text/css"/>
 
-    <div class="document">
-      <div class="documentwrapper">
+
+    <meta content="width=device-width, initial-scale=0.9, maximum-scale=0.9" name="viewport"/>
+
+</head>
+<body>
+
+
+<div class="document">
+    <div class="documentwrapper">
         <div class="bodywrapper">
-          
 
-          <div class="body" role="main">
-            
-  <h1>Source code for neodroidvision.utilities.torch_utilities.transforms.image_transforms</h1><div class="highlight"><pre>
+
+            <div class="body" role="main">
+
+                <h1>Source code for neodroidvision.utilities.torch_utilities.transforms.image_transforms</h1>
+                <div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;heider&quot;</span>
-<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span
+                        class="s2">&quot;&quot;&quot;</span>
 
 <span class="s2">           Created on 5/5/22</span>
 
@@ -51,7 +56,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">torchvision.transforms.functional</span> <span class="kn">import</span> <span class="n">to_pil_image</span><span class="p">,</span> <span class="n">to_tensor</span>
+<span class="kn">from</span> <span class="nn">torchvision.transforms.functional</span> <span
+                        class="kn">import</span> <span class="n">to_pil_image</span><span class="p">,</span> <span
+                        class="n">to_tensor</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;tuplemulti&quot;</span><span class="p">,</span>
@@ -62,7 +69,8 @@
 <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">roundtoint</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">roundtoint</span><span class="p">(</span><span class="n">x</span><span
+                        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param x:</span>
@@ -70,27 +78,51 @@
 <span class="sd">    :return:</span>
 <span class="sd">    :rtype:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span
+                        class="p">(</span><span class="n">x</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="tuplemulti"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti">[docs]</a><span class="k">def</span> <span class="nf">tuplemulti</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tuplemulti"><a class="viewcode-back"
+                                               href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.tuplemulti">[docs]</a><span
+        class="k">def</span> <span class="nf">tuplemulti</span><span class="p">(</span><span class="n">a</span><span
+        class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">op</span><span
+        class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    elementwise multiplication of two sequences</span>
 <span class="sd">    a and b are two equally long sequences</span>
 <span class="sd">    op is a post-multi operation, default None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">op</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span></div>
+    <span class="k">if</span> <span class="n">op</span> <span class="ow">is</span> <span class="ow">not</span> <span
+            class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span
+            class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span
+            class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span
+            class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span
+            class="p">,</span> <span class="n">b</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span
+            class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span
+            class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span
+            class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="BaseTorchTransform"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform">[docs]</a><span class="k">class</span> <span class="nc">BaseTorchTransform</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTorchTransform"><a class="viewcode-back"
+                                                       href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform">[docs]</a><span
+        class="k">class</span> <span class="nc">BaseTorchTransform</span><span class="p">(</span><span
+        class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span
+        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseTorchTransform.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+<div class="viewcode-block" id="BaseTorchTransform.__init__"><a class="viewcode-back"
+                                                                href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+            class="fm">__init__</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="BaseTorchTransform.forward"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTorchTransform.forward"><a class="viewcode-back"
+                                                               href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.BaseTorchTransform.forward">[docs]</a>    <span
+        class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">img</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param img:</span>
@@ -100,28 +132,52 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">retmode</span> <span class="o">=</span> <span class="s2">&quot;tensor&quot;</span>
         <span class="c1"># determine input type and possibly convert to tensor</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span
+            class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">Image</span><span
+            class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">to_tensor</span><span class="p">(</span><span
+            class="n">img</span><span class="p">)</span>
             <span class="n">retmode</span> <span class="o">=</span> <span class="s2">&quot;image&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
-            <span class="n">img</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;input must be convertable to torch tensor, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">img</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">Tensor</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;input must be convertable to torch tensor, got </span><span
+            class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">img</span><span
+            class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span></div></div>
 
 
-<div class="viewcode-block" id="RandomRGBNoise"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise">[docs]</a><span class="k">class</span> <span class="nc">RandomRGBNoise</span><span class="p">(</span><span class="n">BaseTorchTransform</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomRGBNoise"><a class="viewcode-back"
+                                                   href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise">[docs]</a><span
+        class="k">class</span> <span class="nc">RandomRGBNoise</span><span class="p">(</span><span class="n">BaseTorchTransform</span><span
+        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inserts random R, G, and/or B values in an image</span>
 <span class="sd">    Ratio affects the total amount of RGB values affected, not the amount of pixels.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="RandomRGBNoise.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="n">ratio</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">val</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
+<div class="viewcode-block" id="RandomRGBNoise.__init__"><a class="viewcode-back"
+                                                            href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.1</span><span
+        class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="p">(</span><span
+        class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+            class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span
+            class="n">ratio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span
+            class="n">val</span> <span class="k">if</span> <span class="nb">isinstance</span><span
+            class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Sequence</span><span
+            class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span
+            class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="RandomRGBNoise.forward"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomRGBNoise.forward"><a class="viewcode-back"
+                                                           href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomRGBNoise.forward">[docs]</a>    <span
+        class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">img</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param img:</span>
@@ -129,21 +185,37 @@
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span> <span class="o">=</span> <span
+            class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span
+            class="p">(</span><span class="n">img</span><span class="p">)</span>
 
         <span class="c1"># first, create a random array of values 0..1</span>
         <span class="c1"># anything under ratio is considered a &quot;hit&quot;</span>
-        <span class="n">mod</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">hit</span> <span class="o">=</span> <span class="n">mod</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">FloatTensor</span><span class="p">(</span><span class="o">*</span><span class="n">img</span><span
+            class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span
+            class="n">uniform_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span
+            class="mf">1.0</span><span class="p">)</span>
+        <span class="n">hit</span> <span class="o">=</span> <span class="n">mod</span> <span class="o">&lt;</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">ratio</span>
         <span class="c1"># then, set img values in the &quot;hit&quot; spaces to a random value in range self.vals</span>
-        <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span class="p">]</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span class="p">]</span> <span
+            class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span
+            class="p">]</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span
+            class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span
+            class="p">)</span>
 
-        <span class="k">if</span> <span class="n">retmode</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">to_pil_image</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">retmode</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span
+            class="p">:</span>
+            <span class="k">return</span> <span class="n">to_pil_image</span><span class="p">(</span><span
+            class="n">img</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">img</span></div></div>
 
 
-<div class="viewcode-block" id="RandomFlipColor"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor">[docs]</a><span class="k">class</span> <span class="nc">RandomFlipColor</span><span class="p">(</span><span class="n">BaseTorchTransform</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomFlipColor"><a class="viewcode-back"
+                                                    href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor">[docs]</a><span
+        class="k">class</span> <span class="nc">RandomFlipColor</span><span class="p">(</span><span class="n">BaseTorchTransform</span><span
+        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Randomly flips a colour channel in an image</span>
 <span class="sd">    Each channel is individually evaluated against ratio (R)</span>
@@ -158,11 +230,20 @@
 <span class="sd">            in an image, R = 1 - (1 - 0.8)^(1/3) = 0.415</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="RandomFlipColor.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="n">ratio</span></div>
+<div class="viewcode-block" id="RandomFlipColor.__init__"><a class="viewcode-back"
+                                                             href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.1</span><span
+        class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+            class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span
+            class="n">ratio</span></div>
 
-<div class="viewcode-block" id="RandomFlipColor.forward"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomFlipColor.forward"><a class="viewcode-back"
+                                                            href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.RandomFlipColor.forward">[docs]</a>    <span
+        class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">img</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param img:</span>
@@ -170,37 +251,67 @@
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span> <span class="o">=</span> <span
+            class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span
+            class="p">(</span><span class="n">img</span><span class="p">)</span>
 
         <span class="c1"># colours are assumed to be the first channel</span>
         <span class="c1"># anything under ratio is considered a &quot;hit&quot;</span>
-        <span class="n">mod</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">hit</span> <span class="o">=</span> <span class="n">mod</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">FloatTensor</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span
+            class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span
+            class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="mf">0.0</span><span
+            class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">hit</span> <span class="o">=</span> <span class="n">mod</span> <span class="o">&lt;</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">ratio</span>
         <span class="c1"># then, flip values in the &quot;hit&quot; channels</span>
-        <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">retmode</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">to_pil_image</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">[</span><span class="n">hit</span><span class="p">]</span> <span
+            class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">img</span><span
+            class="p">[</span><span class="n">hit</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">retmode</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span
+            class="p">:</span>
+            <span class="k">return</span> <span class="n">to_pil_image</span><span class="p">(</span><span
+            class="n">img</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">img</span></div></div>
 
 
-<div class="viewcode-block" id="Black2RGB"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB">[docs]</a><span class="k">class</span> <span class="nc">Black2RGB</span><span class="p">(</span><span class="n">BaseTorchTransform</span><span class="p">):</span>
+<div class="viewcode-block" id="Black2RGB"><a class="viewcode-back"
+                                              href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB">[docs]</a><span
+        class="k">class</span> <span class="nc">Black2RGB</span><span class="p">(</span><span class="n">BaseTorchTransform</span><span
+        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inserts random RGB values in an image at specific dark colours</span>
 <span class="sd">    Used to, for example, convert black writing to colored text</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Black2RGB.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">vals</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">constant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Black2RGB.__init__"><a class="viewcode-back"
+                                                       href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.25</span><span
+        class="p">,</span> <span class="n">vals</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span
+        class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">constant</span><span
+        class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param threshold: indicates the maximum value on any colour channel that causes a colour flip</span>
 <span class="sd">        :param vals: possible values of R/G/B</span>
 <span class="sd">        :param constant: whether to use a &quot;constant&quot; (read: gradient) colour or individual RGB values for each pixel</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">constant</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+            class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span
+            class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span
+            class="o">=</span> <span class="n">constant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span
+            class="n">vals</span> <span class="k">if</span> <span class="nb">isinstance</span><span
+            class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">Sequence</span><span
+            class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="mf">0.0</span><span
+            class="p">,</span> <span class="n">vals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Black2RGB.forward"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+<div class="viewcode-block" id="Black2RGB.forward"><a class="viewcode-back"
+                                                      href="../../../../../generated/neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.html#neodroidvision.utilities.torch_utilities.transforms.image_transforms.Black2RGB.forward">[docs]</a>    <span
+        class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">img</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param img:</span>
@@ -208,96 +319,122 @@
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">retmode</span> <span class="o">=</span> <span
+            class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span
+            class="p">(</span><span class="n">img</span><span class="p">)</span>
 
         <span class="c1"># check if all values in pixel are below threshold</span>
-        <span class="n">hit</span> <span class="o">=</span> <span class="p">(</span><span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">:</span>
+        <span class="n">hit</span> <span class="o">=</span> <span class="p">(</span><span class="n">img</span><span
+            class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span><span
+            class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span
+            class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">constant</span><span class="p">:</span>
             <span class="c1"># norm is magnitude of vector</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span class="p">]</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:</span><span
+            class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span class="p">]</span><span
+            class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span
+            class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="c1"># convert to 0..1 clamped at threshold</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
-            <span class="n">col</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span class="p">]</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="n">col</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span
+            class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span> <span
+            class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span
+            class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span
+            class="n">uniform_</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">vals</span><span class="p">[:</span><span class="mi">2</span><span
+            class="p">])</span>
+            <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span
+            class="n">hit</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span
+            class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span
+            class="p">]</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span
+            class="n">col</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span
+            class="o">-</span> <span class="n">a</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span class="p">]</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">)</span>
+            <span class="n">img</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span
+            class="n">hit</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span><span
+            class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="n">hit</span><span
+            class="p">]</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span
+            class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span
+            class="p">)</span>
 
-        <span class="k">if</span> <span class="n">retmode</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">to_pil_image</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">retmode</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span
+            class="p">:</span>
+            <span class="k">return</span> <span class="n">to_pil_image</span><span class="p">(</span><span
+            class="n">img</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">img</span></div></div>
-</pre></div>
+</pre>
+                </div>
 
-          </div>
-          
+            </div>
+
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    </div>
+    <div aria-label="main navigation" class="sphinxsidebar" role="navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../../index.html">
-              <img class="logo" src="../../../../../_static/header.png" alt="Logo"/>
+                <img alt="Logo" class="logo" src="../../../../../_static/header.png"/>
             </a></p>
-<h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
+            <h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
 
 
+            <h3>Navigation</h3>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal"
+                                          href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+            </ul>
+            <p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting
+                    Started</a></li>
+            </ul>
 
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../../index.html">Module code</a><ul>
-  <li><a href="../../../../neodroidvision.html">neodroidvision</a><ul>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
+            <div class="relations">
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="../../../../../index.html">Documentation overview</a>
+                        <ul>
+                            <li><a href="../../../../index.html">Module code</a>
+                                <ul>
+                                    <li><a href="../../../../neodroidvision.html">neodroidvision</a>
+                                        <ul>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="searchbox" role="search" style="display: none">
+                <h3 id="searchlabel">Quick search</h3>
+                <div class="searchformwrapper">
+                    <form action="../../../../../search.html" class="search" method="get">
+                        <input aria-labelledby="searchlabel" autocapitalize="off" autocomplete="off" autocorrect="off" name="q"
+                               spellcheck="false" type="text"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
         </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
+    <div class="clearer"></div>
+</div>
+<div class="footer">
+    &copy;.
 
-    
+    |
+    Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+    &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
 
-    
-  </body>
+</div>
+
+
+</body>
 </html>

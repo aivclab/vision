@@ -80,7 +80,6 @@ if __name__ == "__main__":
         patch_size = 8
 
         if show_2d:
-
             from cv2 import circle
             from matplotlib import pyplot
 

@@ -110,13 +110,11 @@ def approximate_curve_calibrator(
         hi = cv2.getTrackbarPos(hi_label, canny_frame_window_label)
 
         if lo != lo_prev or hi != hi_prev:  # --------------------------= RE-SYNC
-
             a_canny_refresh_flag = True  # --------------------------= FLAG
 
             lo_prev = lo
             hi_prev = hi
         else:
-
             a_canny_refresh_flag = False  # --------------------------= Un-FLAG
 
         dp = cv2.getTrackbarPos(dp_label, canny_hough_circle_window_label)
@@ -140,7 +138,6 @@ def approximate_curve_calibrator(
             or min_radius != min_radius_prev
             or max_radius != max_radius_prev
         ):  # ----------------------------------------------= RE-SYNC
-
             a_hough_refresh_flag = True  # --------------------------= FLAG
 
             dp_prev = dp
@@ -150,7 +147,6 @@ def approximate_curve_calibrator(
             min_radius_prev = min_radius
             max_radius_prev = max_radius
         else:
-
             a_hough_refresh_flag = False  # --------------------------= Un-FLAG
 
         if (
@@ -161,7 +157,6 @@ def approximate_curve_calibrator(
             cv2.imshow(canny_frame_window_label, edges)
 
         if a_canny_refresh_flag or a_hough_refresh_flag:
-
             circles = cv2.HoughCircles(
                 edges,
                 cv2.HOUGH_GRADIENT,

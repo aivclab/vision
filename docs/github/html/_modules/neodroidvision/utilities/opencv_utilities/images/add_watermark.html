@@ -1,39 +1,43 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neodroidvision.utilities.opencv_utilities.images.add_watermark &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
-    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>neodroidvision.utilities.opencv_utilities.images.add_watermark &#8212; neodroidvision 0.2.9
+        documentation</title>
+    <link href="../../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../_static/alabaster.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+    <script data-url_root="../../../../../" id="documentation_options"
+            src="../../../../../_static/documentation_options.js"></script>
     <script src="../../../../../_static/jquery.js"></script>
     <script src="../../../../../_static/underscore.js"></script>
     <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../../_static/doctools.js"></script>
-    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/utilities/opencv_utilities/images/add_watermark.html" />
-    <link rel="index" title="Index" href="../../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/utilities/opencv_utilities/images/add_watermark.html"
+          rel="canonical"/>
+    <link href="../../../../../genindex.html" rel="index" title="Index"/>
+    <link href="../../../../../search.html" rel="search" title="Search"/>
 
-  </head><body>
-  
+    <link href="../../../../../_static/custom.css" rel="stylesheet" type="text/css"/>
 
-    <div class="document">
-      <div class="documentwrapper">
+
+    <meta content="width=device-width, initial-scale=0.9, maximum-scale=0.9" name="viewport"/>
+
+</head>
+<body>
+
+
+<div class="document">
+    <div class="documentwrapper">
         <div class="bodywrapper">
-          
 
-          <div class="body" role="main">
-            
-  <h1>Source code for neodroidvision.utilities.opencv_utilities.images.add_watermark</h1><div class="highlight"><pre>
+
+            <div class="body" role="main">
+
+                <h1>Source code for neodroidvision.utilities.opencv_utilities.images.add_watermark</h1>
+                <div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
@@ -42,7 +46,12 @@
 <span class="kn">from</span> <span class="nn">sorcery</span> <span class="kn">import</span> <span class="n">assigned_names</span>
 
 
-<div class="viewcode-block" id="rotate_image"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.rotate_image.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.rotate_image">[docs]</a><span class="k">def</span> <span class="nf">rotate_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="rotate_image"><a class="viewcode-back"
+                                                 href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.rotate_image.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.rotate_image">[docs]</a><span
+        class="k">def</span> <span class="nf">rotate_image</span><span class="p">(</span><span
+        class="n">image</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span
+        class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span
+        class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param image:</span>
@@ -56,92 +65,229 @@
 <span class="sd">    :return:</span>
 <span class="sd">    :rtype:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span
+            class="p">)</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span
+            class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">h</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span
+            class="p">:</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span
+            class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">h</span> <span
+            class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getRotationMatrix2D</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span class="p">),</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span
+            class="n">warpAffine</span><span class="p">(</span><span class="n">image</span><span
+            class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span
+            class="n">getRotationMatrix2D</span><span class="p">(</span><span class="n">center</span><span
+            class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">scale</span><span
+            class="p">),</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span
+            class="n">h</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="PositionEnum"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.PositionEnum.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.PositionEnum">[docs]</a><span class="k">class</span> <span class="nc">PositionEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="n">upper_left</span><span class="p">,</span> <span class="n">lower_left</span><span class="p">,</span> <span class="n">upper_right</span><span class="p">,</span> <span class="n">lower_right</span> <span class="o">=</span> <span class="n">assigned_names</span><span class="p">()</span></div>
+<div class="viewcode-block" id="PositionEnum"><a class="viewcode-back"
+                                                 href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.PositionEnum.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.PositionEnum">[docs]</a><span
+        class="k">class</span> <span class="nc">PositionEnum</span><span class="p">(</span><span
+        class="n">Enum</span><span class="p">):</span>
+    <span class="n">upper_left</span><span class="p">,</span> <span class="n">lower_left</span><span class="p">,</span> <span
+            class="n">upper_right</span><span class="p">,</span> <span class="n">lower_right</span> <span
+            class="o">=</span> <span class="n">assigned_names</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="WatermarkImage"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage">[docs]</a><span class="k">class</span> <span class="nc">WatermarkImage</span><span class="p">:</span>
+<div class="viewcode-block" id="WatermarkImage"><a class="viewcode-back"
+                                                   href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage">[docs]</a><span
+        class="k">class</span> <span class="nc">WatermarkImage</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="WatermarkImage.__init__"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="WatermarkImage.__init__"><a class="viewcode-back"
+                                                            href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">logo_path</span><span class="p">,</span>
         <span class="n">size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-        <span class="n">orientation</span><span class="p">:</span> <span class="n">PositionEnum</span> <span class="o">=</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">lower_right</span><span class="p">,</span>
-        <span class="n">margin</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+        <span class="n">orientation</span><span class="p">:</span> <span class="n">PositionEnum</span> <span
+            class="o">=</span> <span class="n">PositionEnum</span><span class="o">.</span><span
+            class="n">lower_right</span><span class="p">,</span>
+        <span class="n">margin</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span
+            class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span
+            class="p">,</span> <span class="mi">20</span><span class="p">),</span>
         <span class="n">angle</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-        <span class="n">rgb_weight</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
-        <span class="n">input_frame_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rgb_weight</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span
+            class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span
+            class="p">),</span>
+        <span class="n">input_frame_shape</span><span class="o">=</span><span class="kc">None</span><span
+            class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">logo_path</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span>
-        <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">logo_image</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">if</span> <span class="n">angle</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">new_h</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
-                <span class="n">angle</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span
+            class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">logo_path</span><span
+            class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span
+            class="p">)</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span
+            class="n">c</span> <span class="o">=</span> <span class="n">logo_image</span><span class="o">.</span><span
+            class="n">shape</span>
+        <span class="k">if</span> <span class="n">angle</span> <span class="o">%</span> <span
+            class="mi">360</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">new_h</span> <span class="o">=</span> <span class="n">w</span> <span
+            class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span
+            class="p">(</span><span class="n">angle</span> <span class="o">/</span> <span class="mi">180</span> <span
+            class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span
+            class="p">)</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span
+            class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+                <span class="n">angle</span> <span class="o">/</span> <span class="mi">180</span> <span
+            class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
             <span class="p">)</span>
-            <span class="n">pad_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">new_h</span> <span class="o">-</span> <span class="n">h</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">pad_h</span> <span class="o">=</span> <span class="nb">int</span><span
+            class="p">((</span><span class="n">new_h</span> <span class="o">-</span> <span class="n">h</span><span
+            class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
 
-            <span class="n">padding</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">pad_h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-            <span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">vconcat</span><span class="p">([</span><span class="n">logo_image</span><span class="p">,</span> <span class="n">padding</span><span class="p">])</span>
-            <span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">vconcat</span><span class="p">([</span><span class="n">padding</span><span class="p">,</span> <span class="n">logo_image</span><span class="p">])</span>
+            <span class="n">padding</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">zeros</span><span class="p">((</span><span class="n">pad_h</span><span class="p">,</span> <span
+            class="n">w</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span
+            class="n">uint8</span><span class="p">)</span>
+            <span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span
+            class="o">.</span><span class="n">vconcat</span><span class="p">([</span><span
+            class="n">logo_image</span><span class="p">,</span> <span class="n">padding</span><span class="p">])</span>
+            <span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span
+            class="o">.</span><span class="n">vconcat</span><span class="p">([</span><span class="n">padding</span><span
+            class="p">,</span> <span class="n">logo_image</span><span class="p">])</span>
 
-            <span class="n">logo_image</span> <span class="o">=</span> <span class="n">rotate_image</span><span class="p">(</span><span class="n">logo_image</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">logo_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span class="o">=</span> <span class="n">logo_image</span>
+            <span class="n">logo_image</span> <span class="o">=</span> <span class="n">rotate_image</span><span
+            class="p">(</span><span class="n">logo_image</span><span class="p">,</span> <span
+            class="n">angle</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">logo_image</span><span
+            class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span
+            class="o">=</span> <span class="n">logo_image</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No alpha channel found!&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add_alpha__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">)</span>  <span class="c1"># add alpha channel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">PositionEnum</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="o">.</span><span class="n">shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resized</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb_weight</span> <span class="o">=</span> <span class="n">rgb_weight</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span
+            class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">4</span><span
+            class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span
+            class="s2">&quot;No alpha channel found!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">__add_alpha__</span><span class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">logo_image</span><span class="p">)</span>  <span class="c1"># add alpha channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span
+            class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span
+            class="n">PositionEnum</span><span class="p">(</span><span class="n">orientation</span><span
+            class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span
+            class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_image</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resized</span> <span
+            class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb_weight</span> <span
+            class="o">=</span> <span class="n">rgb_weight</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb_weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb_weight</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgb_weight</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span
+            class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span
+            class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span
+            class="o">*</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">rgb_weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span
+            class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span
+            class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span
+            class="o">*</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">rgb_weight</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span
+            class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span
+            class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span
+            class="o">*</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">rgb_weight</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">input_frame_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">input_frame_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span
+            class="kc">None</span><span class="p">:</span>
 
-            <span class="n">logo_w</span> <span class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
-            <span class="n">ratio</span> <span class="o">=</span> <span class="n">logo_w</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">logo_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">logo_w</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">logo_w</span><span class="p">)</span>
+            <span class="n">logo_w</span> <span class="o">=</span> <span class="n">input_frame_shape</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">logo_w</span> <span class="o">/</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span
+            class="mi">1</span><span class="p">]</span>
+            <span class="n">logo_h</span> <span class="o">=</span> <span class="nb">int</span><span
+            class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">])</span>
+            <span class="n">logo_w</span> <span class="o">=</span> <span class="nb">int</span><span
+            class="p">(</span><span class="n">logo_w</span><span class="p">)</span>
 
-            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">logo_w</span><span class="p">,</span> <span class="n">logo_h</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_CUBIC</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span
+            class="n">logo_w</span><span class="p">,</span> <span class="n">logo_h</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span
+            class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span
+            class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span
+            class="p">,</span> <span class="n">size</span><span class="p">,</span> <span
+            class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span
+            class="o">.</span><span class="n">INTER_CUBIC</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">resized</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">upper_left</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">upper_right</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">lower_left</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resized</span> <span class="o">=</span> <span
+            class="kc">True</span>
+            <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span
+            class="o">.</span><span class="n">upper_left</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span
+            class="o">.</span><span class="n">upper_right</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">1</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span
+            class="o">.</span><span class="n">lower_left</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_w</span> <span class="o">=</span> <span class="n">logo_w</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_h</span> <span class="o">=</span> <span class="n">logo_h</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">//</span> <span class="mi">255</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="n">input_frame_shape</span><span class="p">[</span><span class="mi">1</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_w</span> <span
+            class="o">=</span> <span class="n">logo_w</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_h</span> <span
+            class="o">=</span> <span class="n">logo_h</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span
+            class="mi">3</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span
+            class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_not</span><span
+            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span
+            class="o">//</span> <span class="mi">255</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WatermarkImage.apply_frames"><a class="viewcode-back" href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.apply_frames">[docs]</a>    <span class="k">def</span> <span class="nf">apply_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="WatermarkImage.apply_frames"><a class="viewcode-back"
+                                                                href="../../../../../generated/neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.html#neodroidvision.utilities.opencv_utilities.images.add_watermark.WatermarkImage.apply_frames">[docs]</a>    <span
+        class="k">def</span> <span class="nf">apply_frames</span><span class="p">(</span><span
+        class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param frame:</span>
@@ -149,127 +295,206 @@
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">resized</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">logo_w</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
-            <span class="n">ratio</span> <span class="o">=</span> <span class="n">logo_w</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">logo_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">logo_w</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">logo_w</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">resized</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">frame</span><span
+            class="o">.</span><span class="n">shape</span>
+            <span class="n">logo_w</span> <span class="o">=</span> <span class="n">shape</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">logo_w</span> <span class="o">/</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span
+            class="mi">1</span><span class="p">]</span>
+            <span class="n">logo_h</span> <span class="o">=</span> <span class="nb">int</span><span
+            class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">ori_shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">])</span>
+            <span class="n">logo_w</span> <span class="o">=</span> <span class="nb">int</span><span
+            class="p">(</span><span class="n">logo_w</span><span class="p">)</span>
 
-            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">logo_w</span><span class="p">,</span> <span class="n">logo_h</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_CUBIC</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span
+            class="n">logo_w</span><span class="p">,</span> <span class="n">logo_h</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span> <span
+            class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span
+            class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span
+            class="p">,</span> <span class="n">size</span><span class="p">,</span> <span
+            class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span
+            class="o">.</span><span class="n">INTER_CUBIC</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">resized</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">upper_left</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">upper_right</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span class="o">.</span><span class="n">lower_left</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resized</span> <span class="o">=</span> <span
+            class="kc">True</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span
+            class="o">.</span><span class="n">upper_left</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span
+            class="o">.</span><span class="n">upper_right</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">orientation</span> <span class="o">==</span> <span class="n">PositionEnum</span><span
+            class="o">.</span><span class="n">lower_left</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_w</span> <span class="o">=</span> <span class="n">logo_w</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_h</span> <span class="o">=</span> <span class="n">logo_h</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">//</span> <span class="mi">255</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_h</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span
+            class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">logo_w</span> <span
+            class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span
+            class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_w</span> <span
+            class="o">=</span> <span class="n">logo_w</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_h</span> <span
+            class="o">=</span> <span class="n">logo_h</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span
+            class="mi">3</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span
+            class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_not</span><span
+            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span
+            class="o">//</span> <span class="mi">255</span><span class="p">)</span>
 
-        <span class="n">original_frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_h</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_w</span><span class="p">),</span>
+        <span class="n">original_frame</span> <span class="o">=</span> <span class="n">frame</span><span
+            class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">coor_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_h</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">coor_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_w</span><span class="p">),</span>
             <span class="p">:,</span>
         <span class="p">]</span>
-        <span class="n">blending_logo</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">original_frame</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">blending_logo</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span
+            class="n">add</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logo_image</span><span
+            class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span
+            class="mi">3</span><span class="p">],</span> <span class="n">original_frame</span><span
+            class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">mask</span>
         <span class="p">)</span>
         <span class="n">frame</span><span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_h</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">logo_w</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coor_h</span> <span
+            class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">coor_h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_h</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coor_w</span> <span
+            class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">coor_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">logo_w</span><span class="p">),</span>
             <span class="p">:,</span>
         <span class="p">]</span> <span class="o">=</span> <span class="n">blending_logo</span>
         <span class="k">return</span> <span class="n">frame</span></div>
 
-    <span class="k">def</span> <span class="nf">__add_alpha__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">alpha_channel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">image</span><span class="p">,</span> <span class="n">alpha_channel</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span></div>
-</pre></div>
+    <span class="k">def</span> <span class="nf">__add_alpha__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span
+            class="n">shape</span>
+        <span class="n">alpha_channel</span> <span class="o">=</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">shape</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span
+            class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span
+            class="p">)</span> <span class="o">*</span> <span class="mi">255</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">concatenate</span><span class="p">((</span><span class="n">image</span><span
+            class="p">,</span> <span class="n">alpha_channel</span><span class="p">),</span> <span
+            class="mi">2</span><span class="p">)</span></div>
+</pre>
+                </div>
 
-          </div>
-          
+            </div>
+
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    </div>
+    <div aria-label="main navigation" class="sphinxsidebar" role="navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../../index.html">
-              <img class="logo" src="../../../../../_static/header.png" alt="Logo"/>
+                <img alt="Logo" class="logo" src="../../../../../_static/header.png"/>
             </a></p>
-<h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
+            <h1 class="logo"><a href="../../../../../index.html">neodroidvision</a></h1>
 
 
+            <h3>Navigation</h3>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal"
+                                          href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+            </ul>
+            <p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting
+                    Started</a></li>
+            </ul>
 
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../generated/neodroidvision.html">neodroidvision</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started.html">Getting Started</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../../index.html">Module code</a><ul>
-  <li><a href="../../../../neodroidvision.html">neodroidvision</a><ul>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
+            <div class="relations">
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="../../../../../index.html">Documentation overview</a>
+                        <ul>
+                            <li><a href="../../../../index.html">Module code</a>
+                                <ul>
+                                    <li><a href="../../../../neodroidvision.html">neodroidvision</a>
+                                        <ul>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="searchbox" role="search" style="display: none">
+                <h3 id="searchlabel">Quick search</h3>
+                <div class="searchformwrapper">
+                    <form action="../../../../../search.html" class="search" method="get">
+                        <input aria-labelledby="searchlabel" autocapitalize="off" autocomplete="off" autocorrect="off" name="q"
+                               spellcheck="false" type="text"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
         </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
+    <div class="clearer"></div>
+</div>
+<div class="footer">
+    &copy;.
 
-    
+    |
+    Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+    &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
 
-    
-  </body>
+</div>
+
+
+</body>
 </html>

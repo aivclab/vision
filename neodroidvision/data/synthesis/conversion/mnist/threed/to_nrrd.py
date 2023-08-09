@@ -12,9 +12,9 @@ import pickle
 
 import numpy
 from draugr.numpy_utilities import SplitEnum
+from neodroidvision import PROJECT_APP_PATH
 from tqdm import trange
 
-from neodroidvision import PROJECT_APP_PATH
 from .augmentation import rotate_y
 from .gen import img_to_point_cloud, make_voxel
 
@@ -53,7 +53,6 @@ def save_dataset(X, y, voxel, output, shape=(28, 28)):
 
 
 if __name__ == "__main__":
-
     with gzip.open(PROJECT_APP_PATH.user_data / "mnist.pkl.gz", "rb") as f:
         train_set, valid_set, test_set = pickle.load(f, encoding="iso-8859-1")
 

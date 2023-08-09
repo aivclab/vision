@@ -15,9 +15,6 @@ import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import global_torch_device
-from torch import quantization
-from warg import NOD, ensure_existence
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import (
     SingleShotDetectionNms,
@@ -28,6 +25,8 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 from neodroidvision.utilities.torch_utilities.persistence.check_pointer import (
     CheckPointer,
 )
+from torch import quantization
+from warg import NOD, ensure_existence
 
 
 @torch.no_grad()

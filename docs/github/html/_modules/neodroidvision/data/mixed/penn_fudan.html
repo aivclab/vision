@@ -1,83 +1,99 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>neodroidvision.data.mixed.penn_fudan &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <link href="../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../_static/alabaster.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+    <script data-url_root="../../../../" id="documentation_options"
+            src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../_static/doctools.js"></script>
-    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/mixed/penn_fudan.html" />
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/mixed/penn_fudan.html" rel="canonical"/>
+    <link href="../../../../genindex.html" rel="index" title="Index"/>
+    <link href="../../../../search.html" rel="search" title="Search"/>
 
-  </head><body>
-  
+    <link href="../../../../_static/custom.css" rel="stylesheet" type="text/css"/>
 
-    <div class="document">
-      <div class="documentwrapper">
+
+    <meta content="width=device-width, initial-scale=0.9, maximum-scale=0.9" name="viewport"/>
+
+</head>
+<body>
+
+
+<div class="document">
+    <div class="documentwrapper">
         <div class="bodywrapper">
-          
 
-          <div class="body" role="main">
-            
-  <h1>Source code for neodroidvision.data.mixed.penn_fudan</h1><div class="highlight"><pre>
+
+            <div class="body" role="main">
+
+                <h1>Source code for neodroidvision.data.mixed.penn_fudan</h1>
+                <div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
-<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span
+                        class="s2">&quot;&quot;&quot;</span>
 
 <span class="s2">           Created on 22/03/2020</span>
 <span class="s2">           &quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span
+                        class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">draugr.numpy_utilities</span> <span class="kn">import</span> <span class="n">SplitEnum</span><span class="p">,</span> <span class="n">chw_to_hwc</span><span class="p">,</span> <span class="n">mix_channels</span>
-<span class="kn">from</span> <span class="nn">draugr.opencv_utilities</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">draugr.numpy_utilities</span> <span class="kn">import</span> <span
+                        class="n">SplitEnum</span><span class="p">,</span> <span class="n">chw_to_hwc</span><span
+                        class="p">,</span> <span class="n">mix_channels</span>
+<span class="kn">from</span> <span class="nn">draugr.opencv_utilities</span> <span class="kn">import</span> <span
+                        class="p">(</span>
     <span class="n">InterpolationEnum</span><span class="p">,</span>
     <span class="n">cv2_resize</span><span class="p">,</span>
     <span class="n">draw_boxes</span><span class="p">,</span>
     <span class="n">draw_masks</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">draugr.torch_utilities</span> <span class="kn">import</span> <span
+                        class="p">(</span>
     <span class="n">SupervisedDataset</span><span class="p">,</span>
     <span class="n">float_chw_to_hwc_uint_tensor</span><span class="p">,</span>
     <span class="n">global_torch_device</span><span class="p">,</span>
     <span class="n">to_tensor</span><span class="p">,</span>
     <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span
+                        class="n">pyplot</span>
 <span class="kn">from</span> <span class="nn">sorcery</span> <span class="kn">import</span> <span class="n">assigned_names</span>
-<span class="kn">from</span> <span class="nn">torchvision.transforms</span> <span class="kn">import</span> <span class="n">Compose</span><span class="p">,</span> <span class="n">Resize</span><span class="p">,</span> <span class="n">ToTensor</span>
+<span class="kn">from</span> <span class="nn">torchvision.transforms</span> <span class="kn">import</span> <span
+                        class="n">Compose</span><span class="p">,</span> <span class="n">Resize</span><span
+                        class="p">,</span> <span class="n">ToTensor</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PennFudanDataset&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PennFudanDataset&quot;</span><span
+                        class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">neodroidvision.utilities</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">neodroidvision.utilities</span> <span class="kn">import</span> <span
+                        class="p">(</span>
     <span class="n">TupleCompose</span><span class="p">,</span>
     <span class="n">TupleRandomHorizontalFlip</span><span class="p">,</span>
     <span class="n">TupleToTensor</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="PennFudanDataset"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset">[docs]</a><span class="k">class</span> <span class="nc">PennFudanDataset</span><span class="p">(</span><span class="n">SupervisedDataset</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset"><a class="viewcode-back"
+                                                     href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset">[docs]</a><span
+        class="k">class</span> <span class="nc">PennFudanDataset</span><span class="p">(</span><span class="n">SupervisedDataset</span><span
+        class="p">):</span>
     <span class="sd">&quot;&quot;&quot;description&quot;&quot;&quot;</span>
 
     <span class="n">predictor_channels</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># RGB input</span>
@@ -87,60 +103,99 @@
     <span class="n">response_channels_binary</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">response_channels_instanced</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">image_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
-    <span class="n">image_size_T</span> <span class="o">=</span> <span class="n">image_size</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">image_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">256</span><span
+            class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+    <span class="n">image_size_T</span> <span class="o">=</span> <span class="n">image_size</span><span
+            class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="n">categories</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;void&quot;</span><span class="p">,</span> <span class="s2">&quot;person&quot;</span><span class="p">)</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="p">(</span><span
+            class="s2">&quot;void&quot;</span><span class="p">,</span> <span class="s2">&quot;person&quot;</span><span
+            class="p">)</span>
 
-<div class="viewcode-block" id="PennFudanDataset.PennFudanReturnVariantEnum"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.PennFudanReturnVariantEnum">[docs]</a>    <span class="k">class</span> <span class="nc">PennFudanReturnVariantEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset.PennFudanReturnVariantEnum"><a class="viewcode-back"
+                                                                                href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.PennFudanReturnVariantEnum">[docs]</a>    <span
+        class="k">class</span> <span class="nc">PennFudanReturnVariantEnum</span><span class="p">(</span><span
+        class="n">Enum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return binary mask, instanced or all annotations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">binary</span><span class="p">,</span> <span class="n">instanced</span><span class="p">,</span> <span class="nb">all</span> <span class="o">=</span> <span class="n">assigned_names</span><span class="p">()</span></div>
+        <span class="n">binary</span><span class="p">,</span> <span class="n">instanced</span><span
+            class="p">,</span> <span class="nb">all</span> <span class="o">=</span> <span
+            class="n">assigned_names</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">response_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">response_shape</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+            class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span
+            class="o">...</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_channels_binary</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span
+            class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">binary</span><span
+            class="p">:</span>
+            <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">response_channels_binary</span>
         <span class="k">elif</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span>
-            <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">instanced</span>
+            <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span
+            class="o">.</span><span class="n">instanced</span>
         <span class="p">):</span>
-            <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_channels_instanced</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_channels_two_classes</span>
+            <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">response_channels_instanced</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span
+            class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span
+            class="p">:</span>
+            <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">response_channels_two_classes</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">predictor_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">predictor_shape</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+            class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span
+            class="o">...</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor_channels</span>
+        <span class="k">return</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">image_size_T</span><span class="p">,</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">predictor_channels</span>
 
-<div class="viewcode-block" id="PennFudanDataset.get_transforms"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_transforms">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_transforms</span><span class="p">(</span><span class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset.get_transforms"><a class="viewcode-back"
+                                                                    href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_transforms">[docs]</a>    <span
+        class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_transforms</span><span class="p">(</span><span
+            class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param split:</span>
 <span class="sd">        :type split:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">Resize</span><span class="p">(</span><span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">),</span> <span class="n">ToTensor</span><span class="p">()]</span>
+        <span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">Resize</span><span
+            class="p">(</span><span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">image_size_T</span><span
+            class="p">),</span> <span class="n">ToTensor</span><span class="p">()]</span>
 
         <span class="c1"># if split == SplitEnum.training:</span>
         <span class="c1">#  transforms.append(RandomHorizontalFlip(0.5))</span>
 
-        <span class="k">return</span> <span class="n">Compose</span><span class="p">(</span><span class="n">transforms</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Compose</span><span class="p">(</span><span
+            class="n">transforms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PennFudanDataset.get_tuple_transforms"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_tuple_transforms">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_tuple_transforms</span><span class="p">(</span><span class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset.get_tuple_transforms"><a class="viewcode-back"
+                                                                          href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_tuple_transforms">[docs]</a>    <span
+        class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_tuple_transforms</span><span class="p">(</span><span
+            class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param split:</span>
@@ -152,16 +207,27 @@
             <span class="n">TupleToTensor</span><span class="p">()</span>
         <span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">split</span> <span class="o">==</span> <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-            <span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TupleRandomHorizontalFlip</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">split</span> <span class="o">==</span> <span
+            class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span
+            class="p">(</span><span class="n">TupleRandomHorizontalFlip</span><span class="p">(</span><span class="mf">0.5</span><span
+            class="p">))</span>
 
-        <span class="k">return</span> <span class="n">TupleCompose</span><span class="p">(</span><span class="n">transforms</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">TupleCompose</span><span class="p">(</span><span class="n">transforms</span><span
+            class="p">)</span></div>
 
-<div class="viewcode-block" id="PennFudanDataset.__init__"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="PennFudanDataset.__init__"><a class="viewcode-back"
+                                                              href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.__init__">[docs]</a>    <span
+        class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
-        <span class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span> <span class="o">=</span> <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
-        <span class="n">return_variant</span><span class="p">:</span> <span class="n">PennFudanReturnVariantEnum</span> <span class="o">=</span> <span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span
+            class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+        <span class="n">split</span><span class="p">:</span> <span class="n">SplitEnum</span> <span
+            class="o">=</span> <span class="n">SplitEnum</span><span class="o">.</span><span
+            class="n">training</span><span class="p">,</span>
+        <span class="n">return_variant</span><span class="p">:</span> <span class="n">PennFudanReturnVariantEnum</span> <span
+            class="o">=</span> <span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">binary</span><span
+            class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -169,62 +235,114 @@
 <span class="sd">        :type root:</span>
 <span class="sd">        :param split:</span>
 <span class="sd">        :type split:&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
-            <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_root_data_path</span> <span class="o">=</span> <span class="n">root</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span class="o">=</span> <span class="n">return_variant</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+            class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span
+            class="n">root</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span
+            class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_data_path</span> <span
+            class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span
+            class="o">=</span> <span class="n">return_variant</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span class="o">!=</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transforms</span><span class="p">(</span><span class="n">split</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_return_variant</span> <span class="o">!=</span> <span class="n">PennFudanDataset</span><span
+            class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span
+            class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transforms</span><span
+            class="p">(</span><span class="n">split</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tuple_transforms</span><span class="p">(</span><span class="n">split</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span
+            class="o">=</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">get_tuple_transforms</span><span class="p">(</span><span class="n">split</span><span
+            class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span
+            class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">binary</span><span
+            class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">get_binary</span>
         <span class="k">elif</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span>
-            <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">instanced</span>
+            <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span
+            class="o">.</span><span class="n">instanced</span>
         <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_instanced</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">get_instanced</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_return_variant</span> <span class="o">==</span> <span class="n">PennFudanDataset</span><span
+            class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span
+            class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span> <span class="o">=</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">get_all</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;PNGImages&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;PedMasks&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span
+            class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;PNGImages&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span
+            class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;PedMasks&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span> <span class="o">=</span> <span
+            class="nb">list</span><span class="p">(</span>
+            <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">_img_path</span><span class="o">.</span><span
+            class="n">iterdir</span><span class="p">())</span>
         <span class="p">)</span>  <span class="c1"># load all image files, sorting them to</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">masks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">masks</span> <span class="o">=</span> <span
+            class="nb">list</span><span class="p">(</span>
+            <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">_ped_path</span><span class="o">.</span><span
+            class="n">iterdir</span><span class="p">())</span>
         <span class="p">)</span>  <span class="c1"># ensure that they are aligned</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_return_variant</span>
-            <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">instanced</span>
+            <span class="o">==</span> <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span
+            class="o">.</span><span class="n">instanced</span>
         <span class="p">):</span>
             <span class="n">max_num_instance</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">masks</span><span class="p">:</span>
-                <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span class="o">/</span> <span class="n">m</span><span class="p">))</span>
-                <span class="n">num_unique</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">max_num_instance</span> <span class="o">&lt;</span> <span class="n">num_unique</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span
+            class="bp">self</span><span class="o">.</span><span class="n">masks</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span
+            class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span
+            class="o">.</span><span class="n">_ped_path</span> <span class="o">/</span> <span class="n">m</span><span
+            class="p">))</span>
+                <span class="n">num_unique</span> <span class="o">=</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span
+            class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span
+            class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">max_num_instance</span> <span class="o">&lt;</span> <span
+            class="n">num_unique</span><span class="p">:</span>
                     <span class="n">max_num_instance</span> <span class="o">=</span> <span class="n">num_unique</span>
-            <span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">response_channels_instanced</span> <span class="o">=</span> <span class="n">max_num_instance</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">zero_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">response_shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">PennFudanDataset</span><span class="o">.</span><span
+            class="n">response_channels_instanced</span> <span class="o">=</span> <span
+            class="n">max_num_instance</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zero_mask</span> <span
+            class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span
+            class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">response_shape</span><span
+            class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="p">)</span>  <span class="c1"># reversed order numpy array of torch tensor output</span></div>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span
+            class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span
+            class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param idx:</span>
 <span class="sd">        :type idx:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span
+            class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PennFudanDataset.get_binary"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_binary">[docs]</a>    <span class="k">def</span> <span class="nf">get_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset.get_binary"><a class="viewcode-back"
+                                                                href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_binary">[docs]</a>    <span
+        class="k">def</span> <span class="nf">get_binary</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a single binary channel target for all instances in image</span>
 
@@ -232,20 +350,45 @@
 <span class="sd">        :type idx:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">))</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">masks</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span
+            class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">_img_path</span> <span class="o">/</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="n">idx</span><span
+            class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span
+            class="s2">&quot;RGB&quot;</span><span class="p">))</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span
+            class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">_ped_path</span> <span class="o">/</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">masks</span><span class="p">[</span><span class="n">idx</span><span
+            class="p">]))</span>
 
-        <span class="n">mask</span><span class="p">[</span><span class="n">mask</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">mask</span><span class="p">[</span><span class="n">mask</span> <span class="o">!=</span> <span
+            class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
-        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2_resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2_resize</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="n">InterpolationEnum</span><span class="o">.</span><span class="n">nearest</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2_resize</span><span
+            class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2_resize</span><span
+            class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="n">InterpolationEnum</span><span
+            class="o">.</span><span class="n">nearest</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">(</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)),</span>
-            <span class="n">to_tensor</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">(</span><span
+            class="n">to_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span
+            class="n">uint8</span><span class="p">)),</span>
+            <span class="n">to_tensor</span><span class="p">(</span><span class="n">mask</span><span
+            class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span
+            class="mi">0</span><span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="PennFudanDataset.get_instanced"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_instanced">[docs]</a>    <span class="k">def</span> <span class="nf">get_instanced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset.get_instanced"><a class="viewcode-back"
+                                                                   href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_instanced">[docs]</a>    <span
+        class="k">def</span> <span class="nf">get_instanced</span><span class="p">(</span><span
+        class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a separate channel target for each instance in image</span>
 
@@ -253,26 +396,60 @@
 <span class="sd">        :type idx:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">))</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">masks</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span
+            class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">_img_path</span> <span class="o">/</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="n">idx</span><span
+            class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span
+            class="s2">&quot;RGB&quot;</span><span class="p">))</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span
+            class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
+            class="n">_ped_path</span> <span class="o">/</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">masks</span><span class="p">[</span><span class="n">idx</span><span
+            class="p">]))</span>
 
-        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2_resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2_resize</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="n">InterpolationEnum</span><span class="o">.</span><span class="n">nearest</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2_resize</span><span
+            class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2_resize</span><span
+            class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">image_size_T</span><span class="p">,</span> <span class="n">InterpolationEnum</span><span
+            class="o">.</span><span class="n">nearest</span><span class="p">)</span>
 
-        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>  <span class="c1"># instances are encoded as different colors</span>
-        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">obj_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># first id is the background, so remove it</span>
+        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">numpy</span><span
+            class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span
+            class="p">)</span>  <span class="c1"># instances are encoded as different colors</span>
+        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">obj_ids</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># first id is the background, so remove it</span>
 
         <span class="c1"># split the color-encoded mask into a set of binary masks</span>
-        <span class="n">masks</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">==</span> <span class="n">obj_ids</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
-        <span class="n">zero_mask_clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero_mask</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">zero_mask_clone</span><span class="p">[:</span> <span class="n">masks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">masks</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">mask</span> <span
+            class="o">==</span> <span class="n">obj_ids</span><span class="p">[:,</span> <span
+            class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">zero_mask_clone</span> <span class="o">=</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">zero_mask</span><span class="o">.</span><span class="n">copy</span><span
+            class="p">()</span>
+        <span class="n">zero_mask_clone</span><span class="p">[:</span> <span class="n">masks</span><span
+            class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span
+            class="p">]]</span> <span class="o">=</span> <span class="n">masks</span>
 
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">(</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">zero_mask_clone</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+            <span class="n">uint_hwc_to_chw_float_tensor</span><span class="p">(</span><span
+            class="n">to_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span
+            class="n">uint8</span><span class="p">)),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span
+            class="n">zero_mask_clone</span><span class="p">,</span> <span class="n">dtype</span><span
+            class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span
+            class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="PennFudanDataset.get_all"><a class="viewcode-back" href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_all">[docs]</a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="PennFudanDataset.get_all"><a class="viewcode-back"
+                                                             href="../../../../generated/neodroidvision.data.mixed.penn_fudan.PennFudanDataset.html#neodroidvision.data.mixed.penn_fudan.PennFudanDataset.get_all">[docs]</a>    <span
+        class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all info including bounding boxes for each instance</span>
 
@@ -280,262 +457,417 @@
 <span class="sd">        :type idx:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype:&quot;&quot;&quot;</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">masks</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">as_tensor</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span
+            class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span
+            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ped_path</span> <span
+            class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">masks</span><span
+            class="p">[</span><span class="n">idx</span><span class="p">]))</span>
         <span class="p">)</span>
         <span class="c1"># note that we haven&#39;t converted the mask to RGB,</span>
         <span class="c1"># because each color corresponds to a different instance</span>
         <span class="c1"># with 0 being background</span>
 
-        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>  <span class="c1"># instances are encoded as different colors</span>
-        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">obj_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># first id is the background, so remove it</span>
+        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span
+            class="p">)</span>  <span class="c1"># instances are encoded as different colors</span>
+        <span class="n">obj_ids</span> <span class="o">=</span> <span class="n">obj_ids</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># first id is the background, so remove it</span>
 
         <span class="c1"># split the color-encoded mask into a set of binary masks</span>
-        <span class="n">masks</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">==</span> <span class="n">obj_ids</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">mask</span> <span
+            class="o">==</span> <span class="n">obj_ids</span><span class="p">[:,</span> <span
+            class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
 
         <span class="c1"># get bounding box coordinates for each mask</span>
-        <span class="n">num_objs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">)</span>
+        <span class="n">num_objs</span> <span class="o">=</span> <span class="nb">len</span><span
+            class="p">(</span><span class="n">obj_ids</span><span class="p">)</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_objs</span><span class="p">):</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">masks</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="n">xmin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">xmax</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">ymin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">ymax</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span
+            class="nb">range</span><span class="p">(</span><span class="n">num_objs</span><span class="p">):</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">masks</span><span
+            class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">xmin</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pos</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">xmax</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pos</span><span
+            class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ymin</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">pos</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ymax</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">pos</span><span
+            class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span
+            class="p">([</span><span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span><span
+            class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span><span
+            class="p">])</span>
 
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">num_objs</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>  <span class="c1"># there is only one class</span>
-        <span class="n">masks</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">as_tensor</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span
+            class="n">float32</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">ones</span><span class="p">((</span><span class="n">num_objs</span><span
+            class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span
+            class="o">.</span><span class="n">int64</span><span class="p">)</span>  <span class="c1"># there is only one class</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span
+            class="n">as_tensor</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span
+            class="n">uint8</span><span class="p">)</span>
 
         <span class="c1"># TODO: IMPLEMENT RESIZING OF PICTURES</span>
 
-        <span class="n">image_id</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">idx</span><span class="p">])</span>
-        <span class="n">area</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="n">is_crowd</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">num_objs</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">idx</span><span
+            class="p">])</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxes</span><span
+            class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span
+            class="n">boxes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span
+            class="o">*</span> <span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span
+            class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxes</span><span
+            class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">is_crowd</span> <span class="o">=</span> <span class="n">torch</span><span
+            class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">num_objs</span><span class="p">,),</span> <span
+            class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span
+            class="n">int64</span>
         <span class="p">)</span>  <span class="c1"># suppose all instances are not crowd</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span><span class="p">(</span>
-            <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">),</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">_transforms</span><span class="p">(</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span
+            class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span
+            class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span
+            class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span
+            class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span
+            class="p">),</span>
             <span class="nb">dict</span><span class="p">(</span>
                 <span class="n">boxes</span><span class="o">=</span><span class="n">boxes</span><span class="p">,</span>
-                <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span
+            class="p">,</span>
                 <span class="n">masks</span><span class="o">=</span><span class="n">masks</span><span class="p">,</span>
-                <span class="n">image_id</span><span class="o">=</span><span class="n">image_id</span><span class="p">,</span>
+                <span class="n">image_id</span><span class="o">=</span><span class="n">image_id</span><span
+            class="p">,</span>
                 <span class="n">area</span><span class="o">=</span><span class="n">area</span><span class="p">,</span>
-                <span class="n">iscrowd</span><span class="o">=</span><span class="n">is_crowd</span><span class="p">,</span>
+                <span class="n">iscrowd</span><span class="o">=</span><span class="n">is_crowd</span><span
+            class="p">,</span>
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span
+            class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="p">)</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span
+                        class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">main_binary</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">main_binary</span><span class="p">(</span><span class="n">p</span><span
+                        class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span
+                        class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span
+                        class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span
+                        class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param p:</span>
 <span class="sd">        :type p:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span
+                        class="p">(</span><span class="n">p</span><span class="p">,</span> <span
+                        class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span
+                        class="p">)</span>
 
-        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">))</span>
+        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span
+                        class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span
+                        class="s2">&quot;cpu&quot;</span><span class="p">))</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span
+                        class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span
+                        class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span
+                        class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span
+                        class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span
+                        class="n">img</span><span class="p">))</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span
+                        class="n">mask</span><span class="o">.</span><span class="n">squeeze</span><span
+                        class="p">(</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">main_instanced</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">main_instanced</span><span class="p">(</span><span
+                        class="n">p</span><span class="o">=</span><span class="n">Path</span><span
+                        class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span
+                        class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span
+                        class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param p:</span>
 <span class="sd">        :type p:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span class="p">(</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span
+                        class="p">(</span>
             <span class="n">p</span><span class="p">,</span>
-            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
-            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">instanced</span><span class="p">,</span>
+            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span
+                        class="p">,</span>
+            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span
+                        class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span
+                        class="n">instanced</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">))</span>
+        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span
+                        class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span
+                        class="s2">&quot;cpu&quot;</span><span class="p">))</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span
+                        class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span
+                        class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span
+                        class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span
+                        class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span
+                        class="n">img</span><span class="p">))</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask</span><span class="p">:</span>
-            <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask</span><span
+                        class="p">:</span>
+            <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span
+                        class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">squeeze</span><span
+                        class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">main_instanced_mixed</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">main_instanced_mixed</span><span class="p">(</span><span
+                        class="n">p</span><span class="o">=</span><span class="n">Path</span><span
+                        class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span
+                        class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span
+                        class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param p:</span>
 <span class="sd">        :type p:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span class="p">(</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span
+                        class="p">(</span>
             <span class="n">p</span><span class="p">,</span>
-            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
-            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">instanced</span><span class="p">,</span>
+            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span
+                        class="p">,</span>
+            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span
+                        class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span
+                        class="n">instanced</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">))</span>
+        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span
+                        class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span
+                        class="s2">&quot;cpu&quot;</span><span class="p">))</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span
+                        class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span
+                        class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span
+                        class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span
+                        class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span
+                        class="n">img</span><span class="p">))</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mix_channels</span><span class="p">(</span><span class="n">chw_to_hwc</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">numpy</span><span class="p">())))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span
+                        class="n">mix_channels</span><span class="p">(</span><span class="n">chw_to_hwc</span><span
+                        class="p">(</span><span class="n">mask</span><span class="o">.</span><span
+                        class="n">numpy</span><span class="p">())))</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">main_instanced_single_channel</span><span class="p">(</span>
-        <span class="n">p</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">,</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span
+                        class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span
+                        class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span
+                        class="s2">&quot;PennFudanPed&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param p:</span>
 <span class="sd">        :type p:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span class="p">(</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span
+                        class="p">(</span>
             <span class="n">p</span><span class="p">,</span>
-            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
-            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">instanced</span><span class="p">,</span>
+            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span
+                        class="p">,</span>
+            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span
+                        class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span
+                        class="n">instanced</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">))</span>
+        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span
+                        class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span
+                        class="s2">&quot;cpu&quot;</span><span class="p">))</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span
+                        class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span
+                        class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span
+                        class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">float_chw_to_hwc_uint_tensor</span><span
+                        class="p">(</span><span class="n">img</span><span class="p">)</span><span
+                        class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="c1"># pyplot.imshow(i)</span>
         <span class="c1"># pyplot.show()</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">mask</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">draw_masks</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span
+                        class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span
+                        class="p">(</span><span class="n">mask</span><span class="p">),</span> <span
+                        class="n">mask</span><span class="o">.</span><span class="n">numpy</span><span
+                        class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">,</span> <span class="n">b</span><span
+                        class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span
+                        class="n">draw_masks</span><span class="p">(</span><span class="n">i</span><span
+                        class="p">,</span> <span class="n">b</span><span class="p">))</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">main_all_bb</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">main_all_bb</span><span class="p">(</span><span class="n">p</span><span
+                        class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span
+                        class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span
+                        class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span
+                        class="s2">&quot;PennFudanPed&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param p:</span>
 <span class="sd">        :type p:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span class="p">(</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">PennFudanDataset</span><span
+                        class="p">(</span>
             <span class="n">p</span><span class="p">,</span>
-            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
-            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span class="n">all</span><span class="p">,</span>
+            <span class="n">SplitEnum</span><span class="o">.</span><span class="n">training</span><span
+                        class="p">,</span>
+            <span class="n">return_variant</span><span class="o">=</span><span class="n">PennFudanDataset</span><span
+                        class="o">.</span><span class="n">PennFudanReturnVariantEnum</span><span class="o">.</span><span
+                        class="n">all</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">))</span>
+        <span class="n">global_torch_device</span><span class="p">(</span><span class="n">override</span><span
+                        class="o">=</span><span class="n">global_torch_device</span><span class="p">(</span><span
+                        class="s2">&quot;cpu&quot;</span><span class="p">))</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-        <span class="n">img</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">img</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span
+                        class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span
+                        class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span
+                        class="n">shape</span><span class="p">)</span>
 
-        <span class="n">img</span> <span class="o">=</span> <span class="n">float_chw_to_hwc_uint_tensor</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">float_chw_to_hwc_uint_tensor</span><span
+                        class="p">(</span><span class="n">img</span><span class="p">)</span><span
+                        class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span
+                        class="n">numpy</span><span class="p">()</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
-            <span class="n">draw_boxes</span><span class="o">.</span><span class="n">draw_bounding_boxes</span><span class="p">(</span>
-                <span class="n">img</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;RGB&quot;</span>
+            <span class="n">draw_boxes</span><span class="o">.</span><span class="n">draw_bounding_boxes</span><span
+                        class="p">(</span>
+                <span class="n">img</span><span class="p">,</span> <span class="n">info</span><span
+                        class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">],</span> <span
+                        class="n">labels</span><span class="o">=</span><span class="n">info</span><span
+                        class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">],</span> <span
+                        class="n">mode</span><span class="o">=</span><span class="s2">&quot;RGB&quot;</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="c1"># p =         Path.home() / &quot;Data3&quot; / &quot;PennFudanPed&quot;</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span class="s2">&quot;PennFudanPed&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span
+                        class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Data&quot;</span> <span
+                        class="o">/</span> <span class="s2">&quot;Datasets&quot;</span> <span class="o">/</span> <span
+                        class="s2">&quot;PennFudanPed&quot;</span>
     <span class="c1"># main_binary(p)</span>
     <span class="c1"># main_instanced(p)</span>
     <span class="c1"># main_instanced_mixed(p)</span>
     <span class="n">main_instanced_single_channel</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="c1"># main_all_bb(p    )</span>
-</pre></div>
+</pre>
+                </div>
 
-          </div>
-          
+            </div>
+
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    </div>
+    <div aria-label="main navigation" class="sphinxsidebar" role="navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
-              <img class="logo" src="../../../../_static/header.png" alt="Logo"/>
+                <img alt="Logo" class="logo" src="../../../../_static/header.png"/>
             </a></p>
-<h1 class="logo"><a href="../../../../index.html">neodroidvision</a></h1>
+            <h1 class="logo"><a href="../../../../index.html">neodroidvision</a></h1>
 
 
+            <h3>Navigation</h3>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../generated/neodroidvision.html">neodroidvision</a>
+                </li>
+            </ul>
+            <p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting
+                    Started</a></li>
+            </ul>
 
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../generated/neodroidvision.html">neodroidvision</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../index.html">Module code</a><ul>
-  <li><a href="../../../neodroidvision.html">neodroidvision</a><ul>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
+            <div class="relations">
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="../../../../index.html">Documentation overview</a>
+                        <ul>
+                            <li><a href="../../../index.html">Module code</a>
+                                <ul>
+                                    <li><a href="../../../neodroidvision.html">neodroidvision</a>
+                                        <ul>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="searchbox" role="search" style="display: none">
+                <h3 id="searchlabel">Quick search</h3>
+                <div class="searchformwrapper">
+                    <form action="../../../../search.html" class="search" method="get">
+                        <input aria-labelledby="searchlabel" autocapitalize="off" autocomplete="off" autocorrect="off" name="q"
+                               spellcheck="false" type="text"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
         </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
+    <div class="clearer"></div>
+</div>
+<div class="footer">
+    &copy;.
 
-    
+    |
+    Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+    &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
 
-    
-  </body>
+</div>
+
+
+</body>
 </html>

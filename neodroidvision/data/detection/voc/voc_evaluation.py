@@ -161,6 +161,15 @@ predicted bounding boxes obtained from a dataset which has :math:`N`
 images.
 The code is based on the evaluation code used in PASCAL VOC Challenge.
 
+  :param pred_bboxes:
+  :param pred_labels:
+  :param pred_scores:
+  :param gt_bboxes:
+  :param gt_labels:
+  :param gt_difficults:
+  :param iou_thresh:
+  :return:
+
 Args:
 pred_bboxes (iterable of numpy.ndarray): An iterable of :math:`N`
 sets of bounding boxes.
@@ -235,7 +244,6 @@ set to :obj:`None`.
     ) in six.moves.zip(
         pred_bboxes, pred_labels, pred_scores, gt_bboxes, gt_labels, gt_difficults
     ):
-
         if gt_difficult is None:
             gt_difficult = numpy.zeros(gt_bbox.shape[0], dtype=bool)
 

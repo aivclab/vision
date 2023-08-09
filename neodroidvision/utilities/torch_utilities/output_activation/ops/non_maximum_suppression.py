@@ -20,10 +20,8 @@ __doc__ = """This file is merily a wrapper to provide a custom implementation of
 if int(torchvision.__version__.split(".")[1]) >= int("0.3.0".split(".")[1]):
     nms_support = torchvision.ops.nms
 else:
-
     print(f"torchvision version: {torchvision.__version__}" "\n nms not supported")
     try:
-
         import ssd_torch_extension
 
         nms_support = ssd_torch_extension.nms  # non_maximum_suppression

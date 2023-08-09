@@ -19,15 +19,14 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import Writer
-from torch.nn import Module
-from torch.utils.data import DataLoader
-
 from neodroidvision.data.detection.coco import (
     CocoEvaluator,
     get_coco_api_from_dataset,
     get_iou_types,
 )
 from neodroidvision.utilities import reduce_dict
+from torch.nn import Module
+from torch.utils.data import DataLoader
 
 __all__ = ["maskrcnn_train_single_epoch", "maskrcnn_evaluate"]
 
@@ -50,7 +49,6 @@ def maskrcnn_train_single_epoch(
     :return:"""
     model.to(device)
     with TorchTrainSession(model):
-
         for images, targets in progress_bar(data_loader, description="Batch #"):
             images = [img.to(device) for img in images]
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
@@ -111,7 +109,6 @@ def maskrcnn_evaluate(
 
     with torch.no_grad():
         with TorchEvalSession(model):
-
             for image, targets in progress_bar(data_loader):
                 image = [img.to(device) for img in image]
             targets = [{k: v.to(device) for k, v in t.items()} for t in targets]

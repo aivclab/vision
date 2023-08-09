@@ -12,8 +12,6 @@ import re
 from typing import List, Tuple
 
 import torch
-from torch import nn
-
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
@@ -29,6 +27,7 @@ from neodroidvision.utilities.torch_utilities.output_activation.custom_activatio
 from neodroidvision.utilities.torch_utilities.persistence.custom_model_caching import (
     load_state_dict_from_url,
 )
+from torch import nn
 
 __all__ = ["EfficientNet"]
 
@@ -104,7 +103,6 @@ class EfficientNet(SSDBackbone):
         # Build blocks
         self._blocks = nn.ModuleList([])
         for block_args in self._blocks_args:
-
             # Update block input and output filters based on depth multiplier.
             block_args = block_args._replace(
                 input_filters=round_filters(

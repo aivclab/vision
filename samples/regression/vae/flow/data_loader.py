@@ -10,11 +10,10 @@ import h5py
 import torch
 import torch.utils
 import torch.utils.data
-from warg import Triple
-
 from neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data import (
     download_binary_mnist,
 )
+from warg import Triple
 
 
 def load_binary_mnist(cfg: Any, **kwcfg: MutableMapping) -> Triple:

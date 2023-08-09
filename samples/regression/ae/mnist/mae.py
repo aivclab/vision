@@ -25,19 +25,18 @@ from draugr.torch_utilities import (
 from draugr.visualisation import plot_side_by_side, progress_bar
 from draugr.writers.mixins.image_writer_mixin import ImageWriterMixin
 from matplotlib import pyplot
-from torch import optim
-from torch.nn.modules.module import Module
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision.datasets import MNIST
-from warg import Number, ensure_existence
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
 from neodroidvision.utilities.torch_utilities.patches.masking import (
     StochasticMaskGenerator,
 )
+from torch import optim
+from torch.nn.modules.module import Module
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torchvision.datasets import MNIST
+from warg import Number, ensure_existence
 
 criterion = torch.nn.MSELoss()
 
@@ -84,7 +83,6 @@ def training(
             for update_i in sess:
                 for phase in [SplitEnum.training, SplitEnum.validation]:
                     if phase == SplitEnum.training:
-
                         for param_group in optimiser.param_groups:
                             writer.scalar("lr", param_group["lr"], update_i)
 
@@ -96,7 +94,6 @@ def training(
 
                     optimiser.zero_grad()
                     with torch.set_grad_enabled(phase == SplitEnum.training):
-
                         model_input = masker(rgb_imgs)
 
                         recon_pred, *_ = model(torch.clamp(model_input, 0.0, 1.0))

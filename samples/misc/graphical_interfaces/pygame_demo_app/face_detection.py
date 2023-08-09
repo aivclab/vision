@@ -72,13 +72,12 @@ def draw_from_points(cv_image, points):
     Returns a cv_image."""
     cv_image = numpy.ascontiguousarray(cv_image, dtype=numpy.uint8)
     for f in points:
-        for (x, y, w, h) in f:
+        for x, y, w, h in f:
             cv2.rectangle(cv_image, (x, y), (x + w, y + h), 255)
     return cv_image
 
 
 if __name__ == "__main__":
-
     # Set game screen
     screen = pygame.display.set_mode(SCREEN)
 
@@ -90,7 +89,6 @@ if __name__ == "__main__":
     cam.start()
 
     while 1:  # Ze loop
-
         time.sleep(1 / 120)  # 60 frames per second
 
         image = cam.get_image()  # Get current webcam image

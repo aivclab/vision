@@ -24,12 +24,12 @@ from draugr.opencv_utilities import (
     SubtractMeans,
 )
 from draugr.torch_utilities import CV2ToTensor
-from warg import NOD
-
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_priors import (
     build_priors,
     ssd_assign_priors,
 )
+from warg import NOD
+
 from .conversion import (
     center_to_corner_form,
     convert_boxes_to_locations,

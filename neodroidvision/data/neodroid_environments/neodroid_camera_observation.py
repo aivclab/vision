@@ -75,7 +75,6 @@ class NeodroidCameraObservationDataset(Dataset):
 
 
 if __name__ == "__main__":
-
     import torch
     from matplotlib import pyplot
 

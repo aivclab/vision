@@ -30,10 +30,9 @@ from neodroidvision import (
 # ones.
 
 extensions = [
-    "sphinxcontrib.programoutput",
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
@@ -49,6 +48,11 @@ autosummary_generate = True
 # autosummary_imported_members = False
 autosummary_ignore_module_all = False
 autosummary_generate_overwrite = True
+autoclass_content = "both"
+html_show_sourcelink = False
+autodoc_inherit_docstrings = True
+set_type_checking_flag = True
+autodoc_default_flags = ["members"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["../templates"]
@@ -76,7 +80,7 @@ copyright_text = f"{PROJECT_YEAR}, {PROJECT_AUTHOR}"
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 version = PROJECT_VERSION
-release = version  # 'master'
+release = version
 
 rst_prolog = f"""
 .. |project| replace:: {project}
@@ -108,7 +112,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "alabaster"
+html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -119,12 +123,17 @@ html_theme = "alabaster"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named 'default.css' will overwrite the builtin 'default.css'.
-html_static_path = ["../../.github/images"]
-html_logo = "../../.github/images/header.png"
+
 html_theme_options = {
     # "logo_only": True,
     # "display_version": False,
 }
+docs_dir = Path(__file__).parent.parent
+image_dir = docs_dir.parent / ".github" / "images"
+html_static_path = [str(image_dir), str(docs_dir / "style")]
+html_logo = str(image_dir / "header.png")
+html_css_files = ["custom.css"]
+
 
 html_baseurl = f"{PROJECT_ORGANISATION}.github.io/{PROJECT_NAME}"
 

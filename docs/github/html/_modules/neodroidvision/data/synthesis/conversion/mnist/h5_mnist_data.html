@@ -1,51 +1,57 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css" />
-    <script data-url_root="../../../../../../" id="documentation_options" src="../../../../../../_static/documentation_options.js"></script>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data &#8212; neodroidvision 0.2.9
+        documentation</title>
+    <link href="../../../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../../_static/alabaster.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../../../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+    <script data-url_root="../../../../../../" id="documentation_options"
+            src="../../../../../../_static/documentation_options.js"></script>
     <script src="../../../../../../_static/jquery.js"></script>
     <script src="../../../../../../_static/underscore.js"></script>
     <script src="../../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../../../_static/doctools.js"></script>
-    <link rel="canonical" href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/synthesis/conversion/mnist/h5_mnist_data.html" />
-    <link rel="index" title="Index" href="../../../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../../../search.html" />
-   
-  <link rel="stylesheet" href="../../../../../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href="Neodroid.github.io/neodroidvision/_modules/neodroidvision/data/synthesis/conversion/mnist/h5_mnist_data.html"
+          rel="canonical"/>
+    <link href="../../../../../../genindex.html" rel="index" title="Index"/>
+    <link href="../../../../../../search.html" rel="search" title="Search"/>
 
-  </head><body>
-  
+    <link href="../../../../../../_static/custom.css" rel="stylesheet" type="text/css"/>
 
-    <div class="document">
-      <div class="documentwrapper">
+
+    <meta content="width=device-width, initial-scale=0.9, maximum-scale=0.9" name="viewport"/>
+
+</head>
+<body>
+
+
+<div class="document">
+    <div class="documentwrapper">
         <div class="bodywrapper">
-          
 
-          <div class="body" role="main">
-            
-  <h1>Source code for neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data</h1><div class="highlight"><pre>
+
+            <div class="body" role="main">
+
+                <h1>Source code for neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data</h1>
+                <div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Christian Heider Nielsen&quot;</span>
-<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">r</span><span
+                        class="s2">&quot;&quot;&quot;</span>
 
 <span class="s2">           Created on 22/03/2020</span>
 <span class="s2">           &quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+<span class="kn">from</span> <span class="nn">draugr.visualisation</span> <span class="kn">import</span> <span
+                        class="n">progress_bar</span>
 <span class="kn">from</span> <span class="nn">warg</span> <span class="kn">import</span> <span class="n">Triple</span>
 
 <span class="sd">&quot;&quot;&quot;Get the binarized MNIST dataset and convert to hdf5.</span>
@@ -63,7 +69,11 @@
 <span class="c1"># __all__ = [&quot;download_binary_mnist&quot;, &quot;parse_binary_mnist&quot;]</span>
 
 
-<div class="viewcode-block" id="parse_binary_mnist"><a class="viewcode-back" href="../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.parse_binary_mnist.html#neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.parse_binary_mnist">[docs]</a><span class="k">def</span> <span class="nf">parse_binary_mnist</span><span class="p">(</span><span class="n">data_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Triple</span><span class="p">:</span>
+<div class="viewcode-block" id="parse_binary_mnist"><a class="viewcode-back"
+                                                       href="../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.parse_binary_mnist.html#neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.parse_binary_mnist">[docs]</a><span
+        class="k">def</span> <span class="nf">parse_binary_mnist</span><span class="p">(</span><span
+        class="n">data_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span
+        class="o">-&gt;</span> <span class="n">Triple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Args:</span>
@@ -73,7 +83,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">lines_to_np_array</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lines_to_np_array</span><span class="p">(</span><span
+            class="n">lines</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Args:</span>
@@ -82,23 +93,53 @@
 <span class="sd">        Returns:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span
+            class="n">array</span><span class="p">([[</span><span class="nb">int</span><span class="p">(</span><span
+            class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span
+            class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span
+            class="p">()]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span
+            class="n">lines</span><span class="p">])</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;binarized_mnist_train.amat&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="n">train_data</span> <span class="o">=</span> <span class="n">lines_to_np_array</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;binarized_mnist_valid.amat&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="n">validation_data</span> <span class="o">=</span> <span class="n">lines_to_np_array</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;binarized_mnist_test.amat&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="n">test_data</span> <span class="o">=</span> <span class="n">lines_to_np_array</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">validation_data</span><span class="p">,</span> <span class="n">test_data</span></div>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span
+            class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;binarized_mnist_train.amat&quot;</span><span
+            class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span
+            class="n">readlines</span><span class="p">()</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">lines_to_np_array</span><span
+            class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span
+            class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span
+            class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span
+            class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;binarized_mnist_valid.amat&quot;</span><span
+            class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span
+            class="n">readlines</span><span class="p">()</span>
+    <span class="n">validation_data</span> <span class="o">=</span> <span class="n">lines_to_np_array</span><span
+            class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span
+            class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span
+            class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span
+            class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="s2">&quot;binarized_mnist_test.amat&quot;</span><span
+            class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span
+            class="n">readlines</span><span class="p">()</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">lines_to_np_array</span><span
+            class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span
+            class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span
+            class="p">)</span>
+    <span class="k">return</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">validation_data</span><span
+            class="p">,</span> <span class="n">test_data</span></div>
 
 
-<div class="viewcode-block" id="download_binary_mnist"><a class="viewcode-back" href="../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.download_binary_mnist.html#neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.download_binary_mnist">[docs]</a><span class="k">def</span> <span class="nf">download_binary_mnist</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;binary_mnist.h5&quot;</span><span class="p">,</span>
-    <span class="n">data_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="p">(</span><span class="n">PROJECT_APP_PATH</span><span class="o">.</span><span class="n">user_data</span> <span class="o">/</span> <span class="s2">&quot;vanilla_vae&quot;</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span>
+<div class="viewcode-block" id="download_binary_mnist"><a class="viewcode-back"
+                                                          href="../../../../../../generated/neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.download_binary_mnist.html#neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.download_binary_mnist">[docs]</a><span
+        class="k">def</span> <span class="nf">download_binary_mnist</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span
+            class="s2">&quot;binary_mnist.h5&quot;</span><span class="p">,</span>
+    <span class="n">data_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span
+            class="p">(</span><span class="n">PROJECT_APP_PATH</span><span class="o">.</span><span
+            class="n">user_data</span> <span class="o">/</span> <span class="s2">&quot;vanilla_vae&quot;</span> <span
+            class="o">/</span> <span class="s2">&quot;data&quot;</span><span class="p">),</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -106,104 +147,133 @@
 <span class="sd">      file_path:</span>
 <span class="sd">      data_dir:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">data_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">data_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">subdatasets</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">subdataset</span> <span class="ow">in</span> <span class="n">progress_bar</span><span class="p">(</span><span class="n">subdatasets</span><span class="p">):</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;binarized_mnist_</span><span class="si">{</span><span class="n">subdataset</span><span class="si">}</span><span class="s2">.amat&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data_dir</span><span class="o">.</span><span
+            class="n">exists</span><span class="p">():</span>
+        <span class="n">data_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span
+            class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">subdatasets</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span
+            class="p">,</span> <span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span
+            class="p">]</span>
+    <span class="k">for</span> <span class="n">subdataset</span> <span class="ow">in</span> <span
+            class="n">progress_bar</span><span class="p">(</span><span class="n">subdatasets</span><span
+            class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;binarized_mnist_</span><span
+            class="si">{</span><span class="n">subdataset</span><span class="si">}</span><span
+            class="s2">.amat&quot;</span>
         <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;http://www.cs.toronto.edu/~larocheh/public/datasets/binarized_mnist&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;/binarized_mnist_</span><span class="si">{</span><span class="n">subdataset</span><span class="si">}</span><span class="s2">.amat&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;/binarized_mnist_</span><span class="si">{</span><span
+            class="n">subdataset</span><span class="si">}</span><span class="s2">.amat&quot;</span>
         <span class="p">)</span>
-        <span class="n">local_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">local_filename</span><span class="p">)</span>
+        <span class="n">local_filename</span> <span class="o">=</span> <span class="nb">str</span><span
+            class="p">(</span><span class="n">data_dir</span> <span class="o">/</span> <span
+            class="n">filename</span><span class="p">)</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span
+            class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span
+            class="n">local_filename</span><span class="p">)</span>
 
-    <span class="n">train</span><span class="p">,</span> <span class="n">validation</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">parse_binary_mnist</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="n">train</span><span class="p">,</span> <span class="n">validation</span><span class="p">,</span> <span
+            class="n">test</span> <span class="o">=</span> <span class="n">parse_binary_mnist</span><span
+            class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
 
-    <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="n">train</span><span class="p">,</span> <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="n">validation</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="n">test</span><span class="p">}</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">])</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;valid&quot;</span><span class="p">])</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">])</span>
+    <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span><span
+            class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="n">train</span><span
+            class="p">,</span> <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="n">validation</span><span
+            class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span
+            class="n">test</span><span class="p">}</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span
+            class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span
+            class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span
+            class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">data</span><span
+            class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span
+            class="s2">&quot;train&quot;</span><span class="p">])</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span
+            class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="n">data</span><span
+            class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span
+            class="s2">&quot;valid&quot;</span><span class="p">])</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span
+            class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">data</span><span
+            class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span
+            class="s2">&quot;test&quot;</span><span class="p">])</span>
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved binary MNIST data to: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved binary MNIST data to: </span><span
+            class="si">{</span><span class="n">file_path</span><span class="si">}</span><span
+            class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span
+                        class="p">:</span>
     <span class="n">download_binary_mnist</span><span class="p">()</span>
-</pre></div>
+</pre>
+                </div>
 
-          </div>
-          
+            </div>
+
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    </div>
+    <div aria-label="main navigation" class="sphinxsidebar" role="navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../../../index.html">
-              <img class="logo" src="../../../../../../_static/header.png" alt="Logo"/>
+                <img alt="Logo" class="logo" src="../../../../../../_static/header.png"/>
             </a></p>
-<h1 class="logo"><a href="../../../../../../index.html">neodroidvision</a></h1>
+            <h1 class="logo"><a href="../../../../../../index.html">neodroidvision</a></h1>
 
 
+            <h3>Navigation</h3>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal"
+                                          href="../../../../../../generated/neodroidvision.html">neodroidvision</a></li>
+            </ul>
+            <p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../../../../getting_started.html">Getting
+                    Started</a></li>
+            </ul>
 
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../generated/neodroidvision.html">neodroidvision</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../getting_started.html">Getting Started</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../../../../../index.html">Documentation overview</a><ul>
-  <li><a href="../../../../../index.html">Module code</a><ul>
-  <li><a href="../../../../../neodroidvision.html">neodroidvision</a><ul>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
+            <div class="relations">
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="../../../../../../index.html">Documentation overview</a>
+                        <ul>
+                            <li><a href="../../../../../index.html">Module code</a>
+                                <ul>
+                                    <li><a href="../../../../../neodroidvision.html">neodroidvision</a>
+                                        <ul>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="searchbox" role="search" style="display: none">
+                <h3 id="searchlabel">Quick search</h3>
+                <div class="searchformwrapper">
+                    <form action="../../../../../../search.html" class="search" method="get">
+                        <input aria-labelledby="searchlabel" autocapitalize="off" autocomplete="off" autocorrect="off" name="q"
+                               spellcheck="false" type="text"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
         </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
+    <div class="clearer"></div>
+</div>
+<div class="footer">
+    &copy;.
 
-    
+    |
+    Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+    &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
 
-    
-  </body>
+</div>
+
+
+</body>
 </html>

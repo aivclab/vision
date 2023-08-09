@@ -54,6 +54,6 @@ def unstandardise_image(img):
     Returns:
 
     """
-    img = img - numpy.mean(img)
+    img -= numpy.mean(img)
     img /= numpy.std(img) + 1e-5
     return numpy.uint8(numpy.clip(img * 0.1 + 0.5, 0, 1) * 255)

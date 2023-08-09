@@ -18,16 +18,16 @@ import torch
 from draugr.torch_utilities import ImprovementDetector, global_torch_device
 from draugr.visualisation import progress_bar
 from matplotlib import pyplot
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.disentangled.conditional_vae import (
+    ConditionalVAE,
+)
 from torch.nn.functional import one_hot
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD, ensure_existence
 
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.disentangled.conditional_vae import (
-    ConditionalVAE,
-)
 from objectives import loss_fn
 
 
@@ -46,7 +46,6 @@ def main(config, model, tmsp_path, patience=100):
             tracker_epoch = defaultdict(lambda: defaultdict(dict))
 
             for iteration, (original, label) in progress_bar(enumerate(data_loader)):
-
                 original, label = (
                     original.to(global_torch_device()),
                     label.to(global_torch_device()),
@@ -135,7 +134,6 @@ def main(config, model, tmsp_path, patience=100):
 
 
 if __name__ == "__main__":
-
     CONFIG = NOD()
     CONFIG.seed = 58329583
     CONFIG.epochs = 1000

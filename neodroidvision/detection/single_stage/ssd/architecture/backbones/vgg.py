@@ -10,13 +10,12 @@ __doc__ = r"""
 from enum import Enum
 from typing import List, Union
 
-from torch import Tensor, nn
-from torch.nn.functional import relu
-
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
 from neodroidvision.utilities.torch_utilities import L2Norm
+from torch import Tensor, nn
+from torch.nn.functional import relu
 
 __all__ = ["VGG"]
 

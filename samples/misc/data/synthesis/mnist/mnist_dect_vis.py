@@ -11,9 +11,8 @@ from typing import Tuple
 import numpy
 from PIL import Image
 from matplotlib import pyplot
-from numpy import ndarray
-
 from neodroidvision import PROJECT_APP_PATH
+from numpy import ndarray
 
 
 def read_labels(label_path: pathlib.Path) -> Tuple[ndarray, ndarray]:
@@ -38,7 +37,6 @@ def read_labels(label_path: pathlib.Path) -> Tuple[ndarray, ndarray]:
 
 
 if __name__ == "__main__":
-
     from draugr.opencv_utilities import draw_bounding_boxes
 
     base_path = pathlib.Path(

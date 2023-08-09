@@ -19,7 +19,6 @@ from draugr.torch_utilities import (
     to_tensor_generator,
     uint_hwc_to_chw_float_tensor,
 )
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (

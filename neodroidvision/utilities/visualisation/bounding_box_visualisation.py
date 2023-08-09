@@ -344,7 +344,6 @@ def draw_bounding_box_on_image(
             text_left = left
 
         if top > total_display_str_height:
-
             if label_inside:
                 text_bottom = top + total_display_str_height
             else:

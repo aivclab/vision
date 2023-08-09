@@ -1,186 +1,287 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
 
-    <title>neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image &#8212; neodroidvision 0.2.9 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <title>neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image &#8212;
+        neodroidvision 0.2.9 documentation</title>
+    <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
+    <link href="../_static/alabaster.css" rel="stylesheet" type="text/css"/>
+    <link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <link rel="canonical" href="Neodroid.github.io/neodroidvision/generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image.html" />
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html" />
-    <link rel="prev" title="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href="Neodroid.github.io/neodroidvision/generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image.html"
+          rel="canonical"/>
+    <link href="../genindex.html" rel="index" title="Index"/>
+    <link href="../search.html" rel="search" title="Search"/>
+    <link href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html"
+          rel="next"
+          title="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils"/>
+    <link href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html" rel="prev"
+          title="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities"/>
 
-  </head><body>
-  
+    <link href="../_static/custom.css" rel="stylesheet" type="text/css"/>
 
-    <div class="document">
-      <div class="documentwrapper">
+
+    <meta content="width=device-width, initial-scale=0.9, maximum-scale=0.9" name="viewport"/>
+
+</head>
+<body>
+
+
+<div class="document">
+    <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
-          <div class="body" role="main">
-            
-  <section id="neodroidvision-data-synthesis-conversion-mnist-json-generation-coco-json-utilities-create-coco-image">
-<h1>neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image<a class="headerlink" href="#neodroidvision-data-synthesis-conversion-mnist-json-generation-coco-json-utilities-create-coco-image" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image">
-<span class="sig-prename descclassname"><span class="pre">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.</span></span><span class="sig-name descname"><span class="pre">create_coco_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_license</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neodroidvision/data/synthesis/conversion/mnist/json_generation/coco_json_utilities.html#create_coco_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates the “image” portion of COCO json</p>
-</dd></dl>
-
-</section>
 
 
-          </div>
-          
+            <div class="body" role="main">
+
+                <section
+                        id="neodroidvision-data-synthesis-conversion-mnist-json-generation-coco-json-utilities-create-coco-image">
+                    <h1>
+                        neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image<a
+                            class="headerlink"
+                            href="#neodroidvision-data-synthesis-conversion-mnist-json-generation-coco-json-utilities-create-coco-image"
+                            title="Permalink to this heading">¶</a></h1>
+                    <dl class="py function">
+                        <dt class="sig sig-object py"
+                            id="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image">
+                            <span class="sig-prename descclassname"><span class="pre">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.</span></span><span
+                                class="sig-name descname"><span class="pre">create_coco_image</span></span><span
+                                class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path</span></span></em>,
+                            <em class="sig-param"><span class="n"><span class="pre">image_id</span></span></em>, <em
+                                class="sig-param"><span class="n"><span
+                                class="pre">image_license</span></span></em><span class="sig-paren">)</span><a
+                                class="reference internal"
+                                href="../_modules/neodroidvision/data/synthesis/conversion/mnist/json_generation/coco_json_utilities.html#create_coco_image"><span
+                                class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink"
+                                                                                                     href="#neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image"
+                                                                                                     title="Permalink to this definition">¶</a>
+                        </dt>
+                        <dd><p>Creates the “image” portion of COCO json</p>
+                        </dd>
+                    </dl>
+
+                </section>
+
+
+            </div>
+
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+    </div>
+    <div aria-label="main navigation" class="sphinxsidebar" role="navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/header.png" alt="Logo"/>
+                <img alt="Logo" class="logo" src="../_static/header.png"/>
             </a></p>
-<h1 class="logo"><a href="../index.html">neodroidvision</a></h1>
+            <h1 class="logo"><a href="../index.html">neodroidvision</a></h1>
 
 
+            <h3>Navigation</h3>
+            <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal"
+                                                  href="neodroidvision.html">neodroidvision</a>
+                    <ul class="current">
+                        <li class="toctree-l2"><a class="reference internal"
+                                                  href="neodroidvision.dist_is_editable.html">neodroidvision.dist_is_editable</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.get_version.html">neodroidvision.get_version</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.classification.html">neodroidvision.classification</a>
+                        </li>
+                        <li class="toctree-l2 current"><a class="reference internal" href="neodroidvision.data.html">neodroidvision.data</a>
+                            <ul class="current">
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.classification.html">neodroidvision.data.classification</a>
+                                </li>
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.detection.html">neodroidvision.data.detection</a>
+                                </li>
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.flow.html">neodroidvision.data.flow</a>
+                                </li>
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.mixed.html">neodroidvision.data.mixed</a>
+                                </li>
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.neodroid_environments.html">neodroidvision.data.neodroid_environments</a>
+                                </li>
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.reconstruction.html">neodroidvision.data.reconstruction</a>
+                                </li>
+                                <li class="toctree-l3"><a class="reference internal"
+                                                          href="neodroidvision.data.segmentation.html">neodroidvision.data.segmentation</a>
+                                </li>
+                                <li class="toctree-l3 current"><a class="reference internal"
+                                                                  href="neodroidvision.data.synthesis.html">neodroidvision.data.synthesis</a>
+                                    <ul class="current">
+                                        <li class="toctree-l4 current"><a class="reference internal"
+                                                                          href="neodroidvision.data.synthesis.conversion.html">neodroidvision.data.synthesis.conversion</a>
+                                            <ul class="current">
+                                                <li class="toctree-l5"><a class="reference internal"
+                                                                          href="neodroidvision.data.synthesis.conversion.image_composition.html">neodroidvision.data.synthesis.conversion.image_composition</a>
+                                                </li>
+                                                <li class="toctree-l5 current"><a class="reference internal"
+                                                                                  href="neodroidvision.data.synthesis.conversion.mnist.html">neodroidvision.data.synthesis.conversion.mnist</a>
+                                                    <ul class="current">
+                                                        <li class="toctree-l6"><a class="reference internal"
+                                                                                  href="neodroidvision.data.synthesis.conversion.mnist.convert_mnist_to_png.html">neodroidvision.data.synthesis.conversion.mnist.convert_mnist_to_png</a>
+                                                        </li>
+                                                        <li class="toctree-l6"><a class="reference internal"
+                                                                                  href="neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.html">neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data</a>
+                                                        </li>
+                                                        <li class="toctree-l6 current"><a class="reference internal"
+                                                                                          href="neodroidvision.data.synthesis.conversion.mnist.json_generation.html">neodroidvision.data.synthesis.conversion.mnist.json_generation</a>
+                                                            <ul class="current">
+                                                                <li class="toctree-l7 current"><a
+                                                                        class="reference internal"
+                                                                        href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</a>
+                                                                    <ul class="current">
+                                                                        <li class="toctree-l8 current"><a
+                                                                                class="current reference internal"
+                                                                                href="#">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image</a>
+                                                                        </li>
+                                                                        <li class="toctree-l8"><a
+                                                                                class="reference internal"
+                                                                                href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils</a>
+                                                                        </li>
+                                                                        <li class="toctree-l8"><a
+                                                                                class="reference internal"
+                                                                                href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                                <li class="toctree-l7"><a class="reference internal"
+                                                                                          href="neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities</a>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        <li class="toctree-l6"><a class="reference internal"
+                                                                                  href="neodroidvision.data.synthesis.conversion.mnist.obj_dect_gen.html">neodroidvision.data.synthesis.conversion.mnist.obj_dect_gen</a>
+                                                        </li>
+                                                        <li class="toctree-l6"><a class="reference internal"
+                                                                                  href="neodroidvision.data.synthesis.conversion.mnist.seg_gen.html">neodroidvision.data.synthesis.conversion.mnist.seg_gen</a>
+                                                        </li>
+                                                        <li class="toctree-l6"><a class="reference internal"
+                                                                                  href="neodroidvision.data.synthesis.conversion.mnist.threed.html">neodroidvision.data.synthesis.conversion.mnist.threed</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="toctree-l4"><a class="reference internal"
+                                                                  href="neodroidvision.data.synthesis.resize.html">neodroidvision.data.synthesis.resize</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.detection.html">neodroidvision.detection</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.entry_points.html">neodroidvision.entry_points</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.mixed.html">neodroidvision.mixed</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.multitask.html">neodroidvision.multitask</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.regression.html">neodroidvision.regression</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.segmentation.html">neodroidvision.segmentation</a>
+                        </li>
+                        <li class="toctree-l2"><a class="reference internal" href="neodroidvision.utilities.html">neodroidvision.utilities</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="caption" role="heading"><span class="caption-text">Notes</span></p>
+            <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a>
+                </li>
+            </ul>
 
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="neodroidvision.html">neodroidvision</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.dist_is_editable.html">neodroidvision.dist_is_editable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.get_version.html">neodroidvision.get_version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.classification.html">neodroidvision.classification</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="neodroidvision.data.html">neodroidvision.data</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.classification.html">neodroidvision.data.classification</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.detection.html">neodroidvision.data.detection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.flow.html">neodroidvision.data.flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.mixed.html">neodroidvision.data.mixed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.neodroid_environments.html">neodroidvision.data.neodroid_environments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.reconstruction.html">neodroidvision.data.reconstruction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neodroidvision.data.segmentation.html">neodroidvision.data.segmentation</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="neodroidvision.data.synthesis.html">neodroidvision.data.synthesis</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.html">neodroidvision.data.synthesis.conversion</a><ul class="current">
-<li class="toctree-l5"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.image_composition.html">neodroidvision.data.synthesis.conversion.image_composition</a></li>
-<li class="toctree-l5 current"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.html">neodroidvision.data.synthesis.conversion.mnist</a><ul class="current">
-<li class="toctree-l6"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.convert_mnist_to_png.html">neodroidvision.data.synthesis.conversion.mnist.convert_mnist_to_png</a></li>
-<li class="toctree-l6"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data.html">neodroidvision.data.synthesis.conversion.mnist.h5_mnist_data</a></li>
-<li class="toctree-l6 current"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.html">neodroidvision.data.synthesis.conversion.mnist.json_generation</a><ul class="current">
-<li class="toctree-l7 current"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</a><ul class="current">
-<li class="toctree-l8 current"><a class="current reference internal" href="#">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image</a></li>
-<li class="toctree-l8"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils</a></li>
-<li class="toctree-l8"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.CocoJsonCreator</a></li>
-</ul>
-</li>
-<li class="toctree-l7"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.obj_dect_gen.html">neodroidvision.data.synthesis.conversion.mnist.obj_dect_gen</a></li>
-<li class="toctree-l6"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.seg_gen.html">neodroidvision.data.synthesis.conversion.mnist.seg_gen</a></li>
-<li class="toctree-l6"><a class="reference internal" href="neodroidvision.data.synthesis.conversion.mnist.threed.html">neodroidvision.data.synthesis.conversion.mnist.threed</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="neodroidvision.data.synthesis.resize.html">neodroidvision.data.synthesis.resize</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.detection.html">neodroidvision.detection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.entry_points.html">neodroidvision.entry_points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.mixed.html">neodroidvision.mixed</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.multitask.html">neodroidvision.multitask</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.regression.html">neodroidvision.regression</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.segmentation.html">neodroidvision.segmentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neodroidvision.utilities.html">neodroidvision.utilities</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="neodroidvision.html">neodroidvision</a><ul>
-  <li><a href="neodroidvision.data.html">neodroidvision.data</a><ul>
-  <li><a href="neodroidvision.data.synthesis.html">neodroidvision.data.synthesis</a><ul>
-  <li><a href="neodroidvision.data.synthesis.conversion.html">neodroidvision.data.synthesis.conversion</a><ul>
-  <li><a href="neodroidvision.data.synthesis.conversion.mnist.html">neodroidvision.data.synthesis.conversion.mnist</a><ul>
-  <li><a href="neodroidvision.data.synthesis.conversion.mnist.json_generation.html">neodroidvision.data.synthesis.conversion.mnist.json_generation</a><ul>
-  <li><a href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</a><ul>
-      <li>Previous: <a href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html" title="previous chapter">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</a></li>
-      <li>Next: <a href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html" title="next chapter">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
+            <div class="relations">
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="../index.html">Documentation overview</a>
+                        <ul>
+                            <li><a href="neodroidvision.html">neodroidvision</a>
+                                <ul>
+                                    <li><a href="neodroidvision.data.html">neodroidvision.data</a>
+                                        <ul>
+                                            <li><a href="neodroidvision.data.synthesis.html">neodroidvision.data.synthesis</a>
+                                                <ul>
+                                                    <li><a href="neodroidvision.data.synthesis.conversion.html">neodroidvision.data.synthesis.conversion</a>
+                                                        <ul>
+                                                            <li>
+                                                                <a href="neodroidvision.data.synthesis.conversion.mnist.html">neodroidvision.data.synthesis.conversion.mnist</a>
+                                                                <ul>
+                                                                    <li>
+                                                                        <a href="neodroidvision.data.synthesis.conversion.mnist.json_generation.html">neodroidvision.data.synthesis.conversion.mnist.json_generation</a>
+                                                                        <ul>
+                                                                            <li>
+                                                                                <a href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</a>
+                                                                                <ul>
+                                                                                    <li>Previous: <a
+                                                                                            href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.html"
+                                                                                            title="previous chapter">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities</a>
+                                                                                    </li>
+                                                                                    <li>Next: <a
+                                                                                            href="neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils.html"
+                                                                                            title="next chapter">neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.AnnotationJsonUtils</a>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="searchbox" role="search" style="display: none">
+                <h3 id="searchlabel">Quick search</h3>
+                <div class="searchformwrapper">
+                    <form action="../search.html" class="search" method="get">
+                        <input aria-labelledby="searchlabel" autocapitalize="off" autocomplete="off" autocorrect="off" name="q"
+                               spellcheck="false" type="text"/>
+                        <input type="submit" value="Go"/>
+                    </form>
+                </div>
+            </div>
+            <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
         </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
+    <div class="clearer"></div>
+</div>
+<div class="footer">
+    &copy;.
 
-    
+    |
+    Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+    &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
 
-    
-  </body>
+    |
+    <a href="../_sources/generated/neodroidvision.data.synthesis.conversion.mnist.json_generation.coco_json_utilities.create_coco_image.rst.txt"
+       rel="nofollow">Page source</a>
+</div>
+
+
+</body>
 </html>

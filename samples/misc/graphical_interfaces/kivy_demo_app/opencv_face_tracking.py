@@ -15,7 +15,6 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-
 from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"
@@ -147,7 +146,7 @@ class MainLayout(BoxLayout):
                 gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)
             )
 
-            for (x, y, w, h) in faces:
+            for x, y, w, h in faces:
                 cv2.rectangle(rgb, (x, y), (x + w, y + h), (0, 255, 0), 2)
         except Exception as e:
             print(e)

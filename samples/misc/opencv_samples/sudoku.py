@@ -2,7 +2,6 @@ from pathlib import Path
 
 import cv2
 from draugr.opencv_utilities import show_image
-
 from neodroidvision.utilities import hough_lines
 
 if __name__ == "__main__":

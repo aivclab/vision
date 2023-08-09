@@ -180,7 +180,6 @@ def pred_target_train_model(
                 for phase in [SplitEnum.training, SplitEnum.validation]:
                     if phase == SplitEnum.training:
                         with TorchTrainSession(model):
-
                             input, true_label = zip(*next(train_iterator))
 
                             rgb_imgs = torch_vision_normalize_batch_nchw(

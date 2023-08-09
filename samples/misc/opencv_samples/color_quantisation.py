@@ -3,7 +3,6 @@ import numpy
 from draugr.opencv_utilities import show_image
 
 if __name__ == "__main__":
-
     img = cv2.imread("home.jpg")
     K = 2
     if img is not None:

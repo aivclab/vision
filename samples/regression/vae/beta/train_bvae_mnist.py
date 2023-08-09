@@ -23,6 +23,12 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import Writer
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
+    HigginsBetaVae,
+)
+from neodroidvision.regression.vae.architectures.vae import VAE
+from neodroidvision.utilities import scatter_plot_encoding_space
 from torch import optim
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -30,12 +36,6 @@ from torchvision.datasets import MNIST
 from torchvision.transforms import Grayscale
 from torchvision.utils import save_image
 
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
-    HigginsBetaVae,
-)
-from neodroidvision.regression.vae.architectures.vae import VAE
-from neodroidvision.utilities import scatter_plot_encoding_space
 from objectives import loss_function
 
 torch.manual_seed(82375329)

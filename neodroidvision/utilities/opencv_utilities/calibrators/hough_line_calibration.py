@@ -204,7 +204,6 @@ def hough_line_calibrator(
             lo_prev = lo
             hi_prev = hi
         else:
-
             a_canny_refresh_flag = False  # --------------------------= Un-FLAG
 
         threshold = cv2.getTrackbarPos(threshold_label, canny_hough_lines_window_label)
@@ -259,7 +258,6 @@ def hough_line_calibrator(
             or max_theta != max_theta_prev
             or O
         ):  # ----------------------------------------------= RE-SYNC
-
             a_hough_refresh_flag = True  # --------------------------= FLAG
             O = False
 
@@ -271,7 +269,6 @@ def hough_line_calibrator(
             min_theta_prev = min_theta
             max_theta_prev = max_theta
         else:
-
             a_hough_refresh_flag = False  # --------------------------= Un-FLAG
 
         if (

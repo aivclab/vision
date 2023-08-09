@@ -27,13 +27,12 @@ from matplotlib import pyplot
 from neodroid.wrappers import (
     MixedObservationWrapper,
 )
-from torch import optim
-
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.classification import squeezenet_retrain
 from neodroidvision.classification.procedures.deprec.procedures import (
     predictor_response_train_model_neodroid_observations,
 )
+from torch import optim
 
 # from warg.pooled_queue_processor import PooledQueueTask
 

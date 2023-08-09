@@ -15,12 +15,11 @@ from typing import Any, List
 
 import torch
 import torch.utils.data
-from torch import distributed
-
 from neodroidvision.utilities.torch_utilities.distributing.serialisation import (
     deserialise_byte_tensor,
     to_byte_tensor,
 )
+from torch import distributed
 
 __all__ = [
     "all_gather_cuda",

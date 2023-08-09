@@ -16,10 +16,9 @@ import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
+from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 from torch.utils.data import DataLoader
 from warg import drop_unused_kws, passes_kws_to
-
-from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 
 __all__ = ["PairDataset"]
 
@@ -29,7 +28,8 @@ class PairDataset(
 ):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a
     # general torch lib.
     """
-    # This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair"""
+    # This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair
+    """
 
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws

@@ -19,14 +19,13 @@ from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator, show_image
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from draugr.visualisation import progress_bar
-from warg import NOD, ensure_existence
-
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDetectionNms
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
+from warg import NOD, ensure_existence
 
 
 @torch.no_grad()

@@ -45,7 +45,6 @@ class WatermarkImage:
         rgb_weight=(0, 1, 1.5),
         input_frame_shape=None,
     ) -> None:
-
         logo_image = cv2.imread(logo_path, cv2.IMREAD_UNCHANGED)
         h, w, c = logo_image.shape
         if angle % 360 != 0:
@@ -77,7 +76,6 @@ class WatermarkImage:
         self.logo_image[:, :, 0] = self.logo_image[:, :, 0] * self.rgb_weight[2]
 
         if input_frame_shape is not None:
-
             logo_w = input_frame_shape[1] * self.size
             ratio = logo_w / self.ori_shape[1]
             logo_h = int(ratio * self.ori_shape[0])

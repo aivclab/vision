@@ -12,14 +12,13 @@ from typing import Dict, Iterable, Sequence, Tuple, Union
 import numpy
 import torch
 from draugr.torch_utilities import to_tensor
-from torch import nn
-from torch.nn import init
-
 from neodroidvision.multitask.fission.skip_hourglass.factory import (
     fcn_decoder,
     fcn_encoder,
 )
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
+from torch import nn
+from torch.nn import init
 
 __all__ = ["SkipHourglassFission"]
 

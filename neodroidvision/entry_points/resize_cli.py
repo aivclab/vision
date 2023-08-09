@@ -13,7 +13,6 @@ from neodroidvision.data.synthesis import resize_children
 
 
 def main():
-
     import argparse
 
     parser = argparse.ArgumentParser(

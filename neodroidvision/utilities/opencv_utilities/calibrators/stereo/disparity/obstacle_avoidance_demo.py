@@ -87,7 +87,6 @@ def obstacle_avoid():
 
     # Check if a significantly large obstacle is present and filter out smaller noisy regions
     if numpy.sum(mask) / 255.0 > 0.01 * mask.shape[0] * mask.shape[1]:
-
         # Contour detection
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         cnts = sorted(contours, key=cv2.contourArea, reverse=True)
@@ -136,7 +135,6 @@ while True:
         imgR, imgL = imgL, imgR
 
     if retL and retR:
-
         output_canvas = imgL.copy()
 
         imgR_gray = cv2.cvtColor(imgR, cv2.COLOR_BGR2GRAY)

@@ -90,7 +90,6 @@ cv2.setMouseCallback("disparity", mouse_click)
 stereo = cv2.StereoBM_create()  # Creating an object of StereoBM algorithm
 
 while True:
-
     # Capturing and storing left and right camera images
     retR, imgR = can_right.read()
     retL, imgL = cam_left.read()
