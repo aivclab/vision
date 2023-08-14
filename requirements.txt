@@ -1,6 +1,6 @@
 devpack # warg, draugr, apppath
 neodroid
-numpy>=1.20.2
+numpy>=1.22.2
 scipy
 scikit-image
 tqdm
