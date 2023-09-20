@@ -1,9 +1,8 @@
-from itertools import count
-from typing import Sequence
-
 import numpy
 import torch
 import torch.nn.functional
+from itertools import count
+from typing import Sequence
 from warg import split
 
 """

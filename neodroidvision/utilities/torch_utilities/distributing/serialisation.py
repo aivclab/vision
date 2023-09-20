@@ -8,9 +8,8 @@ __doc__ = r"""
            """
 
 import pickle
-from typing import Any, List
-
 import torch
+from typing import Any, List
 
 __all__ = ["to_byte_tensor", "serialise_byte_tensor", "deserialise_byte_tensor"]
 

@@ -8,11 +8,10 @@ __doc__ = r"""
            """
 
 from abc import abstractmethod
-from pathlib import Path
-from typing import Sequence, Tuple
-
 from draugr.numpy_utilities import SplitEnum
+from pathlib import Path
 from torch.utils.data import ConcatDataset
+from typing import Sequence, Tuple
 
 __all__ = ["MultiDataset"]
 

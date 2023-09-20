@@ -7,17 +7,16 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
-from pathlib import Path
-from typing import Sequence, Tuple
-
 import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory
 from matplotlib import pyplot
+from pathlib import Path
 from torch.utils.data import Subset
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
+from typing import Sequence, Tuple
 
 __all__ = ["MNISTDataset"]
 

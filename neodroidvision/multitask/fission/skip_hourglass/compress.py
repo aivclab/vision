@@ -7,10 +7,9 @@ __doc__ = r"""
            Created on 19-09-2021
            """
 
-from typing import Tuple
-
 import torch
 from torch import nn
+from typing import Tuple
 
 __all__ = ["Compress"]
 

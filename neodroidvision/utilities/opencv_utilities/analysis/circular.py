@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
-import math
-from typing import List, Tuple
-
 import cv2
+import math
 import numpy
+from typing import List, Tuple
 
 __all__ = ["daugman"]
 

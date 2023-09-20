@@ -1,8 +1,7 @@
-import math
-from enum import Enum
-
 import cv2
+import math
 import numpy
+from enum import Enum
 from sorcery import assigned_names
 
 

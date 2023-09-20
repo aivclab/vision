@@ -5,10 +5,6 @@
 import copy
 import os
 import time
-from itertools import cycle
-from pathlib import Path
-from typing import Iterator
-
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -20,15 +16,18 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import plot_side_by_side, progress_bar
 from draugr.writers import Writer
+from itertools import cycle
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
+from pathlib import Path
 from torch import optim
 from torch.nn.modules.module import Module
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
+from typing import Iterator
 from warg import ensure_existence
 
 __author__ = "Christian Heider Nielsen"

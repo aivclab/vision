@@ -6,8 +6,6 @@ __doc__ = r"""
            Created on 09/10/2019
            """
 
-from pathlib import Path
-
 import cv2
 import numpy
 import pandas
@@ -28,6 +26,7 @@ from neodroidvision.multitask.fission.skip_hourglass import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.iou import intersection_over_union
 from neodroidvision.segmentation.masks import mask_to_run_length
+from pathlib import Path
 from torch.utils.data import DataLoader
 
 

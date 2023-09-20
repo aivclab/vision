@@ -7,12 +7,11 @@ __doc__ = r"""
            Created on 26/01/2022
            """
 
+import cupy
+import torch
 from collections import namedtuple
 from string import Template
 from typing import Any
-
-import cupy
-import torch
 
 __all__ = ["Stream", "get_dtype_str", "load_kernel"]
 

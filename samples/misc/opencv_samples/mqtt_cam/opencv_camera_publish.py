@@ -5,15 +5,14 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-import time
-
 import cv2
+import time
 from PIL import Image
 from draugr.opencv_utilities import AsyncVideoStream
 from draugr.visualisation.pillow_utilities import pil_image_to_byte_array
+from mqtt_callbacks import get_mqtt_client
 from warg import now_repr
 
-from mqtt_callbacks import get_mqtt_client
 from .config import MQTT_CAM_CONFIG
 
 MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]

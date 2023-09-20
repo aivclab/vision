@@ -8,27 +8,25 @@ __doc__ = r"""
            """
 
 import os
-import time
-from collections import defaultdict
-from math import inf
-
 import pandas
 import seaborn
+import time
 import torch
+from collections import defaultdict
 from draugr.torch_utilities import ImprovementDetector, global_torch_device
 from draugr.visualisation import progress_bar
+from math import inf
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.disentangled.conditional_vae import (
     ConditionalVAE,
 )
+from objectives import loss_fn
 from torch.nn.functional import one_hot
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import NOD, ensure_existence
-
-from objectives import loss_fn
 
 
 def main(config, model, tmsp_path, patience=100):

@@ -7,15 +7,14 @@ __doc__ = r"""
            Created on {date}
            """
 
+import cv2
 import gzip
+import numpy
 import pathlib
 import pickle
-from urllib import request
-
-import cv2
-import numpy
 import tqdm
 from neodroidvision import PROJECT_APP_PATH
+from urllib import request
 
 filename = [
     ["training_images", "train-images-idx3-ubyte.gz"],

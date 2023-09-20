@@ -8,9 +8,8 @@ __doc__ = r"""
            """
 
 import gzip
-import pickle
-
 import numpy
+import pickle
 from draugr.numpy_utilities import SplitEnum
 from neodroidvision import PROJECT_APP_PATH
 from tqdm import trange

@@ -8,8 +8,6 @@ __doc__ = r"""
            """
 
 import argparse
-from pathlib import Path
-
 import cv2
 import torch
 from draugr.numpy_utilities import SplitEnum
@@ -23,6 +21,7 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 from neodroidvision.utilities.torch_utilities.persistence.check_pointer import (
     CheckPointer,
 )
+from pathlib import Path
 from torch import onnx, quantization
 from warg import NOD, ensure_existence, sprint
 

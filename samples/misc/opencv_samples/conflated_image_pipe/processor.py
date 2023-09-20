@@ -1,8 +1,7 @@
-from typing import Optional
-
 import zmq
 from samples.misc.exclude import SOCKET_ADDRESS1, SOCKET_ADDRESS2
 from samples.misc.opencv_samples.conflated_image_pipe.configuration import ComArchEnum
+from typing import Optional
 from warg import GDKC, identity
 from zmq import Socket
 

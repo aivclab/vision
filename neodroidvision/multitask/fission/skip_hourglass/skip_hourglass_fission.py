@@ -7,8 +7,6 @@ __doc__ = r"""
            Created on 19-09-2021
            """
 
-from typing import Dict, Iterable, Sequence, Tuple, Union
-
 import numpy
 import torch
 from draugr.torch_utilities import to_tensor
@@ -19,6 +17,7 @@ from neodroidvision.multitask.fission.skip_hourglass.factory import (
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
 from torch import nn
 from torch.nn import init
+from typing import Dict, Iterable, Sequence, Tuple, Union
 
 __all__ = ["SkipHourglassFission"]
 

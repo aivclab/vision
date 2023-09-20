@@ -5,12 +5,11 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from typing import Tuple
-
 import torch
 from torch import nn
 from torch.distributions import Normal
 from torch.nn import functional
+from typing import Tuple
 
 __all__ = ["GlimpseSensor", "Actor", "SignalBaseline", "CoreRNN", "Locator"]
 

@@ -3,13 +3,11 @@
 
 import datetime
 import os
+from apppath import AppPath
 from importlib import resources
 from importlib.metadata import PackageNotFoundError
-from warnings import warn
-
-
-from apppath import AppPath
 from warg import package_is_editable
+from warnings import warn
 
 __project__ = "NeodroidVision"
 __author__ = "Christian Heider Nielsen"

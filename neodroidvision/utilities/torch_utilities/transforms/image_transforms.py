@@ -10,11 +10,10 @@ A package of torchvision transforms
 Add examples to the __main__ routine as necessary for visualization
 """
 
-from collections.abc import Sequence
-
 import numpy
 import torch
 from PIL import Image
+from collections.abc import Sequence
 from torchvision.transforms.functional import to_pil_image, to_tensor
 
 __all__ = [

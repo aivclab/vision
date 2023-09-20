@@ -9,13 +9,12 @@ __doc__ = r"""
 
 import itertools
 import logging
+import numpy
+import six
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
-
-import numpy
-import six
 
 __all__ = [
     "bbox_iou",

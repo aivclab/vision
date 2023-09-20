@@ -7,17 +7,16 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
-import random
-from pathlib import Path
-from typing import Tuple, Union
-
 import numpy
+import random
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
 from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
+from pathlib import Path
 from torch.utils.data import DataLoader
+from typing import Tuple, Union
 from warg import drop_unused_kws, passes_kws_to
 
 __all__ = ["PairDataset"]

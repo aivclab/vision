@@ -5,12 +5,11 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from typing import Iterable
-
 import numpy
 import torch
 from sklearn.preprocessing import LabelEncoder
 from torch import nn
+from typing import Iterable
 
 one_hot_encoder = LabelEncoder()
 one_hot_encoder.fit(range(10))

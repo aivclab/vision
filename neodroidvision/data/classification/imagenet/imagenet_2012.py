@@ -7,9 +7,6 @@ __doc__ = r"""
            Created on 27/06/2020
            """
 
-from pathlib import Path
-from typing import Dict, Tuple
-
 import numpy
 import torch
 import torchvision
@@ -21,8 +18,10 @@ from neodroidvision.data.classification.imagenet.imagenet_2012_id import categor
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
     categories_names,
 )
+from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
+from typing import Dict, Tuple
 
 __all__ = ["ImageNet2012"]
 

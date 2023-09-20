@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Tuple
-
 import numpy
+from typing import Tuple
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = """ description """

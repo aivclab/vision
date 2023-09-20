@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from pathlib import Path
-from typing import Optional, Tuple
-
 import numpy
 import torch
 from PIL import Image
 from draugr.torch_utilities import global_torch_device
+from pathlib import Path
 from torch.nn.functional import one_hot
+from typing import Optional, Tuple
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r""" description """

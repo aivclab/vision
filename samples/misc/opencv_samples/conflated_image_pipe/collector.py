@@ -1,9 +1,8 @@
-from typing import Optional
-
 import zmq
 from draugr.opencv_utilities import show_image
 from samples.misc.exclude import SOCKET_ADDRESS2
 from samples.misc.opencv_samples.conflated_image_pipe.configuration import ComArchEnum
+from typing import Optional
 
 if __name__ == "__main__":
 

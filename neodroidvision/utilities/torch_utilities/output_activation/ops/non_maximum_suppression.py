@@ -8,10 +8,9 @@ __doc__ = r"""
            """
 
 import sys
-import warnings
-
 import torch
 import torchvision
+import warnings
 
 __all__ = ["non_maximum_suppression", "batched_non_maximum_suppression"]
 

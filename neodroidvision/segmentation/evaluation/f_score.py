@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Callable
-
 import torch
+from typing import Callable
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

@@ -9,11 +9,10 @@ __doc__ = r"""
 
 import glob
 import random
-from collections.abc import Sequence
-
 import torch
 import torch.nn.functional
 from PIL import Image
+from collections.abc import Sequence
 from neodroidvision.utilities.torch_utilities.transforms.image_transforms import (
     BaseTorchTransform,
     tuplemulti,

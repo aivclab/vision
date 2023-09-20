@@ -7,10 +7,9 @@ __doc__ = r"""
            Created on 26/01/2022
            """
 
-from typing import Sequence
-
 import torch
 from torch import nn
+from typing import Sequence
 
 __all__ = ["make_san"]
 

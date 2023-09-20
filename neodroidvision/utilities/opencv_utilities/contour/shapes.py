@@ -7,9 +7,8 @@ __doc__ = r"""
            Created on 19/07/2020
            """
 
-from enum import Enum
-
 import cv2
+from enum import Enum
 from sorcery import assigned_names
 from warg import Number
 

@@ -9,13 +9,12 @@ __doc__ = r"""
 
 import os
 import sys
-from pathlib import Path
-
 import torch
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     is_main_process,
     synchronise_torch_barrier,
 )
+from pathlib import Path
 
 try:
     from torch.hub import download_url_to_file

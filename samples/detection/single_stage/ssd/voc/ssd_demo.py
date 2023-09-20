@@ -8,12 +8,9 @@ __doc__ = r"""
            """
 
 import argparse
+import numpy
 import os
 import time
-from pathlib import Path
-from typing import Sequence
-
-import numpy
 import torch
 from PIL import Image, ImageFont
 from draugr.numpy_utilities import SplitEnum
@@ -25,6 +22,8 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
+from pathlib import Path
+from typing import Sequence
 from warg import NOD, ensure_existence
 
 

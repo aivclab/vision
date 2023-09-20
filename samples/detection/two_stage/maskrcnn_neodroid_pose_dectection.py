@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
-import math
-import time
-
 import cv2
+import math
 import numpy
+import time
 import torch
 from PIL import Image, ImageDraw
 from matplotlib import animation, pyplot

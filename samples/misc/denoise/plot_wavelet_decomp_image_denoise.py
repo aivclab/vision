@@ -1,9 +1,8 @@
-from enum import Enum
-from pathlib import Path
-
 import numpy
 import pywt
+from enum import Enum
 from matplotlib import pyplot
+from pathlib import Path
 from sorcery import assigned_names
 
 if __name__ == "__main__":

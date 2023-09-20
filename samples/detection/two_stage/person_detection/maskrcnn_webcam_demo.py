@@ -5,8 +5,6 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
-from pathlib import Path
-
 import cv2
 import torch
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator, show_image
@@ -24,6 +22,7 @@ from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
     get_pretrained_instance_segmentation_maskrcnn,
 )
+from pathlib import Path
 
 if __name__ == "__main__":
 

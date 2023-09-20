@@ -8,9 +8,6 @@ __doc__ = r"""
            """
 
 import logging
-from pathlib import Path
-from typing import Any, List
-
 import torch
 import torch.utils.data
 from draugr.visualisation import progress_bar
@@ -25,8 +22,10 @@ from neodroidvision.utilities import (
     is_main_process,
     synchronise_torch_barrier,
 )
+from pathlib import Path
 from torch.nn import Module
 from torch.utils.data import DataLoader
+from typing import Any, List
 from warg import NOD
 
 __all__ = ["do_ssd_evaluation"]

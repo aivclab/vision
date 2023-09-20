@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
-from pathlib import Path
-
 import cv2
 import numpy
 from draugr.opencv_utilities import add_trackbar, match_return_code, show_image
+from pathlib import Path
 
 __all__ = ["approximate_curve_calibrator"]
 

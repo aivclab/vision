@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 10/11/2019
            """
 
-from abc import abstractmethod
-from typing import Tuple
-
 import torch
+from abc import abstractmethod
 from torch import nn
+from typing import Tuple
 
 __all__ = ["BoxPredictor"]
 

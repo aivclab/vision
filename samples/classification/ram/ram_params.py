@@ -5,9 +5,8 @@ __all__ = []
 __doc__ = r""" description """
 
 import argparse
-from pathlib import Path
-
 from neodroidvision import PROJECT_APP_PATH
+from pathlib import Path
 from warg import NOD
 from warg.arguments import str2bool
 

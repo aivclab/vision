@@ -7,11 +7,10 @@ __doc__ = r"""
 
            """
 
-import time
-
 import cv2
 import numpy
 import pygame
+import time
 from pygame import camera
 
 FACE_HAAR = cv2.CascadeClassifier(

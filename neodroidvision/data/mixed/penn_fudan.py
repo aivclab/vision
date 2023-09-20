@@ -7,10 +7,6 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from enum import Enum
-from pathlib import Path
-from typing import Tuple, Union
-
 import numpy
 import torch
 from PIL import Image
@@ -28,9 +24,12 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
+from enum import Enum
 from matplotlib import pyplot
+from pathlib import Path
 from sorcery import assigned_names
 from torchvision.transforms import Compose, Resize, ToTensor
+from typing import Tuple, Union
 
 __all__ = ["PennFudanDataset"]
 

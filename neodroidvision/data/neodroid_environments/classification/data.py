@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Tuple, Union
-
 import neodroid
 from PIL import Image
 from draugr.multiprocessing_utilities import PooledQueueProcessor, PooledQueueTask
 from draugr.torch_utilities import global_torch_device
 from torch.utils.data import Dataset
 from torchvision import transforms
+from typing import Tuple, Union
 
 __author__ = "Christian Heider Nielsen"
 

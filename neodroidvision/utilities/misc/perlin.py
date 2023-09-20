@@ -8,10 +8,9 @@ __doc__ = r"""
            """
 
 import math
+import numpy
 import random
 from itertools import product
-
-import numpy
 from warg import Number
 
 __all__ = ["PerlinNoiseGenerator"]

@@ -6,12 +6,11 @@ __doc__ = r"""
            """
 
 import time
-from itertools import chain
-
 import torch
 import torch.nn
 import torchvision
 from draugr.torch_utilities import TensorBoardPytorchWriter
+from itertools import chain
 from neodroidvision import PROJECT_APP_PATH
 from torch import optim
 from torch.autograd import Variable

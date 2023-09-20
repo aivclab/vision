@@ -7,9 +7,8 @@ __doc__ = r"""
            Created on 16-06-2021
            """
 
-from pathlib import Path
-
 import cv2
+from pathlib import Path
 
 CamL_id = str(Path(".") / "data" / "stereoL.mp4")
 CamR_id = str(Path(".") / "data" / "stereoR.mp4")

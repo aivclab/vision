@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
-from pathlib import Path
-from tokenize import Number
-
 import numpy
+import time
 import torch
 from draugr.numpy_utilities import SplitEnum, chw_to_hwc
 from draugr.opencv_utilities import cv2_resize
@@ -27,6 +24,8 @@ from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.dice_loss import dice_loss
+from pathlib import Path
+from tokenize import Number
 from torch.utils.data import DataLoader
 from warg import ensure_existence
 

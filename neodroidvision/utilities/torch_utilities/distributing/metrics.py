@@ -7,9 +7,8 @@ __doc__ = r"""
            Created on 23/03/2020
            """
 
-import typing
-
 import torch
+import typing
 from draugr.writers import Writer
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     global_world_size,

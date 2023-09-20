@@ -1,6 +1,5 @@
-from enum import Enum
-
 import zmq
+from enum import Enum
 
 __all__ = ["ReceiveMethodEnum", "SendMethodEnum", "ComArchEnum"]
 

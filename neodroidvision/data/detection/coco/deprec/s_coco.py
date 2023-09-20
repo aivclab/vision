@@ -7,9 +7,6 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from pathlib import Path
-from typing import Tuple
-
 import numpy
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum
@@ -17,6 +14,8 @@ from draugr.opencv_utilities import xywh_to_minmax
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
+from pathlib import Path
+from typing import Tuple
 
 __all__ = ["COCODataset"]
 

@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import cv2
 import torch
 from draugr.opencv_utilities import frame_generator
@@ -13,6 +11,7 @@ from draugr.visualisation import progress_bar
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.utilities import OutputActivationModule
+from pathlib import Path
 from torchvision import transforms
 from warg import ensure_existence, sprint
 

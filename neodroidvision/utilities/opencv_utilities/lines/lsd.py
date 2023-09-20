@@ -7,11 +7,10 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
-from pathlib import Path
-from typing import Any
-
 import cv2
 from draugr.opencv_utilities import show_image
+from pathlib import Path
+from typing import Any
 
 __all__ = ["detect_lines"]
 

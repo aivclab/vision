@@ -1,12 +1,11 @@
 """Test availability of required packages."""
 
+import pytest
 import unittest
 from importlib.metadata import Distribution
-from pathlib import Path
-
-import pytest
-from warg import get_requirements_from_file
 from importlib.metadata import PackageNotFoundError
+from pathlib import Path
+from warg import get_requirements_from_file
 
 _REQUIREMENTS_PATH = Path(__file__).parent.with_name("requirements.txt")
 _EXTRA_REQUIREMENTS_PATH = Path(__file__).parent.parent / "requirements"

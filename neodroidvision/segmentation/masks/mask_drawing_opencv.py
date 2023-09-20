@@ -9,12 +9,11 @@ __doc__ = r"""
 
 __all__ = ["draw_masks", "ConvexHullEnum", "draw_convex_hull"]
 
-from enum import Enum
-from typing import List
-
 import cv2
 import numpy
+from enum import Enum
 from sorcery import assigned_names
+from typing import List
 
 
 def draw_masks(img2: numpy.ndarray, img_mask_list: List) -> numpy.ndarray:

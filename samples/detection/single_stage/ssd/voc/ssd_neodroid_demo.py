@@ -8,9 +8,6 @@ __doc__ = r"""
            """
 
 import argparse
-from pathlib import Path
-from typing import Sequence
-
 import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
@@ -29,6 +26,8 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
+from pathlib import Path
+from typing import Sequence
 from warg import NOD, ensure_existence
 
 

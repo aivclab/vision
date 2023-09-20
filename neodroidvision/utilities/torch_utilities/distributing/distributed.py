@@ -11,11 +11,10 @@ __doc__ = r"""
 # Code is copy-pasted exactly as in torch.utils.data.distributed.
 # FIXME remove this once c10d fixes the bug it has
 import math
-from typing import Sized
-
 import torch
 from torch import distributed
 from torch.utils.data.sampler import Sampler
+from typing import Sized
 
 __all__ = ["DistributedSampler"]
 

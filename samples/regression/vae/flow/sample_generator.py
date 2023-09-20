@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import random
-
 import numpy
+import random
 import torch.utils.data
+from data_loader import load_binary_mnist
 from draugr.torch_utilities import global_torch_device
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.flow.architectures import (
@@ -12,8 +12,6 @@ from neodroidvision.regression.vae.architectures.flow.architectures import (
     VariationalMeanField,
 )
 from warg import NOD
-
-from data_loader import load_binary_mnist
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

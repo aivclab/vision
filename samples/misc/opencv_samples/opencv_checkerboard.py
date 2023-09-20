@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import glob
-from pathlib import Path
-
 import cv2
+import glob
 import numpy
 from draugr.opencv_utilities import draw_cube
 from matplotlib import pyplot
 from neodroidvision import PROJECT_APP_PATH
+from pathlib import Path
 from pynput import keyboard
 
 __author__ = "Christian Heider Nielsen"

@@ -7,8 +7,6 @@ __doc__ = r""" description """
 import pickle
 import shutil
 import time
-from pathlib import Path
-
 import torch
 from draugr import AverageMeter
 from draugr.torch_utilities import (
@@ -20,13 +18,13 @@ from neodroidvision.classification.mechanims.attention.foveal.architecture.ram i
     RecurrentAttention,
 )
 from neodroidvision.data.classification import MNISTDataset
+from pathlib import Path
+from ram_params import get_ram_config
 
 # from tensorboard_logger import configure, log_value
 from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from warg import NOD, ensure_existence
-
-from ram_params import get_ram_config
 
 model_file_ending = ".model.tar"
 

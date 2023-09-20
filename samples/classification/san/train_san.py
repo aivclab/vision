@@ -5,13 +5,11 @@ __all__ = []
 __doc__ = r""" description """
 
 import logging
+import numpy
 import os
 import random
 import shutil
 import time
-from pathlib import Path
-
-import numpy
 import torch
 from draugr import AverageMeter, find_unclaimed_port
 from draugr.numpy_utilities import SplitEnum
@@ -20,10 +18,7 @@ from mixed.architectures.self_attention_network import (
     make_san,
 )
 from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
-from torch import distributed, multiprocessing, nn
-from torch.backends import cudnn
-from torch.optim import lr_scheduler
-
+from pathlib import Path
 from san_utilities import (
     cal_accuracy,
     intersection_and_union_gpu,
@@ -31,6 +26,9 @@ from san_utilities import (
     mixup_loss,
     smooth_loss,
 )
+from torch import distributed, multiprocessing, nn
+from torch.backends import cudnn
+from torch.optim import lr_scheduler
 
 
 def get_logger():

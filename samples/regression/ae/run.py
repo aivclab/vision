@@ -8,12 +8,9 @@ __doc__ = r"""
 
 import argparse
 import copy
+import draugr.visualisation.matplotlib_utilities
 import os
 import time
-from pathlib import Path
-from typing import Union
-
-import draugr.visualisation.matplotlib_utilities
 import torch
 from draugr.numpy_utilities import SplitEnum, hwc_to_chw
 from draugr.torch_utilities import (
@@ -27,8 +24,10 @@ from matplotlib import pyplot
 from neodroid.wrappers.observation_wrapper import CameraObservationWrapper
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation.masks import plot_utilities
+from pathlib import Path
 from torch import optim
 from torch.optim import lr_scheduler
+from typing import Union
 
 from .dmr_data import calculate_multi_auto_encoder_loss, neodroid_camera_data_iterator
 

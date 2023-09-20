@@ -7,12 +7,11 @@ __doc__ = r"""
            Created on 10/11/2019
            """
 
-from typing import List
-
 from neodroidvision.detection.single_stage.ssd.architecture.backbones.ssd_backbone import (
     SSDBackbone,
 )
 from torch import Tensor, nn
+from typing import List
 
 __all__ = ["MobileNetV2"]
 

@@ -7,13 +7,12 @@ __doc__ = r"""
            Created on 30/11/2019
            """
 
-from pathlib import Path
-
 import albumentations
 import cv2
 import numpy
 import pandas
 from matplotlib import pyplot
+from pathlib import Path
 from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import Dataset
 

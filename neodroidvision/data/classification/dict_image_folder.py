@@ -9,13 +9,12 @@ __doc__ = r"""
 
 __all__ = ["SplitDictImageFolder", "DictImageFolder"]
 
-from pathlib import Path
-
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
     DictDatasetFolder,
     SplitDictDatasetFolder,
 )
+from pathlib import Path
 from torchvision.datasets.folder import IMG_EXTENSIONS, default_loader
 from torchvision.transforms import transforms
 
