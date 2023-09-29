@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 29/10/2019
            """
 
+from typing import List, Tuple
+
 from neodroidvision.multitask.fission.skip_hourglass.compress import Compress
 from neodroidvision.multitask.fission.skip_hourglass.decompress import Decompress
 from neodroidvision.multitask.fission.skip_hourglass.modes import MergeMode, UpscaleMode
-from typing import List, Tuple
 
 __all__ = ["fcn_decoder", "fcn_encoder"]
 

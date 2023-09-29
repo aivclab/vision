@@ -8,6 +8,9 @@ __doc__ = r"""
 """
 
 import time
+from math import inf
+from pathlib import Path
+
 import torch
 import torch.utils.data
 from draugr.numpy_utilities import SplitEnum
@@ -19,7 +22,10 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import Writer
-from math import inf
+from torch import optim
+from torch.utils.data import DataLoader
+from torchvision.utils import save_image
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification import VggFace2
 from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
@@ -28,10 +34,6 @@ from neodroidvision.regression.vae.architectures.disentangled.beta_vae import (
 from neodroidvision.regression.vae.architectures.vae import VAE
 from neodroidvision.utilities import scatter_plot_encoding_space
 from objectives import loss_function
-from pathlib import Path
-from torch import optim
-from torch.utils.data import DataLoader
-from torchvision.utils import save_image
 
 
 def train_model(

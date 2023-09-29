@@ -7,9 +7,10 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
+from typing import Any, Mapping, Tuple
+
 import cv2
 import numpy
-from typing import Any, Mapping, Tuple
 from warg import Number
 
 __all__ = [

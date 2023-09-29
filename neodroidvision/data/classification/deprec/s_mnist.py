@@ -7,15 +7,16 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
+from pathlib import Path
+from typing import Any, Tuple
+
 import torch
 from draugr.numpy_utilities import SplitEnum, SplitIndexer
 from draugr.torch_utilities import SupervisedDataset
 from draugr.visualisation import progress_bar
-from pathlib import Path
 from torch.utils.data import Subset
 from torchvision import transforms
 from torchvision.datasets import MNIST
-from typing import Any, Tuple
 
 
 class MNISTDataset2(SupervisedDataset):

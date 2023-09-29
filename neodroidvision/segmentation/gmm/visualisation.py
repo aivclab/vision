@@ -1,5 +1,6 @@
-import numpy
 import os
+
+import numpy
 from matplotlib import cm, patches, pyplot
 
 __all__ = ["visualise_3d_gmm", "visualise_2D_gmm"]

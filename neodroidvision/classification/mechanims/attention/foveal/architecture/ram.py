@@ -6,9 +6,10 @@ __doc__ = r"""
 Foveal attention, moves around gaze and yields glimpses
            """
 
+from typing import Tuple
+
 import torch
 from torch import nn
-from typing import Tuple
 
 from . import ram_modules
 

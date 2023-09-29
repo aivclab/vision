@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 16-06-2021
            """
 
+from pathlib import Path
+
 import cv2
 import numpy
 from draugr.opencv_utilities import get_video_sources, show_image
-from pathlib import Path
 from warg import sink
 
 vid_indices = iter(get_video_sources())

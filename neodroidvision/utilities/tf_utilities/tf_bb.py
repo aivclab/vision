@@ -6,9 +6,12 @@ __doc__ = r"""
            """
 
 import functools
+from pathlib import Path
+
 import numpy
 import tensorflow
 from PIL.Image import Image, fromarray
+
 from neodroidvision.utilities.visualisation.bounding_box_visualisation import (
     _visualize_boxes,
     _visualize_boxes_and_keypoints,
@@ -17,7 +20,6 @@ from neodroidvision.utilities.visualisation.bounding_box_visualisation import (
     cdf_plot,
     hist_plot,
 )
-from pathlib import Path
 
 
 def save_image_array_as_png(image: Image, output_path: Path) -> None:

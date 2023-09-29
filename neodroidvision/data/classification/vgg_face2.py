@@ -8,14 +8,15 @@ __doc__ = r"""
            """
 
 import csv
+from pathlib import Path
+from typing import Dict, Tuple
+
 import torch
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum
 from matplotlib import pyplot
-from pathlib import Path
 from torch.utils import data
 from torchvision import transforms
-from typing import Dict, Tuple
 
 __all__ = ["VggFace2"]
 

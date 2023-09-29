@@ -4,12 +4,13 @@
 __author__ = "Christian Heider Nielsen"
 __doc__ = """ description """
 
+from pathlib import Path
+from typing import Sequence, Union
+
 import numpy
 from matplotlib import pyplot
 from matplotlib.colors import Colormap, LinearSegmentedColormap
 from numpy import ndarray
-from pathlib import Path
-from typing import Sequence, Union
 from warg import Number
 
 __all__ = ["discrete_cmap", "scatter_plot_encoding_space"]

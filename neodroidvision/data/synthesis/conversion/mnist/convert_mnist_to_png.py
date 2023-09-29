@@ -12,12 +12,14 @@ __all__ = ["convert_to_mnist_png", "generate_mnist_png"]
 import os
 import struct
 import sys
-import torchvision.datasets
 from array import array
-from draugr.numpy_utilities import SplitEnum
-from neodroidvision import PROJECT_APP_PATH
 from pathlib import Path
 from typing import Tuple
+
+import torchvision.datasets
+from draugr.numpy_utilities import SplitEnum
+
+from neodroidvision import PROJECT_APP_PATH
 
 
 def read_data(

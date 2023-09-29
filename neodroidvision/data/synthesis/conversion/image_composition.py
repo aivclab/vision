@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
 import json
-import numpy
 import random
 import warnings
-from PIL import Image, ImageEnhance
 from datetime import datetime
+from pathlib import Path
+
+import numpy
+from PIL import Image, ImageEnhance
 from draugr.visualisation import progress_bar
+
 from neodroidvision.data.synthesis.conversion.mnist.json_generation.mask_json_utilities import (
     MaskJsonUtils,
 )
-from pathlib import Path
 
 __all__ = ["ImageComposition"]
 

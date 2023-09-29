@@ -9,6 +9,10 @@ One Shot Learning with Siamese Networks
            """
 
 import math
+from itertools import count
+from pathlib import Path
+from statistics import mean
+
 import numpy
 import torch
 import torchvision.utils
@@ -25,21 +29,19 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
-from itertools import count
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.data.classification.nlet import PairDataset, TripletDataset
-from neodroidvision.regression import NLetConvNet
-from neodroidvision.utilities.visualisation.similarity_utilities import (
-    boxed_text_overlay_plot,
-)
-from pathlib import Path
-from statistics import mean
 from torch import optim
 from torch.nn import TripletMarginLoss
 from torch.nn.functional import pairwise_distance
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from warg import IgnoreInterruptSignal
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.data.classification.nlet import PairDataset, TripletDataset
+from neodroidvision.regression import NLetConvNet
+from neodroidvision.utilities.visualisation.similarity_utilities import (
+    boxed_text_overlay_plot,
+)
 
 
 def accuracy(*, distances, is_diff, threshold: float = 0.5):

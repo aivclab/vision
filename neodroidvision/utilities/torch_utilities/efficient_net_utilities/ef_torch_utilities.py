@@ -8,8 +8,9 @@ __doc__ = r"""
            """
 
 import math
-import torch
 from typing import Any
+
+import torch
 
 __all__ = ["round_filters", "round_repeats", "drop_connect"]
 

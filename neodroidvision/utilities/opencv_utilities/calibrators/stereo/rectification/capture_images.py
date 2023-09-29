@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 16-06-2021
            """
 
-import cv2
 import time
-from draugr.opencv_utilities import get_video_sources
 from pathlib import Path
+
+import cv2
+from draugr.opencv_utilities import get_video_sources
 
 vid_indices = iter(get_video_sources())
 

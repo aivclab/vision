@@ -7,17 +7,18 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+from typing import Iterable
+
 import torch
+from torch import nn
+from torch.nn.functional import adaptive_avg_pool2d
+
 from neodroidvision.utilities.torch_utilities.efficient_net_utilities.ef_torch_utilities import (
     drop_connect,
 )
 from neodroidvision.utilities.torch_utilities.output_activation.custom_activations import (
     swish,
 )
-from torch import nn
-from torch.nn.functional import adaptive_avg_pool2d
-from typing import Iterable
-
 from .tf_like_modules import Conv2dSamePadding
 
 

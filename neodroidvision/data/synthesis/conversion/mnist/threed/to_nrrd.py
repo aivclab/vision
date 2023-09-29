@@ -8,12 +8,13 @@ __doc__ = r"""
            """
 
 import gzip
-import numpy
 import pickle
+
+import numpy
 from draugr.numpy_utilities import SplitEnum
-from neodroidvision import PROJECT_APP_PATH
 from tqdm import trange
 
+from neodroidvision import PROJECT_APP_PATH
 from .augmentation import rotate_y
 from .gen import img_to_point_cloud, make_voxel
 

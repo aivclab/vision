@@ -7,9 +7,10 @@ __doc__ = r"""
            Created on 16-06-2021
            """
 
+from pathlib import Path
+
 import cv2
 import numpy
-from pathlib import Path
 from tqdm import tqdm
 
 # Set the path to the images captured by the left and right cameras

@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 26/01/2022
            """
 
+from typing import Tuple
+
 import torch
 from torch.autograd import Function
 from torch.nn.modules.utils import _pair
-from typing import Tuple
 
 from .self_attention_utilities import (
     CUDA_NUM_THREADS,

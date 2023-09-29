@@ -8,19 +8,20 @@ __doc__ = r"""
            """
 
 import copy
+from collections import namedtuple
+from enum import Enum
+from pathlib import Path
+from typing import Any, List, Mapping, Sequence, Tuple, Union
+
 import torch
 import torch.utils.data
 import torchvision
-from collections import namedtuple
-from enum import Enum
 from numpy.core.multiarray import ndarray
-from pathlib import Path
 from pycocotools import mask
 from pycocotools.coco import COCO
 from pycocotools.mask import decode, frPyObjects
 from torch.utils.data import Dataset
 from torchvision.transforms import Compose
-from typing import Any, List, Mapping, Sequence, Tuple, Union
 
 __all__ = [
     "FilterAndRemapCocoCategories",

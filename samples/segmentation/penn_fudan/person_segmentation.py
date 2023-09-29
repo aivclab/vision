@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import numpy
 import time
+from pathlib import Path
+from tokenize import Number
+
+import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum, chw_to_hwc
 from draugr.opencv_utilities import cv2_resize
@@ -19,15 +22,14 @@ from draugr.torch_utilities import (
 from draugr.visualisation import progress_bar
 from draugr.writers import ImageWriterMixin, MockWriter, Writer
 from matplotlib import pyplot
+from torch.utils.data import DataLoader
+from warg import ensure_existence
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.multitask import SkipHourglassFission
 from neodroidvision.segmentation import BCEDiceLoss
 from neodroidvision.segmentation.evaluation.dice_loss import dice_loss
-from pathlib import Path
-from tokenize import Number
-from torch.utils.data import DataLoader
-from warg import ensure_existence
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

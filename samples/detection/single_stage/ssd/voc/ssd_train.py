@@ -12,6 +12,8 @@ import datetime
 import logging
 import os
 import time
+from pathlib import Path
+
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import (
@@ -20,6 +22,11 @@ from draugr.torch_utilities import (
     TorchTrainSession,
     WarmupMultiStepLR,
 )
+from torch.nn import Module
+from torch.utils.data import DataLoader
+from warg import NOD, ensure_existence
+from warg.arguments import str2bool
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd import (
     MultiBoxLoss,
@@ -36,11 +43,6 @@ from neodroidvision.utilities import (
     setup_distributed_logger,
     write_metrics_recursive,
 )
-from pathlib import Path
-from torch.nn import Module
-from torch.utils.data import DataLoader
-from warg import NOD, ensure_existence
-from warg.arguments import str2bool
 
 
 def inner_train_ssd(

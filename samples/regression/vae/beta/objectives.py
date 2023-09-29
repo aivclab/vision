@@ -5,9 +5,10 @@ __doc__ = r"""
 Objective functions for beta vae's
            """
 
+from numbers import Number
+
 import torch
 from draugr.writers import MockWriter, Writer
-from numbers import Number
 from torch.nn.functional import (
     mse_loss,
 )

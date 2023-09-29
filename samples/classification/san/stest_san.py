@@ -5,24 +5,26 @@ __all__ = []
 __doc__ = r""" description """
 
 import logging
-import numpy
 import os
 import time
+from itertools import count
+from pathlib import Path
+
+import numpy
 import torch
 import torch.nn.parallel
 import torch.optim
 import torch.utils.data
 from draugr import AverageMeter
 from draugr.numpy_utilities import SplitEnum
-from itertools import count
 from matplotlib import pyplot
 from mixed.architectures.self_attention_network import (
     make_san,
 )
 from mixed.architectures.self_attention_network.enums import SelfAttentionTypeEnum
-from pathlib import Path
-from san_utilities import cal_accuracy, intersection_and_union_gpu
 from torch import nn
+
+from san_utilities import cal_accuracy, intersection_and_union_gpu
 
 if __name__ == "__main__":
 

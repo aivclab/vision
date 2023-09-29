@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+
 import torch
 from PIL import Image
 from draugr.numpy_utilities import SplitEnum, SplitIndexer
@@ -14,6 +16,10 @@ from draugr.torch_utilities import (
     trainable_parameters,
 )
 from draugr.visualisation import progress_bar
+from torch.utils.data import DataLoader, Subset
+from warg import GDKC, ensure_existence
+from warg.functions import collate_first_dim
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.mixed import PennFudanDataset
 from neodroidvision.detection.two_stage.mask_rcnn.architecture import (
@@ -23,10 +29,6 @@ from neodroidvision.detection.two_stage.mask_rcnn.maskrcnn_engine import (
     maskrcnn_evaluate,
     maskrcnn_train_single_epoch,
 )
-from pathlib import Path
-from torch.utils.data import DataLoader, Subset
-from warg import GDKC, ensure_existence
-from warg.functions import collate_first_dim
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = """ description """

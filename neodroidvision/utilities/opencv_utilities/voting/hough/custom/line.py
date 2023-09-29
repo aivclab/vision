@@ -1,10 +1,11 @@
-import imageio
 import math
+from pathlib import Path
+
+import imageio
 import numpy
 from draugr.opencv_utilities import to_gray
 from draugr.visualisation import progress_bar
 from matplotlib import pyplot
-from pathlib import Path
 
 
 def hough_line(img, angle_step=1, lines_are_white=True, value_threshold=5):

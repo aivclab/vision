@@ -8,9 +8,11 @@ __doc__ = r"""
            """
 
 import copy
-import numpy
 import string
 import time
+from pathlib import Path
+
+import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.python_utilities import (
@@ -32,7 +34,6 @@ from munin.html_embeddings import (
     generate_math_html,
     plt_html,
 )
-from pathlib import Path
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from warg import NOD
 

@@ -8,9 +8,11 @@ __doc__ = r"""
            """
 
 import copy
-import numpy
 import string
 import time
+from pathlib import Path
+
+import numpy
 import torch
 from draugr import (
     rgb_drop_alpha_batch_nhwc,
@@ -28,12 +30,12 @@ from draugr.visualisation import confusion_matrix_plot, progress_bar
 from matplotlib import pyplot
 from munin.generate_report import ReportEntry, generate_html, generate_pdf
 from munin.html_embeddings import ReportFormatEnum, generate_math_html, plt_html
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from warg import NOD
+
 from neodroidvision.data.neodroid_environments.classification.data import (
     default_torch_retransform,
 )
-from pathlib import Path
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from warg import NOD
 
 __all__ = ["test_model", "predictor_response_train_model_neodroid_observations"]
 

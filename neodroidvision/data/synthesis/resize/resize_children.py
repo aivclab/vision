@@ -5,13 +5,14 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = """
 """
 
+from enum import Enum
+from pathlib import Path
+from typing import Iterable, Sequence, Tuple, Union
+
 import cv2
 from draugr.opencv_utilities import InterpolationEnum, cv2_resize
 from draugr.visualisation import progress_bar
-from enum import Enum
-from pathlib import Path
 from sorcery import assigned_names
-from typing import Iterable, Sequence, Tuple, Union
 from warg import Number, ensure_existence
 
 __all__ = ["ResizeMethodEnum", "resize", "resize_children"]

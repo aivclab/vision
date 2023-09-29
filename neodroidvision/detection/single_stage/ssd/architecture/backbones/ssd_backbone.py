@@ -7,8 +7,9 @@ __doc__ = r"""
            Created on 10/11/2019
            """
 
-from torch import nn
 from typing import Any
+
+from torch import nn
 
 __all__ = ["SSDBackbone"]
 

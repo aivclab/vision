@@ -7,8 +7,9 @@ __doc__ = r"""
            Created on 10/11/2019
            """
 
-import torch
 from typing import List
+
+import torch
 
 __all__ = ["SingleShotDetectionNms"]
 

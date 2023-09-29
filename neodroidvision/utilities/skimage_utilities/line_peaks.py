@@ -7,9 +7,10 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
+from pathlib import Path
+
 import numpy
 from matplotlib import cm, pyplot
-from pathlib import Path
 from skimage import color, io
 from skimage.draw import line
 from skimage.transform import hough_line, hough_line_peaks

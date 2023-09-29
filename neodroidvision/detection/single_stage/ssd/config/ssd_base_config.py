@@ -7,11 +7,13 @@ __doc__ = r"""
            Created on 10/11/2019
            """
 
+from pathlib import Path
+
+from warg import NOD
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection import SSDBoxPredictor
 from neodroidvision.detection.single_stage.ssd.architecture.backbones import vgg_factory
-from pathlib import Path
-from warg import NOD
 
 base_cfg = NOD()
 

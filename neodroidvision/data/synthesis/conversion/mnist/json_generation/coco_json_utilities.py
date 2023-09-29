@@ -8,10 +8,11 @@ __doc__ = r"""
            """
 
 import json
+from pathlib import Path
+
 import numpy
 from PIL import Image
 from draugr.visualisation import progress_bar
-from pathlib import Path
 from skimage import measure
 from warg import NOD
 

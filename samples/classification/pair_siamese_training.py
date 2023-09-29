@@ -7,6 +7,11 @@ __doc__ = r"""
 
 import math
 import time
+from itertools import count
+from pathlib import Path
+from statistics import mean
+from typing import Tuple
+
 import torch
 import torchvision
 from draugr.numpy_utilities import SplitEnum
@@ -22,7 +27,11 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from draugr.writers import MockWriter, Writer
-from itertools import count
+from torch import nn, optim
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from warg import IgnoreInterruptSignal
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.data.classification.nlet import PairDataset
 from neodroidvision.data.synthesis.conversion.mnist.convert_mnist_to_png import (
@@ -32,13 +41,6 @@ from neodroidvision.regression.metric.contrastive.pair_ranking import PairRankin
 from neodroidvision.utilities.visualisation.similarity_utilities import (
     boxed_text_overlay_plot,
 )
-from pathlib import Path
-from statistics import mean
-from torch import nn, optim
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from typing import Tuple
-from warg import IgnoreInterruptSignal
 
 
 def accuracy(

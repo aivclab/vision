@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 29/03/2020
            """
 
+from pathlib import Path
+
 import numpy
 from IPython.display import IFrame
 from matplotlib import pyplot
-from pathlib import Path
 
 __all__ = ["plot_voxelgrid", "plot_points"]
 

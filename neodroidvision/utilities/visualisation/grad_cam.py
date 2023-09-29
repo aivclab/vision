@@ -9,10 +9,11 @@ __doc__ = r"""
            Created on 14-02-2021
            """
 
+from typing import Sequence
+
 import cv2
 import numpy
 import torch
-from typing import Sequence
 
 __all__ = ["GradientClassActivationMapping"]
 

@@ -6,13 +6,14 @@ __doc__ = r"""
            """
 
 import time
-from config import MQTT_CAM_CONFIG
+
 from draugr.visualisation.pillow_utilities import (
     byte_array_to_pil_image,
     pil_image_to_byte_array,
 )
 from warg import now_repr
 
+from config import MQTT_CAM_CONFIG
 from .mqtt_callbacks import get_mqtt_client
 
 MQTT_BROKER = MQTT_CAM_CONFIG["mqtt"]["broker"]

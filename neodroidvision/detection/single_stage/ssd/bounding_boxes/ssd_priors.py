@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 25/03/2020
            """
 
-import numpy
-import torch
 from itertools import product
 from math import sqrt
 from typing import Tuple
+
+import numpy
+import torch
 from warg import drop_unused_kws
 
 from .tensor_metrics import iou_of_tensors

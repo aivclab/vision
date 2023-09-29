@@ -7,9 +7,13 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
+import pickle
+from math import pi
+from pathlib import Path
+from typing import Iterator
+
 import cv2
 import numpy
-import pickle
 from draugr.opencv_utilities import (
     ButtonTypeEnum,
     add_button,
@@ -17,9 +21,6 @@ from draugr.opencv_utilities import (
     match_return_code,
     show_image,
 )
-from math import pi
-from pathlib import Path
-from typing import Iterator
 
 __all__ = ["hough_line_calibrator"]
 

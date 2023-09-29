@@ -7,8 +7,9 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from draugr.visualisation import progress_bar
 from pathlib import Path
+
+from draugr.visualisation import progress_bar
 from warg import Triple
 
 """Get the binarized MNIST dataset and convert to hdf5.

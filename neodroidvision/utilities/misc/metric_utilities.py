@@ -9,11 +9,12 @@ __doc__ = r"""
 
 import datetime
 import time
+from collections import defaultdict, deque
+from typing import Optional
+
 import torch
 import torch.utils.data
-from collections import defaultdict, deque
 from torch import distributed
-from typing import Optional
 
 __all__ = ["SmoothedValue", "MetricLogger"]
 

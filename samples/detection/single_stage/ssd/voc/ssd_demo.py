@@ -8,23 +8,25 @@ __doc__ = r"""
            """
 
 import argparse
-import numpy
 import os
 import time
+from pathlib import Path
+from typing import Sequence
+
+import numpy
 import torch
 from PIL import Image, ImageFont
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import draw_bounding_boxes
 from draugr.torch_utilities import global_torch_device
+from warg import NOD, ensure_existence
+
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
-from pathlib import Path
-from typing import Sequence
-from warg import NOD, ensure_existence
 
 
 @torch.no_grad()

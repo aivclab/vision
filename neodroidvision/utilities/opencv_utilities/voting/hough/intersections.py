@@ -7,9 +7,12 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
+from collections import defaultdict
+from pathlib import Path
+from typing import Tuple
+
 import cv2
 import numpy
-from collections import defaultdict
 from draugr.opencv_utilities import (
     ColorConversionEnum,
     KmeansEnum,
@@ -20,8 +23,6 @@ from draugr.opencv_utilities import (
     show_image,
     to_gray,
 )
-from pathlib import Path
-from typing import Tuple
 
 __all__ = ["draw_parameter_lines", "draw_markers", "find_intersections"]
 

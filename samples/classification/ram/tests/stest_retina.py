@@ -4,6 +4,8 @@ __author__ = "Christian Heider Nielsen"
 __all__ = []
 __doc__ = r""" description """
 
+from functools import reduce
+
 import numpy
 import torch
 from classification.mechanims.attention.foveal.architecture import GlimpseSensor
@@ -12,7 +14,6 @@ from draugr.visualisation import (
     pil_img_to_np_array,
     pil_merge_images,
 )
-from functools import reduce
 from matplotlib import pyplot
 
 from ..ram_params import get_ram_config

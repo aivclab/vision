@@ -7,18 +7,20 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
+from pathlib import Path
+from typing import List, Optional, Union
+
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import LimitedBatchResampler
+from torch.utils.data import ConcatDataset, DataLoader
+from warg import NOD
+
 from neodroidvision.data.detection.multi_dataset import MultiDataset
 from neodroidvision.utilities import (
     BatchCollator,
     DistributedSampler,
 )
-from pathlib import Path
-from torch.utils.data import ConcatDataset, DataLoader
-from typing import List, Optional, Union
-from warg import NOD
 
 __all__ = ["object_detection_data_loaders"]
 

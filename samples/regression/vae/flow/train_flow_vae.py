@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import numpy
 import random
+from itertools import cycle
+from typing import Tuple
+
+import numpy
 import torch
 import torch.utils
 import torch.utils.data
-from data_loader import load_binary_mnist
 from draugr.torch_utilities import global_torch_device
-from itertools import cycle
+from warg import NOD
+
+from data_loader import load_binary_mnist
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.flow.architectures import (
     Generator,
     VariationalFlow,
     VariationalMeanField,
 )
-from typing import Tuple
-from warg import NOD
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""

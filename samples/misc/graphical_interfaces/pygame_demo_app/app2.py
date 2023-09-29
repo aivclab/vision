@@ -1,5 +1,6 @@
-import pygame.camera
 import sys
+
+import pygame.camera
 
 pygame.camera.init()
 

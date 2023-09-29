@@ -7,6 +7,9 @@ __doc__ = r"""
            Created on 27/06/2020
            """
 
+from pathlib import Path
+from typing import Dict, Tuple
+
 import numpy
 import torch
 import torchvision
@@ -14,14 +17,13 @@ from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset
 from draugr.visualisation import progress_bar
 from matplotlib import pyplot
+from torch.utils import data
+from torchvision import transforms
+
 from neodroidvision.data.classification.imagenet.imagenet_2012_id import categories_id
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
     categories_names,
 )
-from pathlib import Path
-from torch.utils import data
-from torchvision import transforms
-from typing import Dict, Tuple
 
 __all__ = ["ImageNet2012"]
 

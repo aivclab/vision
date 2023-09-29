@@ -8,11 +8,16 @@ __doc__ = r"""
            """
 
 import argparse
+from pathlib import Path
+
 import cv2
 import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.opencv_utilities import frame_generator
 from draugr.torch_utilities import global_torch_device
+from torch import onnx, quantization
+from warg import NOD, ensure_existence, sprint
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
@@ -21,9 +26,6 @@ from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms imp
 from neodroidvision.utilities.torch_utilities.persistence.check_pointer import (
     CheckPointer,
 )
-from pathlib import Path
-from torch import onnx, quantization
-from warg import NOD, ensure_existence, sprint
 
 
 @torch.no_grad()

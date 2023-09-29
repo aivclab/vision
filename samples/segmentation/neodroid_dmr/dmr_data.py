@@ -6,15 +6,17 @@ __doc__ = r"""
            Created on 09/10/2019
            """
 
+from typing import Any
+
 import numpy
 import torch
 import torch.utils.data
 from draugr.torch_utilities import channel_transform, to_tensor
 from neodroid.environments.droid_environment import DictUnityEnvironment
-from neodroidvision.segmentation import dice_loss, jaccard_loss
 from torch.nn.functional import binary_cross_entropy_with_logits
-from typing import Any
 from warg import NOD
+
+from neodroidvision.segmentation import dice_loss, jaccard_loss
 
 
 def neodroid_camera_data_iterator(

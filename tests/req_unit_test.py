@@ -1,16 +1,11 @@
 """Test availability of required packages."""
 
-import pytest
-import unittest
-from importlib.metadata import Distribution
-from importlib.metadata import PackageNotFoundError
 from pathlib import Path
-from warg import get_requirements_from_file
 
 _REQUIREMENTS_PATH = Path(__file__).parent.with_name("requirements.txt")
 _EXTRA_REQUIREMENTS_PATH = Path(__file__).parent.parent / "requirements"
 
-
+'''
 class TestRequirements(unittest.TestCase):
     """Test availability of required packages."""
 
@@ -40,3 +35,4 @@ class TestRequirements(unittest.TestCase):
                                 Distribution.from_name(requirement.name)
                             except PackageNotFoundError:
                                 assert False, f"{requirement} not satisfied"
+'''

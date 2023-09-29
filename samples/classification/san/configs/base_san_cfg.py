@@ -7,9 +7,11 @@ __doc__ = r"""
            Created on 27/06/2020
            """
 
-from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
 from pathlib import Path
+
 from warg import NOD
+
+from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
 
 SAN_CONFIG = NOD(
     dataset_type=ImageNet2012,

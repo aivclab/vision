@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+from itertools import cycle
+from typing import Iterable, Optional, Sequence, Tuple, Union
+
 import PIL
 import numpy
 import six
@@ -9,9 +12,7 @@ from PIL import Image, ImageColor, ImageDraw, ImageFont
 from attr import dataclass
 from draugr.pandas_utilities import ColorEnum
 from draugr.visualisation.pillow_utilities import PilModesEnum
-from itertools import cycle
 from matplotlib import pyplot
-from typing import Iterable, Optional, Sequence, Tuple, Union
 from warg import Number
 from warg.mixins.dict_mixins import IterDictValuesMixin
 

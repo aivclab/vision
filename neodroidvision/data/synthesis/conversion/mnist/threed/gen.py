@@ -8,9 +8,10 @@ __doc__ = r"""
            """
 
 import gzip
+import pickle
+
 import h5py
 import numpy
-import pickle
 from tqdm import trange
 
 from .augmentation import rotate_y

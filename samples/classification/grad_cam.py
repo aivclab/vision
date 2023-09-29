@@ -9,17 +9,19 @@ __doc__ = r"""
            Created on 14-02-2021
            """
 
+from pathlib import Path
+
 import cv2
 import numpy
 from draugr.torch_utilities import GuidedBackPropReLUModel
+from torchvision import models
+
 from neodroidvision.utilities import (
     GradientClassActivationMapping,
     overlay_cam_on_image,
     preprocess_image,
     unstandardise_image,
 )
-from pathlib import Path
-from torchvision import models
 
 if __name__ == "__main__":
 

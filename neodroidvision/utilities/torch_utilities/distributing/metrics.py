@@ -7,13 +7,15 @@ __doc__ = r"""
            Created on 23/03/2020
            """
 
-import torch
 import typing
+
+import torch
 from draugr.writers import Writer
+from torch import distributed
+
 from neodroidvision.utilities.torch_utilities.distributing.distributing_utilities import (
     global_world_size,
 )
-from torch import distributed
 
 __all__ = ["write_metrics_recursive", "reduce_loss_dict"]
 

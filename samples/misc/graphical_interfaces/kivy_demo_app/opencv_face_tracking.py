@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from functools import partial
+
 import cv2
 import imageio
-from functools import partial
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
@@ -14,6 +15,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+
 from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"

@@ -8,6 +8,9 @@ __doc__ = r"""
            """
 
 import argparse
+from pathlib import Path
+from typing import Sequence
+
 import numpy
 import torch
 from draugr.numpy_utilities import SplitEnum
@@ -20,15 +23,14 @@ from draugr.torch_utilities import TorchEvalSession, global_torch_device
 from draugr.visualisation import progress_bar
 from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
+from warg import NOD, ensure_existence
+
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection import SingleShotDetection
 from neodroidvision.detection.single_stage.ssd.bounding_boxes.ssd_transforms import (
     SSDTransform,
 )
 from neodroidvision.utilities import CheckPointer
-from pathlib import Path
-from typing import Sequence
-from warg import NOD, ensure_existence
 
 
 @torch.no_grad()

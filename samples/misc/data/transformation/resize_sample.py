@@ -1,5 +1,6 @@
-from neodroidvision.data.synthesis.resize.resize_children import resize_children
 from pathlib import Path
+
+from neodroidvision.data.synthesis.resize.resize_children import resize_children
 
 if __name__ == "__main__":
 

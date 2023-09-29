@@ -5,13 +5,14 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
+from typing import Tuple
+
 import numpy
 import torch
 import torch.utils
 import torch.utils.data
 from draugr.torch_utilities import ReductionMethodEnum
 from torch import nn
-from typing import Tuple
 
 from .vae_flow import FlowSequential, InverseAutoregressiveFlow, Reverse
 

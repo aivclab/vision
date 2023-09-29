@@ -7,11 +7,12 @@ __doc__ = r"""
            Created on 30/06/2020
            """
 
-import numpy
 import random
-import torch
 from pathlib import Path
 from typing import Tuple
+
+import numpy
+import torch
 
 __all__ = ["TripletDataset"]
 

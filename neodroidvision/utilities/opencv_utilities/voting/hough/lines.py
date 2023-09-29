@@ -7,10 +7,11 @@ __doc__ = r"""
            Created on 5/5/22
            """
 
+from typing import Any
+
 import cv2
 import numpy
 from draugr.opencv_utilities import ThresholdTypeFlag, show_image, to_gray
-from typing import Any
 
 __all__ = ["hough_lines"]
 

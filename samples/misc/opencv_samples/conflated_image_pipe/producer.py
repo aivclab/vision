@@ -1,7 +1,7 @@
 import zmq
 from draugr.opencv_utilities import AsyncVideoStream
-
 from samples.misc.exclude import SOCKET_ADDRESS1
+
 from samples.misc.opencv_samples.conflated_image_pipe.configuration import ComArchEnum
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 import itertools
+from typing import Dict, Sequence, Tuple
+
 import numpy
 from matplotlib import pyplot
-from typing import Dict, Sequence, Tuple
 from warg import Number
 
 __all__ = [

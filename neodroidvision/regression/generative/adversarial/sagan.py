@@ -8,6 +8,10 @@ __doc__ = r"""
            """
 
 import torch
+from torch import nn
+from torch.nn.functional import interpolate
+from torch.nn.init import xavier_uniform_
+
 from neodroidvision.classification.mechanims.attention.self.self_attention import (
     init_weights,
 )
@@ -19,9 +23,6 @@ from neodroidvision.classification.mechanims.attention.self.spectral_norm import
 from neodroidvision.mixed.architectures.self_attention_network.self_attention_network import (
     SelfAttentionModule,
 )
-from torch import nn
-from torch.nn.functional import interpolate
-from torch.nn.init import xavier_uniform_
 
 
 class ConditionalBatchNorm2d(nn.Module):

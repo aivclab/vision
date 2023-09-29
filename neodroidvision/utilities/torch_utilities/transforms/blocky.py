@@ -9,17 +9,19 @@ __doc__ = r"""
 
 import glob
 import random
+from collections.abc import Sequence
+
 import torch
 import torch.nn.functional
 from PIL import Image
-from collections.abc import Sequence
+from torch import ceil
+from torch.nn.functional import interpolate
+from torchvision.transforms.functional import to_pil_image, to_tensor
+
 from neodroidvision.utilities.torch_utilities.transforms.image_transforms import (
     BaseTorchTransform,
     tuplemulti,
 )
-from torch import ceil
-from torch.nn.functional import interpolate
-from torchvision.transforms.functional import to_pil_image, to_tensor
 
 
 class RandomBlock(BaseTorchTransform):

@@ -5,10 +5,11 @@ __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
            """
 
+from typing import Tuple
+
 from neodroidvision.data.detection.object_detection_dataset import (
     ObjectDetectionDataset,
 )
-from typing import Tuple
 
 
 class MnistDetectionDataset(ObjectDetectionDataset):
