@@ -15,3 +15,4 @@ polyscope>=0.1.6
 pycocotools
 #cupy # pip install cupy-cudaXXX -f https://pip.cupy.dev/pre
 #cython
+fonttools>=4.43.0 # not directly required, pinned by Snyk to avoid a vulnerability
