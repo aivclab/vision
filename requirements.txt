@@ -1,10 +1,10 @@
 devpack # warg, draugr, apppath
 neodroid
-numpy>=1.20.2
+numpy>=1.22.2
 scipy
 scikit-image
 tqdm
-Pillow>=9.0.0
+Pillow>=10.2.0
 matplotlib>=3.4.1
 pip
 h5py
@@ -20,3 +20,4 @@ imageio
 pypng
 sorcery
 black[jupyter]
+fonttools>=4.43.0 # not directly required, pinned by Snyk to avoid a vulnerability
