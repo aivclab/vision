@@ -1,4 +1,4 @@
-black>=19.3b0
+black>=24.3.0
 paho-mqtt>=1.4.0
 Pillow>=7.2.0
 imutils>=0.5.3
