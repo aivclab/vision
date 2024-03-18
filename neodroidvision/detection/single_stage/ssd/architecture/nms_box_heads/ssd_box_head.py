@@ -118,7 +118,7 @@ class SSDNmsBoxHead(nn.Module):
         categori_logits, bbox_pred = self.predictor(features)
 
         results = []
-        for (scores, boxes) in zip(
+        for scores, boxes in zip(
             functional.log_softmax(
                 categori_logits, dim=-1
             ),  # TODO:Check dim maybe it should be 1

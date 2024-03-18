@@ -92,7 +92,7 @@ if __name__ == "__main__":
         for image in AsyncVideoStream():
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-            for (i, rect) in enumerate(detector(gray, upsample)):
+            for i, rect in enumerate(detector(gray, upsample)):
                 # determine the facial landmarks for the face region, then
                 # convert the landmark (x, y)-coordinates to a NumPy array
                 shape = shape_to_ndarray(predictor(gray, rect))
@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
                         # loop over the subset of facial landmarks, drawing the
                         # specific face part
-                        for (x, y) in shape[i:j]:
+                        for x, y in shape[i:j]:
                             cv2.circle(clone, (x, y), 1, (0, 0, 255), -1)
 
                         if False:

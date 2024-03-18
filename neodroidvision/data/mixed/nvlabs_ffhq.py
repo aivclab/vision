@@ -374,11 +374,11 @@ def download_files(
                 "%.2f/%.2f %s"
                 % (bytes_done / bytes_div, bytes_total / bytes_div, bytes_unit),
                 "%.2f %s/s" % (bandwidth / bandwidth_div, bandwidth_unit),
-                "done"
-                if bytes_total == bytes_done
-                else "..."
-                if len(timing) < timing_window or bandwidth == 0
-                else eta,
+                (
+                    "done"
+                    if bytes_total == bytes_done
+                    else "..." if len(timing) < timing_window or bandwidth == 0 else eta
+                ),
             ),
             end="",
             flush=True,
