@@ -25,13 +25,13 @@ upsample_num_times = 0
 for image in AsyncVideoStream():
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    for (i, rect) in enumerate(detector(gray, upsample_num_times)):
+    for i, rect in enumerate(detector(gray, upsample_num_times)):
         # determine the facial landmarks for the face region, then
         # convert the facial landmark (x, y)-coordinates to a NumPy
         # array
         # loop over the (x, y)-coordinates for the facial landmarks
         # and draw them on the image
-        for (x, y) in shape_to_ndarray(predictor(gray, rect)):
+        for x, y in shape_to_ndarray(predictor(gray, rect)):
             cv2.circle(image, (x, y), 2, (0, 255, 0), -1)
 
     if show_image(

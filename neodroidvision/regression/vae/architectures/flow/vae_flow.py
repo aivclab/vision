@@ -106,7 +106,8 @@ class MADE(nn.Module):
 
     Follows https://arxiv.org/abs/1502.03509
 
-    This is used to build MAF: Masked Autoregressive Flow (https://arxiv.org/abs/1705.07057)."""
+    This is used to build MAF: Masked Autoregressive Flow (https://arxiv.org/abs/1705.07057).
+    """
 
     def __init__(self, num_input, num_output, num_hidden, num_context):
         super().__init__()

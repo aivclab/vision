@@ -58,9 +58,9 @@ def object_detection_data_loaders(
         cfg=cfg,
         dataset_type=cfg.dataset_type,
         data_root=data_root,
-        sub_datasets=cfg.datasets.train
-        if split == SplitEnum.training
-        else cfg.datasets.test,
+        sub_datasets=(
+            cfg.datasets.train if split == SplitEnum.training else cfg.datasets.test
+        ),
         split=split,
     ).sub_datasets:
         if distributed:
@@ -72,9 +72,11 @@ def object_detection_data_loaders(
 
         batch_sampler = torch.utils.data.sampler.BatchSampler(
             sampler=sampler,
-            batch_size=cfg.solver.batch_size
-            if split == SplitEnum.training
-            else cfg.test.batch_size,
+            batch_size=(
+                cfg.solver.batch_size
+                if split == SplitEnum.training
+                else cfg.test.batch_size
+            ),
             drop_last=False,
         )
         if max_iter is not None:

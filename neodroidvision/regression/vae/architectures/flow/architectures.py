@@ -43,7 +43,8 @@ class MLP(nn.Module):
 
 class Generator(nn.Module):
     """
-    Bernoulli model parameterized by a generative network with Gaussian latents for MNIST."""
+    Bernoulli model parameterized by a generative network with Gaussian latents for MNIST.
+    """
 
     def __init__(self, latent_size, data_size):
         super().__init__()

@@ -28,7 +28,7 @@ class BoxPredictor(nn.Module):
         self.cls_headers = nn.ModuleList()
         self.reg_headers = nn.ModuleList()
 
-        for (level_i, (num_boxes, num_channels)) in enumerate(
+        for level_i, (num_boxes, num_channels) in enumerate(
             zip(boxes_per_location, self.out_channels)
         ):
             self.cls_headers.append(

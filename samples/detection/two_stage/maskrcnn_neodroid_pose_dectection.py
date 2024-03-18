@@ -74,7 +74,7 @@ def show_preds(img, pred):
     drawdot = lambda x, y, r=3, fill="red": draw.ellipse(
         (x - r, y - r, x + r, y + r), fill=fill
     )
-    for (box, kpts) in pred:
+    for box, kpts in pred:
         for kpt in kpts:
             if kpt[2] == 1:
                 drawdot(kpt[0], kpt[1])

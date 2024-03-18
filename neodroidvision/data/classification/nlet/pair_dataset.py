@@ -29,7 +29,8 @@ class PairDataset(
 ):  # TODO: Extract image specificity of class to a subclass and move this super pair class to a
     # general torch lib.
     """
-    # This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair"""
+    # This dataset generates a pair of images. 0 for geniune pair and 1 for imposter pair
+    """
 
     @passes_kws_to(DictImageFolder.__init__)
     @drop_unused_kws
@@ -54,9 +55,7 @@ class PairDataset(
                 root=data_path / SplitEnum.training.value, split=self.split, **kwargs
             )
 
-    def __getitem__(
-        self, idx1: int
-    ) -> Union[
+    def __getitem__(self, idx1: int) -> Union[
         Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
         Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor],
     ]:

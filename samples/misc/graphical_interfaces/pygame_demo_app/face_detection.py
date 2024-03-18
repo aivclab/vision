@@ -72,7 +72,7 @@ def draw_from_points(cv_image, points):
     Returns a cv_image."""
     cv_image = numpy.ascontiguousarray(cv_image, dtype=numpy.uint8)
     for f in points:
-        for (x, y, w, h) in f:
+        for x, y, w, h in f:
             cv2.rectangle(cv_image, (x, y), (x + w, y + h), 255)
     return cv_image
 
