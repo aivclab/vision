@@ -4,7 +4,7 @@ twine>=1.13.0
 pytest>=4.3.0
 pytest-cov>=2.11.1
 coveralls>=1.6.0
-black[jupyter]>=21.5b0
+black>=24.3.0
 pre-commit
 -r requirements_docs.txt
 -r requirements_extra.txt
@@ -12,3 +12,5 @@ pre-commit
 -r requirements_setup.txt
 -r requirements_tests.txt
 -r ../requirements.txt
+urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
