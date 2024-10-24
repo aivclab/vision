@@ -17,8 +17,9 @@ from draugr.torch_utilities import (
 )
 from draugr.visualisation import progress_bar
 from matplotlib.pyplot import show
-from neodroidvision import PROJECT_APP_PATH
 from torchvision import transforms
+
+from neodroidvision import PROJECT_APP_PATH
 
 
 @torch.no_grad()

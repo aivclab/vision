@@ -18,6 +18,7 @@ from typing import Tuple
 
 import torchvision.datasets
 from draugr.numpy_utilities import SplitEnum
+
 from neodroidvision import PROJECT_APP_PATH
 
 

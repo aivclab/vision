@@ -1,9 +1,5 @@
-import numpy
 import matplotlib.pyplot
-
-import pywt
 import pywt.data
-
 
 # Load image
 original = pywt.data.camera()

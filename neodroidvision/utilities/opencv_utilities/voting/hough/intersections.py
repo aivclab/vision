@@ -10,6 +10,7 @@ __doc__ = r"""
 from collections import defaultdict
 from pathlib import Path
 from typing import Tuple
+
 import cv2
 import numpy
 from draugr.opencv_utilities import (

@@ -17,12 +17,13 @@ from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset
 from draugr.visualisation import progress_bar
 from matplotlib import pyplot
+from torch.utils import data
+from torchvision import transforms
+
 from neodroidvision.data.classification.imagenet.imagenet_2012_id import categories_id
 from neodroidvision.data.classification.imagenet.imagenet_2012_names import (
     categories_names,
 )
-from torch.utils import data
-from torchvision import transforms
 
 __all__ = ["ImageNet2012"]
 

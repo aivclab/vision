@@ -15,6 +15,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+
 from neodroidvision import PROJECT_APP_PATH
 
 __author__ = "Christian Heider Nielsen"

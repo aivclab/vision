@@ -25,18 +25,19 @@ from draugr.torch_utilities import (
 from draugr.visualisation import plot_side_by_side, progress_bar
 from draugr.writers.mixins.image_writer_mixin import ImageWriterMixin
 from matplotlib import pyplot
-from neodroidvision import PROJECT_APP_PATH
-from neodroidvision.multitask import SkipHourglassFission
-from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
-from neodroidvision.utilities.torch_utilities.patches.masking import (
-    StochasticMaskGenerator,
-)
 from torch import optim
 from torch.nn.modules.module import Module
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from warg import Number, ensure_existence
+
+from neodroidvision import PROJECT_APP_PATH
+from neodroidvision.multitask import SkipHourglassFission
+from neodroidvision.utilities.torch_utilities.layers.torch_layers import MinMaxNorm
+from neodroidvision.utilities.torch_utilities.patches.masking import (
+    StochasticMaskGenerator,
+)
 
 criterion = torch.nn.MSELoss()
 

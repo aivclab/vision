@@ -9,8 +9,9 @@ __doc__ = r"""
 
 from pathlib import Path
 
-from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
 from warg import NOD
+
+from neodroidvision.data.classification.imagenet.imagenet_2012 import ImageNet2012
 
 SAN_CONFIG = NOD(
     dataset_type=ImageNet2012,

@@ -10,9 +10,10 @@ __doc__ = r"""
 import math
 
 import torch
-from neodroidvision.segmentation import dice_loss
 from torch import nn
 from torch.optim import Adam
+
+from neodroidvision.segmentation import dice_loss
 
 __all__ = ["FullyConvolutional", "FCN"]
 

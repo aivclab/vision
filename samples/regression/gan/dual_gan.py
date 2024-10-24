@@ -12,10 +12,10 @@ import torch
 import torch.nn
 import torchvision
 from draugr.torch_utilities import TensorBoardPytorchWriter
-from neodroidvision import PROJECT_APP_PATH
 from torch import optim
 from torch.autograd import Variable
 
+from neodroidvision import PROJECT_APP_PATH
 from .gan_utilities import reset_grads, sample_x
 
 BATCH_SIZE = 32

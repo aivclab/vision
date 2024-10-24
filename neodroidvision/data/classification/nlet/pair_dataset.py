@@ -16,9 +16,10 @@ import torch
 from draugr.numpy_utilities import SplitEnum
 from draugr.torch_utilities import SupervisedDataset, global_pin_memory, to_tensor
 from matplotlib import pyplot
-from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 from torch.utils.data import DataLoader
 from warg import drop_unused_kws, passes_kws_to
+
+from neodroidvision.data.classification import DictImageFolder, SplitDictImageFolder
 
 __all__ = ["PairDataset"]
 

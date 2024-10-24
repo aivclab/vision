@@ -9,15 +9,15 @@ import torch
 import torch.utils
 import torch.utils.data
 from draugr.torch_utilities import global_torch_device
+from warg import NOD
+
+from data_loader import load_binary_mnist
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.regression.vae.architectures.flow.architectures import (
     Generator,
     VariationalFlow,
     VariationalMeanField,
 )
-from warg import NOD
-
-from data_loader import load_binary_mnist
 
 __author__ = "Christian Heider Nielsen"
 __doc__ = r"""
