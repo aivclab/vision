@@ -13,14 +13,15 @@ from typing import Sequence
 
 import numpy
 import torch
-from draugr.numpy_utilities import SplitEnum
+from draugr.numpy_utilities.datasets import SplitEnum
+
 from draugr.opencv_utilities import (
     draw_bounding_boxes,
     gamma_correct_float_to_byte,
     show_image,
 )
+from draugr.progress_bars import progress_bar
 from draugr.torch_utilities import TorchEvalSession, global_torch_device
-from draugr.visualisation import progress_bar
 from neodroid.environments.droid_environment import DictUnityEnvironment
 from neodroid.utilities import extract_all_cameras
 from warg import NOD, ensure_existence

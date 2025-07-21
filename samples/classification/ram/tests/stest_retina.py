@@ -8,8 +8,8 @@ from functools import reduce
 
 import numpy
 import torch
-from classification.mechanims.attention.foveal.architecture import GlimpseSensor
-from draugr.visualisation import (
+from neodroidvision.classification.mechanims.attention.foveal.architecture import GlimpseSensor
+from draugr.visualisation.pillow_utilities import (
     np_array_to_pil_img,
     pil_img_to_np_array,
     pil_merge_images,

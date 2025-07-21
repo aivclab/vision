@@ -10,11 +10,11 @@ import time
 
 import torch
 import torchvision
-from draugr import (
-    batch_generator,
-    rgb_drop_alpha_batch_nhwc,
-    torch_vision_normalize_batch_nchw,
-)
+from draugr.python_utilities import (
+  batch_generator, rgb_drop_alpha_batch_nhwc,
+  torch_vision_normalize_batch_nchw,
+  )
+
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     ensure_directory_exist,
@@ -22,11 +22,11 @@ from draugr.torch_utilities import (
     to_tensor,
     uint_hwc_to_chw_float_tensor,
 )
-from draugr.visualisation import horizontal_imshow
+from draugr.visualisation.matplotlib_utilities import horizontal_imshow
+
 from matplotlib import pyplot
-from neodroid.wrappers import (
-    MixedObservationWrapper,
-)
+from neodroid.wrappers.observation_wrapper.mixed_observation_wrapper import MixedObservationWrapper
+
 from torch import optim
 
 from neodroidvision import PROJECT_APP_PATH

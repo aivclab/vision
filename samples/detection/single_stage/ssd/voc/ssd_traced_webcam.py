@@ -14,14 +14,16 @@ import cv2
 import numpy
 import torch
 from PIL import ImageFont
-from draugr.numpy_utilities import SplitEnum
+from draugr.numpy_utilities.datasets import SplitEnum
+
 from draugr.opencv_utilities import draw_bounding_boxes, frame_generator, show_image
+from draugr.progress_bars import progress_bar
 from draugr.torch_utilities import (
     TorchDeviceSession,
     TorchEvalSession,
     global_torch_device,
 )
-from draugr.visualisation import progress_bar
+
 from warg import NOD
 
 from neodroidvision import PACKAGE_DATA_PATH, PROJECT_APP_PATH

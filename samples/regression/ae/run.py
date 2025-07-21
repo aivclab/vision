@@ -15,12 +15,13 @@ from typing import Union
 
 import draugr.visualisation.matplotlib_utilities
 import torch
-from draugr.numpy_utilities import SplitEnum, hwc_to_chw
+from draugr.numpy_utilities import  hwc_to_chw
+from draugr.numpy_utilities.datasets import SplitEnum
+from draugr.progress_bars import progress_bar
 from draugr.torch_utilities import (
     TensorBoardPytorchWriter,
     global_torch_device,
 )
-from draugr.visualisation import progress_bar
 from draugr.writers import ImageWriterMixin
 from draugr.writers.mixins.scalar_writer_mixin import ScalarWriterMixin
 from matplotlib import pyplot

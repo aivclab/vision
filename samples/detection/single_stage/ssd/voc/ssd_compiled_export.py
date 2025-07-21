@@ -12,8 +12,10 @@ from pathlib import Path
 
 import cv2
 import torch
-from draugr.numpy_utilities import SplitEnum
+from draugr.numpy_utilities.datasets import SplitEnum
+
 from draugr.opencv_utilities import frame_generator
+from draugr.progress_bars import progress_bar
 from draugr.torch_utilities import global_torch_device
 from torch import quantization
 from warg import NOD, ensure_existence

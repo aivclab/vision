@@ -12,11 +12,14 @@ from pathlib import Path
 
 import cv2
 import torch
-from draugr.numpy_utilities import SplitEnum
+from draugr.numpy_utilities.datasets import SplitEnum
+
 from draugr.opencv_utilities import frame_generator
+from draugr.progress_bars import progress_bar
+from draugr.python_utilities import sprint
 from draugr.torch_utilities import global_torch_device
 from torch import onnx, quantization
-from warg import NOD, ensure_existence, sprint
+from warg import NOD, ensure_existence
 
 from neodroidvision import PROJECT_APP_PATH
 from neodroidvision.detection.single_stage.ssd.architecture import SingleShotDetection

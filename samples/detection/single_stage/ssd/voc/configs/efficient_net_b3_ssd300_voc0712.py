@@ -7,7 +7,7 @@ __doc__ = r"""
            Created on 22/03/2020
            """
 
-from data.detection.voc import VOCDataset
+from neodroidvision.data.detection.voc import VOCDataset
 
 from neodroidvision.detection import efficient_net_b3_factory
 from neodroidvision.detection.single_stage.ssd.config.ssd_base_config import base_cfg
