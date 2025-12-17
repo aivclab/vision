@@ -20,3 +20,5 @@ imageio
 pypng
 sorcery
 black[jupyter]
+fonttools>=4.61.0 # not directly required, pinned by Snyk to avoid a vulnerability
+wheel>=0.38.0 # not directly required, pinned by Snyk to avoid a vulnerability
