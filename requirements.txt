@@ -8,7 +8,7 @@ Pillow>=9.0.0
 matplotlib>=3.4.1
 pip
 h5py
-torch>=1.11.0
+torch>=2.10.0
 torchvision
 pycocotools>=2.0.2
 albumentations>=0.5.2
@@ -20,3 +20,4 @@ imageio
 pypng
 sorcery
 black[jupyter]
+wheel>=0.46.2 # not directly required, pinned by Snyk to avoid a vulnerability
